@@ -152,7 +152,12 @@ function expect(ok, what) {
   expect(/Personal licence/.test(ot), 'order page: no "Personal licence"');
   expect(REMINDER.test(ot), 'order page: no noncommercial reminder');
   expect(KEY.test(ot), 'order page: no licence key');
-  expect(!/Commercial licence(?!s)/.test(ot), 'order page: says Commercial');
+  // The key's own label (the seller's message may mention Commercial).
+  expect(
+    (await page.locator('main [data-edition="personal"]').count()) > 0 &&
+      (await page.locator('main [data-edition="commercial"]').count()) === 0,
+    'order page: the key is not labelled Personal only'
+  );
   const upgrade = page.getByRole('link', { name: /Commercial licences/ });
   expect(
     (await upgrade.first().getAttribute('href'))?.endsWith('/pricing'),

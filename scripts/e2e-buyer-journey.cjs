@@ -198,7 +198,11 @@ const clean = (t) =>
       ' | ' +
       ot.slice(0, 260)
   );
-  if (!/Commercial licence/.test(ot) || /noncommercial use only/i.test(ot))
+  if (
+    !(await page.locator('main [data-edition="commercial"]').count()) ||
+    (await page.locator('main [data-edition="personal"]').count()) ||
+    /noncommercial use only/i.test(ot)
+  )
     throw new Error('order page does not label the key Commercial');
   await page.screenshot({
     path: (process.env.SHOTS || '/tmp') + '/b-6-order.png',
