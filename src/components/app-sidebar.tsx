@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import { useSyncExternalStore } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
 import {
@@ -11,17 +10,12 @@ import {
   Bell,
   LogOut,
   ChevronUp,
-  ChevronDown,
   ChevronsUpDown,
   CreditCard,
   User,
-  Radio,
   UserCircle,
   Receipt,
   Building2,
-  ClipboardList,
-  Image as ImageIcon,
-  Contact,
   Inbox,
   ShieldCheck,
 } from 'lucide-react';
@@ -59,27 +53,21 @@ type NavKey =
   | 'dashboard'
   | 'inbox'
   | 'invoices'
-  | 'events'
   | 'profile'
   | 'security'
   | 'team'
   | 'notifications'
   | 'settings';
 
-type ModuleNavKey = 'forms' | 'assets' | 'audience';
-
 type NavItem = {
-  navKey: NavKey | ModuleNavKey;
+  navKey: NavKey;
   url: string;
   icon: typeof LayoutDashboard;
 };
 
 type SectionKey = 'start' | 'product' | 'billing' | 'platform';
 
-/**
- * Where you start, your account, billing, then the platform plumbing.
- * Modules - the org-API pages - sit in their own collapsible section below.
- */
+/** Where you start, your account, billing, then settings. */
 const sections: { key: SectionKey; items: NavItem[] }[] = [
   {
     key: 'start',
@@ -103,50 +91,11 @@ const sections: { key: SectionKey; items: NavItem[] }[] = [
   {
     key: 'platform',
     items: [
-      { navKey: 'events', url: '/dashboard/events', icon: Radio },
       { navKey: 'notifications', url: '/dashboard/notifications', icon: Bell },
       { navKey: 'settings', url: '/dashboard/settings', icon: Settings },
     ],
   },
 ];
-
-/** The platform modules the SDK does not wrap, read through the org API. */
-const moduleItems: NavItem[] = [
-  { navKey: 'forms', url: '/dashboard/forms', icon: ClipboardList },
-  { navKey: 'assets', url: '/dashboard/assets', icon: ImageIcon },
-  { navKey: 'audience', url: '/dashboard/audience', icon: Contact },
-];
-
-const MODULES_OPEN_KEY = 'sidebar-modules-open';
-const MODULES_EVENT = 'sidebar-modules-open';
-
-/** Whether the visitor left Modules open; null when never chosen or blocked. */
-function readModulesOpen(): boolean | null {
-  try {
-    const v = localStorage.getItem(MODULES_OPEN_KEY);
-    return v === null ? null : v === '1';
-  } catch {
-    return null;
-  }
-}
-
-function writeModulesOpen(open: boolean) {
-  try {
-    localStorage.setItem(MODULES_OPEN_KEY, open ? '1' : '0');
-  } catch {
-    /* not remembered */
-  }
-  window.dispatchEvent(new Event(MODULES_EVENT));
-}
-
-function subscribeModulesOpen(onChange: () => void) {
-  window.addEventListener(MODULES_EVENT, onChange);
-  window.addEventListener('storage', onChange);
-  return () => {
-    window.removeEventListener(MODULES_EVENT, onChange);
-    window.removeEventListener('storage', onChange);
-  };
-}
 
 function NavLink({ item, active }: { item: NavItem; active: boolean }) {
   const t = useTranslations('common');
@@ -172,18 +121,6 @@ export function AppSidebar({ side = 'left' }: { side?: 'left' | 'right' }) {
   const pathname = usePathname();
   const { user, signOut, openWorkspaceSettings } = useSaaSAuth();
   const t = useTranslations('common');
-
-  // As the visitor left it; until they choose, open only on a module page.
-  const inModules = moduleItems.some((item) => item.url === pathname);
-  const modulesStored = useSyncExternalStore(
-    subscribeModulesOpen,
-    readModulesOpen,
-    () => null
-  );
-  const modulesOpen = modulesStored ?? inModules;
-  const toggleModules = () => {
-    writeModulesOpen(!modulesOpen);
-  };
 
   const getInitials = (name?: string) => {
     if (!name) return 'U';
@@ -268,35 +205,6 @@ export function AppSidebar({ side = 'left' }: { side?: 'left' | 'right' }) {
             </SidebarGroupContent>
           </SidebarGroup>
         ))}
-        <SidebarGroup className="py-0">
-          <SidebarGroupLabel asChild className="h-5">
-            <button
-              type="button"
-              onClick={toggleModules}
-              aria-expanded={modulesOpen}
-              aria-controls="sidebar-modules"
-              className="hover:text-sidebar-foreground flex w-full items-center justify-between"
-            >
-              <span>{t('nav.modules')}</span>
-              <ChevronDown
-                className={`h-3.5 w-3.5 transition-transform ${modulesOpen ? '' : '-rotate-90'}`}
-              />
-            </button>
-          </SidebarGroupLabel>
-          {modulesOpen && (
-            <SidebarGroupContent id="sidebar-modules">
-              <SidebarMenu className="gap-0">
-                {moduleItems.map((item) => (
-                  <NavLink
-                    key={item.navKey}
-                    item={item}
-                    active={pathname === item.url}
-                  />
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          )}
-        </SidebarGroup>
       </SidebarContent>
 
       <SidebarFooter>

@@ -28,9 +28,10 @@ export const env = createEnv({
 
     // BuildBase OAuth2 — used by /api/auth/oauth2-token and /api/auth/oauth2-profile
     // This is the clientSecret from the OAuth2 auth settings (may differ from the main client secret)
-    // Organization API token (console → Settings → Tokens) for the modules the
-    // SDK does not wrap: content, forms, collections, assets, links, audience,
-    // workflows, reporting. Server-only.
+    // Organization API token (console → Settings → Tokens). Only the help
+    // center's content reads use it (src/lib/platform/content.ts). Server-only.
+    // Never add a route that uses it for a signed-in visitor without an
+    // org-admin check (buildbase-app/reelforge-studio#4).
     BUILDBASE_API_TOKEN: z.string().optional(),
     // Shared secret for the platform's webhook deliveries.
     BUILDBASE_WEBHOOK_SECRET: z.string().optional(),
