@@ -45,7 +45,9 @@
   "env": {
     "dev": {
       "name": "reelforge-store-dev",
-      "routes": [{ "pattern": "reelforge-dev.buildbase.app", "custom_domain": true }],
+      "routes": [
+        { "pattern": "reelforge-dev.buildbase.app", "custom_domain": true },
+      ],
       "workers_dev": false,
       "services": [
         {

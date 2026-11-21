@@ -40,6 +40,7 @@ yarn-error.log*
 .cursorrules
 .windsurfrules
 CLAUDE.md
+AGENTS.md
 
 # vercel
 .vercel
@@ -65,7 +66,8 @@ public/pagefind
 # Cloudflare / OpenNext
 .open-next/
 .wrangler/
-.dev.vars
+.dev.vars*
+!.dev.vars.example
 # Prisma: generated client and the scratch DB its migration tooling uses
 src/generated/
 prisma/tooling.db*
