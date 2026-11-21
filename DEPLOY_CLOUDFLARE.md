@@ -78,7 +78,8 @@ npm ci
    ```
 
    `SYSTEM_SECRET` must be at least 32 characters (`openssl rand -base64 32`).
-   Optional, when used: `BUILDBASE_API_TOKEN` (help center content),
+   Optional, when used: `BUILDBASE_API_TOKEN` (console content and the
+   server-rendered prices; see "Caching"),
    `BUILDBASE_CONTENT_WEBHOOK_SECRET`, `BUILDBASE_OAUTH2_CLIENT_ID`,
    `BUILDBASE_OAUTH2_CLIENT_SECRET`.
 
@@ -188,6 +189,38 @@ For `preview`, add placeholder secrets to `.dev.vars` (for example
 `SYSTEM_SECRET=` any 32+ characters) and `NEXTJS_ENV=production`. Never real
 ones.
 
+## Caching (ISR and tag revalidation)
+
+`open-next.config.ts` sets up three OpenNext overrides:
+
+| Piece             | Where                                                                                                                                                                                                                                                      |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Incremental cache | `src/lib/cache/d1-over-static-assets.ts`: table `incremental_cache` in the cache database for what is regenerated at runtime, then the build's prerendered copy in the static assets (blog, changelog and legal pages render MDX and must stay build-only) |
+| Tag cache         | OpenNext's D1 tag cache, table `revalidations` in the same database (created by `opennextjs-cloudflare deploy`)                                                                                                                                            |
+| Queue             | The memory queue: a stale page is re-rendered through `WORKER_SELF_REFERENCE`                                                                                                                                                                              |
+
+The cache databases are `reelforge-store-tag-cache`
+(`93907848-dcf0-493c-8e58-1304d582580f`, production) and
+`reelforge-store-dev-tag-cache` (`9ceb6a6f-d20c-46e8-9e38-750a1d73f39f`,
+test), bound as `NEXT_TAG_CACHE_D1`. They are separate from the app's
+database so Prisma migrations never see their tables. Both tables are created
+on first use if missing. Cache keys include the build id, so each deploy
+starts from the build's own copy.
+
+What refreshes what (`src/lib/cache/webhook-tags.ts`, called by
+`/api/webhooks/buildbase`, which the console sends every event to):
+
+- `item.*`: tag `store:items`, the server read of published items on `/` and
+  `/pricing` (prices, Offer JSON-LD, the hero buttons).
+- Content events (`faq.updated`, `faq_collection.updated`,
+  `rich_content.updated`, `doc.*`, ...): the SDK's `buildbase:*` tags, so
+  `/help`, the FAQ sections and the content blocks.
+
+Server reads need `BUILDBASE_API_TOKEN` (an app-server API key) whose API role
+has the content-reader permissions and `marketplace_items` read. Without it
+the pages still work: FAQs and blocks use their local defaults, and prices
+are read in the browser as before.
+
 ## How the Cloudflare port works
 
 - **Database:** Prisma 7 with `@prisma/adapter-d1`. The client is generated
@@ -218,9 +251,13 @@ ones.
   OpenNext marks experimental on Cloudflare.
 - **D1 transactions:** `prisma.$transaction([...])` is not atomic on D1; the
   statements run one after another.
-- **No incremental cache yet:** ISR/revalidation data is not persisted across
-  Worker instances until an R2 bucket is added (R2 is not enabled on the
-  account). See `open-next.config.ts`.
+- **ISR cache in D1:** `/`, `/pricing` and `/help` are ISR pages
+  (`revalidate = 3600`) refreshed by tag from `/api/webhooks/buildbase`. The
+  incremental and tag caches live in their own D1 database (binding
+  `NEXT_TAG_CACHE_D1`; see "Caching" above). Every cached page read is a D1
+  query (free plan: 5 million reads and 100,000 writes a day), and D1 runs in
+  one region, so a cached page can be slower far from it. R2 would be
+  OpenNext's default; it is not enabled on the account.
 - **Sentry:** leave `NEXT_PUBLIC_SENTRY_DSN` unset for Workers builds;
   `@sentry/nextjs` does not target workerd.
 - **Custom JSX in MDX** (`<Callout>`, `<WhenAuthenticated>`) is missing from

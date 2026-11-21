@@ -3,7 +3,6 @@ import {
   FAQJsonLd as NextSeoFAQJsonLd,
   JsonLdScript,
   OrganizationJsonLd as NextSeoOrganizationJsonLd,
-  SoftwareApplicationJsonLd as NextSeoSoftwareApplicationJsonLd,
 } from 'next-seo';
 import {
   absoluteUrl,
@@ -11,6 +10,7 @@ import {
   LEGAL_ENTITY_PLACEHOLDER,
   seoConfig,
 } from '@/config/seo';
+import type { SchemaOffer } from '@/lib/store/offers';
 
 /**
  * JSON-LD Structured Data Components
@@ -191,6 +191,7 @@ export interface FAQJsonLdProps {
 }
 
 export function FAQJsonLd({ items }: FAQJsonLdProps) {
+  if (items.length === 0) return null;
   return (
     <NextSeoFAQJsonLd
       questions={items.map((i) => ({
@@ -292,36 +293,35 @@ export interface SoftwareApplicationJsonLdProps {
   url?: string;
   applicationCategory?: string;
   operatingSystem?: string;
-  offers?: { price: number; priceCurrency: string };
+  /**
+   * The offers on sale now (`buildOffers` from `@/lib/store/offers`). Render
+   * this component only when there is at least one: without an offer it
+   * returns null, so a page never claims something is for sale when it is
+   * not (and never invents a price).
+   */
+  offers: SchemaOffer[];
 }
 
 export function SoftwareApplicationJsonLd({
   name = seoConfig.brand.name,
   description = seoConfig.brand.description,
   url = seoConfig.brand.url,
-  applicationCategory = 'BusinessApplication',
-  operatingSystem = 'Web',
+  applicationCategory = 'MultimediaApplication',
+  operatingSystem = 'Linux (Docker)',
   offers,
-}: SoftwareApplicationJsonLdProps = {}) {
-  return (
-    <NextSeoSoftwareApplicationJsonLd
-      type="WebApplication"
-      name={name}
-      description={description}
-      url={url}
-      applicationCategory={applicationCategory}
-      operatingSystem={operatingSystem}
-      offers={
-        offers
-          ? {
-              '@type': 'Offer',
-              price: offers.price,
-              priceCurrency: offers.priceCurrency,
-            }
-          : undefined
-      }
-    />
-  );
+}: SoftwareApplicationJsonLdProps) {
+  if (offers.length === 0) return null;
+  const data: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name,
+    description,
+    url,
+    applicationCategory,
+    operatingSystem,
+    offers: offers.length === 1 ? offers[0] : offers,
+  };
+  return <JsonLdScript data={data} scriptKey="software-application" />;
 }
 
 // =============================================================================

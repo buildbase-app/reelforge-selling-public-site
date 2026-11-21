@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Server-rendered prices on `/` and `/pricing` from the store's published
+  items (server commerce API, tag `store:items`, revalidated by `item.*`
+  webhooks), with `SoftwareApplication` + `Offer` JSON-LD only while
+  something is on sale. Without a server token the browser read is kept.
+- ISR on Workers: D1-backed incremental and tag caches
+  (`src/lib/cache/d1-over-static-assets.ts`, OpenNext D1 tag cache) and the
+  memory queue. `/`, `/pricing` and `/help` revalidate by tag and path from
+  `/api/webhooks/buildbase`.
+- FAQ collections `store-faq`, `home-faq`, `pricing-faq`, `agents-faq` and
+  content blocks `announcement-bar`, `launch-price-note`, `remotion-notice`,
+  read from BuildBase with local fallbacks; FAQPage JSON-LD from the same data.
+- `app/sitemap.ts` and a `robots.txt` with Content Signals from the agent
+  stack (replace next-sitemap). CSP `media-src` (R2 media host) and
+  `worker-src`. Search engine verification tokens from env.
+
 - Sentry error monitoring integration with session replay
 - Global error boundary (`src/app/global-error.tsx`)
 - Sentry utility functions (`src/lib/sentry.ts`)
@@ -20,6 +35,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the `CLOUDFLARE_API_TOKEN` repository secret.
 
 ### Changed
+
+- Positioning: ReelForge is a locked Docker image with a licence key, driven
+  by the buyer's AI agent over REST and MCP, with four engines (Remotion,
+  Motion Canvas, HTML, HyperFrames). "Source code" wording removed from the
+  site copy, metadata and llms.txt.
+- BuildBase Markdown bodies render on the server with remark/rehype and
+  `rehype-sanitize`; the regex `sanitizeHtml` is gone.
+- No hreflang alternates while English is the only served language.
 
 - `@buildbase/sdk` 1.8.0 (from 0.0.78). The deprecated hook keys
   (`isLoading`, `refreshAttributes`, `refreshFeatures`) and the profile's `_id`

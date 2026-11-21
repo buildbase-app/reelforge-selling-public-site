@@ -45,7 +45,7 @@ const messages: Messages = {
     footer: {
       rights: 'All rights reserved',
       tagline:
-        'A self-hosted studio for short-form video. Bought once, run on your own computer or server. Early access.',
+        'A self-hosted video studio your AI agent drives over REST and MCP. A locked Docker image and a licence key, bought once. Early access.',
       sections: {
         product: 'Product',
         resources: 'Resources',
@@ -89,14 +89,14 @@ const messages: Messages = {
     hero: {
       badge: 'Early access · self-hosted',
       heading:
-        'Polished Reels, rendered <highlight>on your own machine</highlight>',
+        'Your agent directs. <highlight>Your server renders.</highlight>',
       description:
-        'ReelForge turns a storyboard into vertical video with animation engines such as Remotion and Motion Canvas, and assembles the result into one MP4. You run it on your computer or server: no seller-run render service, and any AI provider is optional and your own.',
+        'ReelForge is a short-form video studio your AI agent drives over REST and MCP. The agent plans every scene and its timing; ReelForge renders them with Remotion, Motion Canvas, HTML and HyperFrames into one vertical MP4, on your own machine. You buy a locked Docker image and a licence key, once.',
       waitlist: 'Join the waitlist',
       pricing: 'See pricing',
       buy: 'Buy ReelForge',
       faq: 'Read the FAQ',
-      builtWith: 'Built on',
+      builtWith: 'Inside',
     },
     stats: {
       languages: {
@@ -104,8 +104,8 @@ const messages: Messages = {
         sublabel: 'switch with the header toggle',
       },
       tasks: {
-        label: 'Animation engines',
-        sublabel: 'Remotion and Motion Canvas',
+        label: 'Rendering engines',
+        sublabel: 'Remotion, Motion Canvas, HTML and HyperFrames',
       },
       groups: {
         label: 'Output',
@@ -119,13 +119,13 @@ const messages: Messages = {
     cta: {
       heading: 'Want it before launch?',
       description:
-        'Join the waitlist for early access. We will email you when ReelForge is ready to buy, with setup guides for your own computer or server.',
+        'Join the waitlist for early access. We will email you when ReelForge is ready to buy, with the Docker image setup guide for your own computer or server.',
     },
     meta: {
-      title: 'ReelForge: self-hosted studio for short-form video',
+      title: 'ReelForge: self-hosted video studio for AI agents',
       description:
-        'Turn a storyboard into polished vertical Reels with Remotion and Motion Canvas, rendered on your own machine or server.',
-      tagline: 'Reels from your own machine',
+        'Your AI agent plans each scene over REST and MCP; ReelForge renders vertical video with four engines on your server. Locked Docker image, one-time licence.',
+      tagline: 'Your agent directs. Your server renders.',
     },
   },
   dashboard: {
@@ -533,12 +533,13 @@ const messages: Messages = {
   pricing: {
     title: 'Pricing',
     subtitle:
-      'Buy ReelForge once and run it on your own computer or server. Prices come straight from the store.',
+      'Buy a ReelForge licence once: a locked Docker image and a licence key for your own computer or server. Prices come straight from the store.',
     legal:
       'Buying means you accept the <licence>licence (EULA)</licence>. See the <refund>refund policy</refund>. Both are drafts pending review.',
     meta: {
       title: 'Pricing',
-      description: 'What ReelForge costs and what each option includes.',
+      description:
+        'What a ReelForge licence costs and what each option includes: a locked Docker image and a licence key, bought once.',
     },
   },
   errors: {

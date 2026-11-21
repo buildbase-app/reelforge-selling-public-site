@@ -16,14 +16,29 @@ export interface StoreCtaLabels {
 /**
  * The two main buttons: "Join the waitlist" and "See pricing" until the
  * store has something on sale, then "Buy ReelForge" and "Read the FAQ".
- * Decided from the published items, so it changes without a deploy.
+ * Decided from the published items, so it changes without a deploy:
+ * `onSale` when the page read them on the server, otherwise in the browser.
  */
-export function StoreCtas({ labels }: { labels: StoreCtaLabels }) {
+export function StoreCtas({
+  labels,
+  onSale,
+}: {
+  labels: StoreCtaLabels;
+  onSale?: boolean;
+}) {
+  if (onSale === undefined) return <LiveStoreCtas labels={labels} />;
+  return <Ctas labels={labels} onSale={onSale} />;
+}
+
+function LiveStoreCtas({ labels }: { labels: StoreCtaLabels }) {
   const { items } = useStoreItems();
   const onSale = items.some((item) =>
     item.variants.some((v) => currentPrice(v) !== null)
   );
+  return <Ctas labels={labels} onSale={onSale} />;
+}
 
+function Ctas({ labels, onSale }: { labels: StoreCtaLabels; onSale: boolean }) {
   const primary = onSale
     ? { href: '/pricing', label: labels.buy }
     : { href: '/waitlist', label: labels.waitlist };

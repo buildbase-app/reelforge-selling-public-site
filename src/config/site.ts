@@ -17,7 +17,7 @@ export const siteConfig = {
   name: 'ReelForge',
   shortName: 'ReelForge',
   description:
-    'ReelForge: a self-hosted studio that turns a storyboard into polished vertical video with Remotion and Motion Canvas. Sold as software you run on your own machine or server.',
+    'ReelForge: a self-hosted short-form video studio that your AI agent drives over REST and MCP, rendering vertical MP4s with Remotion, Motion Canvas, HTML and HyperFrames. Sold as a locked Docker image with a licence key, bought once.',
   url: siteUrl,
   /** The platform the store runs on (sign-in, checkout, downloads). */
   buildbase: {

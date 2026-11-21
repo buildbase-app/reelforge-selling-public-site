@@ -13,10 +13,14 @@ const state: {
   loading: boolean;
   error: string | null;
 } = { items: [], loading: false, error: null };
+let browserReads = 0;
 const buyProps: Record<string, unknown>[] = [];
 
 vi.mock('@buildbase/sdk/react', () => ({
-  usePublishedItems: () => ({ ...state, hasNextPage: false, refetch: vi.fn() }),
+  usePublishedItems: () => {
+    browserReads += 1;
+    return { ...state, hasNextPage: false, refetch: vi.fn() };
+  },
   useSaaSAuth: () => ({ signIn: vi.fn() }),
   WhenAuthenticated: ({ children }: { children: React.ReactNode }) => (
     <>{children}</>
@@ -42,7 +46,7 @@ function item(overrides: Partial<PublicItemView> = {}): PublicItemView {
     _id: 'item_1',
     title: 'ReelForge',
     slug: 'reelforge',
-    summary: 'Source code and install docs.',
+    summary: 'Docker image, licence key and install docs.',
     variants: [
       {
         id: 'solo',
@@ -51,7 +55,7 @@ function item(overrides: Partial<PublicItemView> = {}): PublicItemView {
         stock: { mode: 'none' },
       },
     ],
-    benefits: [{ id: 'b1', kind: 'file', title: 'Source code download' }],
+    benefits: [{ id: 'b1', kind: 'file', title: 'Docker image download' }],
     restricted: false,
     ...overrides,
   } as unknown as PublicItemView;
@@ -62,6 +66,7 @@ beforeEach(() => {
   state.loading = false;
   state.error = null;
   buyProps.length = 0;
+  browserReads = 0;
 });
 
 describe('PricingCatalog', () => {
@@ -79,7 +84,7 @@ describe('PricingCatalog', () => {
     render(<PricingCatalog />);
     expect(screen.getByText('ReelForge: Solo')).toBeInTheDocument();
     expect(screen.getByText(/123\.45/)).toBeInTheDocument();
-    expect(screen.getByText('Source code download')).toBeInTheDocument();
+    expect(screen.getByText('Docker image download')).toBeInTheDocument();
     expect(buyProps[0]).toMatchObject({
       itemId: 'item_1',
       variantId: 'solo',
@@ -111,6 +116,29 @@ describe('PricingCatalog', () => {
     ];
     render(<PricingCatalog />);
     expect(screen.getByText('Not on sale yet')).toBeInTheDocument();
+  });
+});
+
+describe('PricingCatalog with server-read items', () => {
+  it('renders the server items without reading the store in the browser', () => {
+    state.loading = true; // the browser read would only show a spinner
+    render(<PricingCatalog serverItems={[item()]} />);
+    expect(screen.getByText('ReelForge: Solo')).toBeInTheDocument();
+    expect(screen.getByText(/123\.45/)).toBeInTheDocument();
+    expect(browserReads).toBe(0);
+  });
+
+  it('says not on sale when the server read found nothing published', () => {
+    render(<PricingCatalog serverItems={[]} />);
+    expect(screen.getByText('Not on sale yet')).toBeInTheDocument();
+    expect(browserReads).toBe(0);
+  });
+
+  it('falls back to the browser read when the server could not read', () => {
+    state.items = [item()];
+    render(<PricingCatalog serverItems={null} />);
+    expect(screen.getByText('ReelForge: Solo')).toBeInTheDocument();
+    expect(browserReads).toBeGreaterThan(0);
   });
 });
 

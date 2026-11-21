@@ -3,7 +3,8 @@
 import { useTranslations } from 'next-intl';
 import { StoreCtas } from '@/components/store/store-ctas';
 
-export function CtaBanner() {
+/** `onSale` as for HeroSection: from the page's server read, if it had one. */
+export function CtaBanner({ onSale }: { onSale?: boolean }) {
   const t = useTranslations('home');
 
   return (
@@ -23,6 +24,7 @@ export function CtaBanner() {
               buy: t('hero.buy'),
               faq: t('hero.faq'),
             }}
+            onSale={onSale}
           />
         </div>
       </div>

@@ -42,14 +42,15 @@ export async function buildPageMetadata({
 
   const supported = await loader.getSupportedLocales();
 
+  // hreflang only when the page exists in more than one served language.
   const languages: Record<string, string> = {};
-  for (const loc of supported) {
-    languages[loc] = localeUrl(siteUrl, loc, path);
-  }
-  const xDefaultLocale = supported.includes(defaultLocale)
-    ? defaultLocale
-    : supported[0];
-  if (xDefaultLocale) {
+  if (supported.length > 1) {
+    for (const loc of supported) {
+      languages[loc] = localeUrl(siteUrl, loc, path);
+    }
+    const xDefaultLocale = supported.includes(defaultLocale)
+      ? defaultLocale
+      : supported[0];
     languages['x-default'] = localeUrl(siteUrl, xDefaultLocale, path);
   }
 
@@ -66,7 +67,7 @@ export async function buildPageMetadata({
     description,
     alternates: {
       canonical: canonicalUrl,
-      languages,
+      ...(Object.keys(languages).length > 0 ? { languages } : {}),
     },
     openGraph: {
       title,

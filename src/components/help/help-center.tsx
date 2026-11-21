@@ -1,53 +1,73 @@
 import { getTranslations } from 'next-intl/server';
-import { BookOpen, FileText, MessageCircleQuestion, Quote } from 'lucide-react';
 import {
-  sanitizeHtml,
-  type DocFolder,
-  type DocPost,
-  type Faq,
-  type RichContent,
-  type Testimonial,
+  Bot,
+  BookOpen,
+  FileText,
+  MessageCircleQuestion,
+  Quote,
+} from 'lucide-react';
+import type {
+  DocFolder,
+  DocPost,
+  RichContent,
+  Testimonial,
 } from '@/lib/platform/content';
-import { FaqList } from './faq-list';
+import type { FaqSectionData } from '@/lib/platform/faqs';
+import { renderMarkdown } from '@/lib/platform/markdown';
+import { MarkdownHtml } from '@/components/content/markdown-html';
 import { DocsBrowser } from './docs-browser';
-import { StoreFaq } from './store-faq';
+import { FaqSection } from './faq-section';
 
 interface HelpCenterProps {
   configured: boolean;
+  storeFaq: FaqSectionData;
+  agentsFaq: FaqSectionData;
   policy: RichContent | null;
-  faqs: Faq[];
   docs: { folders: DocFolder[]; posts: DocPost[] };
   testimonials: Testimonial[];
 }
 
+/**
+ * Bodies from the console (the policy block, docs) are Markdown: they are
+ * rendered and sanitised here on the server, never injected as HTML.
+ */
 export async function HelpCenter({
   configured,
+  storeFaq,
+  agentsFaq,
   policy,
-  faqs,
   docs,
   testimonials,
 }: HelpCenterProps) {
   const t = await getTranslations('help');
-  const empty = !policy && faqs.length === 0 && docs.posts.length === 0;
+  const policyHtml = policy ? renderMarkdown(policy.content).html : '';
+  const empty = !policyHtml && docs.posts.length === 0;
 
   return (
     <div className="mt-10 space-y-14">
       <section id="faq" className="scroll-mt-20">
         <SectionHeading icon={MessageCircleQuestion} title={t('faq.title')} />
-        <StoreFaq />
+        <FaqSection items={storeFaq.items} />
       </section>
+
+      {agentsFaq.items.length > 0 && (
+        <section id="agents" className="scroll-mt-20">
+          <SectionHeading icon={Bot} title="Using ReelForge with your agent" />
+          <FaqSection items={agentsFaq.items} />
+        </section>
+      )}
 
       {(!configured || empty) && (
         <p className="text-muted-foreground text-sm">
           {configured ? t('notConfigured.empty') : t('notConfigured.token')}
         </p>
       )}
-      {policy && (
+      {policy && policyHtml && (
         <section id="policy" className="scroll-mt-20">
           <SectionHeading icon={FileText} title={policy.title} />
-          <div
-            className="prose prose-neutral dark:prose-invert mt-4 max-w-none text-[15px] leading-relaxed [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-semibold [&_p]:my-3 [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6"
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(policy.content) }}
+          <MarkdownHtml
+            html={policyHtml}
+            className="mt-4 max-w-none text-[15px] leading-relaxed [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-semibold [&_p]:my-3"
           />
         </section>
       )}
@@ -59,17 +79,8 @@ export async function HelpCenter({
             folders={docs.folders}
             posts={docs.posts.map((p) => ({
               ...p,
-              content: sanitizeHtml(p.content ?? ''),
+              content: renderMarkdown(p.content).html,
             }))}
-          />
-        </section>
-      )}
-
-      {faqs.length > 0 && (
-        <section id="more-questions" className="scroll-mt-20">
-          <SectionHeading icon={MessageCircleQuestion} title={t('faq.title')} />
-          <FaqList
-            faqs={faqs.map((f) => ({ ...f, answer: sanitizeHtml(f.answer) }))}
           />
         </section>
       )}

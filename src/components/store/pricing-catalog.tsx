@@ -42,13 +42,26 @@ const copy = {
 };
 
 /**
- * What can be bought, read live from the store's published items. Each
- * variant is a card with its price, what it includes and a Buy button.
- * With nothing published it says so; it never shows a made-up price.
+ * What can be bought, from the store's published items. Each variant is a
+ * card with its price, what it includes and a Buy button. With nothing
+ * published it says so; it never shows a made-up price.
+ *
+ * `serverItems` are the items the page read on the server
+ * (`getStoreItems`), so the prices are in the HTML. When the server could
+ * not read them (`null` or absent: no token, API down), the browser reads
+ * them instead, as before.
  */
-export function PricingCatalog() {
+export function PricingCatalog({
+  serverItems = null,
+}: {
+  serverItems?: PublicItemView[] | null;
+}) {
+  if (serverItems) return <Catalog items={serverItems} unreachable={false} />;
+  return <LiveCatalog />;
+}
+
+function LiveCatalog() {
   const { items, loading, error } = useStoreItems();
-  const origin = useOrigin();
 
   if (loading) {
     return (
@@ -58,7 +71,17 @@ export function PricingCatalog() {
       </div>
     );
   }
+  return <Catalog items={items} unreachable={!!error} />;
+}
 
+function Catalog({
+  items,
+  unreachable,
+}: {
+  items: PublicItemView[];
+  unreachable: boolean;
+}) {
+  const origin = useOrigin();
   const offers = items.flatMap((item) =>
     item.variants
       .map((variant) => ({ item, variant, price: currentPrice(variant) }))
@@ -66,7 +89,7 @@ export function PricingCatalog() {
   );
 
   if (offers.length === 0) {
-    return <NotOnSale unreachable={!!error} />;
+    return <NotOnSale unreachable={unreachable} />;
   }
 
   return (

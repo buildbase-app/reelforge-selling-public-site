@@ -28,8 +28,10 @@ export const env = createEnv({
 
     // BuildBase OAuth2 — used by /api/auth/oauth2-token and /api/auth/oauth2-profile
     // This is the clientSecret from the OAuth2 auth settings (may differ from the main client secret)
-    // Organization API token (console → Settings → Tokens). Only the help
-    // center's content reads use it (src/lib/platform/content.ts). Server-only.
+    // Organization API token (console → Settings → API keys). Server-only.
+    // Used for console content reads (src/lib/platform/content.ts) and the
+    // published-items read behind server-rendered prices
+    // (src/lib/store/items.ts), whose output is reduced to public fields.
     // Never add a route that uses it for a signed-in visitor without an
     // org-admin check (buildbase-app/reelforge-studio#4).
     BUILDBASE_API_TOKEN: z.string().optional(),

@@ -1,8 +1,10 @@
 # ReelForge store
 
-The public site for **ReelForge**, a self-hosted short-form video studio
-(Remotion + Motion Canvas). This is where people learn about ReelForge, sign
-in, buy it, and later download releases and manage their licenses. The product
+The public site for **ReelForge**, a self-hosted short-form video studio that
+an AI agent drives over REST and MCP (engines: Remotion, Motion Canvas, HTML
+and HyperFrames). ReelForge is sold as a locked Docker image with a licence
+key, not as source code. This is where people learn about ReelForge, sign in,
+buy it, and later download releases and manage their licences. The product
 itself lives in a separate private repository.
 
 Built with Next.js 16 on [BuildBase](https://buildbase.app) (sign-in,
@@ -34,13 +36,32 @@ OpenNext. See `DEPLOY_CLOUDFLARE.md`.
 ## Selling
 
 The pricing page, the hero buttons, `/order` and `/dashboard/licences` read
-everything from BuildBase: the app owner's own store (`usePublishedItems({
-seller: { type: 'org' } })`), each variant's current price, its benefits and
-the buyer's holdings. No price is written in this repo. Until an item is
+everything from BuildBase: the app owner's own store, each variant's current
+price, its benefits and the buyer's holdings. `/` and `/pricing` read the
+published items on the server (`src/lib/store/items.ts`, revalidated by the
+`item.*` webhook) so prices and the `SoftwareApplication`/`Offer` JSON-LD are
+in the HTML; without a server token they fall back to the browser read
+(`usePublishedItems({ seller: { type: 'org' } })`). No price is written in this repo. Until an item is
 published, pricing says "Not on sale yet" and the buttons point to the
 waitlist. Checkout returns to `/order` (a guest with `?order=&token=`).
 Selling itself (Stripe Connect, the own store, item types, items, files and
 licence keys) is set up in the BuildBase console, not here.
+
+## Content from the console
+
+FAQs and content blocks are read from BuildBase with local fallbacks, so the
+site is complete with an empty organization. Bodies are Markdown, rendered on
+the server and sanitised with `rehype-sanitize` (`src/lib/platform/markdown.ts`).
+
+| Console object           | Slug                                | Shown on                          | Fallback                   |
+| ------------------------ | ----------------------------------- | --------------------------------- | -------------------------- |
+| FAQ collection           | `store-faq`, `agents-faq`           | `/help` (+ FAQPage JSON-LD)       | `src/lib/platform/faqs.ts` |
+| FAQ collection           | `home-faq`                          | `/` (+ FAQPage JSON-LD)           | same                       |
+| FAQ collection           | `pricing-faq`                       | `/pricing` (+ FAQPage JSON-LD)    | same                       |
+| Content block            | `remotion-notice`                   | `/`, `/pricing`                   | the current notice text    |
+| Content block            | `announcement-bar`                  | `/`, above the hero               | none (hidden)              |
+| Content block            | `launch-price-note`                 | `/`, `/pricing`, under the prices | none (hidden)              |
+| Content block, docs, ... | `refund-policy`, docs, testimonials | `/help`                           | none                       |
 
 ## Environment
 
@@ -53,7 +74,7 @@ licence keys) is set up in the BuildBase console, not here.
 | `NEXT_PUBLIC_BUILDBASE_REDIRECT_URL` | Where the hosted sign-in returns to; one of the client's redirect URLs                       |
 | `SYSTEM_SECRET`                      | At least 32 characters (`openssl rand -base64 32`). Signs tokens this app mints              |
 | `BUILDBASE_WEBHOOK_SECRET`           | Console, Settings, Webhooks: endpoint `<site>/api/webhooks/buildbase`. Optional until set up |
-| `BUILDBASE_API_TOKEN`                | Console, Settings, Tokens. Optional; only the help page's console content uses it            |
+| `BUILDBASE_API_TOKEN`                | Console, Settings, API keys. Optional: FAQs, content blocks and server-rendered prices       |
 | `NEXT_PUBLIC_SUPPORT_EMAIL`          | Public support address. Optional; unset, pages point to `/contact` and `/help` instead       |
 | `SITE_URL`, `NEXT_PUBLIC_SITE_URL`   | The public URL                                                                               |
 

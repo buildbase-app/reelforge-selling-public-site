@@ -33,6 +33,15 @@
       "database_id": "db8c0262-90be-47d0-8bf3-84ce75365682",
       "migrations_dir": "migrations",
     },
+    {
+      // OpenNext's caches: the tag cache (`revalidations`, revalidateTag)
+      // and the incremental cache (`incremental_cache`, ISR pages and tagged
+      // data written at runtime). Their own database, so Prisma migrations
+      // never see these tables. See open-next.config.ts.
+      "binding": "NEXT_TAG_CACHE_D1",
+      "database_name": "reelforge-store-tag-cache",
+      "database_id": "93907848-dcf0-493c-8e58-1304d582580f",
+    },
   ],
   "observability": {
     "enabled": true,
@@ -61,6 +70,11 @@
           "database_name": "reelforge-store-dev",
           "database_id": "319f3e96-5c82-488e-92bf-3f7fcc794dcf",
           "migrations_dir": "migrations",
+        },
+        {
+          "binding": "NEXT_TAG_CACHE_D1",
+          "database_name": "reelforge-store-dev-tag-cache",
+          "database_id": "9ceb6a6f-d20c-46e8-9e38-750a1d73f39f",
         },
       ],
       // Runtime values for server code; they override .env.production.

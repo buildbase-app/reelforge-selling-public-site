@@ -17,7 +17,6 @@ export type AvailableLocale = (typeof availableLocales)[number];
 // The languages the store serves. English only for now: the other message
 // files still hold the starter's demo copy. To bring a language back,
 // translate its file, then add its code here (see DEPLOY_CLOUDFLARE.md).
-// next-sitemap.config.js parses this line, so keep it a plain array literal.
 export const locales = ['en'] as const;
 export type Locale = (typeof locales)[number];
 

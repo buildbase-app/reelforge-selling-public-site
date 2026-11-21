@@ -53,19 +53,21 @@ export async function generateMetadata({
   ogImageUrl.searchParams.set('description', description);
   ogImageUrl.searchParams.set('locale', locale);
 
-  // Generate alternate language links
-  const languages: Record<string, string> = {
-    'x-default': baseUrl,
-  };
-  for (const loc of locales) {
-    const locPath = loc === defaultLocale ? '' : `/${loc}`;
-    languages[loc] = `${baseUrl}${locPath}`;
+  // hreflang alternates only for the languages the site serves, and only
+  // when there is more than one (English only today: none).
+  const languages: Record<string, string> = {};
+  if (locales.length > 1) {
+    languages['x-default'] = baseUrl;
+    for (const loc of locales) {
+      const locPath = loc === defaultLocale ? '' : `/${loc}`;
+      languages[loc] = `${baseUrl}${locPath}`;
+    }
   }
 
   return {
     alternates: {
       canonical: canonicalUrl,
-      languages,
+      ...(Object.keys(languages).length > 0 ? { languages } : {}),
     },
     openGraph: {
       title,

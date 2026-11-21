@@ -35,7 +35,7 @@ export const seoConfig = {
      */
     legalName: LEGAL_ENTITY_PLACEHOLDER,
     description: siteConfig.description,
-    tagline: 'Polished Reels, rendered on your own machine.',
+    tagline: 'Your agent directs. Your server renders.',
     url: siteUrl,
     /** Path relative to public/ or absolute URL. Used for Organization JSON-LD. */
     logo: '/logo.png',
@@ -64,13 +64,19 @@ export const seoConfig = {
   },
   contactPoint: undefined as ContactPoint | undefined,
   /**
-   * Search engine verification tokens. Leave empty until you own the
-   * property in the respective console — empty values are skipped.
+   * Search engine verification tokens, from the environment (public values:
+   * the content of each engine's verification meta tag). Empty or unset
+   * means the tag is omitted. Set them in `.env.production` (production) or
+   * the `deploy:dev` script; they are inlined at build time.
+   *
+   * - NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: Google Search Console
+   * - NEXT_PUBLIC_BING_SITE_VERIFICATION: Bing Webmaster Tools (msvalidate.01)
+   * - NEXT_PUBLIC_YANDEX_SITE_VERIFICATION: Yandex Webmaster
    */
   verification: {
-    google: '' as string,
-    bing: '' as string,
-    yandex: '' as string,
+    google: (process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ?? '').trim(),
+    bing: (process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ?? '').trim(),
+    yandex: (process.env.NEXT_PUBLIC_YANDEX_SITE_VERIFICATION ?? '').trim(),
   },
   defaults: {
     twitterCard: 'summary_large_image' as const,

@@ -4,15 +4,22 @@ import { useTranslations } from 'next-intl';
 import { Badge } from '@/components/ui/badge';
 import { StoreCtas } from '@/components/store/store-ctas';
 
+// The four rendering engines, the agent interfaces and how it ships.
 const TECH_STACK = [
   { name: 'Remotion', icon: '▶' },
   { name: 'Motion Canvas', icon: '◆' },
-  { name: 'FFmpeg', icon: '≋' },
-  { name: 'TypeScript', icon: 'TS' },
-  { name: 'Node.js', icon: '⬢' },
+  { name: 'HTML', icon: '<>' },
+  { name: 'HyperFrames', icon: '▤' },
+  { name: 'REST + MCP', icon: '⇄' },
+  { name: 'Docker', icon: '⬢' },
 ] as const;
 
-export function HeroSection() {
+/**
+ * `onSale` comes from the page's server read of the store's items;
+ * undefined when that read was not possible, and the buttons then decide in
+ * the browser.
+ */
+export function HeroSection({ onSale }: { onSale?: boolean }) {
   const t = useTranslations('home');
 
   return (
@@ -58,6 +65,7 @@ export function HeroSection() {
           buy: t('hero.buy'),
           faq: t('hero.faq'),
         }}
+        onSale={onSale}
       />
 
       {/* Tech stack */}
