@@ -1,0 +1,359 @@
+{
+  "source": {
+    "server": "reelforge-studio",
+    "version": "0.1.0",
+    "method": "MCP tools/list",
+    "fetchedOn": "2026-11-21"
+  },
+  "count": 53,
+  "groups": [
+    {
+      "id": "discover",
+      "title": "Discover what this server can do",
+      "tools": [
+        {
+          "name": "get_capabilities",
+          "title": "Get server capabilities",
+          "summary": "Start here. Returns what this ReelForge server can do right now: installed engines (and whether each can render on this machine), templates, themes, media providers (configured...",
+          "readOnly": true
+        },
+        {
+          "name": "get_project_schema",
+          "title": "Get the project manifest JSON Schema",
+          "summary": "Returns the JSON Schema of the project manifest (current schemaVersion).",
+          "readOnly": true
+        },
+        {
+          "name": "list_templates",
+          "title": "List scene templates",
+          "summary": "Lists scene templates with their engine, description, supported duration range in seconds, the theme tokens they read, and the JSON Schema of their props.",
+          "readOnly": true
+        },
+        {
+          "name": "list_themes",
+          "title": "List themes",
+          "summary": "Lists brand themes (built-in \"default\" and \"midnight\" plus custom ones) with their tokens: colours, font family, heading weight, motion speed, caption style.",
+          "readOnly": true
+        },
+        {
+          "name": "get_theme",
+          "title": "Get a theme",
+          "summary": "Returns one theme (built-in or custom) with all its tokens: colours, font, weights, motion speed, caption style.",
+          "readOnly": true
+        },
+        {
+          "name": "list_providers",
+          "title": "List media providers",
+          "summary": "Media providers (TTS, ...) installed on this server, whether the operator configured them, and their cost notes.",
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "id": "build",
+      "title": "Build and edit a reel",
+      "tools": [
+        {
+          "name": "create_project",
+          "title": "Create a project",
+          "summary": "Creates a project from a manifest.",
+          "readOnly": false
+        },
+        {
+          "name": "list_projects",
+          "title": "List projects",
+          "summary": "Lists projects on this server with title, version, scene count and duration.",
+          "readOnly": true
+        },
+        {
+          "name": "get_project",
+          "title": "Get a project",
+          "summary": "Returns the current manifest, its version number and the computed timing of every scene (start frame, duration in frames and seconds).",
+          "readOnly": true
+        },
+        {
+          "name": "update_project",
+          "title": "Update a project",
+          "summary": "Changes a project. Give either patch (a JSON merge patch, RFC 7396: objects merge, null deletes a key, arrays replace) or manifest (a full replacement).",
+          "readOnly": false
+        },
+        {
+          "name": "delete_project",
+          "title": "Delete a project",
+          "summary": "Deletes a project with all its versions and renders.",
+          "readOnly": false
+        },
+        {
+          "name": "list_project_versions",
+          "title": "List saved versions of a project",
+          "summary": "Every update saves a new version.",
+          "readOnly": true
+        },
+        {
+          "name": "add_scene",
+          "title": "Add a scene",
+          "summary": "Adds a scene at index (default: the end).",
+          "readOnly": false
+        },
+        {
+          "name": "update_scene",
+          "title": "Update a scene",
+          "summary": "Changes one scene with a JSON merge patch, e.g. { \"props\": { \"headline\": \"New\" } } or { \"durationSeconds\": 4 }.",
+          "readOnly": false
+        },
+        {
+          "name": "remove_scene",
+          "title": "Remove a scene",
+          "summary": "Removes one scene (a project keeps at least one).",
+          "readOnly": false
+        },
+        {
+          "name": "reorder_scenes",
+          "title": "Reorder scenes",
+          "summary": "Sets the scene order. order must list every scene id exactly once.",
+          "readOnly": false
+        },
+        {
+          "name": "validate_project",
+          "title": "Validate a project",
+          "summary": "Full validation report: errors (block rendering) and warnings (e.g. missing licence, rounding of durationSeconds, captions not rendered yet), plus a summary (scenes, total frame...",
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "id": "look",
+      "title": "Look, sound and assets",
+      "tools": [
+        {
+          "name": "set_theme",
+          "title": "Set the project theme",
+          "summary": "Sets the theme: a theme id (see list_themes) or inline tokens on top of a base theme, e.g. { \"base\": \"midnight\", \"tokens\": { \"colors\": { \"accent\": \"#ff8800\" } } }.",
+          "readOnly": false
+        },
+        {
+          "name": "create_theme",
+          "title": "Create a theme",
+          "summary": "Creates a reusable brand theme. tokens needs colors {background, surface, text, mutedText, accent, accent2} as #rrggbb and fontFamily (a CSS font-family list); optional headingW...",
+          "readOnly": false
+        },
+        {
+          "name": "update_theme",
+          "title": "Replace a custom theme",
+          "summary": "Replaces a custom theme (built-in themes cannot be changed).",
+          "readOnly": false
+        },
+        {
+          "name": "delete_theme",
+          "title": "Delete a custom theme",
+          "summary": "Deletes a custom theme. Projects that use it fail validation until they pick another theme.",
+          "readOnly": false
+        },
+        {
+          "name": "set_audio",
+          "title": "Set music, voice and sound effects",
+          "summary": "Merges into the project audio: { music: { asset, volume 0..1, fadeOutSeconds }, voice: { asset, volume, startFrame }, sfx: [{ asset, atFrame, volume }] }.",
+          "readOnly": false
+        },
+        {
+          "name": "add_asset_from_url",
+          "title": "Import an asset from a URL",
+          "summary": "Downloads an image, audio, video or font from a public https URL into the server asset store (size-limited, private networks refused, type checked from the bytes) and, with proj...",
+          "readOnly": false
+        },
+        {
+          "name": "upload_asset",
+          "title": "Upload an asset (base64)",
+          "summary": "Uploads a small file you already have (image, audio, video, font) as base64, for example generated audio.",
+          "readOnly": false
+        },
+        {
+          "name": "list_assets",
+          "title": "List assets",
+          "summary": "Lists assets: those of a project (manifest entries) with projectId, otherwise everything in the server asset store.",
+          "readOnly": true
+        },
+        {
+          "name": "get_asset",
+          "title": "Get an asset",
+          "summary": "Metadata of an asset in the store: content type, media type, size, sha256, source, licence, provider metadata (e.g. TTS word timestamps).",
+          "readOnly": true
+        },
+        {
+          "name": "generate_voice",
+          "title": "Generate a voice-over (TTS provider)",
+          "summary": "Creates a voice-over audio asset with a configured TTS provider (e.g. \"elevenlabs\") and returns word timestamps.",
+          "readOnly": false
+        },
+        {
+          "name": "run_provider",
+          "title": "Run a media provider",
+          "summary": "Runs any configured provider with its own parameters (see list_providers) and stores the result as an asset.",
+          "readOnly": false
+        }
+      ]
+    },
+    {
+      "id": "render",
+      "title": "Render and deliver",
+      "tools": [
+        {
+          "name": "preview_scene",
+          "title": "Render a quick preview",
+          "summary": "Starts a low-resolution preview render (default 1/3 size) of one scene, or of the whole project when sceneId is omitted.",
+          "readOnly": false
+        },
+        {
+          "name": "render_project",
+          "title": "Render the project",
+          "summary": "Validates the project and starts the final render (every scene with its engine, assembled with audio, checked with ffprobe and a full decode).",
+          "readOnly": false
+        },
+        {
+          "name": "get_job",
+          "title": "Get job status",
+          "summary": "Status of a render/preview job: queued, running (with progress stage and fraction), succeeded (result has renderId and output URLs), failed (error with code and stage) or cancel...",
+          "readOnly": true
+        },
+        {
+          "name": "list_jobs",
+          "title": "List jobs",
+          "summary": "Lists render and preview jobs (newest first), optionally only those of one project.",
+          "readOnly": true
+        },
+        {
+          "name": "cancel_job",
+          "title": "Cancel a job",
+          "summary": "Cancels a queued or running job.",
+          "readOnly": false
+        },
+        {
+          "name": "retry_job",
+          "title": "Retry a failed or cancelled job",
+          "summary": "Starts a new job with the same parameters as a failed or cancelled one (same project version).",
+          "readOnly": false
+        },
+        {
+          "name": "get_job_logs",
+          "title": "Get job logs",
+          "summary": "Log lines of a job (use when a job failed to see the failing stage and tool output).",
+          "readOnly": true
+        },
+        {
+          "name": "get_render_output",
+          "title": "Get a render output",
+          "summary": "Returns the output of a finished render: downloadUrl (a signed link to the MP4 that works WITHOUT a key until downloadUrlExpiresAt, about 1 hour; give this to the user or to cur...",
+          "readOnly": true
+        },
+        {
+          "name": "list_renders",
+          "title": "List renders of a project",
+          "summary": "Lists finished renders and previews of a project, newest first, with output URLs, size, fps, frames and duration.",
+          "readOnly": true
+        }
+      ]
+    },
+    {
+      "id": "operate",
+      "title": "Run the server (admin keys)",
+      "tools": [
+        {
+          "name": "configure_provider",
+          "title": "Configure a media provider (admin)",
+          "summary": "Sets or clears a provider setting such as ELEVENLABS_API_KEY (see list_providers for each provider's setting names).",
+          "readOnly": false
+        },
+        {
+          "name": "get_config",
+          "title": "Get the server configuration (admin)",
+          "summary": "Returns every server setting with its effective value and where it comes from: source \"default\", \"file\" (REELFORGE_CONFIG), \"env\" (origin names the variable) or \"runtime\" (set w...",
+          "readOnly": true
+        },
+        {
+          "name": "update_config",
+          "title": "Change runtime settings (admin)",
+          "summary": "Changes runtime settings at once and stores them in the database (they survive restarts and override the config file and environment). settings maps dotted keys from get_config...",
+          "readOnly": false
+        },
+        {
+          "name": "get_licence",
+          "title": "Get the licence status",
+          "summary": "Returns the licence status of this server: status \"valid\" (full use), \"grace\" (the licence server is unreachable; renders keep working until graceUntil), \"invalid\" (renders and...",
+          "readOnly": true
+        },
+        {
+          "name": "activate_licence",
+          "title": "Set and activate the licence key (admin)",
+          "summary": "Stores the licence key (encrypted; needs REELFORGE_SECRET_KEY on the server) and activates it for this server with the licence server, then returns the status (see get_licence).",
+          "readOnly": false
+        },
+        {
+          "name": "deactivate_licence",
+          "title": "Give the licence activation back (admin)",
+          "summary": "Frees this server's activation of the licence key at the licence server, so the key can be activated on another server.",
+          "readOnly": false
+        },
+        {
+          "name": "get_storage",
+          "title": "Get storage driver, usage and health (admin)",
+          "summary": "Returns where asset and render files are stored: driver (\"local\", \"s3\", \"azure\", \"gcs\"), location (bucket/container, endpoint, prefix, credential source; never secrets), how dow...",
+          "readOnly": true
+        },
+        {
+          "name": "run_storage_cleanup",
+          "title": "Apply the storage retention policy now (admin)",
+          "summary": "Deletes renders the retention policy no longer keeps (older than storage.retention.renderDays; the newest keepLastRendersPerProject of each project and renders of running jobs a...",
+          "readOnly": false
+        },
+        {
+          "name": "list_keys",
+          "title": "List API keys (admin)",
+          "summary": "Lists API keys: id, name, scopes, prefix, status (active, expired, revoked), created, last used, expiry, limits, quotas, IP allowlist and, after a rotation, until when the old s...",
+          "readOnly": true
+        },
+        {
+          "name": "get_key",
+          "title": "Get an API key (admin)",
+          "summary": "One API key (as list_keys shows it) with its render usage today and this month (UTC).",
+          "readOnly": true
+        },
+        {
+          "name": "create_key",
+          "title": "Create an API key (admin)",
+          "summary": "Creates an API key with the given scopes (read, write, render, admin) and optional expiry, per-key rate limit, render quotas (per UTC day / month) and IP allowlist (CIDR).",
+          "readOnly": false
+        },
+        {
+          "name": "update_key",
+          "title": "Change an API key (admin)",
+          "summary": "Changes a key's name, expiry, rate limit, render quotas or IP allowlist (null clears one).",
+          "readOnly": false
+        },
+        {
+          "name": "rotate_key",
+          "title": "Rotate an API key (admin)",
+          "summary": "Gives a key a new secret (returned once) and keeps the old secret working for graceHours (default: the server setting keys.rotationGraceHours, 24 h), so clients can switch witho...",
+          "readOnly": false
+        },
+        {
+          "name": "revoke_key",
+          "title": "Revoke an API key (admin)",
+          "summary": "Revokes a key: it (and any old secret still in its rotation grace window) stops working at once.",
+          "readOnly": false
+        },
+        {
+          "name": "delete_key",
+          "title": "Delete an API key (admin)",
+          "summary": "Deletes an API key; it stops working immediately and disappears from list_keys (prefer revoke_key, which keeps it listed for the audit trail).",
+          "readOnly": false
+        },
+        {
+          "name": "list_audit_events",
+          "title": "Read the audit log (admin)",
+          "summary": "The audit trail, newest first: who (API key id and name), action (e.g. \"key.rotate\", \"project.create\", \"config.update\"), target, result (success, failure, denied), client IP, us...",
+          "readOnly": true
+        }
+      ]
+    }
+  ]
+}

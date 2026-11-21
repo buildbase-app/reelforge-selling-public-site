@@ -1,0 +1,213 @@
+/*
+ * Product pages (/ and /agents). Scoped under .rf-product so nothing here
+ * reaches other pages. Motion uses only transform and opacity, runs only with
+ * `prefers-reduced-motion: no-preference`, and only where the browser has
+ * scroll-driven animations; everywhere else the final state shows at once
+ * (no JavaScript polyfill). Dark "stage" bands keep the studio's own colours
+ * in both themes, so the reels and the page read as one product.
+ */
+
+.rf-product {
+  --rf-stage: #0b0b14;
+  --rf-stage-2: #14141f;
+  --rf-stage-line: rgb(255 255 255 / 0.1);
+  --rf-stage-text: #f5f5f7;
+  --rf-stage-muted: #c9c9d6;
+  --rf-pink: #ff3d71;
+  --rf-teal: #00d1b2;
+  --rf-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Bands that stay dark in both themes. */
+.rf-stage {
+  background: var(--rf-stage);
+  color: var(--rf-stage-text);
+  color-scheme: dark;
+}
+.rf-stage .rf-muted {
+  color: var(--rf-stage-muted);
+}
+
+/* Large, tight display type (SITE_PLAN B.1). */
+.rf-display {
+  font-size: clamp(2.6rem, 7vw, 5.75rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.02;
+  text-wrap: balance;
+}
+.rf-headline {
+  font-size: clamp(2rem, 5vw, 3.75rem);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  text-wrap: balance;
+}
+.rf-eyebrow {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  /* Darker pink on light backgrounds: #ff3d71 on white is only 3.4:1. */
+  color: #c8174d;
+}
+.dark .rf-eyebrow,
+.rf-stage .rf-eyebrow {
+  color: var(--rf-pink);
+}
+.rf-accent {
+  color: var(--rf-pink);
+}
+
+/* Primary pill: pink with dark text (white on #ff3d71 fails AA). */
+.rf-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2.75rem;
+  padding: 0 1.4rem;
+  border-radius: 999px;
+  background: var(--rf-pink);
+  color: #0b0b14;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: transform 200ms var(--rf-ease-out);
+}
+.rf-pill:hover {
+  transform: translateY(-1px);
+}
+.rf-pill-sm {
+  height: 2rem;
+  padding: 0 0.9rem;
+  font-size: 0.8125rem;
+}
+.rf-link {
+  font-weight: 500;
+  text-underline-offset: 4px;
+}
+.rf-link:hover {
+  text-decoration: underline;
+}
+.rf-product :is(a, button, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--rf-pink);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Phone frame: a generic rounded rectangle, no device details. */
+.rf-phone {
+  position: relative;
+  width: min(78vw, 300px);
+  aspect-ratio: 9 / 16;
+  border-radius: 2.4rem;
+  padding: 10px;
+  background: var(--rf-stage-2);
+  border: 1px solid var(--rf-stage-line);
+  box-shadow: 0 40px 120px -40px rgb(255 61 113 / 0.35);
+}
+.rf-phone > .rf-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 1.9rem;
+  background: #05060f;
+}
+.rf-screen video,
+.rf-screen img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Desktop "window" for code and transcripts: no fake traffic lights. */
+.rf-window {
+  border: 1px solid var(--rf-stage-line);
+  border-radius: 12px;
+  background: var(--rf-stage-2);
+  color: var(--rf-stage-text);
+}
+
+/* Local (product) nav: becomes solid as the page scrolls. */
+.rf-local-nav {
+  background: color-mix(in oklch, var(--background) 82%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+/* Horizontal rails scroll-snap; the page itself never scrolls sideways. */
+.rf-rail {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(78%, 300px);
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+.rf-rail > * {
+  scroll-snap-align: start;
+}
+@media (min-width: 768px) {
+  .rf-rail {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
+  }
+}
+
+/* Load-in for the hero text: CSS only. */
+@media (prefers-reduced-motion: no-preference) {
+  .rf-fade-up {
+    animation: rf-rise 700ms var(--rf-ease-out) both;
+  }
+  .rf-fade-up-2 {
+    animation: rf-rise 700ms 120ms var(--rf-ease-out) both;
+  }
+
+  @supports (animation-timeline: view()) {
+    .rf-reveal {
+      animation: rf-rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 25%;
+    }
+    .rf-phone-in {
+      animation: rf-phone-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+    /* Transcript lines appear one after another as the panel scrolls in. */
+    .rf-step {
+      animation: rf-rise linear both;
+      animation-timeline: view();
+      animation-range: entry calc(10% + var(--i, 0) * 4%) cover
+        calc(25% + var(--i, 0) * 4%);
+    }
+    .rf-local-nav {
+      animation: rf-nav-solid linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 120px;
+    }
+  }
+}
+
+@keyframes rf-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@keyframes rf-phone-in {
+  from {
+    transform: translateY(40px) scale(0.92);
+  }
+}
+@keyframes rf-nav-solid {
+  from {
+    background: color-mix(in oklch, var(--background) 60%, transparent);
+  }
+  to {
+    background: color-mix(in oklch, var(--background) 92%, transparent);
+  }
+}

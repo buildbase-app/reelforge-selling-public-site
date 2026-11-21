@@ -40,8 +40,9 @@ function AuthButton() {
 }
 
 const NAV_HREFS = [
-  '/pricing',
+  '/agents',
   '/docs',
+  '/pricing',
   '/help',
   '/blog',
   '/changelog',
@@ -57,6 +58,8 @@ export function HomeHeader({ title }: HomeHeaderProps) {
   const t = useTranslations('common');
 
   const NAV_LINK_KEYS: Record<NavHref, string> = {
+    // English only for now (src/i18n/config.ts): no message key yet.
+    '/agents': 'Agents',
     '/pricing': t('footer.links.pricing'),
     '/docs': t('footer.links.docs'),
     '/help': t('footer.links.help'),

@@ -18,6 +18,7 @@ const SCAN = [
   'src/config',
   'src/content',
   'src/lib/agent',
+  'src/lib/agents',
   'src/lib/platform',
   'src/lib/seo',
   'src/lib/store',

@@ -105,6 +105,25 @@ the server and sanitised with `rehype-sanitize` (`src/lib/platform/markdown.ts`)
 | `npm run build`                                 | Next.js production build                                                           |
 | `npm run preview`, `npm run deploy`             | Build for Cloudflare Workers and run locally / deploy (see `DEPLOY_CLOUDFLARE.md`) |
 
+## Product pages, demo reels and the tool list
+
+`/` and `/agents` are built from two generated files, so no number on them is
+typed by hand:
+
+- `src/data/reels.json` and `public/reels/*`: demo reels rendered by a real
+  ReelForge Studio. Start a studio locally (in `reelforge-studio`:
+  `REELFORGE_LICENCE_MODE=off REELFORGE_BOOTSTRAP_KEY=rf_... pnpm start`), then
+  `node scripts/reels/render-demo-reels.mjs <dir>` (drives it over MCP),
+  `scripts/reels/transcode.sh <dir>/<slug>/final.mp4 <slug>` (720p H.264 + AV1,
+  AVIF/JPEG posters, content-hashed names) and
+  `node scripts/reels/build-index.mjs <dir>`. Small files live in `public/`;
+  larger media belongs on R2 (`media.reelforge.buildbase.app`, allowed by the CSP).
+- `src/data/mcp-tools.json`: the studio's MCP tools from a live `tools/list`,
+  grouped by job: `REELFORGE_KEY=rf_... node scripts/agents/refresh-mcp-tools.mjs`.
+
+`node scripts/perf/first-load-js.mjs <url> / /agents` reports a page's
+first-load JavaScript (gzip) against a running build.
+
 ## License
 
 MIT for the starter code this began from; see `LICENSE`.

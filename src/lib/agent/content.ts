@@ -27,6 +27,12 @@ export const PAGES: PageEntry[] = [
       'The free Personal licence (noncommercial use, claimed with no payment page) first, then the Commercial licence tiers and their prices, read from the store and rendered on the server. Also: which licence you need. While nothing is on sale, it says so and links to the waitlist.',
   },
   {
+    title: 'Connect your agent',
+    path: '/agents',
+    summary:
+      'How to connect Claude Code, Codex, any MCP client or plain REST to a self-hosted ReelForge Studio: checked configs, API key scopes, a prompt cookbook with real renders, and every MCP tool grouped by job. As Markdown: /agents.md.',
+  },
+  {
     title: 'Order',
     path: '/order',
     summary:
@@ -133,6 +139,7 @@ ${licensingLinks(b)}
 - [Auth instructions](${b}/auth.md): how to register a client and get a token.
 - [OpenAPI](${b}/openapi.json): the REST routes this site exposes.
 - [Full guide](${b}/llms-full.txt): every page, route and tool.
+- [Connect your agent to ReelForge Studio](${b}/agents.md): client configs, prompt cookbook and the studio's MCP tools, as Markdown.
 
 ## Pages
 
