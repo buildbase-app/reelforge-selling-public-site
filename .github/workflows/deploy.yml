@@ -62,3 +62,47 @@ jobs:
             sleep 10
           done
           echo "::warning::Health check did not return 200 yet (a new custom domain's certificate can take a few minutes)."
+
+  # Test copy of the store on https://reelforge-dev.buildbase.app, pointed at
+  # the "ReelForge Test" BuildBase organization (Stripe test keys). Same
+  # token; its own Worker (env.dev in wrangler.jsonc) and D1 database.
+  deploy-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: 0109f7bce7af42ac8a88104d324efe4d
+      SKIP_ENV_VALIDATION: 'true'
+      SYSTEM_SECRET: ci-build-only-not-a-secret-0123456789abcdef
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Check the token is configured
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Add the CLOUDFLARE_API_TOKEN repository secret."
+            exit 1
+          fi
+
+      - run: npm ci
+
+      - name: Apply D1 migrations (test)
+        run: npx wrangler d1 migrations apply reelforge-store-dev --remote --env dev
+
+      - name: Build and deploy (test)
+        run: npm run deploy:dev
+
+      - name: Smoke test
+        run: |
+          for i in 1 2 3 4 5 6 7 8 9 10 11 12; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "https://reelforge-dev.buildbase.app/api/health?deep=true" || true)
+            echo "health: $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 15
+          done
+          echo "::warning::Test site health check did not return 200 yet (a new custom domain's certificate can take a few minutes)."

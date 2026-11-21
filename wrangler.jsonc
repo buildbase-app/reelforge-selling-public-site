@@ -70,6 +70,7 @@
         "NEXT_PUBLIC_SITE_URL": "https://reelforge-dev.buildbase.app",
         "NEXT_PUBLIC_BUILDBASE_REDIRECT_URL": "https://reelforge-dev.buildbase.app",
         "NEXT_PUBLIC_BUILDBASE_ORG_ID": "6b016b04b42d2c444e9a13b9",
+        "NEXT_PUBLIC_BUILDBASE_CLIENT_ID": "pHi25sbUqT87HM55lYklaoMhDnHeJxvVeLZyC8o6",
         "NEXT_PUBLIC_BUILDBASE_ENVIRONMENT": "",
       },
       "observability": {
