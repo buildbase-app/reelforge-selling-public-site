@@ -4,7 +4,8 @@ import { createAuthToken } from '@/lib/auth';
 import { SESSION_COOKIE_NAME } from '@/lib/buildbase';
 import { authCodeSchema } from '@/lib/validation/schemas';
 import { validateBody, isValidationError } from '@/lib/validation/api';
-import { env } from '@/env';
+import { environmentId } from '@buildbase/sdk';
+import { buildbaseEnvironment, env } from '@/env';
 import { logger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
@@ -28,7 +29,12 @@ export async function POST(request: NextRequest) {
           code,
           clientId: env.NEXT_PUBLIC_BUILDBASE_CLIENT_ID,
           clientSecret: env.BUILDBASE_CLIENT_SECRET,
-          orgId: env.NEXT_PUBLIC_BUILDBASE_ORG_ID,
+          // <orgId>-<key> in a development or staging environment; the bare
+          // org id in production.
+          orgId: environmentId(
+            env.NEXT_PUBLIC_BUILDBASE_ORG_ID,
+            buildbaseEnvironment
+          ),
         }),
       }
     );

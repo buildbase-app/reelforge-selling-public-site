@@ -5,14 +5,14 @@ The store runs on Cloudflare Workers through
 Cloudflare D1 as its database. Everything below fits the Workers **free**
 plan, with the caveats at the end.
 
-|               | Production                                                                                                 | Test ("dev")                                                                                                  |
-| ------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Worker        | `reelforge-store`                                                                                          | `reelforge-store-dev`                                                                                         |
-| URL           | https://reelforge.buildbase.app                                                                            | https://reelforge-dev.buildbase.app                                                                           |
-| D1 database   | `reelforge-store` (`db8c0262-90be-47d0-8bf3-84ce75365682`, account `0109f7bce7af42ac8a88104d324efe4d`)     | `reelforge-store-dev` (`319f3e96-5c82-488e-92bf-3f7fcc794dcf`, same account)                                  |
-| BuildBase org | ReelForge (`6b01478bb42d2c444e99fcd8`), production environment (`NEXT_PUBLIC_BUILDBASE_ENVIRONMENT` empty) | ReelForge Test (`6b016b04b42d2c444e9a13b9`, Stripe test keys), its production environment (environment empty) |
-| Config        | top level of `wrangler.jsonc`, `.env.production`                                                           | `env.dev` in `wrangler.jsonc` (runtime vars), `deploy:dev` script (build-time `NEXT_PUBLIC_*`)                |
-| Deployed by   | `deploy` job in `.github/workflows/deploy.yml`, after `deploy-test` succeeded                              | `deploy-test` job in `.github/workflows/deploy.yml`                                                           |
+|               | Production                                                                                                 | Test ("dev")                                                                                      |
+| ------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Worker        | `reelforge-store`                                                                                          | `reelforge-store-dev`                                                                             |
+| URL           | https://reelforge.buildbase.app                                                                            | https://reelforge-dev.buildbase.app                                                               |
+| D1 database   | `reelforge-store` (`db8c0262-90be-47d0-8bf3-84ce75365682`, account `0109f7bce7af42ac8a88104d324efe4d`)     | `reelforge-store-dev` (`319f3e96-5c82-488e-92bf-3f7fcc794dcf`, same account)                      |
+| BuildBase org | ReelForge (`6b01478bb42d2c444e99fcd8`), production environment (`NEXT_PUBLIC_BUILDBASE_ENVIRONMENT` empty) | ReelForge (`6b01478bb42d2c444e99fcd8`), **development** environment `fsyqdskf` (Stripe test keys) |
+| Config        | top level of `wrangler.jsonc`, `.env.production`                                                           | `env.dev` in `wrangler.jsonc` (runtime vars), `deploy:dev` script (build-time `NEXT_PUBLIC_*`)    |
+| Deployed by   | `deploy` job in `.github/workflows/deploy.yml`, after `deploy-test` succeeded                              | `deploy-test` job in `.github/workflows/deploy.yml`                                               |
 
 ## Automatic deploys (GitHub Actions)
 
@@ -137,8 +137,14 @@ npm run db:migrate:remote
 ## Test environment ("dev")
 
 Created and deployed by the `deploy-test` job. It points at the
-**ReelForge Test** BuildBase organization (`6b016b04b42d2c444e9a13b9`), which
-uses Stripe test keys, so purchases there are test purchases. Its D1
+**development environment** (`fsyqdskf`) of the ReelForge BuildBase
+organization (`6b01478bb42d2c444e99fcd8`): its own users, sign-in client
+(`gqLbQtwsNKyzl2dKtx7v2u2GVAhP6AzPpAe1GvL7`), webhooks and Stripe **test**
+keys, so purchases there are test purchases. Server routes that call the
+BuildBase HTTP API directly send `environmentId(orgId, environment)`
+(`<orgId>-fsyqdskf`). Until 2026-11-21 the test site used a separate
+"ReelForge Test" organization (`6b016b04b42d2c444e9a13b9`), kept as a
+fallback while the environment was unavailable. Its D1
 database is `reelforge-store-dev` (`319f3e96-5c82-488e-92bf-3f7fcc794dcf`).
 
 Manual equivalent of what the workflow does:
