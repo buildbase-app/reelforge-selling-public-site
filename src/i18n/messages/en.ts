@@ -53,8 +53,13 @@ const messages: Messages = {
       links: {
         pricing: 'Pricing',
         dashboard: 'Dashboard',
+        waitlist: 'Waitlist',
+        help: 'Help',
+        contact: 'Contact',
         blog: 'Blog',
         changelog: 'Changelog',
+        licence: 'Licence (EULA)',
+        refund: 'Refund policy',
         privacy: 'Privacy Policy',
         terms: 'Terms of Service',
       },

@@ -11,7 +11,28 @@ const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 });
 
+/**
+ * The test copy (https://reelforge-dev.buildbase.app) must not be indexed.
+ * NEXT_PUBLIC_SITE_URL is the dev URL in that build (`npm run deploy:dev`)
+ * and the production URL otherwise (.env.production).
+ */
+const isNoindexSite = (process.env.NEXT_PUBLIC_SITE_URL ?? '').includes(
+  'reelforge-dev'
+);
+
 const nextConfig: NextConfig = {
+  // No `x-powered-by: Next.js` header.
+  poweredByHeader: false,
+  async headers() {
+    return isNoindexSite
+      ? [
+          {
+            source: '/:path*',
+            headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+          },
+        ]
+      : [];
+  },
   // next-contentlayer2 exposes its TypeScript source files, which Next.js 16's
   // bundler-level type checker follows into node_modules and flags as errors.
   // Type safety is enforced separately via `npm run typecheck` (tsc --noEmit)

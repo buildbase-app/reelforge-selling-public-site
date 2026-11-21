@@ -17,19 +17,24 @@ export async function SiteFooter({ title }: SiteFooterProps) {
       section: t('footer.sections.product'),
       links: [
         { label: t('footer.links.pricing'), href: '/pricing' },
+        { label: t('footer.links.waitlist'), href: '/waitlist' },
+        { label: t('footer.links.changelog'), href: '/changelog' },
         { label: t('footer.links.dashboard'), href: '/dashboard' },
       ],
     },
     {
       section: t('footer.sections.resources'),
       links: [
+        { label: t('footer.links.help'), href: '/help' },
+        { label: t('footer.links.contact'), href: '/contact' },
         { label: t('footer.links.blog'), href: '/blog' },
-        { label: t('footer.links.changelog'), href: '/changelog' },
       ],
     },
     {
       section: t('footer.sections.legal'),
       links: [
+        { label: t('footer.links.licence'), href: '/licence' },
+        { label: t('footer.links.refund'), href: '/refund' },
         { label: t('footer.links.privacy'), href: '/privacy' },
         { label: t('footer.links.terms'), href: '/terms' },
       ],

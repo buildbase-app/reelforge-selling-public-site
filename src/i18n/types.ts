@@ -52,8 +52,13 @@ export interface CommonMessages {
     links: {
       pricing: string;
       dashboard: string;
+      waitlist: string;
+      help: string;
+      contact: string;
       blog: string;
       changelog: string;
+      licence: string;
+      refund: string;
       privacy: string;
       terms: string;
     };

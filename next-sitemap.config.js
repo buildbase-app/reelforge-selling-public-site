@@ -272,6 +272,8 @@ function isExcluded(rest) {
   if (rest.startsWith('/sitemap/')) return true;
   if (['/401', '/403', '/404', '/500'].includes(rest)) return true;
   if (rest.endsWith('/feed.xml')) return true;
+  // Post-checkout page: per-buyer, never useful in search.
+  if (rest === '/order' || rest.startsWith('/order/')) return true;
   return false;
 }
 
@@ -306,7 +308,13 @@ const PRIORITY_RULES = [
     changefreq: 'monthly',
   },
   {
-    match: (p) => p === '/privacy' || p === '/terms' || p === '/cookies',
+    match: (p) => p === '/help' || p === '/contact' || p === '/waitlist',
+    priority: 0.6,
+    changefreq: 'monthly',
+  },
+  {
+    match: (p) =>
+      ['/privacy', '/terms', '/cookies', '/licence', '/refund'].includes(p),
     priority: 0.3,
     changefreq: 'yearly',
   },
@@ -343,8 +351,31 @@ function buildAlternateRefs(rest) {
   return refs;
 }
 
+// Public pages next-sitemap cannot discover on its own: pages rendered per
+// request are missing from the build's prerender manifest. Paths it does
+// discover are merged by next-sitemap (same loc), not listed twice.
+const ADDITIONAL_PATHS = [
+  '/',
+  '/pricing',
+  '/blog',
+  '/changelog',
+  '/help',
+  '/contact',
+  '/waitlist',
+  '/licence',
+  '/refund',
+  '/privacy',
+  '/terms',
+];
+
 const config = {
   siteUrl,
+  additionalPaths: async (cfg) => {
+    const entries = await Promise.all(
+      ADDITIONAL_PATHS.map((p) => cfg.transform(cfg, p))
+    );
+    return entries.filter(Boolean);
+  },
   generateRobotsTxt: true,
   robotsTxtOptions: {
     policies: [

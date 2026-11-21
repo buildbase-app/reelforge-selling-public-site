@@ -20,7 +20,7 @@ import {
   getAlternateOgLocales,
   type Locale,
 } from '@/i18n/config';
-import { siteUrl } from '@/env';
+import { isNoindexSite, siteUrl } from '@/env';
 import '@buildbase/sdk/css';
 
 const baseUrl = siteUrl;
@@ -91,8 +91,8 @@ export async function generateMetadata({
       images: [ogImageUrl.toString()],
     },
     robots: {
-      index: true,
-      follow: true,
+      index: !isNoindexSite,
+      follow: !isNoindexSite,
     },
   };
 }

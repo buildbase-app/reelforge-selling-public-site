@@ -39,7 +39,7 @@ function AuthButton() {
   );
 }
 
-const NAV_HREFS = ['/pricing', '/blog', '/changelog'] as const;
+const NAV_HREFS = ['/pricing', '/help', '/blog', '/changelog'] as const;
 
 type NavHref = (typeof NAV_HREFS)[number];
 
@@ -52,6 +52,7 @@ export function HomeHeader({ title }: HomeHeaderProps) {
 
   const NAV_LINK_KEYS: Record<NavHref, string> = {
     '/pricing': t('footer.links.pricing'),
+    '/help': t('footer.links.help'),
     '/blog': t('footer.links.blog'),
     '/changelog': t('footer.links.changelog'),
   };

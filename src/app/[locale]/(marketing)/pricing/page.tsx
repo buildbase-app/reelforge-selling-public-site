@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { HomeHeader } from '@/components/home-header';
 import { PricingSection } from '@/components/pricing-section';
 import { CreditPacks } from '@/components/billing/credit-packs';
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
@@ -27,22 +26,16 @@ export async function generateMetadata({
 
 export default async function PricingPageRoute({ params }: PricingPageProps) {
   const { locale } = await params;
-  const [t, tHome] = await Promise.all([
-    getTranslations({ locale, namespace: 'pricing' }),
-    getTranslations({ locale, namespace: 'home' }),
-  ]);
+  const t = await getTranslations({ locale, namespace: 'pricing' });
 
   return (
-    <div className="bg-background flex min-h-screen flex-col">
-      <HomeHeader title={tHome('title')} />
+    <div className="flex-1 px-6 py-12">
       <BreadcrumbJsonLd items={[{ name: t('title'), url: '/pricing' }]} />
 
-      <main id="main-content" className="flex-1 px-6 py-12">
-        <div className="mx-auto max-w-6xl">
-          <PricingSection title={t('title')} description={t('subtitle')} />
-          <CreditPacks />
-        </div>
-      </main>
+      <div className="mx-auto max-w-6xl">
+        <PricingSection title={t('title')} description={t('subtitle')} />
+        <CreditPacks />
+      </div>
     </div>
   );
 }

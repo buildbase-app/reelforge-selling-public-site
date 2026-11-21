@@ -1,7 +1,5 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
-import { HomeHeader } from '@/components/home-header';
-import { SiteFooter } from '@/components/site-footer';
 import { HelpCenter } from '@/components/help/help-center';
 import { hasAdminApi } from '@/lib/buildbase-admin';
 import {
@@ -39,10 +37,7 @@ export async function generateMetadata({
  */
 export default async function HelpPage({ params }: HelpPageProps) {
   const { locale } = await params;
-  const [t, tHome] = await Promise.all([
-    getTranslations({ locale, namespace: 'help' }),
-    getTranslations({ locale, namespace: 'home' }),
-  ]);
+  const t = await getTranslations({ locale, namespace: 'help' });
   const configured = hasAdminApi();
   const [policy, faqs, docs, testimonials] = configured
     ? await Promise.all([
@@ -54,24 +49,20 @@ export default async function HelpPage({ params }: HelpPageProps) {
     : [null, [], { folders: [], posts: [] }, []];
 
   return (
-    <div className="bg-background flex min-h-screen flex-col">
-      <HomeHeader title={tHome('title')} />
-      <main id="main-content" className="flex-1 px-6 py-12">
-        <div className="mx-auto max-w-5xl">
-          <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
-          <p className="text-muted-foreground mt-2 max-w-2xl">
-            {t('description')}
-          </p>
-          <HelpCenter
-            configured={configured}
-            policy={policy}
-            faqs={faqs}
-            docs={docs}
-            testimonials={testimonials}
-          />
-        </div>
-      </main>
-      <SiteFooter title={tHome('title')} />
+    <div className="flex-1 px-6 py-12">
+      <div className="mx-auto max-w-5xl">
+        <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
+        <p className="text-muted-foreground mt-2 max-w-2xl">
+          {t('description')}
+        </p>
+        <HelpCenter
+          configured={configured}
+          policy={policy}
+          faqs={faqs}
+          docs={docs}
+          testimonials={testimonials}
+        />
+      </div>
     </div>
   );
 }
