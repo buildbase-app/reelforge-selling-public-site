@@ -1,8 +1,10 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { StoreCtas } from '@/components/store/store-ctas';
+import { siteConfig } from '@/config/site';
 
 // The four rendering engines, the agent interfaces and how it ships.
 const TECH_STACK = [
@@ -67,6 +69,17 @@ export function HeroSection({ onSale }: { onSale?: boolean }) {
         }}
         onSale={onSale}
       />
+
+      {/* The product repository: public, source-available. */}
+      <a
+        href={siteConfig.repo.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-muted-foreground hover:text-foreground -mt-2 inline-flex items-center gap-1.5 text-sm underline-offset-4 hover:underline"
+      >
+        {t('hero.source')}
+        <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+      </a>
 
       {/* Tech stack */}
       <div className="flex flex-wrap items-center justify-center gap-4 pt-4">

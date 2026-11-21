@@ -36,6 +36,10 @@ export const seoConfig = {
     legalName: LEGAL_ENTITY_PLACEHOLDER,
     description: siteConfig.description,
     tagline: 'Your agent directs. Your server renders.',
+    /** The product's public, source-available repository. */
+    repository: siteConfig.repo.url,
+    /** Licensing overview (Personal: PolyForm Noncommercial; Commercial). */
+    license: siteConfig.repo.licensing,
     url: siteUrl,
     /** Path relative to public/ or absolute URL. Used for Organization JSON-LD. */
     logo: '/logo.png',

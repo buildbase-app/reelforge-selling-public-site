@@ -319,6 +319,9 @@ export function SoftwareApplicationJsonLd({
     url,
     applicationCategory,
     operatingSystem,
+    // Source-available: the public repository and the licence it is under.
+    sameAs: [seoConfig.brand.repository],
+    license: seoConfig.brand.license,
     offers: offers.length === 1 ? offers[0] : offers,
   };
   return <JsonLdScript data={data} scriptKey="software-application" />;

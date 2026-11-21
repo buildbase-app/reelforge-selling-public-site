@@ -7,7 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (licensing, founder decision 2026-11-21)
+
+- ReelForge is source-available (public repository
+  `buildbase-app/reelforge-studio`): a free Personal licence key for
+  noncommercial use (PolyForm Noncommercial 1.0.0) and a paid one-time
+  Commercial licence. All "locked Docker image" and "source not included"
+  wording is gone from the site, metadata, llms.txt and agent docs.
+- Pricing (and the home pricing section): Personal first ("Free for personal
+  use", "Get it free", a free claim with no payment page), then the
+  Commercial tiers; a "Which licence do I need?" block; FAQ "What counts as
+  commercial use?". Edition from item metadata, known ids or the free price
+  (`src/lib/store/edition.ts`), never titles.
+- `/licence` summarises both licences (Commercial marked draft); `/terms` and
+  `/refund` say Personal keys are free and not refundable.
+- Order page and Dashboard, Licences label each key Personal or Commercial;
+  Personal keys show "noncommercial use only — upgrade for commercial use".
+- Footer and hero link the source on GitHub.
+
 ### Added
+
+- `scripts/e2e-personal-claim.cjs`: claims the free Personal licence on the
+  test site end to end. A unit test fails if "open source" appears in the
+  marketing copy.
 
 - Server-rendered prices on `/` and `/pricing` from the store's published
   items (server commerce API, tag `store:items`, revalidated by `item.*`
@@ -36,10 +58,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Positioning: ReelForge is a locked Docker image with a licence key, driven
-  by the buyer's AI agent over REST and MCP, with four engines (Remotion,
-  Motion Canvas, HTML, HyperFrames). "Source code" wording removed from the
-  site copy, metadata and llms.txt.
+- Positioning: ReelForge is driven by the buyer's AI agent over REST and
+  MCP, with four engines (Remotion, Motion Canvas, HTML, HyperFrames). (The
+  earlier closed-distribution wording is replaced by the licensing change
+  above.)
 - BuildBase Markdown bodies render on the server with remark/rehype and
   `rehype-sanitize`; the regex `sanitizeHtml` is gone.
 - No hreflang alternates while English is the only served language.

@@ -18,19 +18,19 @@ export const PAGES: PageEntry[] = [
     title: 'Home',
     path: '/',
     summary:
-      'What ReelForge is: a self-hosted short-form video studio that an AI agent drives over REST and MCP, rendering with Remotion, Motion Canvas, HTML and HyperFrames. Sold as a locked Docker image with a licence key.',
+      'What ReelForge is: a source-available, agent-driven short-form video studio that an AI agent drives over REST and MCP, rendering with Remotion, Motion Canvas, HTML and HyperFrames. Free for personal use; one-time commercial licence.',
   },
   {
     title: 'Pricing',
     path: '/pricing',
     summary:
-      'What can be bought and its price, read from the store and rendered on the server. While nothing is on sale, it says so and links to the waitlist.',
+      'The free Personal licence (noncommercial use, claimed with no payment page) first, then the Commercial licence tiers and their prices, read from the store and rendered on the server. Also: which licence you need. While nothing is on sale, it says so and links to the waitlist.',
   },
   {
     title: 'Order',
     path: '/order',
     summary:
-      'Where a buyer lands after checkout: order status, the Docker image download and the licence key. Guests open it with the link from their receipt.',
+      'Where a buyer lands after checkout or a free claim: order status and the licence key, labelled Personal or Commercial. Guests open it with the link from their receipt.',
   },
   {
     title: 'Waitlist',
@@ -47,7 +47,13 @@ export const PAGES: PageEntry[] = [
     title: 'Account',
     path: '/dashboard',
     summary:
-      'Signed-in customers: licences (image downloads and keys), recent orders, invoices, notification settings, security (sessions, devices, connected agents).',
+      'Signed-in customers: licence keys (Personal or Commercial), recent orders, invoices, notification settings, security (sessions, devices, connected agents).',
+  },
+  {
+    title: 'Licences',
+    path: '/licence',
+    summary:
+      'Summary of the two licences: Personal (PolyForm Noncommercial 1.0.0) and the ReelForge Commercial License (draft), with the trademark policy.',
   },
   {
     title: 'Blog',
@@ -67,15 +73,30 @@ export const PAGES: PageEntry[] = [
  * rather than leave it implied.
  */
 export const PRODUCT_FACTS = [
-  '- ReelForge is a self-hosted short-form video studio. It ships as a locked Docker image with a licence key, bought once; the source code is not included.',
-  "- The buyer's own AI agent drives it over a REST API and an MCP server running on the buyer's machine. The agent plans every scene and its timing.",
+  '- ReelForge is a source-available, agent-driven short-form video studio that the buyer self-hosts on their own machine or cloud server. The code is public to read; the licence limits how it may be used.',
+  `- Source: ${siteConfig.repo.url} (licensing: ${siteConfig.repo.licensing}).`,
+  '- Personal use is free under the PolyForm Noncommercial License 1.0.0, with a free Personal licence key claimed with a BuildBase account. Any commercial use needs a paid ReelForge Commercial License (one-time; Solo, Studio and Agency tiers, prices read from the store).',
+  '- Every released Docker image activates with a licence key from BuildBase. No resale, redistribution, rebranding or competing hosted service under either licence; forks must be renamed.',
+  "- The buyer's own AI agent drives it over a REST API and an MCP server running on the buyer's machine (any MCP client; tested with Claude Code). The agent plans every scene and its timing.",
   '- Four rendering engines: Remotion, Motion Canvas, HTML and HyperFrames. The output is one vertical MP4.',
   '- Verified: an end-to-end run in Docker, and headless Claude Code making an 18-second reel with all four engines over MCP only.',
   "- Not verified yet, so not offered as features: rendering on the buyer's AWS (Remotion Lambda), burned-in captions, live ElevenLabs voice-over, Codex and Cursor as clients.",
-  '- No per-video fees to ReelForge. Remotion requires its own licence for companies over 3 people (https://www.remotion.dev/license).',
+  '- No per-video fees to ReelForge. Remotion is not covered by either ReelForge licence and requires its own licence for companies over 3 people (https://www.remotion.dev/license).',
 ].join('\n');
 
 const base = () => siteConfig.url.replace(/\/$/, '');
+
+/** Where the source and the licence texts are, for llms.txt and llms-full.txt. */
+function licensingLinks(b: string): string {
+  return [
+    `- [Source on GitHub](${siteConfig.repo.url}): source-available, default branch \`main\`.`,
+    `- [LICENSING.md](${siteConfig.repo.licensing}): which licence you need.`,
+    `- [Personal licence: PolyForm Noncommercial 1.0.0](${siteConfig.repo.license}) (canonical text: ${siteConfig.polyformNoncommercial}).`,
+    `- [ReelForge Commercial License (draft)](${siteConfig.repo.commercialLicense}).`,
+    `- [Trademark policy](${siteConfig.repo.trademark}): forks must be renamed.`,
+    `- [Licences summary](${b}/licence) and [pricing](${b}/pricing) on this site.`,
+  ].join('\n');
+}
 
 function contactLines(): string {
   return siteConfig.contact.support
@@ -89,11 +110,15 @@ export function buildLlmsTxt(): string {
 
 > ${siteConfig.description}
 
-This is the ${siteConfig.name} store: where people learn about ReelForge, join the waitlist and, once it is on sale, buy it and download it. ReelForge is early access; nothing here should be read as a promise of features that are not listed.
+This is the ${siteConfig.name} store: where people learn about ReelForge, claim a free Personal licence key or buy a Commercial licence, and manage their keys. The source itself is on GitHub. ReelForge is early access; nothing here should be read as a promise of features that are not listed.
 
 ## The product
 
 ${PRODUCT_FACTS}
+
+## Licensing
+
+${licensingLinks(b)}
 
 ## For agents
 
@@ -135,9 +160,13 @@ ${PRODUCT_FACTS}
 
 ## What this site is
 
-The ReelForge store. ReelForge itself runs on the buyer's own computer or server; this site does not render video. The store runs on BuildBase (${siteConfig.buildbase.url}) for sign-in, checkout and downloads. Prices and what each option includes are read from the store's items at runtime; while none are published, the pricing page says ReelForge is not on sale yet.
+The ReelForge store. ReelForge itself runs on the buyer's own computer or cloud server; this site does not render video. Here people claim the free Personal licence key or buy a Commercial licence, then find their keys on the order page and under Dashboard, Licences. The store runs on BuildBase (${siteConfig.buildbase.url}) for sign-in, checkout and downloads. Prices and what each option includes are read from the store's items at runtime; while none are published, the pricing page says ReelForge is not on sale yet.
 
-Licensing note: ReelForge includes Remotion-based templates. Remotion is free for individuals and companies of up to 3 people; larger companies need their own Remotion licence (https://www.remotion.dev/license).
+## Licensing
+
+${licensingLinks(b)}
+
+Remotion note: ReelForge includes Remotion-based templates. Remotion is free for individuals and companies of up to 3 people; larger companies need their own Remotion licence (https://www.remotion.dev/license).
 
 ## How an agent connects
 

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { PricingCatalog } from '@/components/store/pricing-catalog';
 import { RemotionNotice } from '@/components/remotion-notice';
+import { LicenceGuide } from '@/components/store/licence-guide';
 import { LaunchPriceNote } from '@/components/content/launch-price-note';
 import { FaqSection } from '@/components/help/faq-section';
 import {
@@ -81,6 +82,7 @@ export default async function PricingPageRoute({ params }: PricingPageProps) {
         </div>
         <PricingCatalog serverItems={serverItems} />
         <LaunchPriceNote className="mt-6" />
+        <LicenceGuide className="mx-auto mt-10 max-w-4xl" />
         <RemotionNotice className="mx-auto mt-10 max-w-3xl" />
         <p className="text-muted-foreground mx-auto mt-6 max-w-3xl text-center text-sm">
           {t.rich('legal', {

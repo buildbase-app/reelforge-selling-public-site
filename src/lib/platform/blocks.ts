@@ -23,7 +23,7 @@ export const DEFAULT_BLOCKS: Record<BlockKey, string | null> = {
   // There was no launch-price note before; it appears once the block exists.
   launchPriceNote: null,
   remotionNotice:
-    'ReelForge includes Remotion-based templates. Remotion is free for individuals and companies of up to 3 people; larger companies need their own Remotion licence ([remotion.dev/license](https://www.remotion.dev/license)). ReelForge also includes Motion Canvas, HTML and HyperFrames engines.',
+    'ReelForge includes Remotion-based templates. Remotion is free for individuals and companies of up to 3 people; larger companies need their own Remotion licence ([remotion.dev/license](https://www.remotion.dev/license)). Remotion is not covered by either ReelForge licence. ReelForge also includes Motion Canvas, HTML and HyperFrames engines.',
 };
 
 /** A block from BuildBase, or its fallback, or null when there is neither. */

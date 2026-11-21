@@ -9,6 +9,7 @@ import {
   useSaaSAuth,
 } from '@buildbase/sdk/react';
 import type { CheckoutStart, PublicItemView } from '@buildbase/sdk';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -27,6 +28,7 @@ import {
   variantBenefits,
 } from './price';
 import { rememberOrder } from './last-order';
+import { editionOf, orderByEdition, type Edition } from '@/lib/store/edition';
 
 // English only for now (src/i18n/config.ts); kept together for translation.
 const copy = {
@@ -39,12 +41,28 @@ const copy = {
   includes: 'What is included',
   signInToBuy: 'Sign in to buy',
   buy: 'Buy',
+  getFree: 'Get it free',
+  edition: {
+    personal: {
+      badge: 'Personal',
+      tagline: 'Free for personal use',
+      note: 'Noncommercial use only: hobby, study, research and evaluation. Needs a free BuildBase account.',
+    },
+    commercial: {
+      badge: 'Commercial',
+      tagline: 'For commercial use',
+      note: 'For anything that earns money: monetised channels, client work, a business. One-time licence.',
+    },
+  } satisfies Record<Edition, { badge: string; tagline: string; note: string }>,
 };
 
 /**
  * What can be bought, from the store's published items. Each variant is a
- * card with its price, what it includes and a Buy button. With nothing
- * published it says so; it never shows a made-up price.
+ * card with its price, what it includes and a Buy button. The free Personal
+ * licence comes first ("Get it free", a claim with no payment page), then
+ * the Commercial tiers, in the store's own order (see `@/lib/store/edition`:
+ * decided from the item, never its title). With nothing published it says
+ * so; it never shows a made-up price.
  *
  * `serverItems` are the items the page read on the server
  * (`getStoreItems`), so the prices are in the HTML. When the server could
@@ -82,7 +100,7 @@ function Catalog({
   unreachable: boolean;
 }) {
   const origin = useOrigin();
-  const offers = items.flatMap((item) =>
+  const offers = orderByEdition(items).flatMap((item) =>
     item.variants
       .map((variant) => ({ item, variant, price: currentPrice(variant) }))
       .filter((o) => o.price !== null)
@@ -93,7 +111,13 @@ function Catalog({
   }
 
   return (
-    <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <div
+      className={
+        offers.length >= 4
+          ? 'grid gap-6 md:grid-cols-2 lg:grid-cols-4'
+          : 'grid gap-6 md:grid-cols-2 lg:grid-cols-3'
+      }
+    >
       {offers.map(({ item, variant, price }) => (
         <OfferCard
           key={`${item._id}:${variant.id}`}
@@ -123,11 +147,30 @@ function OfferCard({
   const was = compareAtLabel(price);
   const description = variant.terms || item.summary || item.description;
   const title = variant.label ? `${item.title}: ${variant.label}` : item.title;
+  const edition = editionOf(item);
+  const ed = copy.edition[edition];
+  const free = price.mode === 'free';
+  const label = free ? copy.getFree : item.ctaText || copy.buy;
 
   return (
-    <Card className="flex flex-col">
+    <Card
+      className={
+        edition === 'personal'
+          ? 'border-primary/40 flex flex-col'
+          : 'flex flex-col'
+      }
+      data-edition={edition}
+    >
       <CardHeader>
-        <CardTitle className="text-lg">{title}</CardTitle>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge variant={edition === 'personal' ? 'default' : 'secondary'}>
+            {ed.badge}
+          </Badge>
+          <span className="text-muted-foreground text-xs font-medium">
+            {ed.tagline}
+          </span>
+        </div>
+        <CardTitle className="mt-2 text-lg">{title}</CardTitle>
         <div className="mt-2 flex items-baseline gap-2">
           <span className="text-3xl font-bold tracking-tight">
             {priceLabel(price)}
@@ -145,6 +188,7 @@ function OfferCard({
         )}
       </CardHeader>
       <CardContent className="flex-1">
+        <p className="text-muted-foreground mb-4 text-xs">{ed.note}</p>
         {benefits.length > 0 && (
           <>
             <p className="mb-2 text-sm font-medium">{copy.includes}</p>
@@ -169,7 +213,7 @@ function OfferCard({
               itemId={item._id}
               variantId={variant.id}
               priceId={price.id}
-              free={price.mode === 'free'}
+              free={free}
               amount={
                 price.mode === 'pwyw'
                   ? (price.suggested ?? price.minimum)
@@ -179,7 +223,7 @@ function OfferCard({
               buyerCountries={item.buyerCountries}
               currency={price.currency}
               successUrl={`${origin}/order`}
-              label={item.ctaText || copy.buy}
+              label={label}
               onStarted={(start: CheckoutStart) => {
                 rememberOrder(start.order._id);
               }}
@@ -193,7 +237,10 @@ function OfferCard({
           )}
         </WhenAuthenticated>
         <WhenUnauthenticated>
-          <Button onClick={() => signIn()}>{copy.signInToBuy}</Button>
+          {/* Signed out: sign in first, then claim or buy on this page. */}
+          <Button onClick={() => signIn()}>
+            {free ? copy.getFree : copy.signInToBuy}
+          </Button>
         </WhenUnauthenticated>
       </CardFooter>
     </Card>

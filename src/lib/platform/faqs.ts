@@ -55,25 +55,35 @@ const Q = {
     id: 'what',
     question: 'What is ReelForge?',
     answer:
-      'ReelForge is a self-hosted studio for short vertical videos. It runs as a Docker image on a computer or server you control, and your AI agent drives it over REST and MCP: the agent plans every scene and its timing, and ReelForge renders the scenes with four engines (Remotion, Motion Canvas, HTML and HyperFrames) into one MP4.',
+      'ReelForge is a source-available, agent-driven studio for short vertical videos. You self-host it (in Docker, on a computer or cloud server you control), and your AI agent drives it over REST and MCP: the agent plans every scene and its timing, and ReelForge renders the scenes with four engines (Remotion, Motion Canvas, HTML and HyperFrames) into one MP4. It is free for personal use; commercial use needs a one-time Commercial licence.',
   },
   buy: {
     id: 'buy',
     question: 'Can I buy it now?',
     answer:
-      'ReelForge is in early access. The [pricing page](/pricing) shows what can be bought, straight from the store; while it says "Not on sale yet", [join the waitlist](/waitlist) to hear first.',
+      'ReelForge is in early access. The [pricing page](/pricing) shows the free Personal licence and the Commercial licences, straight from the store; while it says "Not on sale yet", [join the waitlist](/waitlist) to hear first.',
   },
   delivery: {
     id: 'delivery',
     question: 'What do I get, and how?',
-    answer:
-      'You buy a licence once. You get the ReelForge Docker image, a licence key and the install documentation, from your order page and your account. You run it yourself: there is no render service run by us. Installation help and support can be bought as separate services. The [licence](/licence) says what you may do with it.',
+    answer: `A licence key, from your order page and your account: a free Personal key for noncommercial use, or a paid Commercial key, bought once. Every released ReelForge Docker image activates with a key from BuildBase. The source and install documentation are public on [GitHub](${siteConfig.repo.url}). You run it yourself: there is no render service run by us. The [licences](/licence) say what you may do with it.`,
   },
   sourceCode: {
     id: 'source-code',
-    question: 'Do I get the source code?',
+    question: 'Can I read the source code?',
+    answer: `Yes. ReelForge is source-available: every line is public on [GitHub](${siteConfig.repo.url}). You may use it for noncommercial purposes under the PolyForm Noncommercial License 1.0.0; any commercial use needs a Commercial licence. You may not resell, redistribute or rebrand it, or offer it as a hosted service, and forks must be renamed. See [LICENSING.md](${siteConfig.repo.licensing}).`,
+  },
+  commercialUse: {
+    id: 'commercial-use',
+    question: 'What counts as commercial use?',
     answer:
-      'No. ReelForge is sold as a locked Docker image with a licence key. You run it on your own hardware and keep every video you make, but the source code is not included.',
+      'Any use by or for a business, or any use meant to earn money, directly or indirectly. For example: videos for a monetised social account, client or agency work, marketing for a business, use inside a company, or as part of a paid product or service. When in doubt, it is commercial, or [ask us](/contact). Charities, schools, public research and government bodies using it noncommercially can use the free Personal licence.',
+  },
+  personalFree: {
+    id: 'personal-free',
+    question: 'Is the Personal licence really free?',
+    answer:
+      'Yes. Sign in with a BuildBase account and press "Get it free" on the [pricing page](/pricing): there is no payment page. You get a Personal licence key for one server, for noncommercial use only. If you start using ReelForge to earn money, upgrade to a Commercial licence.',
   },
   ai: {
     id: 'ai',
@@ -91,7 +101,7 @@ const Q = {
     id: 'refund',
     question: 'Can I get a refund?',
     answer:
-      'Yes, if ReelForge does not run on a supported system and our support cannot fix it. See the [refund policy](/refund) (draft, pending review).',
+      'For a Commercial licence, yes, if ReelForge does not run on a supported system and our support cannot fix it. Personal keys are free, so there is nothing to refund. See the [refund policy](/refund) (draft, pending review).',
   },
   contact: {
     id: 'contact',
@@ -108,19 +118,19 @@ const Q = {
     id: 'where',
     question: 'Where does it run?',
     answer:
-      'On a computer or server you control, as a Docker image. ReelForge itself runs no render service for you. Rendering on your own cloud account (for example AWS Lambda) is not supported yet.',
+      'On a computer or cloud server you control, in Docker. ReelForge itself runs no render service for you. Rendering on serverless cloud services (for example AWS Lambda) is not supported yet.',
   },
   subscription: {
     id: 'subscription',
     question: 'Is it a subscription?',
     answer:
-      'No. You pay once for a licence and there are no per-video fees to ReelForge. Remotion (for companies over 3 people) and any voice provider you use bill you directly.',
+      'No. Personal use is free, and a Commercial licence is paid once. There are no per-video fees to ReelForge. Remotion (for companies over 3 people) and any voice provider you use bill you directly.',
   },
   whichAgents: {
     id: 'which-agents',
     question: 'Which AI agents can drive ReelForge?',
     answer:
-      'Any client that can call a REST API or an MCP server can connect. The one we have tested is Claude Code over MCP. Codex and Cursor are not tested yet; they will be listed here once they are.',
+      'Any MCP client, or anything that can call a REST API, can connect. The one we have tested is Claude Code over MCP. Codex and Cursor are not tested yet; they will be listed here once they are.',
   },
   connect: {
     id: 'connect',
@@ -144,7 +154,7 @@ const Q = {
     id: 'included',
     question: 'What does a licence include?',
     answer:
-      'The ReelForge Docker image, a licence key and the install documentation. What each option adds (seats, updates, support) is listed on its card, straight from the store.',
+      'A licence key that activates the released ReelForge Docker image. The Personal key is free and for noncommercial use on one server; Commercial tiers differ by how many servers their key allows, and what each adds is listed on its card, straight from the store. Every tier runs the same code.',
   },
   otherCosts: {
     id: 'other-costs',
@@ -160,6 +170,7 @@ export const DEFAULT_FAQS: Record<FaqCollectionKey, FaqEntry[]> = {
     Q.buy,
     Q.delivery,
     Q.sourceCode,
+    Q.commercialUse,
     Q.ai,
     Q.remotion,
     Q.refund,
@@ -171,9 +182,12 @@ export const DEFAULT_FAQS: Record<FaqCollectionKey, FaqEntry[]> = {
     Q.whereRuns,
     Q.subscription,
     Q.sourceCode,
+    Q.commercialUse,
     Q.buy,
   ],
   pricing: [
+    Q.personalFree,
+    Q.commercialUse,
     Q.whatIncluded,
     Q.subscription,
     Q.otherCosts,

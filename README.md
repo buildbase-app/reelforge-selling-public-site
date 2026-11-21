@@ -1,11 +1,18 @@
 # ReelForge store
 
-The public site for **ReelForge**, a self-hosted short-form video studio that
-an AI agent drives over REST and MCP (engines: Remotion, Motion Canvas, HTML
-and HyperFrames). ReelForge is sold as a locked Docker image with a licence
-key, not as source code. This is where people learn about ReelForge, sign in,
-buy it, and later download releases and manage their licences. The product
-itself lives in a separate private repository.
+The public site for **ReelForge**, a source-available, agent-driven
+short-form video studio that people self-host and drive from an AI agent over
+REST and MCP (engines: Remotion, Motion Canvas, HTML and HyperFrames). The
+product's source is public at
+<https://github.com/buildbase-app/reelforge-studio> (see its `LICENSING.md`).
+Never call it open source; say "source-available".
+
+Licensing (founder decision 2026-11-21): a free **Personal** licence key for
+noncommercial use (PolyForm Noncommercial 1.0.0), claimed with a BuildBase
+account; a paid one-time **Commercial** licence (Solo, Studio, Agency) for any
+commercial use. Every released Docker image needs a licence key from
+BuildBase. This is where people learn about ReelForge, sign in, claim or buy a
+key, and manage their licences.
 
 Built with Next.js 16 on [BuildBase](https://buildbase.app) (sign-in,
 workspaces, billing, notifications) and deployed to Cloudflare Workers with
@@ -46,6 +53,15 @@ published, pricing says "Not on sale yet" and the buttons point to the
 waitlist. Checkout returns to `/order` (a guest with `?order=&token=`).
 Selling itself (Stripe Connect, the own store, item types, items, files and
 licence keys) is set up in the BuildBase console, not here.
+
+The free **ReelForge Personal** item comes first on the pricing page, with a
+"Get it free" claim (no payment page), then **ReelForge Commercial**'s tiers.
+Which item is which is decided in `src/lib/store/edition.ts`: `edition`
+(`personal` or `commercial`) in the item's metadata (copied, alone, by the
+server read), else a known item id or slug, else "every price free" means
+Personal. Never by title. When production's items are created, add their ids
+there or set `metadata.edition` on them. The order page and Dashboard,
+Licences label each key Personal or Commercial the same way.
 
 ## Content from the console
 

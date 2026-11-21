@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { HeroSection } from '@/components/marketing/hero-section';
 import { PricingCatalog } from '@/components/store/pricing-catalog';
 import { RemotionNotice } from '@/components/remotion-notice';
+import { LicenceGuide } from '@/components/store/licence-guide';
 import { CtaBanner } from '@/components/marketing/cta-banner';
 import { AnnouncementBar } from '@/components/content/announcement-bar';
 import { LaunchPriceNote } from '@/components/content/launch-price-note';
@@ -77,6 +78,7 @@ export default async function HomePage({ params }: HomePageProps) {
         </div>
         <PricingCatalog serverItems={serverItems} />
         <LaunchPriceNote className="mt-6" />
+        <LicenceGuide className="mx-auto mt-10 max-w-4xl" />
         <RemotionNotice className="mx-auto mt-10 max-w-3xl" />
       </div>
       <section

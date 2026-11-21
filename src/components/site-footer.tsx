@@ -3,6 +3,7 @@ import { Link } from '@/i18n/routing';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { BuildBaseBadge } from '@buildbase/sdk/react';
+import { siteConfig } from '@/config/site';
 
 interface SiteFooterProps {
   title: string;
@@ -25,6 +26,8 @@ export async function SiteFooter({ title }: SiteFooterProps) {
     {
       section: t('footer.sections.resources'),
       links: [
+        // The product's public, source-available repository.
+        { label: t('footer.links.github'), href: siteConfig.repo.url },
         { label: t('footer.links.help'), href: '/help' },
         { label: t('footer.links.contact'), href: '/contact' },
         { label: t('footer.links.blog'), href: '/blog' },
@@ -67,12 +70,23 @@ export async function SiteFooter({ title }: SiteFooterProps) {
               <ul className="flex flex-col gap-2">
                 {links.map((link) => (
                   <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-                    >
-                      {link.label}
-                    </Link>
+                    {/^https?:\/\//.test(link.href) ? (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>

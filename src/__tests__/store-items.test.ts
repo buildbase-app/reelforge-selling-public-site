@@ -13,7 +13,7 @@ function serverItem(overrides: Record<string, unknown> = {}) {
     _id: 'item_1',
     title: 'ReelForge',
     slug: 'reelforge',
-    summary: 'Docker image and licence key.',
+    summary: 'Licence key.',
     status: 'published',
     typeKey: 'software',
     typeVersion: 1,

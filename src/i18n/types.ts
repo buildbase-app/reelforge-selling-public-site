@@ -62,6 +62,7 @@ export interface CommonMessages {
       refund: string;
       privacy: string;
       terms: string;
+      github: string;
     };
   };
   language: {
@@ -101,6 +102,7 @@ export interface HomeMessages {
     pricing: string;
     buy: string;
     faq: string;
+    source: string;
     builtWith: string;
   };
   stats: {

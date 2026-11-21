@@ -117,7 +117,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
             </li>
             <li>
               <Link href="/licence" className="text-foreground underline">
-                Licence (EULA)
+                Licences
               </Link>
             </li>
             <li>

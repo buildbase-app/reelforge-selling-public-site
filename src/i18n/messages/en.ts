@@ -45,7 +45,7 @@ const messages: Messages = {
     footer: {
       rights: 'All rights reserved',
       tagline:
-        'A self-hosted video studio your AI agent drives over REST and MCP. A locked Docker image and a licence key, bought once. Early access.',
+        'A source-available, agent-driven short-form video studio you self-host. Free for personal use; one-time commercial licence. Early access.',
       sections: {
         product: 'Product',
         resources: 'Resources',
@@ -59,10 +59,11 @@ const messages: Messages = {
         contact: 'Contact',
         blog: 'Blog',
         changelog: 'Changelog',
-        licence: 'Licence (EULA)',
+        licence: 'Licences',
         refund: 'Refund policy',
         privacy: 'Privacy Policy',
         terms: 'Terms of Service',
+        github: 'Source on GitHub',
       },
     },
     language: {
@@ -87,15 +88,16 @@ const messages: Messages = {
   home: {
     title: 'ReelForge',
     hero: {
-      badge: 'Early access · self-hosted',
+      badge: 'Early access · source-available · self-hosted',
       heading:
         'Your agent directs. <highlight>Your server renders.</highlight>',
       description:
-        'ReelForge is a short-form video studio your AI agent drives over REST and MCP. The agent plans every scene and its timing; ReelForge renders them with Remotion, Motion Canvas, HTML and HyperFrames into one vertical MP4, on your own machine. You buy a locked Docker image and a licence key, once.',
+        'A source-available, agent-driven short-form video studio. Free for personal use; one-time commercial licence. Self-host it on your own machine or a cloud server you run. Your AI agent drives it over REST and MCP (any MCP client; tested with Claude Code): it plans every scene and its timing, and ReelForge renders them with Remotion, Motion Canvas, HTML and HyperFrames into one vertical MP4.',
       waitlist: 'Join the waitlist',
       pricing: 'See pricing',
       buy: 'Buy ReelForge',
       faq: 'Read the FAQ',
+      source: 'Read the source on GitHub',
       builtWith: 'Inside',
     },
     stats: {
@@ -119,12 +121,12 @@ const messages: Messages = {
     cta: {
       heading: 'Want it before launch?',
       description:
-        'Join the waitlist for early access. We will email you when ReelForge is ready to buy, with the Docker image setup guide for your own computer or server.',
+        'Get the free Personal licence, or join the waitlist to hear about releases. The source and setup guide are on GitHub, for your own computer or cloud server.',
     },
     meta: {
-      title: 'ReelForge: self-hosted video studio for AI agents',
+      title: 'ReelForge: source-available video studio for AI agents',
       description:
-        'Your AI agent plans each scene over REST and MCP; ReelForge renders vertical video with four engines on your server. Locked Docker image, one-time licence.',
+        'Source-available, agent-driven short-form video studio. Free for personal use; one-time commercial licence. Self-host it; your AI agent drives it over REST and MCP.',
       tagline: 'Your agent directs. Your server renders.',
     },
   },
@@ -533,13 +535,13 @@ const messages: Messages = {
   pricing: {
     title: 'Pricing',
     subtitle:
-      'Buy a ReelForge licence once: a locked Docker image and a licence key for your own computer or server. Prices come straight from the store.',
+      'Free for personal use. A one-time Commercial licence for anything that earns money. Every key activates the released Docker image on your own machine or cloud server. Prices come straight from the store.',
     legal:
-      'Buying means you accept the <licence>licence (EULA)</licence>. See the <refund>refund policy</refund>. Both are drafts pending review.',
+      'Claiming or buying a key means you accept the <licence>licence that applies</licence>. See the <refund>refund policy</refund>. Both are drafts pending review.',
     meta: {
       title: 'Pricing',
       description:
-        'What a ReelForge licence costs and what each option includes: a locked Docker image and a licence key, bought once.',
+        'ReelForge is free for personal use (PolyForm Noncommercial). Commercial use needs a one-time Commercial licence: what each tier costs and includes.',
     },
   },
   errors: {

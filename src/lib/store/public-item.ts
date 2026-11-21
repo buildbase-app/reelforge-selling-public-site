@@ -1,4 +1,5 @@
 import type { PublicItemView } from '@buildbase/sdk';
+import { asEdition } from './edition';
 
 /**
  * Turns an item as the server API returns it (`/api/v1/server/commerce/items`,
@@ -9,6 +10,10 @@ import type { PublicItemView } from '@buildbase/sdk';
  *
  * Returns null for an item that is not published, is limited to named
  * buyers, or has no variant with a current price.
+ *
+ * The one exception to "no metadata": `metadata.edition` (`personal` or
+ * `commercial`, see `./edition`) is copied to `data.edition`, so the pricing
+ * page can order and label the licences. Nothing else in metadata is.
  */
 
 type Raw = Record<string, unknown>;
@@ -84,6 +89,10 @@ export function toPublicItem(raw: unknown): PublicItemView | null {
       ...(str(b.title) ? { title: String(b.title) } : {}),
     }));
 
+  const metadata = isObj(raw.metadata) ? raw.metadata : {};
+  const publicData = isObj(raw.data) ? raw.data : {};
+  const edition = asEdition(metadata.edition) ?? asEdition(publicData.edition);
+
   const seller = isObj(raw.seller) ? raw.seller : {};
   const subject = isObj(seller.subject) ? seller.subject : {};
 
@@ -98,7 +107,7 @@ export function toPublicItem(raw: unknown): PublicItemView | null {
       ? { buyerCountries: raw.buyerCountries.filter((c) => !!str(c)) }
       : {}),
     variants,
-    data: {},
+    data: edition ? { edition } : {},
     typeKey: String(raw.typeKey ?? ''),
     typeVersion: Number(raw.typeVersion ?? 0),
     seller: {

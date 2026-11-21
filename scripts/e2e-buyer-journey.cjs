@@ -3,7 +3,8 @@
 // sign up a fresh +test account on the BuildBase development environment
 // (test mode: no mail is sent and the code is always 424242), dismiss the
 // optional sign-in prompts, buy the Studio variant with Stripe test card 4242,
-// then check the order page and Dashboard > Licences show the licence key.
+// then check the order page and Dashboard > Licences show the licence key,
+// labelled Commercial. (scripts/e2e-personal-claim.cjs claims the free one.)
 //
 //   node scripts/e2e-buyer-journey.cjs            # against https://reelforge-dev.buildbase.app
 //   SITE=https://reelforge-dev.buildbase.app node scripts/e2e-buyer-journey.cjs
@@ -110,7 +111,12 @@ const clean = (t) =>
         ).slice(0, 3)
       )
   );
-  await page.getByRole('button', { name: /^Buy/ }).nth(1).click(); // Studio
+  // The Studio tier's own card (Personal comes first, so never count buttons).
+  await page
+    .locator('[data-edition="commercial"]')
+    .filter({ hasText: 'Studio' })
+    .getByRole('button', { name: /^Buy/ })
+    .click();
   await page.waitForURL(/checkout\.stripe\.com/, { timeout: 45000 });
   out('4. Stripe Checkout opened (Studio)');
   await page.waitForTimeout(15000);
@@ -187,9 +193,13 @@ const clean = (t) =>
       /Studio/.test(ot) +
       ' key=' +
       /XXXXX-…\(key\)/.test(ot) +
+      ' commercialLabel=' +
+      /Commercial licence/.test(ot) +
       ' | ' +
       ot.slice(0, 260)
   );
+  if (!/Commercial licence/.test(ot) || /noncommercial use only/i.test(ot))
+    throw new Error('order page does not label the key Commercial');
   await page.screenshot({
     path: (process.env.SHOTS || '/tmp') + '/b-6-order.png',
     fullPage: true,
