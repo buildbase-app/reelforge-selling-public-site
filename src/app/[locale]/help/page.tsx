@@ -10,8 +10,6 @@ import {
   getRichContent,
   getTestimonials,
 } from '@/lib/platform/content';
-import { getSessionContext } from '@/lib/server-auth';
-import { detect } from '@/tour/progress';
 import type { Locale } from '@/i18n/config';
 import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
 
@@ -37,15 +35,13 @@ export async function generateMetadata({
 /**
  * Everything on this page was written in the console, not in this repo:
  * a rich-text block, a FAQ collection, docs and testimonials. Edit any of
- * them there and reload here. The tour ticks "read the help center" for a
- * signed-in visitor.
+ * them there and reload here.
  */
 export default async function HelpPage({ params }: HelpPageProps) {
   const { locale } = await params;
-  const [t, tHome, session] = await Promise.all([
+  const [t, tHome] = await Promise.all([
     getTranslations({ locale, namespace: 'help' }),
     getTranslations({ locale, namespace: 'home' }),
-    getSessionContext(),
   ]);
   const configured = hasAdminApi();
   const [policy, faqs, docs, testimonials] = configured
@@ -56,10 +52,6 @@ export default async function HelpPage({ params }: HelpPageProps) {
         getTestimonials(),
       ])
     : [null, [], { folders: [], posts: [] }, []];
-
-  if (session) {
-    await detect(session.userId, { kind: 'action', action: 'content:viewed' });
-  }
 
   return (
     <div className="bg-background flex min-h-screen flex-col">

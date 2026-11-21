@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { notification } from '@/lib/buildbase';
 import { getSessionContext } from '@/lib/server-auth';
-import { detect } from '@/tour/progress';
 
 /**
  * Send a notification from the app. One call; the platform decides which
@@ -42,10 +41,6 @@ export async function POST(request: NextRequest) {
     const result = await notification.send(workspaceId, event, userId, cleaned);
 
     if (result.sent) {
-      await detect(session.userId, {
-        kind: 'action',
-        action: 'notification:sent',
-      });
     }
 
     return NextResponse.json(result);

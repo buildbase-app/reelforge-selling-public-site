@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminFetch } from '@/lib/buildbase-admin';
-import { detect } from '@/tour/progress';
 import {
   adminErrorResponse,
   requireSessionAndAdmin,
@@ -20,11 +19,6 @@ export async function PATCH(
     const updated = await adminFetch<unknown>(
       `assets/${id}/${makePublic ? 'public' : 'private'}`,
       { method: 'PATCH' }
-    );
-    await detect(
-      gate.session.userId,
-      { kind: 'action', action: 'asset:visibility-changed' },
-      { id, public: makePublic }
     );
     return NextResponse.json({ asset: updated });
   } catch (error) {

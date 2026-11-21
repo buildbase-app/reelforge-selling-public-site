@@ -8,30 +8,20 @@ import {
   LayoutDashboard,
   Settings,
   Users,
-  FileText,
   Bell,
   LogOut,
   ChevronUp,
   ChevronDown,
   ChevronsUpDown,
   CreditCard,
-  Coins,
   User,
-  Gauge,
-  Lock,
   Radio,
   UserCircle,
   Receipt,
   Building2,
-  ListChecks,
   ClipboardList,
-  Database,
   Image as ImageIcon,
-  Link2,
   Contact,
-  Activity,
-  Workflow,
-  PieChart,
   Inbox,
   ShieldCheck,
 } from 'lucide-react';
@@ -62,19 +52,13 @@ import {
   useSaaSAuth,
   WorkspaceSwitcher,
   WhenAuthenticated,
-  CreditBalance,
 } from '@buildbase/sdk/react';
 import { LanguageSwitcher } from './language-switcher';
 
 type NavKey =
   | 'dashboard'
-  | 'tour'
   | 'inbox'
-  | 'documents'
-  | 'credits'
   | 'invoices'
-  | 'usage'
-  | 'permissions'
   | 'events'
   | 'profile'
   | 'security'
@@ -82,15 +66,7 @@ type NavKey =
   | 'notifications'
   | 'settings';
 
-type ModuleNavKey =
-  | 'forms'
-  | 'collections'
-  | 'assets'
-  | 'links'
-  | 'audience'
-  | 'tracking'
-  | 'automations'
-  | 'reports';
+type ModuleNavKey = 'forms' | 'assets' | 'audience';
 
 type NavItem = {
   navKey: NavKey | ModuleNavKey;
@@ -101,23 +77,20 @@ type NavItem = {
 type SectionKey = 'start' | 'product' | 'billing' | 'platform';
 
 /**
- * The menu in the tour's order: where you start, the product, billing,
- * then the platform plumbing. Modules - the org-API pages - sit in their
- * own collapsible section below.
+ * Where you start, your account, billing, then the platform plumbing.
+ * Modules - the org-API pages - sit in their own collapsible section below.
  */
 const sections: { key: SectionKey; items: NavItem[] }[] = [
   {
     key: 'start',
     items: [
       { navKey: 'dashboard', url: '/dashboard', icon: LayoutDashboard },
-      { navKey: 'tour', url: '/dashboard/tour', icon: ListChecks },
       { navKey: 'inbox', url: '/dashboard/inbox', icon: Inbox },
     ],
   },
   {
     key: 'product',
     items: [
-      { navKey: 'documents', url: '/dashboard/documents', icon: FileText },
       { navKey: 'team', url: '/dashboard/team', icon: Users },
       { navKey: 'profile', url: '/dashboard/profile', icon: UserCircle },
       { navKey: 'security', url: '/dashboard/security', icon: ShieldCheck },
@@ -125,16 +98,11 @@ const sections: { key: SectionKey; items: NavItem[] }[] = [
   },
   {
     key: 'billing',
-    items: [
-      { navKey: 'credits', url: '/dashboard/credits', icon: Coins },
-      { navKey: 'invoices', url: '/dashboard/invoices', icon: Receipt },
-      { navKey: 'usage', url: '/dashboard/usage', icon: Gauge },
-    ],
+    items: [{ navKey: 'invoices', url: '/dashboard/invoices', icon: Receipt }],
   },
   {
     key: 'platform',
     items: [
-      { navKey: 'permissions', url: '/dashboard/permissions', icon: Lock },
       { navKey: 'events', url: '/dashboard/events', icon: Radio },
       { navKey: 'notifications', url: '/dashboard/notifications', icon: Bell },
       { navKey: 'settings', url: '/dashboard/settings', icon: Settings },
@@ -145,13 +113,8 @@ const sections: { key: SectionKey; items: NavItem[] }[] = [
 /** The platform modules the SDK does not wrap, read through the org API. */
 const moduleItems: NavItem[] = [
   { navKey: 'forms', url: '/dashboard/forms', icon: ClipboardList },
-  { navKey: 'collections', url: '/dashboard/collections', icon: Database },
   { navKey: 'assets', url: '/dashboard/assets', icon: ImageIcon },
-  { navKey: 'links', url: '/dashboard/links', icon: Link2 },
   { navKey: 'audience', url: '/dashboard/audience', icon: Contact },
-  { navKey: 'tracking', url: '/dashboard/tracking', icon: Activity },
-  { navKey: 'automations', url: '/dashboard/automations', icon: Workflow },
-  { navKey: 'reports', url: '/dashboard/reports', icon: PieChart },
 ];
 
 const MODULES_OPEN_KEY = 'sidebar-modules-open';
@@ -337,55 +300,6 @@ export function AppSidebar({ side = 'left' }: { side?: 'left' | 'right' }) {
       </SidebarContent>
 
       <SidebarFooter>
-        <WhenAuthenticated>
-          <CreditBalance>
-            {({ balance, loading }) => {
-              const available = balance?.available ?? 0;
-              const granted = balance?.totalGranted ?? 0;
-              const used = granted > 0 ? granted - available : 0;
-              const percent =
-                granted > 0 ? Math.round((used / granted) * 100) : 0;
-              const isLow = granted > 0 && percent >= 80;
-              const isExhausted = granted > 0 && available === 0;
-
-              return (
-                <Link
-                  href="/dashboard/credits"
-                  className="hover:bg-muted/50 block space-y-2 rounded-md border p-3 text-sm transition-colors"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-foreground font-medium">
-                      {t('nav.creditUsage')}
-                    </span>
-                    <span className="text-muted-foreground text-xs">
-                      {loading ? '...' : `${percent}%`}
-                    </span>
-                  </div>
-                  <div className="bg-muted h-2 w-full rounded-full">
-                    <div
-                      className={`h-2 rounded-full transition-all duration-500 ${
-                        isExhausted
-                          ? 'bg-red-500'
-                          : isLow
-                            ? 'bg-amber-500'
-                            : 'bg-green-500'
-                      }`}
-                      style={{ width: `${Math.min(percent, 100)}%` }}
-                    />
-                  </div>
-                  <div className="text-muted-foreground flex items-center justify-between text-xs">
-                    <span>
-                      {loading
-                        ? '...'
-                        : `${available.toLocaleString()} / ${granted.toLocaleString()}`}
-                    </span>
-                    <span>{t('nav.creditsAvailable')}</span>
-                  </div>
-                </Link>
-              );
-            }}
-          </CreditBalance>
-        </WhenAuthenticated>
         <SidebarMenu>
           <SidebarMenuItem>
             <LanguageSwitcher />

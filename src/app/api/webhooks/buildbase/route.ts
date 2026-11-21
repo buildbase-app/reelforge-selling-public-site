@@ -3,7 +3,6 @@ import { parseWebhookEvent } from '@buildbase/sdk';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { logger } from '@/lib/logger';
-import { detect } from '@/tour/progress';
 
 /**
  * Platform webhooks (server to server).
@@ -77,23 +76,6 @@ export async function POST(request: NextRequest) {
     // 500 makes the platform retry; the body hash keeps the retry idempotent.
     return NextResponse.json({ error: 'Storage failed' }, { status: 500 });
   }
-
-  // The tour: a webhook has no session, so credit the people it is about -
-  // every member of the workspace it names, plus the user it names.
-  const people = new Set<string>();
-  if (userId) people.add(userId);
-  if (workspaceId) {
-    const members = await prisma.userWorkspace.findMany({
-      where: { workspaceId },
-      select: { userId: true },
-    });
-    for (const m of members) people.add(m.userId);
-  }
-  await Promise.all(
-    [...people].map((person) =>
-      detect(person, { kind: 'webhook', event: event.event }, { workspaceId })
-    )
-  );
 
   logger.debug('Webhook stored', { event: event.event, workspaceId });
   return NextResponse.json({ received: true });

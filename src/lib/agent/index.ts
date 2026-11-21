@@ -3,13 +3,7 @@ import { createAgentStack } from '@buildbase/sdk/mcp';
 import { env, siteUrl } from '@/env';
 import { siteConfig } from '@/config/site';
 import { logger } from '@/lib/logger';
-import {
-  SCOPES,
-  documentTools,
-  documentResources,
-  documentResourceTemplates,
-  documentPrompts,
-} from './tools';
+import { SCOPES, storeTools, storeResources, storePrompts } from './tools';
 import { buildLlmsTxt, buildLlmsFullTxt, buildSkillMarkdown } from './content';
 import { buildOpenApiSpec } from './openapi';
 
@@ -39,16 +33,15 @@ export const agent = createAgentStack({
   secret: env.SYSTEM_SECRET,
   scopes: [...SCOPES],
   mcp: {
-    serverInfo: { name: 'buildbase-demo', version: '0.3.0' },
+    serverInfo: { name: 'reelforge-store', version: '0.1.0' },
     builtinTools: 'readonly',
-    tools: documentTools,
+    tools: [...storeTools],
     handler: {
       instructions:
-        "This is the BuildBase Demo. Built-in tools read the user's BuildBase account (workspaces, subscription, usage, credits). The document tools read and write the demo's own data. Ask for a workspaceId when the user has several workspaces.",
+        "This is the ReelForge store. Built-in tools read the signed-in customer's account (workspaces, subscription, invoices). There are no write tools. Ask for a workspaceId when the user has several workspaces.",
       builtinResources: true,
-      resources: documentResources,
-      resourceTemplates: documentResourceTemplates,
-      prompts: documentPrompts,
+      resources: storeResources,
+      prompts: storePrompts,
       onError: (error, ctx) => {
         logger.error('MCP error', {
           error: error instanceof Error ? error.message : String(error),
@@ -64,9 +57,9 @@ export const agent = createAgentStack({
     llmsFullTxt: buildLlmsFullTxt(),
     skills: [
       {
-        name: 'buildbase-demo',
+        name: 'reelforge-store',
         description:
-          'Operate the BuildBase Demo as a signed-in user: account, billing, usage, credits and documents over MCP.',
+          'Read a ReelForge customer account over MCP: workspaces, subscription and invoices.',
         content: buildSkillMarkdown(),
       },
     ],

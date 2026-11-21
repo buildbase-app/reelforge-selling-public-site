@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db';
 import { logger } from '@/lib/logger';
-import { detect } from '@/tour/progress';
 
 /**
  * A workflow's HTTP Webhook action calls this route.
@@ -60,21 +59,6 @@ export async function POST(request: NextRequest) {
     });
     return NextResponse.json({ error: 'Storage failed' }, { status: 500 });
   }
-
-  const people = new Set<string>();
-  if (userId) people.add(userId);
-  if (workspaceId) {
-    const members = await prisma.userWorkspace.findMany({
-      where: { workspaceId },
-      select: { userId: true },
-    });
-    for (const m of members) people.add(m.userId);
-  }
-  await Promise.all(
-    [...people].map((person) =>
-      detect(person, { kind: 'action', action: 'workflow:called' }, { id })
-    )
-  );
 
   return NextResponse.json({ provisioned: true, id });
 }

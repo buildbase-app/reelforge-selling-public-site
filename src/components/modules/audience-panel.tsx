@@ -19,14 +19,6 @@ import { Link } from '@/i18n/routing';
 
 const CHECKS = ['profile', 'workspace', 'invite'] as const;
 
-async function noteDone(keys: string[]) {
-  await fetch('/api/audience/attributes-done', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ keys }),
-  }).catch(() => undefined);
-}
-
 /**
  * Three things the platform keeps about a person beyond the account: custom
  * attributes (written by the SDK as the user), a marketing audience contact
@@ -58,7 +50,6 @@ export function AudiencePanel() {
         onboarded: true,
         ...(roleTitle.trim() ? { 'role-title': roleTitle.trim() } : {}),
       });
-      await noteDone(['onboarded', 'role-title']);
       await refetch();
       toast.success(t('onboarding.saved'));
     } catch (error) {
@@ -76,7 +67,6 @@ export function AudiencePanel() {
       if (timezone) updates.timezone = timezone;
       if (currency) updates.currency = currency;
       await updateAttributes(updates);
-      await noteDone(Object.keys(updates));
       await refetch();
       toast.success(t('locale.saved'));
     } catch (error) {

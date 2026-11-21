@@ -69,74 +69,6 @@ export const FEATURES: FeatureEntry[] = [
     mcpTools: ['list_invoices', 'get_invoice'],
   },
   {
-    slug: 'usage',
-    title: 'Usage quotas and overage',
-    path: '/dashboard/usage',
-    summary:
-      'Plan quotas (for example `documents`) with included units, overage pricing and threshold alerts. Creating a document records usage.',
-    sdk: [
-      'useAllQuotaUsage',
-      'useRecordUsage',
-      'WhenQuotaThreshold',
-      'WhenQuotaExhausted',
-      'bb.usage.record()',
-    ],
-    mcpTools: ['get_all_quota_usage', 'get_usage_logs'],
-  },
-  {
-    slug: 'credits',
-    title: 'Prepaid credits',
-    path: '/dashboard/credits',
-    summary:
-      'Credit packages, balances with expiring buckets, consumption and a transaction ledger. Creating a document consumes one credit.',
-    sdk: [
-      'CreditBalance',
-      'useConsumeCredits',
-      'useCreditPackages',
-      'WhenCreditsLow',
-      'bb.credits.consume()',
-    ],
-    mcpTools: [
-      'get_credit_balance',
-      'list_credit_transactions',
-      'get_credit_packages',
-    ],
-  },
-  {
-    slug: 'feature-flags',
-    title: 'Feature flags',
-    path: '/dashboard/documents',
-    summary:
-      'Workspace-level flags (`advanced-exports`, `document-sharing`, `e-signatures`) and user-level flags gate parts of the documents UI.',
-    sdk: ['WhenWorkspaceFeatureEnabled', 'useUserFeatures'],
-    mcpTools: ['check_feature_flag'],
-  },
-  {
-    slug: 'permissions',
-    title: 'Roles and permissions',
-    path: '/dashboard/permissions',
-    summary:
-      'Default role permissions plus per-workspace overrides, evaluated client- and server-side.',
-    sdk: ['usePermissions', 'WhenPermission', 'bb.permissions.check()'],
-    mcpTools: ['check_permission', 'resolve_permissions'],
-  },
-  {
-    slug: 'documents',
-    title: 'Documents (the demo product)',
-    path: '/dashboard/documents',
-    summary:
-      "Markdown documents owned by a workspace, stored in the app's own Postgres. Create, search, tag, change status; sample data loads with one click. The same service backs the REST API and the MCP tools.",
-    sdk: ['getWorkspaceContext()', 'bb.usage.record()', 'bb.credits.consume()'],
-    mcpTools: [
-      'list_documents',
-      'search_documents',
-      'get_document',
-      'get_document_stats',
-      'create_document',
-      'update_document_status',
-    ],
-  },
-  {
     slug: 'notifications',
     title: 'Push and email notifications',
     path: '/dashboard/notifications',
@@ -250,7 +182,7 @@ Agent guide: ${siteConfig.buildbase.agentGuide}
 
 ## What this app is
 
-A Next.js 16 application that a SaaS team could ship as-is. BuildBase supplies identity, tenancy, billing, quotas, credits, flags, notifications and the OAuth authorization server. The app owns its product data (documents), its API routes, its access tokens and its MCP server.
+The ReelForge store: where people buy, download and manage licenses for ReelForge, a self-hosted short-form video studio. BuildBase supplies identity, workspaces, billing, notifications and the OAuth authorization server. The app owns its API routes, its access tokens and its MCP server.
 
 ## How an agent connects
 
@@ -262,15 +194,15 @@ A Next.js 16 application that a SaaS team could ship as-is. BuildBase supplies i
 6. Exchange the code. The platform calls this app's \`/api/auth/oauth2-token\`, which mints a token signed with the app's own secret.
 7. Call ${b}/api/mcp with \`Authorization: Bearer <token>\`.
 
-Scopes: \`documents:read\` (default for reads), \`documents:write\` (required for create_document and update_document_status). Built-in BuildBase tools are read-only.
+Scopes: \`account:read\`. Built-in BuildBase tools are read-only; there are no write tools.
 
 ## MCP surface
 
 Tools (built-in, read-only): list_workspaces, get_workspace, get_user_profile, list_workspace_users, get_subscription, get_plans, get_public_plans, list_invoices, get_invoice, get_quota_usage, get_all_quota_usage, get_usage_logs, get_credit_balance, list_credit_transactions, get_credit_packages, get_expiring_credits, check_feature_flag, check_permission, resolve_permissions, get_settings.
 
-Tools (this app): list_documents, search_documents, get_document, get_document_stats, create_document, update_document_status.
+Tools (this app): none beyond the built-in read-only BuildBase tools.
 
-Resources: \`buildbase://profile\`, \`buildbase://workspaces\`, \`buildbase://workspace/{workspaceId}\`, \`demo://guide\`, \`demo://workspace/{workspaceId}/documents/{documentId}\`.
+Resources: \`buildbase://profile\`, \`buildbase://workspaces\`, \`buildbase://workspace/{workspaceId}\`, \`reelforge://guide\`.
 
 Prompts: \`summarize_workspace\`.
 
@@ -280,9 +212,6 @@ See ${b}/openapi.json. Highlights:
 
 - GET /api/health — liveness (add ?deep=true for a database ping)
 - GET /api/plans — public pricing as JSON
-- GET|POST /api/documents?workspaceId= — list or create documents (session cookie or bearer token)
-- GET|PATCH|DELETE /api/documents/{id}?workspaceId=
-- POST|DELETE /api/documents/seed?workspaceId= — load or remove sample data
 - GET /api/events?workspaceId= — persisted SDK events and webhooks
 - GET /api/content/blog/{slug} — blog post as markdown
 - GET /api/user/export, DELETE /api/user/delete — GDPR
@@ -323,29 +252,27 @@ Security: ${siteConfig.contact.security}
 export function buildSkillMarkdown(): string {
   const b = base();
   return `---
-name: buildbase-demo
-description: Use the BuildBase Demo app as a signed-in user over MCP — read workspaces, billing, usage and credits, and manage documents.
+name: reelforge-store
+description: Read a ReelForge customer's account over MCP: workspaces, subscription and invoices.
 ---
 
-# BuildBase Demo skill
+# ReelForge store skill
 
 ## When to use
-The user asks about their BuildBase Demo workspace: plan, trial, seats, quota headroom, credits, invoices, or the documents their team keeps.
+The user asks about their ReelForge purchase or account: plan, seats, invoices.
 
 ## Connect
 1. Add the MCP server \`${b}/api/mcp\` to your client (Streamable HTTP).
-2. Complete the OAuth flow when prompted; request \`documents:write\` only if you need to create or change documents.
+2. Complete the OAuth flow when prompted.
 
 ## Recommended flow
-1. \`list_workspaces\` → pick the workspace (or pass none if the user has one).
-2. \`get_subscription\`, \`get_all_quota_usage\`, \`get_credit_balance\` for the account picture.
-3. \`list_documents\` / \`search_documents\` / \`get_document\` for content.
-4. Use the \`summarize_workspace\` prompt for a one-page status.
+1. \`list_workspaces\` -> pick the workspace (or pass none if the user has one).
+2. \`get_subscription\` and \`list_invoices\` for the account picture.
+3. Use the \`summarize_workspace\` prompt for a short status.
 
 ## Guardrails
-- Built-in BuildBase tools are read-only here; billing changes go through the app's UI.
-- \`create_document\` records usage and consumes a credit — tell the user before creating many.
-- Never paste tokens into documents.
+- Every tool is read-only; purchases and billing changes go through the site's UI.
+- Never paste tokens into chats or files.
 
 ## References
 - Full guide: ${b}/llms-full.txt

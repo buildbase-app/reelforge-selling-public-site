@@ -6,7 +6,6 @@ import { authCodeSchema } from '@/lib/validation/schemas';
 import { validateBody, isValidationError } from '@/lib/validation/api';
 import { env } from '@/env';
 import { logger } from '@/lib/logger';
-import { detect } from '@/tour/progress';
 
 export async function POST(request: NextRequest) {
   // Validate request body with Zod
@@ -94,7 +93,6 @@ export async function POST(request: NextRequest) {
     // Signing in is the proof that the account exists; the tour's first task
     // waits on this rather than on a user:created event the SDK fires only
     // for an account it created itself.
-    await detect(userId, { kind: 'action', action: 'auth:signed-in' });
 
     const token = createAuthToken({
       userId,

@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ApiVersion, WorkspaceApi } from '@buildbase/sdk';
 import { env } from '@/env';
 import { getWorkspaceContext, type WorkspaceContext } from '@/lib/server-auth';
-import { detect } from '@/tour/progress';
 
 /**
  * The signed-in member's own notification settings in one workspace: the
@@ -112,10 +111,6 @@ export async function PATCH(request: NextRequest) {
       ctx.workspaceId,
       preferences
     );
-    await detect(ctx.userId, {
-      kind: 'action',
-      action: 'notifications:preferences-saved',
-    });
     return NextResponse.json(saved);
   } catch (err) {
     return failure(err);

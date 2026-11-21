@@ -7,7 +7,7 @@
 export const DEMO_EVENT_SLUG = 'comment-added';
 
 export const DEMO_EVENT_DEFAULTS = {
-  title: 'Alice commented on your document',
-  message: '"Can we try the darker hero?" - open it to reply, {{name}}.',
-  url: '/dashboard/documents',
+  title: 'Your ReelForge download is ready',
+  message: 'A new ReelForge release is available, {{name}}.',
+  url: '/dashboard/invoices',
 } as const;

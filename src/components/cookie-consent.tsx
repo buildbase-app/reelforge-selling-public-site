@@ -415,15 +415,6 @@ export function CookieConsent({
       marketing: next.marketing,
     });
     setVisible(false);
-    if (next.analytics || next.marketing) {
-      // Ticks the tour's consent task for a signed-in visitor; a 401 for
-      // everyone else is expected and ignored.
-      void fetch('/api/tracking/event', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ consent: true }),
-      }).catch(() => {});
-    }
   }, []);
 
   const handleAcceptAll = useCallback(

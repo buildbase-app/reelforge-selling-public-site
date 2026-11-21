@@ -20,7 +20,6 @@ export async function SiteFooter({ title }: SiteFooterProps) {
       links: [
         { label: t('footer.links.pricing'), href: '/pricing' },
         { label: t('footer.links.dashboard'), href: '/dashboard' },
-        { label: t('footer.links.credits'), href: '/dashboard/credits' },
       ],
     },
     {
@@ -28,7 +27,6 @@ export async function SiteFooter({ title }: SiteFooterProps) {
       links: [
         { label: t('footer.links.blog'), href: '/blog' },
         { label: t('footer.links.changelog'), href: '/changelog' },
-        { label: t('footer.links.tour'), href: '/#tour' },
       ],
     },
     {

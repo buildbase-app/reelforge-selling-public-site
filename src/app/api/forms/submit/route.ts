@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { hasAdminApi } from '@/lib/buildbase-admin';
 import { getSessionContext } from '@/lib/server-auth';
 import { findForm, submit } from '@/lib/platform/forms';
-import { detect } from '@/tour/progress';
 
 /**
  * Forward a submission to the platform's public submit endpoint. The
@@ -31,11 +30,9 @@ export async function POST(request: NextRequest) {
   }
   const result = await submit(form.publicId, body);
   if (result.ok) {
-    await detect(session.userId, { kind: 'action', action: 'form:submitted' });
     return NextResponse.json({ ok: true, message: result.message });
   }
   if (result.status === 400) {
-    await detect(session.userId, { kind: 'action', action: 'form:rejected' });
   }
   return NextResponse.json(
     { ok: false, message: result.message, errors: result.errors ?? [] },

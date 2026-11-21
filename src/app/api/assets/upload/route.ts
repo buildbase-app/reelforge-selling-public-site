@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminFetch } from '@/lib/buildbase-admin';
-import { detect } from '@/tour/progress';
 import {
   adminErrorResponse,
   requireSessionAndAdmin,
@@ -40,11 +39,6 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       body: upstream,
     });
-    await detect(
-      gate.session.userId,
-      { kind: 'action', action: 'asset:uploaded' },
-      { name: file.name, size: file.size }
-    );
     return NextResponse.json({ asset: created }, { status: 201 });
   } catch (error) {
     return adminErrorResponse(error);

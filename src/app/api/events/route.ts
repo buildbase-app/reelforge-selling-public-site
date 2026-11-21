@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma, setAuditContext } from '@/lib/db';
 import { logger } from '@/lib/logger';
 import { getSessionContext, type SessionContext } from '@/lib/server-auth';
-import { detect } from '@/tour/progress';
 
 /**
  * Mirrors SDK lifecycle events into the local database.
@@ -193,7 +192,6 @@ export async function POST(request: NextRequest) {
     }
 
     // The tour ticks off tasks from the trace they leave.
-    await detect(session.userId, { kind: 'sdk-event', event: eventType });
 
     logger.debug('Event processed successfully', { eventType });
     return NextResponse.json({ success: true });

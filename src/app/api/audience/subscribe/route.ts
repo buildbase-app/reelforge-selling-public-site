@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { adminFetch, AdminApiError } from '@/lib/buildbase-admin';
-import { detect } from '@/tour/progress';
 import {
   adminErrorResponse,
   requireSessionAndAdmin,
@@ -76,11 +75,6 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    await detect(
-      gate.session.userId,
-      { kind: 'action', action: 'audience:subscribed' },
-      { email, listed }
-    );
     return NextResponse.json({ contact, list: list?.name ?? null, listed });
   } catch (error) {
     return adminErrorResponse(error);
