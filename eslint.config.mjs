@@ -17,6 +17,9 @@ const eslintConfig = defineConfig([
     '.wrangler/**',
     'src/generated/**',
     'cloudflare-env.d.ts',
+    // Vendored third-party agent skill (unslop, CC BY 4.0), kept as published
+    '.claude/**',
+    '.agents/**',
   ]),
 ]);
 
