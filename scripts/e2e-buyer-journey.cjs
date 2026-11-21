@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- a plain Node CommonJS script */
 // Buyer journey on the TEST site, end to end, with no person involved:
 // sign up a fresh +test account on the BuildBase development environment
 // (test mode: no mail is sent and the code is always 424242), dismiss the
