@@ -1,5 +1,6 @@
-// Cloudflare Workers build config (OpenNext). Only read by `npm run cf:build`,
-// `cf:preview` and `cf:deploy`; Vercel and Docker builds ignore this file.
+// Cloudflare Workers build config (OpenNext). Read by `opennextjs-cloudflare
+// build` (`npm run preview`, `npm run deploy`, `npm run deploy:dev`, CI and the
+// deploy workflow); plain `next build` / `next dev` ignore this file.
 //
 // Incremental cache: the read-only static-assets cache serves pages that were
 // prerendered at build time (blog posts, changelog entries, privacy, terms)

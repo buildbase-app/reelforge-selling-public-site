@@ -5,13 +5,31 @@ The store runs on Cloudflare Workers through
 Cloudflare D1 as its database. Everything below fits the Workers **free**
 plan, with the caveats at the end.
 
-|                       | Production                                                                                             | Dev (planned)                                                      |
-| --------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
-| Worker                | `reelforge-store`                                                                                      | `reelforge-store-dev`                                              |
-| URL                   | https://reelforge.buildbase.app                                                                        | https://reelforge-dev.buildbase.app                                |
-| D1 database           | `reelforge-store` (`db8c0262-90be-47d0-8bf3-84ce75365682`, account `0109f7bce7af42ac8a88104d324efe4d`) | `reelforge-store-dev` (id still a placeholder in `wrangler.jsonc`) |
-| BuildBase environment | production (`NEXT_PUBLIC_BUILDBASE_ENVIRONMENT` empty)                                                 | `fsyqdskf`                                                         |
-| Config                | top level of `wrangler.jsonc`, `.env.production`                                                       | `env.dev` in `wrangler.jsonc`, `deploy:dev` script                 |
+|               | Production                                                                                                 | Test ("dev")                                                                                                  |
+| ------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Worker        | `reelforge-store`                                                                                          | `reelforge-store-dev`                                                                                         |
+| URL           | https://reelforge.buildbase.app                                                                            | https://reelforge-dev.buildbase.app                                                                           |
+| D1 database   | `reelforge-store` (`db8c0262-90be-47d0-8bf3-84ce75365682`, account `0109f7bce7af42ac8a88104d324efe4d`)     | `reelforge-store-dev` (`319f3e96-5c82-488e-92bf-3f7fcc794dcf`, same account)                                  |
+| BuildBase org | ReelForge (`6b01478bb42d2c444e99fcd8`), production environment (`NEXT_PUBLIC_BUILDBASE_ENVIRONMENT` empty) | ReelForge Test (`6b016b04b42d2c444e9a13b9`, Stripe test keys), its production environment (environment empty) |
+| Config        | top level of `wrangler.jsonc`, `.env.production`                                                           | `env.dev` in `wrangler.jsonc` (runtime vars), `deploy:dev` script (build-time `NEXT_PUBLIC_*`)                |
+| Deployed by   | `deploy` job in `.github/workflows/deploy.yml`, after `deploy-test` succeeded                              | `deploy-test` job in `.github/workflows/deploy.yml`                                                           |
+
+## Automatic deploys (GitHub Actions)
+
+Every push to `claude/eloquent-wright-tm3cs7` runs `.github/workflows/deploy.yml`:
+
+1. `deploy-test`: D1 migrations on `reelforge-store-dev`, then
+   `npm run deploy:dev`, then a health check of the test site.
+2. `deploy` (production): runs only when `deploy-test` succeeded
+   (`needs: deploy-test`). D1 migrations on `reelforge-store`, then
+   `npm run deploy`, then a health check.
+
+`.github/workflows/ci.yml` runs lint, Prettier, unit tests, the type check,
+the OpenNext build and a `wrangler deploy --dry-run` bundle on every push. It
+builds with the production values in `.env.production`.
+
+Open decision (founder): deploying production from a release branch (`main`)
+or a tag instead of from the working branch.
 
 ## Prerequisites
 
@@ -53,8 +71,8 @@ npm ci
    ```
 
    `SYSTEM_SECRET` must be at least 32 characters (`openssl rand -base64 32`).
-   Optional, when used: `BUILDBASE_API_TOKEN` (assets, audience, forms and help
-   pages), `BUILDBASE_CONTENT_WEBHOOK_SECRET`, `BUILDBASE_OAUTH2_CLIENT_ID`,
+   Optional, when used: `BUILDBASE_API_TOKEN` (help center content),
+   `BUILDBASE_CONTENT_WEBHOOK_SECRET`, `BUILDBASE_OAUTH2_CLIENT_ID`,
    `BUILDBASE_OAUTH2_CLIENT_SECRET`.
 
    Secrets are needed at runtime only. The build validates env with
@@ -108,36 +126,34 @@ npm run db:migrate:local
 npm run db:migrate:remote
 ```
 
-## Dev environment (planned, not yet created)
+## Test environment ("dev")
 
-1. Create its database and put the printed id into `env.dev.d1_databases` in
-   `wrangler.jsonc`:
+Created and deployed by the `deploy-test` job. It points at the
+**ReelForge Test** BuildBase organization (`6b016b04b42d2c444e9a13b9`), which
+uses Stripe test keys, so purchases there are test purchases. Its D1
+database is `reelforge-store-dev` (`319f3e96-5c82-488e-92bf-3f7fcc794dcf`).
 
-   ```bash
-   npx wrangler d1 create reelforge-store-dev
-   ```
+Manual equivalent of what the workflow does:
 
-2. Tables and secrets:
+```bash
+npm run db:migrate:dev
+```
 
-   ```bash
-   npm run db:migrate:dev
-   ```
+```bash
+SKIP_ENV_VALIDATION=true npm run deploy:dev
+```
 
-   ```bash
-   npx wrangler secret put BUILDBASE_CLIENT_SECRET --env dev
-   ```
+`deploy:dev` passes the test URL, org id and client id to the build so they
+are inlined instead of the production values; `env.dev.vars` in
+`wrangler.jsonc` sets the same values for server code at runtime. Keep the two
+in step when one changes.
 
-   (repeat for `SYSTEM_SECRET` and `BUILDBASE_WEBHOOK_SECRET`).
-
-3. Deploy. `deploy:dev` passes the dev URL and BuildBase environment key to
-   the build so they are inlined instead of the production values:
-
-   ```bash
-   SKIP_ENV_VALIDATION=true npm run deploy:dev
-   ```
-
-4. Add the dev URL to the OAuth client's redirect URLs, and a webhook endpoint
-   for it, in the BuildBase dev environment.
+Secrets for the test Worker are set with `--env dev`, for example
+`npx wrangler secret put BUILDBASE_CLIENT_SECRET --env dev` (also
+`SYSTEM_SECRET` and `BUILDBASE_WEBHOOK_SECRET`). In the ReelForge Test
+organization, the OAuth client must list `https://reelforge-dev.buildbase.app`
+as a redirect URL, and its webhook endpoint is
+`https://reelforge-dev.buildbase.app/api/webhooks/buildbase`.
 
 ## Local development
 

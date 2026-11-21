@@ -1,7 +1,9 @@
 name: Deploy to Cloudflare
 
-# Builds the store with OpenNext and deploys it to the reelforge-store Worker
-# (https://reelforge.buildbase.app). Needs the repository secret
+# Builds the store with OpenNext and deploys it first to the test Worker
+# (reelforge-store-dev, https://reelforge-dev.buildbase.app) and then, only if
+# that succeeded, to the production Worker (reelforge-store,
+# https://reelforge.buildbase.app). Needs the repository secret
 # CLOUDFLARE_API_TOKEN: Workers Scripts, D1 and Account Settings on the
 # account that owns buildbase.app, Workers Routes, DNS and Zone on the zone.
 # Runtime secrets (BuildBase client and webhook secrets, SYSTEM_SECRET) live
@@ -20,7 +22,9 @@ permissions:
   contents: read
 
 jobs:
+  # Production. Runs only after the test copy deployed successfully.
   deploy:
+    needs: deploy-test
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:

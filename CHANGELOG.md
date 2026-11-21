@@ -12,8 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sentry error monitoring integration with session replay
 - Global error boundary (`src/app/global-error.tsx`)
 - Sentry utility functions (`src/lib/sentry.ts`)
-- Deploys to Cloudflare Workers (OpenNext) as well as Vercel and Docker, with a
-  GitHub Actions deploy on push to `main` once `CLOUDFLARE_API_TOKEN` is set.
+- Deploys to Cloudflare Workers (OpenNext) from GitHub Actions
+  (`.github/workflows/deploy.yml`) on every push to the store branch
+  (`claude/eloquent-wright-tm3cs7`): first the test copy
+  (https://reelforge-dev.buildbase.app, ReelForge Test organization), then,
+  only if that succeeds, production (https://reelforge.buildbase.app). Needs
+  the `CLOUDFLARE_API_TOKEN` repository secret.
 
 ### Changed
 
