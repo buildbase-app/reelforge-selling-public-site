@@ -90,6 +90,25 @@ export function proxy(request: NextRequest): NextResponse {
     }
   }
 
+  // --- Docs Markdown twins ---
+  // `/docs.md` and `/docs/<path>.md` (and `Accept: text/markdown` on a docs
+  // page) are answered by /api/content/docs, from BuildBase Docs.
+  const docsTwin = pathname.match(
+    /^\/docs(?:\/((?:[a-z0-9-]+\/)*[a-z0-9-]+))?\.md$/
+  );
+  const docsPage = pathname.match(
+    /^\/docs(?:\/((?:[a-z0-9-]+\/)*[a-z0-9-]+))?\/?$/
+  );
+  const wantsMd = (request.headers.get('accept') ?? '').includes(
+    'text/markdown'
+  );
+  if (docsTwin || (docsPage && wantsMd)) {
+    const rest = (docsTwin ?? docsPage)![1];
+    const url = request.nextUrl.clone();
+    url.pathname = rest ? `/api/content/docs/${rest}` : '/api/content/docs';
+    return NextResponse.rewrite(url);
+  }
+
   // --- Markdown content negotiation ---
   // When an agent requests Accept: text/markdown on a content page,
   // rewrite to the /api/content/ endpoint which returns raw markdown.
@@ -128,6 +147,9 @@ export function proxy(request: NextRequest): NextResponse {
 
   // Set request-id header
   response.headers.set('x-request-id', requestId);
+
+  // A docs page has a Markdown form under the same URL (Accept: text/markdown).
+  if (docsPage) response.headers.append('Vary', 'Accept');
 
   // --- Link headers for agent/resource discovery ---
   const origin = request.nextUrl.origin;

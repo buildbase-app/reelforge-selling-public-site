@@ -38,6 +38,12 @@ export const PAGES: PageEntry[] = [
     summary: 'Leave a name and email to hear when ReelForge can be bought.',
   },
   {
+    title: 'Docs',
+    path: '/docs',
+    summary:
+      'ReelForge Studio documentation, published from the source repository to BuildBase Docs: quick start (Docker, first API key, connecting an agent over MCP), install and licence, the REST API, every MCP tool, providers, manifest v0.2, a prompt cookbook, privacy and network egress, troubleshooting. Every page also as Markdown (add .md to its URL; index at /docs.md).',
+  },
+  {
     title: 'Help',
     path: '/help',
     summary:
