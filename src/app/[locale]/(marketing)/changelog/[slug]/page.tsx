@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ArticleHtml } from '@/components/content/article-html';
-import { ChangelogMeta } from '@/components/marketing/changelog-meta';
+import { PostMeta } from '@/components/marketing/post-meta';
 import { ArticleJsonLd, BreadcrumbJsonLd } from '@/components/seo/json-ld';
 import { type Locale } from '@/i18n/config';
 import { siteUrl } from '@/env';
@@ -87,17 +87,17 @@ export default async function ChangelogEntryPage({
           <span className="text-foreground">{entry.title}</span>
         </nav>
 
-        <ChangelogMeta
-          entry={entry}
+        <PostMeta
+          post={entry}
           locale={localeTyped}
           latest={entries[0]?.slug === entry.slug}
         />
 
-        <h1 className="text-foreground mt-3 text-3xl font-bold tracking-tight md:text-5xl">
+        <h1 className="text-foreground mt-4 text-3xl font-semibold tracking-tight text-balance md:text-4xl">
           {entry.title}
         </h1>
         {entry.description ? (
-          <p className="text-muted-foreground mt-4 text-base leading-relaxed md:text-lg">
+          <p className="text-muted-foreground mt-4 text-lg leading-relaxed">
             {entry.description}
           </p>
         ) : null}

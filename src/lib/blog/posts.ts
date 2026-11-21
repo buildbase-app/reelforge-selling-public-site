@@ -240,7 +240,17 @@ export function relatedPosts(
     .map((s) => s.p);
 }
 
-/** A post's day, e.g. `2026-11-21`, for bylines. */
-export function postDay(iso: string): string {
-  return iso.slice(0, 10);
+/**
+ * A post's date as people read it, one format on every blog and changelog
+ * page: `November 21, 2026` (in UTC, so the server and the browser agree).
+ */
+export function formatPostDate(iso: string, locale = 'en'): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso.slice(0, 10);
+  return date.toLocaleDateString(locale, {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
 }

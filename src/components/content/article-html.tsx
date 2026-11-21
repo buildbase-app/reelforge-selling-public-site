@@ -15,12 +15,12 @@ export function ArticleHtml({
   return (
     <div
       className={cn(
-        'text-foreground text-base leading-relaxed md:text-lg',
-        '[&_h1]:mt-12 [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:tracking-tight md:[&_h1]:text-4xl',
-        '[&_h2]:mt-14 [&_h2]:scroll-mt-24 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-tight md:[&_h2]:text-3xl',
-        '[&_h3]:mt-10 [&_h3]:scroll-mt-24 [&_h3]:text-xl [&_h3]:font-bold [&_h3]:tracking-tight md:[&_h3]:text-2xl',
-        '[&_h4]:mt-8 [&_h4]:text-lg [&_h4]:font-bold [&_h4]:tracking-tight',
-        '[&_li]:leading-relaxed [&_p]:my-5',
+        'text-foreground max-w-[68ch] text-[17px] leading-[1.7]',
+        '[&_h1]:mt-12 [&_h1]:text-3xl [&_h1]:font-semibold [&_h1]:tracking-tight md:[&_h1]:text-4xl',
+        '[&_h2]:mt-12 [&_h2]:mb-4 [&_h2]:scroll-mt-24 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight',
+        '[&_h3]:mt-10 [&_h3]:mb-3 [&_h3]:scroll-mt-24 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:tracking-tight',
+        '[&_h4]:mt-8 [&_h4]:text-lg [&_h4]:font-semibold [&_h4]:tracking-tight',
+        '[&_li]:leading-[1.7] [&_p]:my-5 [&_strong]:font-semibold',
         '[&_ul]:my-5 [&_ul]:flex [&_ul]:list-disc [&_ul]:flex-col [&_ul]:gap-2 [&_ul]:pl-6',
         '[&_ol]:my-5 [&_ol]:flex [&_ol]:list-decimal [&_ol]:flex-col [&_ol]:gap-2 [&_ol]:pl-6',
         '[&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4 [&_a:hover]:no-underline',

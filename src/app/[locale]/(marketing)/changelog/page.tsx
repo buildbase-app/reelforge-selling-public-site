@@ -5,7 +5,7 @@ import { Link } from '@/i18n/routing';
 import { ArticleHtml } from '@/components/content/article-html';
 import { ItemListJsonLd } from '@/components/seo/json-ld';
 import { RssButton } from '@/components/marketing/rss-button';
-import { ChangelogMeta } from '@/components/marketing/changelog-meta';
+import { PostMeta } from '@/components/marketing/post-meta';
 import type { Locale } from '@/i18n/config';
 import { getPosts } from '@/lib/blog/source';
 import { renderMarkdown } from '@/lib/platform/markdown';
@@ -55,61 +55,58 @@ export default async function ChangelogPage({ params }: ChangelogPageProps) {
           description: e.description,
         }))}
       />
-      <header className="mb-12">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-primary font-mono text-xs tracking-wider uppercase">
-              {t('label')}
-            </p>
-            <h1 className="text-foreground mt-2 text-3xl font-bold tracking-tight md:text-5xl">
-              {t('heading')}
-            </h1>
-            <p className="text-muted-foreground mt-4 text-base md:text-lg">
-              {t('description')}
-            </p>
-          </div>
-          <div className="mt-2 shrink-0">
-            <RssButton href="/changelog/feed.xml" label={t('rssLabel')} />
-          </div>
+      <header className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+        <div className="max-w-prose">
+          <h1 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
+            {t('heading')}
+          </h1>
+          <p className="text-muted-foreground mt-3 text-base leading-relaxed md:text-lg">
+            {t('description')}
+          </p>
+        </div>
+        <div className="shrink-0">
+          <RssButton href="/changelog/feed.xml" label={t('rssLabel')} />
         </div>
       </header>
 
       {entries.length === 0 ? (
-        <div className="border-border bg-muted rounded-lg border p-12 text-center">
-          <p className="text-muted-foreground text-sm">{tBlog('noPosts')}</p>
-        </div>
+        <p className="text-muted-foreground border-border border-y py-12 text-base">
+          {tBlog('noPosts')}
+        </p>
       ) : (
-        <div className="flex flex-col gap-16">
+        <ol className="border-border divide-border divide-y border-y">
           {entries.map((entry, i) => (
-            <article key={entry.slug} className="flex flex-col gap-5">
-              <ChangelogMeta entry={entry} locale={locale} latest={i === 0} />
-              <h2>
+            <li key={entry.slug} className="py-12 first:pt-10">
+              <article className="flex flex-col gap-4">
+                <PostMeta post={entry} locale={locale} latest={i === 0} />
+                <h2 className="text-foreground text-2xl font-semibold tracking-tight">
+                  <Link
+                    href={`/changelog/${entry.slug}`}
+                    className="decoration-foreground/30 underline-offset-4 hover:underline"
+                  >
+                    {entry.title}
+                  </Link>
+                </h2>
+                {entry.description ? (
+                  <p className="text-muted-foreground max-w-prose text-lg leading-relaxed">
+                    {entry.description}
+                  </p>
+                ) : null}
+                <ArticleHtml
+                  html={renderMarkdown(entry.markdown).html}
+                  className="mt-2 [&_h2]:mt-8 [&_h2]:text-lg md:[&_h2]:text-xl"
+                />
                 <Link
                   href={`/changelog/${entry.slug}`}
-                  className="text-foreground hover:text-primary text-2xl font-bold tracking-tight transition-colors md:text-3xl"
+                  className="text-muted-foreground hover:text-foreground inline-flex w-fit items-center gap-2 text-sm transition-colors"
                 >
-                  {entry.title}
+                  {t('permalink')}
+                  <ArrowRight className="size-4" aria-hidden />
                 </Link>
-              </h2>
-              {entry.description ? (
-                <p className="text-muted-foreground text-base leading-relaxed">
-                  {entry.description}
-                </p>
-              ) : null}
-              <ArticleHtml
-                html={renderMarkdown(entry.markdown).html}
-                className="border-border bg-card rounded-lg border p-5 md:p-6 [&_h2]:mt-8 [&_h2]:text-lg md:[&_h2]:text-xl"
-              />
-              <Link
-                href={`/changelog/${entry.slug}`}
-                className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm"
-              >
-                {t('permalink')}
-                <ArrowRight className="size-4" aria-hidden />
-              </Link>
-            </article>
+              </article>
+            </li>
           ))}
-        </div>
+        </ol>
       )}
     </div>
   );

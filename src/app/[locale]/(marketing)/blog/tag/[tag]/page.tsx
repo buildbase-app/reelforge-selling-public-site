@@ -51,12 +51,12 @@ export default async function TagPage({ params }: TagPageProps) {
   const t = await getTranslations({ locale: localeTyped, namespace: 'blog' });
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-16 md:py-24">
+    <div className="mx-auto max-w-3xl px-6 py-16 md:py-24">
       <BreadcrumbJsonLd
         items={[
           { name: t('label'), url: localePath(localeTyped, '/blog') },
           {
-            name: `#${found.tag.title}`,
+            name: found.tag.title,
             url: localePath(localeTyped, `/blog/tag/${found.tag.slug}`),
           },
         ]}
@@ -69,10 +69,10 @@ export default async function TagPage({ params }: TagPageProps) {
         >
           {t('allPosts')}
         </Link>
-        <h1 className="text-foreground text-3xl font-bold tracking-tight md:text-5xl">
-          #{found.tag.title}
+        <h1 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
+          {found.tag.title}
         </h1>
-        <p className="text-muted-foreground mt-4 text-base md:text-lg">
+        <p className="text-muted-foreground mt-3 text-base md:text-lg">
           {t('postsTaggedCount', {
             count: found.posts.length,
             tag: found.tag.title,
@@ -80,7 +80,7 @@ export default async function TagPage({ params }: TagPageProps) {
         </p>
       </header>
 
-      <PostList posts={found.posts} activeTag={found.tag.slug} />
+      <PostList posts={found.posts} />
     </div>
   );
 }

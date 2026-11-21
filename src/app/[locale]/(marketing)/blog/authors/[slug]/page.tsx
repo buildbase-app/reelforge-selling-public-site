@@ -69,7 +69,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
   }));
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-16 md:py-24">
+    <div className="mx-auto max-w-3xl px-6 py-16 md:py-24">
       <JsonLdScript
         data={authorPersonJsonLd(author)}
         scriptKey={`person-${slug}`}
@@ -90,18 +90,18 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
           <img
             src={author.image}
             alt=""
-            className="border-border size-24 shrink-0 rounded-full border object-cover"
+            className="border-border size-20 shrink-0 rounded-full border object-cover"
           />
         ) : (
           <span
             aria-hidden
-            className="bg-primary/20 border-border text-foreground flex size-24 shrink-0 items-center justify-center rounded-full border text-2xl font-bold"
+            className="bg-muted border-border text-muted-foreground flex size-20 shrink-0 items-center justify-center rounded-full border font-mono text-xl"
           >
             {initials(author.name)}
           </span>
         )}
         <div className="flex flex-col gap-2">
-          <h1 className="text-foreground text-3xl font-bold tracking-tight md:text-4xl">
+          <h1 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
             {author.name}
           </h1>
           {links.length > 0 ? (
@@ -123,7 +123,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
       </header>
 
       <section>
-        <h2 className="text-foreground mb-6 text-2xl font-bold tracking-tight">
+        <h2 className="text-muted-foreground mb-2 text-base font-medium">
           {t('postsByAuthor', { name: author.name })}
         </h2>
         <PostList posts={posts} headingLevel="h3" />

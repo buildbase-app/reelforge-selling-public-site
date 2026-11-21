@@ -9,8 +9,7 @@ import { getPosts } from '@/lib/blog/source';
  * RSS for the changelog, from BuildBase Blogs (folder `changelog`).
  * Revalidated like the blog feed.
  */
-export const dynamic = 'force-static';
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 interface RouteContext {
   params: Promise<{ locale: string }>;

@@ -20,8 +20,13 @@ import { terms } from '@/content/pages/terms';
  * drafts, feeds.
  */
 
-/** ISR: rebuilt when a `blog.*` webhook revalidates it; hourly otherwise. */
-export const revalidate = 3600;
+/**
+ * Built per request: the posts come from BuildBase at runtime (the build has
+ * no API token), through a read cached under `buildbase:blog`, which a
+ * `blog.*` webhook revalidates. A prerendered copy would list no posts until
+ * its first revalidation.
+ */
+export const dynamic = 'force-dynamic';
 
 const toIso = (value: string | undefined): string | undefined => {
   if (!value) return undefined;

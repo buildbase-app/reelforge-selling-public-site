@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ArticleHtml } from '@/components/content/article-html';
 import { TableOfContents } from '@/components/marketing/table-of-contents';
+import { PostMeta, TagLinks } from '@/components/marketing/post-meta';
 import { ShareButtons } from '@/components/marketing/share-buttons';
 import { RelatedPosts } from '@/components/marketing/related-posts';
 import { ArticleJsonLd, BreadcrumbJsonLd } from '@/components/seo/json-ld';
@@ -11,7 +12,7 @@ import { siteUrl } from '@/env';
 import { seoConfig } from '@/config/seo';
 import { Link } from '@/i18n/routing';
 import { initials, postAuthorJsonLd } from '@/lib/blog/authors';
-import { postDay, relatedPosts } from '@/lib/blog/posts';
+import { relatedPosts } from '@/lib/blog/posts';
 import { getPost, getPosts } from '@/lib/blog/source';
 import { localePath, localeUrl } from '@/lib/i18n-url';
 import { renderMarkdown } from '@/lib/platform/markdown';
@@ -104,16 +105,13 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           <span className="text-foreground">{post.title}</span>
         </nav>
 
-        <p className="text-muted-foreground font-mono text-xs">
-          <time dateTime={post.date}>{postDay(post.date)}</time> ·{' '}
-          {post.readingTime}
-        </p>
+        <PostMeta post={post} locale={localeTyped} />
 
-        <h1 className="text-foreground mt-4 text-3xl font-bold tracking-tight md:text-5xl">
+        <h1 className="text-foreground mt-4 text-3xl font-semibold tracking-tight text-balance md:text-4xl">
           {post.title}
         </h1>
         {post.description ? (
-          <p className="text-muted-foreground mt-6 text-base leading-relaxed md:text-lg">
+          <p className="text-muted-foreground mt-4 text-lg leading-relaxed">
             {post.description}
           </p>
         ) : null}
@@ -134,7 +132,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               ) : (
                 <span
                   aria-hidden
-                  className="bg-primary/20 border-border text-foreground flex size-10 items-center justify-center rounded-full border font-mono text-xs"
+                  className="bg-muted border-border text-muted-foreground flex size-10 items-center justify-center rounded-full border font-mono text-xs"
                 >
                   {initials(author.name)}
                 </span>
@@ -147,16 +145,8 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         ) : null}
 
         {post.tags.length > 0 ? (
-          <div className="mt-6 flex flex-wrap gap-2">
-            {post.tags.map((tag) => (
-              <Link
-                key={tag.slug}
-                href={`/blog/tag/${tag.slug}`}
-                className="bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-full px-3 py-1 text-sm transition-colors"
-              >
-                #{tag.title}
-              </Link>
-            ))}
+          <div className="mt-6">
+            <TagLinks tags={post.tags} />
           </div>
         ) : null}
 

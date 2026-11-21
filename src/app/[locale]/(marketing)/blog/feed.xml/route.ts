@@ -6,12 +6,12 @@ import { buildFeed, FEED_HEADERS } from '@/lib/blog/feed';
 import { getPosts } from '@/lib/blog/source';
 
 /**
- * RSS for the blog, from BuildBase Blogs (folder `blog`). Static and
- * revalidated with the posts' `buildbase:blog` tag by the `blog.*` webhook;
- * the hour is the safety net.
+ * RSS for the blog, from BuildBase Blogs (folder `blog`). Built per request
+ * from the read cached under `buildbase:blog`, which the `blog.*` webhook
+ * revalidates (the build has no API token, so a prerendered feed would be
+ * empty); the response is cached for five minutes.
  */
-export const dynamic = 'force-static';
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 interface RouteContext {
   params: Promise<{ locale: string }>;

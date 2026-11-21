@@ -567,9 +567,10 @@ const messages: Messages = {
   },
   blog: {
     label: 'Blog',
-    heading: 'Latest Posts',
-    description: 'Updates, tutorials, and insights from our team.',
-    noPosts: 'No posts yet. Check back soon!',
+    heading: 'Blog',
+    description:
+      'What we ship in ReelForge and how to run it. We only write about what exists.',
+    noPosts: 'No posts yet.',
     noPostsTag: 'No posts with this tag yet.',
     noPostsCategory: 'No posts in this category yet.',
     noPostsAuthor: 'No posts by this author yet.',
@@ -584,9 +585,9 @@ const messages: Messages = {
     previous: 'Previous',
     next: 'Next',
     pageOf: 'Page {page} of {total}',
-    relatedPosts: 'Related Posts',
+    relatedPosts: 'Related posts',
     share: 'Share',
-    rssLabel: 'RSS Feed',
+    rssLabel: 'RSS',
     shareAriaX: 'Share on X / Twitter',
     shareAriaLinkedin: 'Share on LinkedIn',
     shareAriaFacebook: 'Share on Facebook',
@@ -601,8 +602,9 @@ const messages: Messages = {
     },
     meta: {
       title: 'Blog',
-      titlePage: 'Blog — Page {page}',
-      description: 'Latest posts, tutorials, and updates from our team.',
+      titlePage: 'Blog, page {page}',
+      description:
+        'Announcements and guides from the people building ReelForge, a self-hosted studio your AI agent drives.',
       tagTitle: 'Posts tagged "{tag}"',
       tagDescription: 'All blog posts tagged with "{tag}".',
       categoryTitle: '{category} — Blog',
@@ -611,13 +613,13 @@ const messages: Messages = {
   },
   changelog: {
     label: 'Changelog',
-    heading: "What's New",
-    description: 'All the latest updates, improvements, and fixes.',
-    rssLabel: 'RSS Feed',
+    heading: 'Changelog',
+    description: 'Release notes for the ReelForge store and the product.',
+    rssLabel: 'RSS',
     permalink: 'Permalink',
     meta: {
       title: 'Changelog',
-      description: 'All the latest updates, improvements, and fixes.',
+      description: 'Release notes for the ReelForge store and the product.',
     },
   },
   inbox: {
