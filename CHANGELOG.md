@@ -27,6 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Homepage v2: an Apple-style product page with three demo reels rendered by
+  ReelForge, the recorded MCP calls behind one of them, engines, privacy,
+  production features, server-rendered pricing, FAQ and footnotes.
+- `/agents` (and `/agents.md`): connect Claude Code, Codex, any MCP client or
+  REST, a prompt cookbook and the studio's MCP tools grouped by job.
 - `scripts/e2e-personal-claim.cjs`: claims the free Personal licence on the
   test site end to end. A unit test fails if "open source" appears in the
   marketing copy.
