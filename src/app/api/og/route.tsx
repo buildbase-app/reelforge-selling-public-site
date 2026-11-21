@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 
   // Get parameters
-  const title = searchParams.get('title') || 'My App';
+  const title = searchParams.get('title') || 'ReelForge';
   const description = searchParams.get('description') || '';
   const locale = (searchParams.get('locale') || 'en') as Locale;
 
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
             fontWeight: 500,
           }}
         >
-          My App
+          ReelForge
         </span>
       </div>
 

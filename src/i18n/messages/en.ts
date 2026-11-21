@@ -99,48 +99,49 @@ const messages: Messages = {
     redirecting: 'Redirecting...',
   },
   home: {
-    title: 'BuildBase Demo',
+    title: 'ReelForge',
     hero: {
-      badge: 'Live demo · 67 tasks',
+      badge: 'Early access · self-hosted',
       heading:
-        'Every BuildBase capability, <highlight>one task at a time</highlight>',
+        'Polished Reels, rendered <highlight>on your own machine</highlight>',
       description:
-        'A real app on the BuildBase SDK, with a guided tour: sign in and work through sign-up, workspaces, billing, usage, credits, notifications, agents and webhooks, each one showing where it comes from.',
-      signInToExplore: 'Sign in to explore',
+        'ReelForge turns a storyboard into vertical video with two animation engines, Remotion and Motion Canvas, and assembles the result into one MP4. You run it on your computer or server: no seller-run render service, and any AI provider is optional and your own.',
+      signInToExplore: 'Join the waitlist',
       openDashboard: 'Open Dashboard',
-      viewSource: 'View source',
-      builtWith: 'Built with',
+      viewSource: 'See pricing',
+      builtWith: 'Built on',
     },
     stats: {
       languages: {
-        label: 'Languages in this demo',
+        label: 'Languages',
         sublabel: 'switch with the header toggle',
       },
       tasks: {
-        label: 'Tasks in the tour',
-        sublabel: 'each one a capability to try',
+        label: 'Animation engines',
+        sublabel: 'Remotion and Motion Canvas',
       },
       groups: {
-        label: 'Groups',
-        sublabel: 'from sign-in to webhooks',
+        label: 'Output',
+        sublabel: '9:16 MP4 with audio',
       },
       authCode: {
-        label: 'Lines of auth code',
-        sublabel: 'the SDK handles it all',
+        label: 'Hosted render service',
+        sublabel: 'you run it yourself',
       },
     },
     cta: {
-      heading: 'Ready to see it all working?',
+      heading: 'Want it before launch?',
       description:
-        'Sign in to open the full dashboard — try switching workspaces, consuming credits, sending a push notification, and switching between all 8 languages.',
-      signIn: 'Sign in & explore',
+        'Join the waitlist for early access. We will email you when ReelForge is ready to buy, with setup guides for your own computer or server.',
+      signIn: 'Sign in',
       openDashboard: 'Open Dashboard',
-      howBuilt: "How it's built",
+      howBuilt: 'Read the blog',
     },
     meta: {
-      title: 'My App',
-      description: 'My Next.js application with shadcn/ui and theme support',
-      tagline: 'Build something amazing',
+      title: 'ReelForge: self-hosted studio for short-form video',
+      description:
+        'Turn a storyboard into polished vertical Reels with Remotion and Motion Canvas, rendered on your own machine or server.',
+      tagline: 'Reels from your own machine',
     },
   },
   dashboard: {

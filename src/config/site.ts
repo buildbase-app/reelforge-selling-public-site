@@ -6,10 +6,10 @@ import { siteUrl } from '@/env';
  * and the "How it works" explainers read from here.
  */
 export const siteConfig = {
-  name: 'BuildBase Demo',
-  shortName: 'Demo',
+  name: 'ReelForge',
+  shortName: 'ReelForge',
   description:
-    'A working SaaS app built on the BuildBase SDK: OAuth sign-in, multi-tenant workspaces, subscriptions, credits, usage quotas, feature flags, push notifications, webhooks, an MCP server for AI agents, and 8 languages.',
+    'ReelForge: a self-hosted studio that turns a storyboard into polished vertical video with Remotion and Motion Canvas. Sold as software you run on your own machine or server.',
   url: siteUrl,
   /** Where the code lives — every "View source" link points here. */
   repo: 'https://github.com/buildbase-app/nextjs-starter',

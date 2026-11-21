@@ -6,6 +6,10 @@
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  // esbuild's keepNames wraps functions in __name(...). Next.js serialises some
+  // functions (the next-themes no-flash script) into the HTML, where __name
+  // does not exist, so it must stay off.
+  "keep_names": false,
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS",
