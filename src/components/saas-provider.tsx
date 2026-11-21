@@ -2,7 +2,7 @@
 
 import { ApiVersion, type EventType, type EventData } from '@buildbase/sdk';
 import React from 'react';
-import { env } from '@/env';
+import { buildbaseEnvironment, env } from '@/env';
 import { SaaSOSProvider } from '@buildbase/sdk/react';
 import { useLocale } from 'next-intl';
 import { Locale } from '@/i18n/config';
@@ -52,6 +52,7 @@ export function SaaSProvider({ children }: { children: React.ReactNode }) {
       serverUrl={config.serverUrl}
       version={ApiVersion.V1}
       orgId={config.orgId}
+      environment={buildbaseEnvironment}
       locale={locale}
       // Analytics and ad tags come from the console (Settings → Tracking)
       // and load only after consent.

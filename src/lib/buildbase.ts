@@ -1,5 +1,6 @@
 import BuildBase from '@buildbase/sdk';
 import { cookies } from 'next/headers';
+import { buildbaseEnvironment } from '@/env';
 
 export const SESSION_COOKIE_NAME = 'bb-session-id';
 
@@ -20,6 +21,7 @@ export const {
 } = BuildBase({
   serverUrl: process.env.NEXT_PUBLIC_BUILDBASE_SERVER_URL!,
   orgId: process.env.NEXT_PUBLIC_BUILDBASE_ORG_ID!,
+  environment: buildbaseEnvironment,
   getSessionId: async () => {
     const c = await cookies();
     return c.get(SESSION_COOKIE_NAME)?.value ?? null;

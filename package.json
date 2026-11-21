@@ -35,7 +35,7 @@
     "db:migrate:dev": "wrangler d1 migrations apply reelforge-store-dev --remote --env dev"
   },
   "dependencies": {
-    "@buildbase/sdk": "0.0.78",
+    "@buildbase/sdk": "^1.8.0",
     "@hookform/resolvers": "^5.2.2",
     "@opennextjs/cloudflare": "^1.20.18",
     "@prisma/adapter-d1": "^7.8.0",

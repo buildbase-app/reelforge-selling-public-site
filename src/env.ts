@@ -76,6 +76,10 @@ export const env = createEnv({
       .string()
       .min(1, 'NEXT_PUBLIC_BUILDBASE_CLIENT_ID is required'),
 
+    // Key of a non-production BuildBase environment (console → Environments).
+    // Empty or unset means production.
+    NEXT_PUBLIC_BUILDBASE_ENVIRONMENT: z.string().optional(),
+
     NEXT_PUBLIC_BUILDBASE_REDIRECT_URL: z
       .string()
       .url('NEXT_PUBLIC_BUILDBASE_REDIRECT_URL must be a valid URL')
@@ -114,6 +118,8 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_BUILDBASE_CLIENT_ID,
     NEXT_PUBLIC_BUILDBASE_REDIRECT_URL:
       process.env.NEXT_PUBLIC_BUILDBASE_REDIRECT_URL,
+    NEXT_PUBLIC_BUILDBASE_ENVIRONMENT:
+      process.env.NEXT_PUBLIC_BUILDBASE_ENVIRONMENT,
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
   },
 
@@ -134,3 +140,10 @@ export const env = createEnv({
  */
 export const siteUrl =
   process.env.SITE_URL || env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
+
+/**
+ * The BuildBase environment key, or undefined for production. An empty string
+ * (how `.env.production` leaves it) also means production.
+ */
+export const buildbaseEnvironment: string | undefined =
+  process.env.NEXT_PUBLIC_BUILDBASE_ENVIRONMENT || undefined;

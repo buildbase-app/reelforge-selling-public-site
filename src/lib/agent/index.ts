@@ -1,6 +1,6 @@
 import 'server-only';
 import { createAgentStack } from '@buildbase/sdk/mcp';
-import { env, siteUrl } from '@/env';
+import { env, siteUrl, buildbaseEnvironment } from '@/env';
 import { siteConfig } from '@/config/site';
 import { logger } from '@/lib/logger';
 import { SCOPES, storeTools, storeResources, storePrompts } from './tools';
@@ -22,6 +22,7 @@ import { buildOpenApiSpec } from './openapi';
 export const agent = createAgentStack({
   serverUrl: env.NEXT_PUBLIC_BUILDBASE_SERVER_URL,
   orgId: env.NEXT_PUBLIC_BUILDBASE_ORG_ID,
+  environment: buildbaseEnvironment,
   siteUrl,
   site: {
     name: siteConfig.name,
