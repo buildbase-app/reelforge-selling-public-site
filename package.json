@@ -31,7 +31,7 @@
     "db:migration": "node scripts/db-migration.mjs",
     "db:migrate:local": "wrangler d1 migrations apply reelforge-store --local",
     "db:migrate:remote": "wrangler d1 migrations apply reelforge-store --remote",
-    "deploy:dev": "NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION= NEXT_PUBLIC_BING_SITE_VERIFICATION= NEXT_PUBLIC_YANDEX_SITE_VERIFICATION= NEXT_PUBLIC_SITE_URL=https://reelforge-dev.buildbase.app SITE_URL=https://reelforge-dev.buildbase.app NEXT_PUBLIC_BUILDBASE_REDIRECT_URL=https://reelforge-dev.buildbase.app NEXT_PUBLIC_BUILDBASE_ORG_ID=6b016b04b42d2c444e9a13b9 NEXT_PUBLIC_BUILDBASE_CLIENT_ID=pHi25sbUqT87HM55lYklaoMhDnHeJxvVeLZyC8o6 NEXT_PUBLIC_BUILDBASE_ENVIRONMENT= opennextjs-cloudflare build && opennextjs-cloudflare deploy --env dev",
+    "deploy:dev": "NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION= NEXT_PUBLIC_BING_SITE_VERIFICATION= NEXT_PUBLIC_YANDEX_SITE_VERIFICATION= NEXT_PUBLIC_SITE_URL=https://reelforge-dev.buildbase.app SITE_URL=https://reelforge-dev.buildbase.app NEXT_PUBLIC_BUILDBASE_REDIRECT_URL=https://reelforge-dev.buildbase.app NEXT_PUBLIC_BUILDBASE_ORG_ID=6b01478bb42d2c444e99fcd8 NEXT_PUBLIC_BUILDBASE_CLIENT_ID=REPLACE_WITH_DEVELOPMENT_CLIENT_ID NEXT_PUBLIC_BUILDBASE_ENVIRONMENT=fsyqdskf opennextjs-cloudflare build && opennextjs-cloudflare deploy --env dev",
     "db:migrate:dev": "wrangler d1 migrations apply reelforge-store-dev --remote --env dev"
   },
   "dependencies": {

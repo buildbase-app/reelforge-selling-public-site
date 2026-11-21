@@ -68,8 +68,9 @@ jobs:
           echo "::warning::Health check did not return 200 yet (a new custom domain's certificate can take a few minutes)."
 
   # Test copy of the store on https://reelforge-dev.buildbase.app, pointed at
-  # the "ReelForge Test" BuildBase organization (Stripe test keys). Same
-  # token; its own Worker (env.dev in wrangler.jsonc) and D1 database.
+  # the `development` environment (fsyqdskf) of the ReelForge BuildBase
+  # organization (Stripe test keys). Same token; its own Worker (env.dev in
+  # wrangler.jsonc) and D1 database.
   deploy-test:
     runs-on: ubuntu-24.04
     timeout-minutes: 20

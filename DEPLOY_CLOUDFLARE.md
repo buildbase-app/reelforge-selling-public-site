@@ -5,14 +5,14 @@ The store runs on Cloudflare Workers through
 Cloudflare D1 as its database. Everything below fits the Workers **free**
 plan, with the caveats at the end.
 
-|               | Production                                                                                                 | Test ("dev")                                                                                                  |
-| ------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| Worker        | `reelforge-store`                                                                                          | `reelforge-store-dev`                                                                                         |
-| URL           | https://reelforge.buildbase.app                                                                            | https://reelforge-dev.buildbase.app                                                                           |
-| D1 database   | `reelforge-store` (`db8c0262-90be-47d0-8bf3-84ce75365682`, account `0109f7bce7af42ac8a88104d324efe4d`)     | `reelforge-store-dev` (`319f3e96-5c82-488e-92bf-3f7fcc794dcf`, same account)                                  |
-| BuildBase org | ReelForge (`6b01478bb42d2c444e99fcd8`), production environment (`NEXT_PUBLIC_BUILDBASE_ENVIRONMENT` empty) | ReelForge Test (`6b016b04b42d2c444e9a13b9`, Stripe test keys), its production environment (environment empty) |
-| Config        | top level of `wrangler.jsonc`, `.env.production`                                                           | `env.dev` in `wrangler.jsonc` (runtime vars), `deploy:dev` script (build-time `NEXT_PUBLIC_*`)                |
-| Deployed by   | `deploy` job in `.github/workflows/deploy.yml`, after `deploy-test` succeeded                              | `deploy-test` job in `.github/workflows/deploy.yml`                                                           |
+|               | Production                                                                                                 | Test ("dev")                                                                                         |
+| ------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Worker        | `reelforge-store`                                                                                          | `reelforge-store-dev`                                                                                |
+| URL           | https://reelforge.buildbase.app                                                                            | https://reelforge-dev.buildbase.app                                                                  |
+| D1 database   | `reelforge-store` (`db8c0262-90be-47d0-8bf3-84ce75365682`, account `0109f7bce7af42ac8a88104d324efe4d`)     | `reelforge-store-dev` (`319f3e96-5c82-488e-92bf-3f7fcc794dcf`, same account)                         |
+| BuildBase org | ReelForge (`6b01478bb42d2c444e99fcd8`), production environment (`NEXT_PUBLIC_BUILDBASE_ENVIRONMENT` empty) | ReelForge (`6b01478bb42d2c444e99fcd8`), its `development` environment (`fsyqdskf`, Stripe test keys) |
+| Config        | top level of `wrangler.jsonc`, `.env.production`                                                           | `env.dev` in `wrangler.jsonc` (runtime vars), `deploy:dev` script (build-time `NEXT_PUBLIC_*`)       |
+| Deployed by   | `deploy` job in `.github/workflows/deploy.yml`, after `deploy-test` succeeded                              | `deploy-test` job in `.github/workflows/deploy.yml`                                                  |
 
 ## Automatic deploys (GitHub Actions)
 
@@ -137,9 +137,12 @@ npm run db:migrate:remote
 ## Test environment ("dev")
 
 Created and deployed by the `deploy-test` job. It points at the
-**ReelForge Test** BuildBase organization (`6b016b04b42d2c444e9a13b9`), which
-uses Stripe test keys, so purchases there are test purchases. Its D1
-database is `reelforge-store-dev` (`319f3e96-5c82-488e-92bf-3f7fcc794dcf`).
+`development` environment (`fsyqdskf`) of the **ReelForge** BuildBase
+organization (`6b01478bb42d2c444e99fcd8`), which uses Stripe test keys, so
+purchases there are test purchases. Its D1 database is `reelforge-store-dev`
+(`319f3e96-5c82-488e-92bf-3f7fcc794dcf`). It replaced the separate ReelForge
+Test organization (`6b016b04b42d2c444e9a13b9`), used while the environment
+was unavailable (saas-os/os#2737, fixed 2026-11-21).
 
 Manual equivalent of what the workflow does:
 
@@ -151,17 +154,21 @@ npm run db:migrate:dev
 SKIP_ENV_VALIDATION=true npm run deploy:dev
 ```
 
-`deploy:dev` passes the test URL, org id and client id to the build so they
-are inlined instead of the production values; `env.dev.vars` in
+`deploy:dev` passes the test URL, org id, client id and environment key to
+the build so they are inlined instead of the production values; `env.dev.vars` in
 `wrangler.jsonc` sets the same values for server code at runtime. Keep the two
 in step when one changes.
 
 Secrets for the test Worker are set with `--env dev`, for example
 `npx wrangler secret put BUILDBASE_CLIENT_SECRET --env dev` (also
-`SYSTEM_SECRET` and `BUILDBASE_WEBHOOK_SECRET`). In the ReelForge Test
-organization, the OAuth client must list `https://reelforge-dev.buildbase.app`
-as a redirect URL, and its webhook endpoint is
-`https://reelforge-dev.buildbase.app/api/webhooks/buildbase`.
+`SYSTEM_SECRET` and `BUILDBASE_WEBHOOK_SECRET`). All of them come from the
+ReelForge organization's `development` environment (switch to it in the
+console first): a sign-in client made there, which must list
+`https://reelforge-dev.buildbase.app` as a redirect URL and whose id goes in
+both places above, and a webhook endpoint
+`https://reelforge-dev.buildbase.app/api/webhooks/buildbase`. A client,
+secret or key from production or another organization does not work in the
+environment.
 
 ## Local development
 

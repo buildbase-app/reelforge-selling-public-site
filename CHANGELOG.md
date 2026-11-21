@@ -30,12 +30,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Deploys to Cloudflare Workers (OpenNext) from GitHub Actions
   (`.github/workflows/deploy.yml`) on every push to the store branch
   (`claude/eloquent-wright-tm3cs7`): first the test copy
-  (https://reelforge-dev.buildbase.app, ReelForge Test organization), then,
+  (https://reelforge-dev.buildbase.app, the ReelForge organization's
+  `development` environment), then,
   only if that succeeds, production (https://reelforge.buildbase.app). Needs
   the `CLOUDFLARE_API_TOKEN` repository secret.
 
 ### Changed
 
+- The test copy (https://reelforge-dev.buildbase.app) uses the ReelForge
+  organization's `development` environment (`fsyqdskf`) instead of the
+  separate ReelForge Test organization, now that the environment works
+  (saas-os/os#2737). Needs that environment's sign-in client id in
+  `wrangler.jsonc` and `deploy:dev`, and its secrets on the test Worker.
 - Positioning: ReelForge is a locked Docker image with a licence key, driven
   by the buyer's AI agent over REST and MCP, with four engines (Remotion,
   Motion Canvas, HTML, HyperFrames). "Source code" wording removed from the
