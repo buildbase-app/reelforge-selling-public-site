@@ -43,6 +43,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Ship or Die hackathon traffic verification (listed in the privacy policy). */}
+        <script
+          defer
+          src="https://www.ship-or-die.com/hackathon/verify.js"
+          data-site="acd9464b4008fa9c064ce0868a60633db7128deb"
+        />
         <meta
           name="theme-color"
           content="#ffffff"

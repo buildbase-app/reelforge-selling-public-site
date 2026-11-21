@@ -32,8 +32,11 @@ function buildbaseConnectSources(): string[] {
 function addSecurityHeaders(response: NextResponse): NextResponse {
   const cspDirectives = [
     "default-src 'self'",
-    // 'unsafe-eval' required for Contentlayer MDX runtime
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+    // 'unsafe-eval' required for Contentlayer MDX runtime.
+    // ship-or-die.com: the hackathon's traffic verification script.
+    // static.cloudflareinsights.com: Cloudflare Web Analytics, which the
+    // buildbase.app zone injects into every page.
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.ship-or-die.com https://static.cloudflareinsights.com",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https: blob:",
     "font-src 'self' data:",

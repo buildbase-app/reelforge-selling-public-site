@@ -106,7 +106,10 @@
   },
   "overrides": {
     "minimatch": "^10.0.0",
-    "eslint-plugin-react-hooks": "7.0.1"
+    "eslint-plugin-react-hooks": "7.0.1",
+    "@opennextjs/aws": {
+      "cookie": "0.7.2"
+    }
   },
   "lint-staged": {
     "*.{ts,tsx}": [
