@@ -1,8 +1,5 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { MdxRenderer } from '@/components/marketing/mdx/mdx-renderer';
-import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
+import { LegalPage } from '@/components/marketing/legal-page';
 import { terms } from '@/content/pages/terms';
 import { buildPageMetadata } from '@/content/pages/page-metadata';
 import type { Locale } from '@/i18n/config';
@@ -24,35 +21,5 @@ export async function generateMetadata({
 
 export default async function TermsPage({ params }: TermsPageProps) {
   const { locale } = await params;
-  setRequestLocale(locale);
-  const [content, t] = await Promise.all([
-    terms.get(locale as Locale),
-    getTranslations({ locale, namespace: 'common' }),
-  ]);
-
-  if (!content) notFound();
-
-  return (
-    <div className="mx-auto max-w-3xl px-6 py-16 md:py-24">
-      <BreadcrumbJsonLd items={[{ name: content.heroTitle, url: '/terms' }]} />
-      <header className="mb-12">
-        <p className="text-primary font-mono text-xs tracking-wider uppercase">
-          {content.heroEyebrow}
-        </p>
-        <h1 className="text-foreground mt-2 text-3xl font-bold tracking-tight md:text-5xl">
-          {content.heroTitle}
-        </h1>
-        <p className="text-muted-foreground mt-4 text-base md:text-lg">
-          {content.heroDescription}
-        </p>
-        <p className="text-muted-foreground mt-2 text-sm">
-          {t('pages.lastUpdated')} {content.lastUpdated}
-        </p>
-      </header>
-
-      <div>
-        <MdxRenderer code={content.body.code} html={content.bodyHtml} />
-      </div>
-    </div>
-  );
+  return <LegalPage locale={locale} path="/terms" loader={terms} />;
 }

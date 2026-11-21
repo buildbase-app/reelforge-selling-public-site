@@ -23,7 +23,8 @@ import rehypeStringify from 'rehype-stringify';
  *   - Blog posts — `src/content/blog/{locale}/{slug}.mdx` → `Post` type
  *   - Changelog — `src/content/changelog/{slug}.mdx` → `ChangelogEntry` type
  *   - Marketing pages — `src/content/pages/{page}/{locale}.mdx` → one
- *     bespoke document type per page (`PrivacyPage`, `TermsPage`).
+ *     bespoke document type per page (`PrivacyPage`, `TermsPage`,
+ *     `LicencePage`, `RefundPage`).
  *
  * Adding a new locale = drop a file under the locale-keyed folder or
  * name it `{locale}.mdx`. The `locale` computed field picks it up from
@@ -176,6 +177,8 @@ const legalFields = {
   seoTitle: { type: 'string', required: false },
   seoDescription: { type: 'string', required: false },
   lastUpdated: { type: 'string', required: true },
+  /** Shows a "Draft – pending review" note above the page. */
+  pendingReview: { type: 'boolean', required: false },
 } as const;
 
 export const PrivacyPage = defineDocumentType(() => ({
@@ -189,6 +192,22 @@ export const PrivacyPage = defineDocumentType(() => ({
 export const TermsPage = defineDocumentType(() => ({
   name: 'TermsPage',
   filePathPattern: 'pages/terms/*.mdx',
+  contentType: 'mdx',
+  fields: legalFields,
+  computedFields: pageLocaleComputed,
+}));
+
+export const LicencePage = defineDocumentType(() => ({
+  name: 'LicencePage',
+  filePathPattern: 'pages/licence/*.mdx',
+  contentType: 'mdx',
+  fields: legalFields,
+  computedFields: pageLocaleComputed,
+}));
+
+export const RefundPage = defineDocumentType(() => ({
+  name: 'RefundPage',
+  filePathPattern: 'pages/refund/*.mdx',
   contentType: 'mdx',
   fields: legalFields,
   computedFields: pageLocaleComputed,
@@ -243,7 +262,15 @@ const prettyCodeOptions: PrettyCodeOptions = {
 
 export default makeSource({
   contentDirPath: 'src/content',
-  documentTypes: [Author, Post, PrivacyPage, TermsPage, ChangelogEntry],
+  documentTypes: [
+    Author,
+    Post,
+    PrivacyPage,
+    TermsPage,
+    LicencePage,
+    RefundPage,
+    ChangelogEntry,
+  ],
   mdx: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [

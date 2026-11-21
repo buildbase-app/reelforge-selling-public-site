@@ -78,6 +78,7 @@ export interface CommonMessages {
   };
   pages: {
     lastUpdated: string;
+    draft: string;
   };
   redirecting: string;
 }

@@ -79,6 +79,7 @@ const messages: Messages = {
     },
     pages: {
       lastUpdated: 'Last updated:',
+      draft: 'Draft – pending review',
     },
     redirecting: 'Redirecting...',
   },

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { PricingSection } from '@/components/pricing-section';
 import { CreditPacks } from '@/components/billing/credit-packs';
+import { RemotionNotice } from '@/components/remotion-notice';
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
 import type { Locale } from '@/i18n/config';
 import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
