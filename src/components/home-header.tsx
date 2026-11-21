@@ -39,7 +39,13 @@ function AuthButton() {
   );
 }
 
-const NAV_HREFS = ['/pricing', '/help', '/blog', '/changelog'] as const;
+const NAV_HREFS = [
+  '/agents',
+  '/pricing',
+  '/help',
+  '/blog',
+  '/changelog',
+] as const;
 
 type NavHref = (typeof NAV_HREFS)[number];
 
@@ -51,6 +57,8 @@ export function HomeHeader({ title }: HomeHeaderProps) {
   const t = useTranslations('common');
 
   const NAV_LINK_KEYS: Record<NavHref, string> = {
+    // English only for now (src/i18n/config.ts): no message key yet.
+    '/agents': 'Agents',
     '/pricing': t('footer.links.pricing'),
     '/help': t('footer.links.help'),
     '/blog': t('footer.links.blog'),

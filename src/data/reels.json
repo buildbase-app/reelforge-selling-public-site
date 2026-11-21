@@ -1,0 +1,367 @@
+{
+  "reels": [
+    {
+      "slug": "agent-directs",
+      "title": "Explainer, four engines",
+      "prompt": "Make a 10-second vertical reel that explains ReelForge: hook first, then three steps, then an end card. Midnight theme. Use all four engines.",
+      "theme": "midnight",
+      "scenes": [
+        {
+          "id": "hook",
+          "engine": "remotion",
+          "template": "kinetic-title",
+          "frames": 75,
+          "text": "Your agent directs. / Your server renders."
+        },
+        {
+          "id": "steps",
+          "engine": "motion-canvas",
+          "template": "animated-explainer",
+          "frames": 105,
+          "text": "One prompt, one reel / The agent plans every scene / The studio renders it / Every MP4 is checked"
+        },
+        {
+          "id": "proof",
+          "engine": "html",
+          "template": "html-title",
+          "frames": 60,
+          "text": "Four engines / One vertical MP4 / Remotion · Motion Canvas · HTML · HyperFrames"
+        },
+        {
+          "id": "end",
+          "engine": "hyperframes",
+          "template": "hyperframes-title",
+          "frames": 60,
+          "text": "ReelForge / Self-hosted. Driven over MCP."
+        }
+      ],
+      "output": {
+        "width": 1080,
+        "height": 1920,
+        "fps": 30,
+        "frames": 300,
+        "durationSeconds": 10,
+        "videoCodec": "h264",
+        "audioCodec": "aac"
+      },
+      "checks": {
+        "metadata": "pass",
+        "decode": "pass",
+        "duration": "pass"
+      },
+      "renderSeconds": 41.2,
+      "renderedAt": "2026-11-21T18:41:46.817Z",
+      "versions": {
+        "studio": "0.1.0",
+        "engines": {
+          "remotion": "4.0.545",
+          "motion-canvas": "3.17.2",
+          "html": "reelforge-html/0.1.0 (playwright-core 1.65.1)",
+          "hyperframes": "hyperframes 0.9.77"
+        },
+        "ffmpeg": "6.1.1-3ubuntu5",
+        "browser": "Google Chrome for Testing 157.0.8103.78"
+      },
+      "hardware": {
+        "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+        "cores": 4,
+        "ramGB": 16
+      },
+      "toolCalls": [
+        {
+          "tool": "get_capabilities",
+          "ms": 160,
+          "note": "4 engines available"
+        },
+        {
+          "tool": "list_templates",
+          "ms": 10,
+          "note": "4 templates"
+        },
+        {
+          "tool": "create_project",
+          "ms": 19,
+          "note": "project store-agent-directs-mwqr7ifm"
+        },
+        {
+          "tool": "add_scene",
+          "ms": 19,
+          "note": "scene steps (motion-canvas, 3.5 s)"
+        },
+        {
+          "tool": "add_scene",
+          "ms": 16,
+          "note": "scene proof (html, 2 s)"
+        },
+        {
+          "tool": "add_scene",
+          "ms": 10,
+          "note": "scene end (hyperframes, 2 s)"
+        },
+        {
+          "tool": "validate_project",
+          "ms": 7,
+          "note": "ok: true, 0 errors, 0 warnings"
+        },
+        {
+          "tool": "render_project",
+          "ms": 11,
+          "note": "job queued"
+        },
+        {
+          "tool": "get_job",
+          "ms": 41295,
+          "note": "succeeded"
+        },
+        {
+          "tool": "get_render_output",
+          "ms": 14,
+          "note": "download URL + checks"
+        }
+      ],
+      "files": {
+        "mp4": "/reels/agent-directs.dd14c5ae.mp4",
+        "webm": "/reels/agent-directs.dd14c5ae.webm",
+        "avif": "/reels/agent-directs.dd14c5ae.avif",
+        "jpg": "/reels/agent-directs.dd14c5ae.jpg",
+        "width": 720,
+        "height": 1280
+      }
+    },
+    {
+      "slug": "hook-tips",
+      "title": "Tips reel",
+      "prompt": "Make an 8-second reel with three tips for writing a better hook. Default theme, bold title first, end on a call to follow.",
+      "theme": "default",
+      "scenes": [
+        {
+          "id": "hook",
+          "engine": "remotion",
+          "template": "kinetic-title",
+          "frames": 60,
+          "text": "3 rules for a better hook / Say it in the first second"
+        },
+        {
+          "id": "tips",
+          "engine": "motion-canvas",
+          "template": "animated-explainer",
+          "frames": 120,
+          "text": "Write hooks that land / Lead with the payoff / About 3 words per second / One idea per scene"
+        },
+        {
+          "id": "cta",
+          "engine": "html",
+          "template": "html-title",
+          "frames": 60,
+          "text": "Part 1 of 5 / Follow for part 2 / Made by an agent, rendered locally"
+        }
+      ],
+      "output": {
+        "width": 1080,
+        "height": 1920,
+        "fps": 30,
+        "frames": 240,
+        "durationSeconds": 8,
+        "videoCodec": "h264",
+        "audioCodec": "aac"
+      },
+      "checks": {
+        "metadata": "pass",
+        "decode": "pass",
+        "duration": "pass"
+      },
+      "renderSeconds": 25.7,
+      "renderedAt": "2026-11-21T18:42:17.556Z",
+      "versions": {
+        "studio": "0.1.0",
+        "engines": {
+          "remotion": "4.0.545",
+          "motion-canvas": "3.17.2",
+          "html": "reelforge-html/0.1.0 (playwright-core 1.65.1)"
+        },
+        "ffmpeg": "6.1.1-3ubuntu5",
+        "browser": "Google Chrome for Testing 157.0.8103.78"
+      },
+      "hardware": {
+        "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+        "cores": 4,
+        "ramGB": 16
+      },
+      "toolCalls": [
+        {
+          "tool": "get_capabilities",
+          "ms": 183,
+          "note": "4 engines available"
+        },
+        {
+          "tool": "list_templates",
+          "ms": 9,
+          "note": "4 templates"
+        },
+        {
+          "tool": "create_project",
+          "ms": 11,
+          "note": "project store-hook-tips-mwqr8i2y"
+        },
+        {
+          "tool": "add_scene",
+          "ms": 19,
+          "note": "scene tips (motion-canvas, 4 s)"
+        },
+        {
+          "tool": "add_scene",
+          "ms": 17,
+          "note": "scene cta (html, 2 s)"
+        },
+        {
+          "tool": "validate_project",
+          "ms": 8,
+          "note": "ok: true, 0 errors, 0 warnings"
+        },
+        {
+          "tool": "render_project",
+          "ms": 10,
+          "note": "job queued"
+        },
+        {
+          "tool": "get_job",
+          "ms": 25842,
+          "note": "succeeded"
+        },
+        {
+          "tool": "get_render_output",
+          "ms": 12,
+          "note": "download URL + checks"
+        }
+      ],
+      "files": {
+        "mp4": "/reels/hook-tips.f730b6c7.mp4",
+        "webm": "/reels/hook-tips.f730b6c7.webm",
+        "avif": "/reels/hook-tips.f730b6c7.avif",
+        "jpg": "/reels/hook-tips.f730b6c7.jpg",
+        "width": 720,
+        "height": 1280
+      }
+    },
+    {
+      "slug": "release-notes",
+      "title": "Release notes, custom brand colour",
+      "prompt": "Turn our release notes into a 7-second reel: a custom HTML title card in our teal brand colour, the three changes as a list, and a HyperFrames end card.",
+      "theme": "custom",
+      "scenes": [
+        {
+          "id": "title",
+          "engine": "html",
+          "template": null,
+          "frames": 60,
+          "text": "Release notes / What changed this week"
+        },
+        {
+          "id": "changes",
+          "engine": "motion-canvas",
+          "template": "animated-explainer",
+          "frames": 105,
+          "text": "Three changes / Faster exports / New dark theme / Bug fixes in sync"
+        },
+        {
+          "id": "end",
+          "engine": "hyperframes",
+          "template": "hyperframes-title",
+          "frames": 45,
+          "text": "Update today / Full notes in the changelog"
+        }
+      ],
+      "output": {
+        "width": 1080,
+        "height": 1920,
+        "fps": 30,
+        "frames": 210,
+        "durationSeconds": 7,
+        "videoCodec": "h264",
+        "audioCodec": "aac"
+      },
+      "checks": {
+        "metadata": "pass",
+        "decode": "pass",
+        "duration": "pass"
+      },
+      "renderSeconds": 24.3,
+      "renderedAt": "2026-11-21T18:42:42.194Z",
+      "versions": {
+        "studio": "0.1.0",
+        "engines": {
+          "html": "reelforge-html/0.1.0 (playwright-core 1.65.1)",
+          "motion-canvas": "3.17.2",
+          "hyperframes": "hyperframes 0.9.77"
+        },
+        "ffmpeg": "6.1.1-3ubuntu5",
+        "browser": "Google Chrome for Testing 157.0.8103.78"
+      },
+      "hardware": {
+        "cpu": "Intel(R) Xeon(R) Processor @ 2.10GHz",
+        "cores": 4,
+        "ramGB": 16
+      },
+      "toolCalls": [
+        {
+          "tool": "get_capabilities",
+          "ms": 142,
+          "note": "4 engines available"
+        },
+        {
+          "tool": "list_templates",
+          "ms": 10,
+          "note": "4 templates"
+        },
+        {
+          "tool": "create_project",
+          "ms": 7,
+          "note": "project store-release-notes-mwqr928c"
+        },
+        {
+          "tool": "add_scene",
+          "ms": 9,
+          "note": "scene changes (motion-canvas, 3.5 s)"
+        },
+        {
+          "tool": "add_scene",
+          "ms": 7,
+          "note": "scene end (hyperframes, 1.5 s)"
+        },
+        {
+          "tool": "set_theme",
+          "ms": 7,
+          "note": "custom accent"
+        },
+        {
+          "tool": "validate_project",
+          "ms": 7,
+          "note": "ok: true, 0 errors, 0 warnings"
+        },
+        {
+          "tool": "render_project",
+          "ms": 7,
+          "note": "job queued"
+        },
+        {
+          "tool": "get_job",
+          "ms": 24383,
+          "note": "succeeded"
+        },
+        {
+          "tool": "get_render_output",
+          "ms": 8,
+          "note": "download URL + checks"
+        }
+      ],
+      "files": {
+        "mp4": "/reels/release-notes.5ca0ab0d.mp4",
+        "webm": "/reels/release-notes.5ca0ab0d.webm",
+        "avif": "/reels/release-notes.5ca0ab0d.avif",
+        "jpg": "/reels/release-notes.5ca0ab0d.jpg",
+        "width": 720,
+        "height": 1280
+      }
+    }
+  ]
+}
