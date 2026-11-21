@@ -4,6 +4,7 @@ import { defaultLocale } from '@/i18n/config';
 import { localeUrl } from '@/lib/i18n-url';
 import { blog } from '@/content/blog';
 import { changelog } from '@/content/changelog';
+import { getGallery } from '@/lib/gallery';
 import { licence } from '@/content/pages/licence';
 import { privacy } from '@/content/pages/privacy';
 import { refund } from '@/content/pages/refund';
@@ -27,7 +28,8 @@ const toIso = (value: string | undefined): string | undefined => {
 const url = (path: string) => localeUrl(siteUrl, defaultLocale, path);
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [posts, entries, ...legal] = await Promise.all([
+  const [reels, posts, entries, ...legal] = await Promise.all([
+    getGallery(),
     blog.getAllPosts(defaultLocale),
     changelog.getAll(),
     licence.get(defaultLocale),
@@ -40,6 +42,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: url('/'), changeFrequency: 'weekly', priority: 1 },
     { url: url('/pricing'), changeFrequency: 'weekly', priority: 0.9 },
     { url: url('/agents'), changeFrequency: 'weekly', priority: 0.8 },
+    { url: url('/gallery'), changeFrequency: 'weekly', priority: 0.8 },
     { url: url('/help'), changeFrequency: 'weekly', priority: 0.7 },
     {
       url: url('/blog'),
@@ -79,9 +82,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  return [...pages, ...postPages, ...entryPages, ...legalPages].map((entry) =>
-    entry.lastModified ? entry : omitUndefined(entry)
-  );
+  const reelPages: MetadataRoute.Sitemap = reels.map((reel) => ({
+    url: url(`/gallery/${reel.slug}`),
+    lastModified: toIso(reel.renderedAt),
+    changeFrequency: 'monthly',
+    priority: 0.5,
+  }));
+
+  return [
+    ...pages,
+    ...reelPages,
+    ...postPages,
+    ...entryPages,
+    ...legalPages,
+  ].map((entry) => (entry.lastModified ? entry : omitUndefined(entry)));
 }
 
 function omitUndefined<T extends object>(entry: T): T {

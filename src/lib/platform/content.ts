@@ -168,3 +168,19 @@ export async function getTestimonials() {
     )) ?? []
   );
 }
+
+/**
+ * Every record of a custom collection's live version (console: Content,
+ * Collections), e.g. the showcase reels in `gallery`. Cached under the SDK's
+ * collection tag, which the content webhook revalidates on
+ * `collection.record_*` and `collection.version_published`.
+ */
+export async function getCollectionRecords<
+  T extends Record<string, unknown> = Record<string, unknown>,
+>(slug: string) {
+  return (
+    (await safely(`collection ${slug}`, async (c) =>
+      (await c.collections.data<T>(slug)).filter((r) => !r.archived)
+    )) ?? []
+  );
+}

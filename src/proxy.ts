@@ -29,7 +29,23 @@ function buildbaseConnectSources(): string[] {
   }
 }
 
+/**
+ * The gallery's media origin (posters, reels, manifests): the R2 custom domain
+ * by default, `GALLERY_MEDIA_URL` when the media moves (a Worker route, or a
+ * local static server for a preview). Only that one origin is added.
+ */
+function galleryMediaSource(): string {
+  const raw = process.env.GALLERY_MEDIA_URL;
+  if (!raw) return 'https://media.reelforge.buildbase.app';
+  try {
+    return new URL(raw).origin;
+  } catch {
+    return 'https://media.reelforge.buildbase.app';
+  }
+}
+
 function addSecurityHeaders(response: NextResponse): NextResponse {
+  const media = galleryMediaSource();
   const cspDirectives = [
     "default-src 'self'",
     // 'unsafe-eval' required for Contentlayer MDX runtime.
@@ -38,10 +54,11 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
     // buildbase.app zone injects into every page.
     "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.ship-or-die.com https://static.cloudflareinsights.com",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: https: blob:",
+    `img-src 'self' data: https: blob: ${media}`,
     "font-src 'self' data:",
-    // Reels and posters: the R2 bucket on media.reelforge.buildbase.app.
-    "media-src 'self' https://media.reelforge.buildbase.app",
+    // Reels and posters: the R2 bucket (media.reelforge.buildbase.app) or
+    // GALLERY_MEDIA_URL's origin.
+    `media-src 'self' ${media}`,
     // Service workers (push-sw.js) and any worker the site starts: own
     // origin only.
     "worker-src 'self'",
