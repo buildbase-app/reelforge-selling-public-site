@@ -1,373 +1,134 @@
-# Contributing Guide
+# Contributing to the ReelForge store
 
-Thank you for your interest in contributing! This document provides guidelines and instructions for contributing to this project.
+Thanks for helping. These rules apply to **everyone: maintainers, outside
+contributors and AI coding agents** (ours and yours). Pull requests that do
+not follow them fail the required `pr-policy` check and cannot be merged;
+if they stay non-compliant for 14 days they are closed automatically.
 
-## Table of Contents
+AI agents: read [AGENTS.md](AGENTS.md) first. It repeats the rules below as
+a checklist you must follow on every task.
 
-- [Code of Conduct](#code-of-conduct)
-- [Getting Started](#getting-started)
-- [Development Workflow](#development-workflow)
-- [Pull Request Process](#pull-request-process)
-- [Coding Standards](#coding-standards)
-- [Commit Guidelines](#commit-guidelines)
-- [Internationalization](#internationalization)
-- [Testing](#testing)
-- [Documentation](#documentation)
+## 1. Before you start
 
-## Code of Conduct
+- **Security problem? Do not open an issue.** Report it privately (see
+  [SECURITY.md](SECURITY.md)).
+- **Question?** See [SUPPORT.md](SUPPORT.md).
+- **Every change starts with an issue.** Search first, then open one with the
+  issue forms (bug report, feature request, or task). For features, wait until
+  a maintainer agrees on the approach (label `status: accepted` or a comment)
+  before writing code. This saves your time.
+- Be kind. We follow the [Code of Conduct](CODE_OF_CONDUCT.md).
 
-By participating in this project, you agree to maintain a respectful and inclusive environment. Please:
+## 2. Branches
 
-- Be respectful and constructive in discussions
-- Welcome newcomers and help them get started
-- Focus on what is best for the community
-- Show empathy towards other community members
+Never commit to `main`. `main` is protected: changes reach it only through a
+reviewed, green pull request.
 
-## Getting Started
+| Who        | Branch name                                                                                    | Example                  |
+| ---------- | ---------------------------------------------------------------------------------------------- | ------------------------ |
+| People     | `<type>/<issue-number>-<short-description>`                                                    | `fix/123-render-timeout` |
+| AI agents  | `<agent>/<short-description>` (`claude/`, `codex/`, `copilot/`, `cursor/`, `devin/`, `agent/`) | `claude/caption-presets` |
+| Dependabot | `dependabot/…` (automatic)                                                                     |                          |
 
-### Prerequisites
+`<type>` is one of `feat`, `fix`, `docs`, `chore`, `refactor`, `perf`,
+`test`, `ci`, `build`, `revert`, `security`, `hotfix` or `release`.
+Lowercase letters, digits, `.`, `_` and `-` only. Branches from forks may use
+any name. Merged branches are deleted automatically.
 
-- Node.js 20+ (check `.nvmrc` for exact version)
-- npm 10+
-- PostgreSQL database
-- Git
+## 3. Commits
 
-### Setup
+- Small, focused commits with clear messages. We **squash-merge**, so the pull
+  request title becomes the commit on `main`; commit messages inside a PR are
+  not checked, but write them well.
+- Never commit secrets, keys, tokens, `.env` files, licence keys or personal
+  data. Secret scanning with push protection blocks most of them; if one gets
+  through, tell a maintainer at once so it can be rotated.
+- AI agents of the maintainers add their attribution trailers
+  (`Co-Authored-By: …`). Outside contributors may, but don't have to.
 
-1. **Fork the repository** on GitHub
+## 4. Pull requests
 
-2. **Clone your fork:**
+1. **Target `main`.** Open it as a **draft** until your own checks pass.
+2. **Title:** a [Conventional Commit](https://www.conventionalcommits.org/):
+   `<type>(optional-scope): <summary>`, for example
+   `fix(render): keep the first frame non-empty`. Add `!` for a breaking
+   change (`feat(api)!: …`).
+3. **Description:** use the template, every section:
+   - **Summary**: what and why.
+   - **Linked issue**: `Closes #123` (or `Refs #123` for partial work). Required.
+   - **How was this tested**: the commands you ran and what you saw.
+   - **Checklist**: tick every item marked _(required)_.
+   - **AI assistance**: tick exactly one option; if AI was used, name the tool
+     and model and say what a person checked.
+4. **One thing per pull request.** Keep it under about 500 changed lines
+   (lockfiles and generated files excluded). Large PRs get a warning and take
+   longer to review; split them.
+5. **Tests:** a bug fix includes a test that fails without the fix. Never
+   delete, skip or weaken tests to make checks pass.
+6. **Checks must be green** and the branch up to date with `main`:
+   `pr-policy`, `dependency-review` and `Code Analysis` (CI)
+7. **Review:** at least one approval from a code owner (see
+   `.github/CODEOWNERS`). New pushes dismiss earlier approvals. All review
+   conversations must be resolved.
+8. **Merge:** squash merge only, by a maintainer (usually with auto-merge,
+   which waits for every check). Nobody pushes to `main` directly.
 
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/REPO_NAME.git
-   cd REPO_NAME
-   ```
+**Maintainer-only files.** Licence, notice, trademark, governance and CI files
+(`LICENSE*`, `NOTICE`, `*LICENSE*.md`, `TRADEMARK.md`, `CONTRIBUTING.md`,
+`AGENTS.md`, `CLAUDE.md`, `.github/`) and licence-enforcement code are changed
+by maintainers only. If you think one needs to change, open an issue.
 
-3. **Install dependencies:**
+## 5. AI-assisted contributions
 
-   ```bash
-   npm install
-   ```
+You may use AI tools. **You are the author and fully accountable** for what you
+submit.
 
-4. **Set up environment:**
+1. **Understand it.** If you can't explain what your change does and how it
+   fits the system without AI help, don't open the PR.
+2. **Disclose it** in the PR template's _AI assistance_ section: the tool and
+   model, the extent, and what you checked yourself. Using AI is fine; not
+   saying so is not.
+3. **Write the description and review replies yourself.** Don't paste raw model
+   output into issues, PRs or reviews.
+4. **Same gates as everyone:** an agreed issue first, tests that fail without
+   your fix, no weakened tests, the contributor agreement.
+5. **No unattended agents.** Bots and agents may not open issues, PRs or
+   comments here unless a maintainer approved that automation in advance.
+6. **Security reports found with AI** must say so, and you must verify them
+   before sending. Fabricated reports get the reporter blocked.
 
-   ```bash
-   cp .env.example .env.local
-   # Edit .env.local with your values
-   ```
+Maintainers' own agents follow the stricter checklist in [AGENTS.md](AGENTS.md):
+draft PRs, all checks green, disclosure filled, and a human merge.
 
-5. **Set up database:**
+## 6. Licence of contributions
 
-   ```bash
-   npx prisma generate
-   npx prisma db push
-   ```
+The store's **code** is licensed under the MIT License ([LICENSE](LICENSE)).
+By opening a pull request you confirm that you wrote the contribution or have
+the right to submit it, and that it is licensed under the MIT License. The
+**ReelForge name, logo, product copy, images and videos** on the site are not
+covered by the MIT License and may not be reused (see [TRADEMARK.md](TRADEMARK.md)).
+The ReelForge product itself lives in
+[reelforge-studio](https://github.com/buildbase-app/reelforge-studio) under its
+own licences.
 
-6. **Start development server:**
-   ```bash
-   npm run dev
-   ```
-
-## Development Workflow
-
-### Branch Naming
-
-Use descriptive branch names:
-
-- `feature/add-user-profile` - New features
-- `fix/login-redirect-loop` - Bug fixes
-- `docs/update-readme` - Documentation changes
-- `refactor/auth-module` - Code refactoring
-- `chore/update-deps` - Maintenance tasks
-
-### Creating a Branch
+## 7. Development
 
 ```bash
-# Sync with main
-git checkout main
-git pull origin main
-
-# Create feature branch
-git checkout -b feature/your-feature-name
+npm ci
+npm run typecheck && npm run lint && npm test && npx prettier --check .   # must pass before a PR is ready
+npx opennextjs-cloudflare build                                           # the Workers build CI runs
 ```
 
-### Running Checks
-
-Before committing, ensure all checks pass:
-
-```bash
-# Run all checks
-npm run check
-
-# Or run individually
-npm run lint        # ESLint
-npm run format:check # Prettier
-npm run typecheck   # TypeScript
-```
-
-### Pre-commit Hooks
-
-Husky runs automatically on commit:
-
-- ESLint with auto-fix
-- Prettier formatting
-- TypeScript type checking
-
-## Pull Request Process
-
-### Before Submitting
-
-1. **Update your branch:**
-
-   ```bash
-   git fetch origin
-   git rebase origin/main
-   ```
-
-2. **Run all checks:**
-
-   ```bash
-   npm run check
-   ```
-
-3. **Test your changes** in both light and dark themes
-
-4. **Test i18n** if you added user-facing text
-
-### Submitting a PR
-
-1. Push your branch to your fork
-2. Open a Pull Request against `main`
-3. Fill out the PR template completely
-4. Link any related issues
-
-### PR Title Format
-
-Use conventional commit format:
-
-```
-feat: add user profile page
-fix: resolve login redirect loop
-docs: update API documentation
-refactor: simplify auth flow
-chore: update dependencies
-```
-
-### Review Process
-
-- PRs require at least one approval
-- CI checks must pass
-- Address all review comments
-- Keep PRs focused and small when possible
-
-## Coding Standards
-
-### TypeScript
-
-- Use strict TypeScript (no `any` types)
-- Define proper interfaces/types
-- Use path aliases (`@/components`, `@/lib`)
-
-```typescript
-// ✅ Good
-interface User {
-  id: string;
-  email: string;
-  name?: string;
-}
-
-// ❌ Bad
-const user: any = { ... };
-```
-
-### React Components
-
-- Use functional components with hooks
-- Keep components focused and small
-- Extract reusable logic into hooks
-
-```typescript
-// ✅ Good
-export function UserCard({ user }: { user: User }) {
-  return (
-    <div className="...">
-      <p>{user.name}</p>
-    </div>
-  );
-}
-
-// ❌ Bad - component doing too much
-export function UserPage() {
-  // 500 lines of code...
-}
-```
-
-### Styling
-
-- Use Tailwind CSS classes
-- Follow the existing design system
-- Use CSS variables for theming
-
-```tsx
-// ✅ Good
-<div className="rounded-lg bg-background text-foreground p-4">
-
-// ❌ Bad - inline styles
-<div style={{ backgroundColor: 'white', padding: '16px' }}>
-```
-
-### File Organization
-
-```
-src/
-├── app/              # Next.js app router pages
-├── components/
-│   ├── ui/           # shadcn/ui components
-│   └── [feature]/    # Feature-specific components
-├── hooks/            # Custom React hooks
-├── lib/              # Utility functions
-│   ├── format/       # Formatting utilities
-│   └── validation/   # Zod schemas
-└── i18n/             # Internationalization
-    └── messages/     # Translation files
-```
-
-## Commit Guidelines
-
-We follow [Conventional Commits](https://www.conventionalcommits.org/):
-
-### Format
-
-```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer]
-```
-
-### Types
-
-| Type       | Description                         |
-| ---------- | ----------------------------------- |
-| `feat`     | New feature                         |
-| `fix`      | Bug fix                             |
-| `docs`     | Documentation changes               |
-| `style`    | Code style (formatting, semicolons) |
-| `refactor` | Code refactoring                    |
-| `test`     | Adding or updating tests            |
-| `chore`    | Maintenance tasks                   |
-| `perf`     | Performance improvements            |
-| `ci`       | CI/CD changes                       |
-
-### Examples
-
-```bash
-feat(auth): add password reset flow
-fix(i18n): correct Arabic RTL alignment
-docs(readme): add deployment instructions
-refactor(api): simplify error handling
-```
-
-## Internationalization
-
-### Adding Translations
-
-When adding user-facing text:
-
-1. Add the key to all language files in `src/i18n/messages/`
-2. Use the translation in your component:
-
-```typescript
-import { useTranslations } from 'next-intl';
-
-function MyComponent() {
-  const t = useTranslations('namespace');
-  return <p>{t('key')}</p>;
-}
-```
-
-### Translation Files
-
-```
-src/i18n/messages/
-├── en.ts    # English (default)
-├── hi.ts    # Hindi
-├── es.ts    # Spanish
-├── fr.ts    # French
-├── de.ts    # German
-├── ja.ts    # Japanese
-├── zh.ts    # Chinese
-└── ar.ts    # Arabic (RTL)
-```
-
-### Guidelines
-
-- Keep translations consistent in tone
-- Consider text length (some languages are longer)
-- Test RTL languages (Arabic)
-
-## Testing
-
-### Running Tests
-
-```bash
-# Run all tests (when implemented)
-npm test
-
-# Run in watch mode
-npm run test:watch
-```
-
-### Writing Tests
-
-- Test component behavior, not implementation
-- Use meaningful test descriptions
-- Mock external dependencies
-
-## Documentation
-
-### Updating Docs
-
-- Update `README.md` for major changes
-- Add/update `knowledge/*.md` for new features
-- Include JSDoc comments for utilities
-
-### Knowledge Base
-
-Add documentation for new features in `knowledge/`:
-
-````markdown
-# Feature Name
-
-Brief description.
-
-## Key Files
-
-| File      | Purpose     |
-| --------- | ----------- |
-| `src/...` | Description |
-
-## Usage
-
-```typescript
-// Code examples
-```
-````
-
-## Configuration
-
-Explain any configuration options.
-
-```
-
-## Questions?
-
-If you have questions:
-
-1. Check existing documentation in `knowledge/`
-2. Search existing issues
-3. Open a new issue for discussion
-
-Thank you for contributing! 🎉
-```
+End-to-end scripts (`scripts/e2e-*.cjs`) run against the **test site only**
+(`reelforge-dev.buildbase.app`, BuildBase development environment, Stripe test
+keys). Never point them at production. See `DEPLOY_CLOUDFLARE.md` for
+environments and deploys.
+
+## 8. What happens to a non-compliant PR
+
+The `pr-policy` bot comments with a numbered list of what to fix and adds the
+label `policy: needs-changes`; the check stays red, so the PR cannot be merged.
+Fix the title, description or branch and it runs again. After 7 days without a
+fix the PR is marked stale; after 14 days it is closed. Closed PRs can be
+reopened at any time. Maintainers may also close PRs that don't meet the AI
+policy, with an explanation; you can always reply.
