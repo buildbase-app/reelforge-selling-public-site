@@ -1,4 +1,4 @@
-import { allPrivacyPages } from 'contentlayer/generated';
+import en from './en';
 import { createPageLoader } from '../page-loader';
 
-export const privacy = createPageLoader(allPrivacyPages);
+export const privacy = createPageLoader([en]);

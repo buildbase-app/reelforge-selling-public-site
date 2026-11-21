@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
   const data = event.data ?? {};
 
   const tags = tagsForWebhookEvent(event.event, data);
-  const paths = pathsForWebhookEvent(event.event);
+  const paths = pathsForWebhookEvent(event.event, data);
   try {
     for (const tag of tags) revalidateTag(tag, { expire: 0 });
     for (const path of paths) revalidatePath(path);

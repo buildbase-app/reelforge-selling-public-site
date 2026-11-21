@@ -1,15 +1,15 @@
 import { ArrowRight } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
-import type { BlogPost } from '@/content/blog';
+import type { BlogPost } from '@/lib/blog/posts';
 
 interface RelatedPostsProps {
   posts: BlogPost[];
 }
 
 /**
- * Shows 2-3 related blog posts. The parent page is responsible for
- * computing which posts are related (by category, tags, etc.).
+ * Shows up to three related blog posts. The parent page picks them
+ * (`relatedPosts`: shared tags).
  */
 export async function RelatedPosts({ posts }: RelatedPostsProps) {
   if (posts.length === 0) return null;
@@ -28,9 +28,11 @@ export async function RelatedPosts({ posts }: RelatedPostsProps) {
             href={`/blog/${post.slug}`}
             className="border-border hover:border-primary/50 group flex flex-col gap-3 rounded-lg border p-6 transition-colors"
           >
-            <span className="text-primary font-mono text-xs tracking-wider uppercase">
-              {post.category}
-            </span>
+            {post.tags[0] ? (
+              <span className="text-primary font-mono text-xs tracking-wider uppercase">
+                {post.tags[0].title}
+              </span>
+            ) : null}
             <h3 className="text-foreground text-base leading-snug font-medium">
               {post.title}
             </h3>

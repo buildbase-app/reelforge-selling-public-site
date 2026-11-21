@@ -1,7 +1,9 @@
 import { NextRequest } from 'next/server';
-import { blog } from '@/content/blog';
-import { changelog } from '@/content/changelog';
-import { defaultLocale, type Locale } from '@/i18n/config';
+import { defaultLocale } from '@/i18n/config';
+import { siteUrl } from '@/env';
+import { localeUrl } from '@/lib/i18n-url';
+import { getPost } from '@/lib/blog/source';
+import { postMarkdown } from '@/lib/blog/twin';
 
 /**
  * Markdown content negotiation endpoint.
@@ -9,6 +11,9 @@ import { defaultLocale, type Locale } from '@/i18n/config';
  * When an AI agent requests a page with `Accept: text/markdown`, the
  * middleware (or the agent directly) can hit this endpoint to get the
  * raw markdown version of the content.
+ *
+ * Posts come from BuildBase Blogs (src/lib/blog/source.ts), cached under
+ * the `buildbase:blog` tag that the `blog.*` webhook revalidates.
  *
  * Routes:
  *   GET /api/content/blog/{slug}           → blog post markdown
@@ -36,96 +41,35 @@ export async function GET(
 
   const [type, ...rest] = path;
 
-  // --- Blog posts ---
-  if (type === 'blog') {
-    let locale: Locale = defaultLocale;
-    let slug: string;
-
-    if (rest.length === 2) {
-      // /api/content/blog/{locale}/{slug}
-      locale = rest[0] as Locale;
-      slug = rest[1];
-    } else if (rest.length === 1) {
-      // /api/content/blog/{slug}
-      slug = rest[0];
-    } else {
+  // --- Blog posts and changelog entries (BuildBase Blogs) ---
+  if (type === 'blog' || type === 'changelog') {
+    // /api/content/blog/{slug}, or /api/content/blog/en/{slug}: the blog is
+    // English only.
+    const slug =
+      rest.length === 1
+        ? rest[0]
+        : rest.length === 2 && type === 'blog' && rest[0] === defaultLocale
+          ? rest[1]
+          : null;
+    if (!slug) {
       return Response.json(
-        {
-          error:
-            'Use /api/content/blog/{slug} or /api/content/blog/{locale}/{slug}',
-        },
+        { error: `Use /api/content/${type}/{slug}` },
         { status: 400 }
       );
     }
-
-    const post = await blog.getPostBySlug(locale, slug);
+    const post = await getPost(type, slug);
     if (!post) {
-      return Response.json({ error: 'Post not found' }, { status: 404 });
-    }
-
-    const markdown = [
-      `# ${post.title}`,
-      '',
-      `> ${post.description}`,
-      '',
-      `**Author:** ${post.author}  `,
-      `**Date:** ${post.date}  `,
-      `**Category:** ${post.category}  `,
-      `**Reading time:** ${post.readingTime}  `,
-      ...(post.tags.length > 0 ? [`**Tags:** ${post.tags.join(', ')}  `] : []),
-      '',
-      '---',
-      '',
-      post.bodyRaw,
-    ].join('\n');
-
-    return new Response(markdown, {
-      headers: {
-        'Content-Type': 'text/markdown; charset=utf-8',
-        'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
-      },
-    });
-  }
-
-  // --- Changelog entries ---
-  if (type === 'changelog') {
-    if (rest.length !== 1) {
       return Response.json(
-        { error: 'Use /api/content/changelog/{slug}' },
-        { status: 400 }
+        { error: type === 'blog' ? 'Post not found' : 'Entry not found' },
+        { status: 404 }
       );
     }
-
-    const slug = rest[0];
-    const entry = await changelog.getBySlug(slug);
-    if (!entry) {
-      return Response.json({ error: 'Entry not found' }, { status: 404 });
-    }
-
-    const highlights = entry.highlights
-      .map((h) => `- **${h.kind}: ${h.title}** — ${h.body}`)
-      .join('\n');
-
-    const markdown = [
-      `# ${entry.title}`,
-      '',
-      `> ${entry.description}`,
-      '',
-      `**Date:** ${entry.date}  `,
-      ...(entry.version ? [`**Version:** ${entry.version}  `] : []),
-      ...(entry.tag ? [`**Tag:** ${entry.tag}  `] : []),
-      '',
-      '## Highlights',
-      '',
-      highlights,
-      '',
-      ...(entry.body?.raw ? ['---', '', entry.body.raw] : []),
-    ].join('\n');
-
-    return new Response(markdown, {
+    const url = localeUrl(siteUrl, defaultLocale, `/${type}/${slug}`);
+    return new Response(postMarkdown(post, url), {
       headers: {
         'Content-Type': 'text/markdown; charset=utf-8',
-        'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
+        'Cache-Control': 'public, max-age=300, stale-while-revalidate=3600',
+        Vary: 'Accept',
       },
     });
   }

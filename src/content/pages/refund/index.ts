@@ -1,4 +1,4 @@
-import { allRefundPages } from 'contentlayer/generated';
+import en from './en';
 import { createPageLoader } from '../page-loader';
 
-export const refund = createPageLoader(allRefundPages);
+export const refund = createPageLoader([en]);

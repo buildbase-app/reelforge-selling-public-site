@@ -1,4 +1,4 @@
-import { allTermsPages } from 'contentlayer/generated';
+import en from './en';
 import { createPageLoader } from '../page-loader';
 
-export const terms = createPageLoader(allTermsPages);
+export const terms = createPageLoader([en]);

@@ -221,11 +221,16 @@ What refreshes what (`src/lib/cache/webhook-tags.ts`, called by
 - Content events (`faq.updated`, `faq_collection.updated`,
   `rich_content.updated`, `doc.*`, ...): the SDK's `buildbase:*` tags, so
   `/help`, the FAQ sections and the content blocks.
+- `blog.*` (a post published, edited, unpublished or deleted): tag
+  `buildbase:blog`, plus the paths `/blog`, `/changelog`, their feeds, the
+  post's page and `/sitemap.xml`. Blog posts live in the `blog` folder,
+  release notes in `changelog`; a release note named `v1-2-0` shows v1.2.0.
+  `scripts/content/migrate-blog-to-buildbase.mjs` moved the old posts in.
 
 Server reads need `BUILDBASE_API_TOKEN` (an app-server API key) whose API role
 has the content-reader permissions and `marketplace_items` read. Without it
-the pages still work: FAQs and blocks use their local defaults, and prices
-are read in the browser as before.
+the pages still work: FAQs and blocks use their local defaults, prices are
+read in the browser as before, and the blog and changelog are empty.
 
 ## How the Cloudflare port works
 
@@ -237,13 +242,14 @@ are read in the browser as before.
   to `ctx.waitUntil` so they are not cut off when the response is sent.
 - **Migrations:** SQL files in `migrations/`, generated with
   `prisma migrate diff` and applied by `wrangler d1 migrations apply`.
-- **MDX:** Workers forbid `new Function`, which Contentlayer's MDX runtime
-  needs. Contentlayer now also renders every body to static HTML at build
-  time (`bodyHtml`); the server sends that HTML and the browser swaps in the
-  full MDX component after hydration (`mdx-renderer.tsx`).
+- **Content:** the blog and changelog are BuildBase Blogs posts (folders
+  `blog` and `changelog`), read on the server and rendered from Markdown to
+  sanitised HTML (`src/lib/platform/markdown.ts`); the legal pages are
+  Markdown in `src/content/pages/`. Nothing evaluates code at runtime, so
+  the CSP has no `'unsafe-eval'` (Contentlayer, which needed it, is gone).
 - **Bundle size:** `next.config.ts` excludes the Prisma CLI, its dev database
-  (PGlite), the query compilers for other databases and a build-only
-  Contentlayer dependency from the server trace. Without that the Worker was
+  (PGlite) and the query compilers for other databases from the server
+  trace. Without that the Worker was
   73.6 MiB, over Cloudflare's 64 MiB limit; with it, 30.0 MiB
   (7.6 MiB gzipped), measured with
   `npx wrangler deploy --dry-run --outdir /tmp/wdry`.

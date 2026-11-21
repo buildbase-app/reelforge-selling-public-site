@@ -1,14 +1,18 @@
----
-heroEyebrow: Legal
-heroTitle: ReelForge licences
-heroDescription: ReelForge is source-available under two licences, a free Personal licence for noncommercial use and a paid Commercial licence. A summary; the full texts are linked. Draft, pending review.
-seoTitle: ReelForge licences
-seoDescription: ReelForge is source-available. Free for noncommercial use under the PolyForm Noncommercial License 1.0.0; any commercial use needs the ReelForge Commercial License. Summary, draft pending review.
-lastUpdated: 2026-11-21
-pendingReview: true
----
+import type { LegalPageContent } from '../page-loader';
 
-ReelForge is **source-available**: anyone can read its code on [GitHub](https://github.com/buildbase-app/reelforge-studio). What you may do with it depends on how you use it. This page summarises the two licences; the full texts in the repository are what apply. Placeholders in square brackets are not decided yet. Nothing here is legal advice.
+/** The licence page, English. The body is Markdown, rendered on the server. */
+const page: LegalPageContent = {
+  locale: 'en',
+  heroEyebrow: 'Legal',
+  heroTitle: 'ReelForge licences',
+  heroDescription:
+    'ReelForge is source-available under two licences, a free Personal licence for noncommercial use and a paid Commercial licence. A summary; the full texts are linked. Draft, pending review.',
+  seoTitle: 'ReelForge licences',
+  seoDescription:
+    'ReelForge is source-available. Free for noncommercial use under the PolyForm Noncommercial License 1.0.0; any commercial use needs the ReelForge Commercial License. Summary, draft pending review.',
+  lastUpdated: '2026-11-21',
+  pendingReview: true,
+  body: `ReelForge is **source-available**: anyone can read its code on [GitHub](https://github.com/buildbase-app/reelforge-studio). What you may do with it depends on how you use it. This page summarises the two licences; the full texts in the repository are what apply. Placeholders in square brackets are not decided yet. Nothing here is legal advice.
 
 | You want to…                                                                                            | You need                                                                                 |
 | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
@@ -27,7 +31,7 @@ The Personal licence is the **PolyForm Noncommercial License 1.0.0**, unmodified
 In short:
 
 - You may use, change and share ReelForge for any **noncommercial** purpose: personal use, hobby projects, study, research and evaluation, and use by charities, schools, public research bodies and government institutions.
-- Anyone you share it with must get the licence terms and the `Required Notice:` lines from the repository's [NOTICE](https://github.com/buildbase-app/reelforge-studio/blob/main/NOTICE).
+- Anyone you share it with must get the licence terms and the \`Required Notice:\` lines from the repository's [NOTICE](https://github.com/buildbase-app/reelforge-studio/blob/main/NOTICE).
 - It includes a patent licence, gives you 32 days to fix a violation after notice, and comes with no warranty.
 - The Personal licence key is free; you claim it on the [pricing page](/pricing) with a BuildBase account. It is for noncommercial use only.
 
@@ -60,7 +64,7 @@ Any use by or for a business, or any use meant to earn money, directly or indire
 
 ## Third-party software
 
-ReelForge's third-party components keep their own licences (listed in the repository's `LICENSES/` folder), and complying with them is your responsibility.
+ReelForge's third-party components keep their own licences (listed in the repository's \`LICENSES/\` folder), and complying with them is your responsibility.
 
 - **Remotion is not covered by either ReelForge licence.** ReelForge includes Remotion-based templates. Remotion is free for individuals and companies of up to 3 people; larger companies need their own Remotion licence ([remotion.dev/license](https://www.remotion.dev/license)). We do not sell or include a Remotion licence.
 - **Other engines and tools.** ReelForge also includes Motion Canvas, HTML and HyperFrames engines, each under its own licence.
@@ -69,3 +73,7 @@ ReelForge's third-party components keep their own licences (listed in the reposi
 ## Contact
 
 Commercial, partner or licensing questions: see the [contact page](/contact). The full licensing overview is [LICENSING.md](https://github.com/buildbase-app/reelforge-studio/blob/main/LICENSING.md).
+`,
+};
+
+export default page;

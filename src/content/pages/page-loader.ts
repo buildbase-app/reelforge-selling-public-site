@@ -4,9 +4,10 @@ import type { Locale } from '@/i18n/config';
 /**
  * Generic per-page content loader.
  *
- * Every marketing page under `src/content/pages/{page}/{locale}.mdx`
- * exposes the same interface by wrapping its Contentlayer document
- * array with `createPageLoader`.
+ * Every legal page is a module per language,
+ * `src/content/pages/{page}/{locale}.ts`, holding its header fields and a
+ * Markdown body (rendered and sanitised on the server by `LegalPage`), and
+ * its `index.ts` wraps them with `createPageLoader`.
  *
  * Fallback rule: if the requested locale has no translation, the
  * default-locale version is served.
@@ -18,6 +19,21 @@ export interface PageContentLoader<T> {
 
 interface LocalizedDoc {
   locale: string;
+}
+
+/** One legal page in one language. */
+export interface LegalPageContent extends LocalizedDoc {
+  heroEyebrow: string;
+  heroTitle: string;
+  heroDescription: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  /** `YYYY-MM-DD`. */
+  lastUpdated: string;
+  /** Shows a "Draft – pending review" note above the page. */
+  pendingReview?: boolean;
+  /** Markdown. */
+  body: string;
 }
 
 function isKnownLocale(value: string): value is Locale {

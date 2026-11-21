@@ -3,6 +3,7 @@ import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import remarkRehype from 'remark-rehype';
 import rehypeRaw from 'rehype-raw';
+import rehypeSlug from 'rehype-slug';
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import rehypeStringify from 'rehype-stringify';
 import { toString as hastToString } from 'hast-util-to-string';
@@ -94,6 +95,9 @@ const processor = unified()
   .use(remarkGfm)
   .use(remarkRehype, { allowDangerousHtml: true })
   .use(rehypeRaw)
+  // Heading ids (`md-<slug>` once sanitised) for in-page links and the blog's
+  // table of contents.
+  .use(rehypeSlug)
   .use(rehypeSanitize, schema)
   .use(externalLinks);
 

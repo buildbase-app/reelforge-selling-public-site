@@ -1,91 +1,57 @@
 import type { Metadata } from 'next';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
 import { BlogJsonLd } from '@/components/seo/json-ld';
-import { blog } from '@/content/blog';
-import { resolveAuthor } from '@/content/authors';
-import type { Locale } from '@/i18n/config';
-import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
-import { BlogSearch } from '@/components/marketing/blog-search';
+import { PostList } from '@/components/marketing/post-list';
 import { RssButton } from '@/components/marketing/rss-button';
+import type { Locale } from '@/i18n/config';
+import { postAuthorJsonLd } from '@/lib/blog/authors';
+import { tagsOf } from '@/lib/blog/posts';
+import { getPosts } from '@/lib/blog/source';
+import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
 
-const POSTS_PER_PAGE = 10;
+/**
+ * ISR, like the store's other BuildBase pages: posts come from BuildBase
+ * Blogs (folder `blog`) through a read tagged `buildbase:blog`, which the
+ * `blog.*` webhook revalidates; this hour is only the safety net.
+ */
+export const revalidate = 3600;
 
 interface BlogIndexPageProps {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ page?: string }>;
 }
 
 export async function generateMetadata({
   params,
-  searchParams,
 }: BlogIndexPageProps): Promise<Metadata> {
   const { locale } = await params;
-  const { page } = await searchParams;
-  const localeTyped = locale as Locale;
-  const t = await getTranslations({ locale: localeTyped, namespace: 'blog' });
-  const currentPage = Math.max(1, parseInt(page ?? '1', 10) || 1);
-
-  const allPosts = await blog.getAllPosts(localeTyped);
-  const totalPages = Math.max(1, Math.ceil(allPosts.length / POSTS_PER_PAGE));
-  const safePage = Math.min(currentPage, totalPages);
-
-  const base = buildMarketingMetadata({
+  const t = await getTranslations({ locale, namespace: 'blog' });
+  return buildMarketingMetadata({
     path: '/blog',
-    locale: localeTyped,
-    title:
-      safePage > 1 ? t('meta.titlePage', { page: safePage }) : t('meta.title'),
+    locale: locale as Locale,
+    title: t('meta.title'),
     description: t('meta.description'),
-    alternatesTypes: {
-      'application/rss+xml': '/blog/feed.xml',
-    },
+    alternatesTypes: { 'application/rss+xml': '/blog/feed.xml' },
   });
-
-  return {
-    ...base,
-    // Page 2+ should not be indexed — Google follows links to individual
-    // posts but doesn't need duplicate list pages in the index.
-    // (Google deprecated rel=prev/next in 2019; noindex+follow is the
-    // recommended approach for paginated lists.)
-    ...(safePage > 1 && {
-      robots: { index: false, follow: true },
-    }),
-  };
 }
 
-export default async function BlogIndexPage({
-  params,
-  searchParams,
-}: BlogIndexPageProps) {
+export default async function BlogIndexPage({ params }: BlogIndexPageProps) {
   const { locale } = await params;
-  const { page } = await searchParams;
-  const localeTyped = locale as Locale;
-  const t = await getTranslations({ locale: localeTyped, namespace: 'blog' });
-
-  const currentPage = Math.max(1, parseInt(page ?? '1', 10) || 1);
-
-  const [allPosts, allTags, allCategories] = await Promise.all([
-    blog.getAllPosts(localeTyped),
-    blog.getAllTags(localeTyped),
-    blog.getAllCategories(localeTyped),
-  ]);
-
-  const totalPages = Math.max(1, Math.ceil(allPosts.length / POSTS_PER_PAGE));
-  const safePage = Math.min(currentPage, totalPages);
-  const start = (safePage - 1) * POSTS_PER_PAGE;
-  const posts = allPosts.slice(start, start + POSTS_PER_PAGE);
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale, namespace: 'blog' });
+  const posts = await getPosts('blog');
+  const tags = tagsOf(posts);
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-16 md:py-24">
       <BlogJsonLd
-        posts={allPosts.map((p) => ({
+        posts={posts.map((p) => ({
           slug: p.slug,
           title: p.title,
           description: p.description,
           datePublished: p.date,
           dateModified: p.updated,
-          author: resolveAuthor(p.author),
+          author: postAuthorJsonLd(p),
           image: p.image,
         }))}
       />
@@ -103,32 +69,21 @@ export default async function BlogIndexPage({
               {t('description')}
             </p>
           </div>
-          <div className="mt-2 flex shrink-0 gap-2">
-            <BlogSearch />
+          <div className="mt-2 shrink-0">
             <RssButton href="/blog/feed.xml" label={t('rssLabel')} />
           </div>
         </div>
       </header>
 
-      {/* Category + tag filter chips */}
-      {allCategories.length > 0 || allTags.length > 0 ? (
+      {tags.length > 0 ? (
         <div className="mb-8 flex flex-wrap gap-2">
-          {allCategories.map((cat) => (
+          {tags.map((tag) => (
             <Link
-              key={`cat-${cat}`}
-              href={`/blog/category/${cat.toLowerCase()}`}
-              className="bg-primary/10 text-primary hover:bg-primary/20 rounded-full px-3 py-1 text-sm font-medium transition-colors"
-            >
-              {cat}
-            </Link>
-          ))}
-          {allTags.map((tag) => (
-            <Link
-              key={`tag-${tag}`}
-              href={`/blog/tag/${tag}`}
+              key={tag.slug}
+              href={`/blog/tag/${tag.slug}`}
               className="bg-muted text-muted-foreground hover:bg-primary/10 hover:text-primary rounded-full px-3 py-1 text-sm transition-colors"
             >
-              #{tag}
+              #{tag.title}
             </Link>
           ))}
         </div>
@@ -139,90 +94,7 @@ export default async function BlogIndexPage({
           <p className="text-muted-foreground text-sm">{t('noPosts')}</p>
         </div>
       ) : (
-        <>
-          <div className="border-border bg-border flex flex-col gap-px overflow-hidden rounded-lg border">
-            {posts.map((post) => (
-              <Link
-                key={post.slug}
-                href={`/blog/${post.slug}`}
-                className="bg-background hover:bg-muted group flex flex-col gap-3 p-8 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="text-primary font-mono text-xs tracking-wider uppercase">
-                    {post.category}
-                  </span>
-                  <span className="text-muted-foreground font-mono text-xs">
-                    {post.date} · {post.readingTime}
-                  </span>
-                </div>
-                <h2 className="text-foreground text-xl font-bold tracking-tight md:text-2xl">
-                  {post.title}
-                </h2>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {post.description}
-                </p>
-                {post.tags.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {post.tags.map((t) => (
-                      <span
-                        key={t}
-                        className="bg-muted text-muted-foreground rounded-full px-2 py-0.5 text-xs"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-                ) : null}
-                <span className="text-primary mt-2 inline-flex items-center gap-2 text-sm opacity-0 transition-opacity group-hover:opacity-100">
-                  {t('readMore')}
-                  <ArrowRight className="size-4" />
-                </span>
-              </Link>
-            ))}
-          </div>
-
-          {/* Pagination */}
-          {totalPages > 1 ? (
-            <nav
-              className="mt-8 flex items-center justify-center gap-2"
-              aria-label="Blog pagination"
-            >
-              {safePage > 1 ? (
-                <Link
-                  href={safePage === 2 ? '/blog' : `/blog?page=${safePage - 1}`}
-                  className="border-border text-muted-foreground hover:text-foreground hover:border-foreground inline-flex items-center gap-1 rounded-md border px-3 py-2 text-sm transition-colors"
-                >
-                  <ChevronLeft className="size-4" />
-                  {t('previous')}
-                </Link>
-              ) : (
-                <span className="border-border text-muted-foreground/40 inline-flex cursor-not-allowed items-center gap-1 rounded-md border px-3 py-2 text-sm">
-                  <ChevronLeft className="size-4" />
-                  {t('previous')}
-                </span>
-              )}
-
-              <span className="text-muted-foreground px-3 text-sm">
-                {t('pageOf', { page: safePage, total: totalPages })}
-              </span>
-
-              {safePage < totalPages ? (
-                <Link
-                  href={`/blog?page=${safePage + 1}`}
-                  className="border-border text-muted-foreground hover:text-foreground hover:border-foreground inline-flex items-center gap-1 rounded-md border px-3 py-2 text-sm transition-colors"
-                >
-                  {t('next')}
-                  <ChevronRight className="size-4" />
-                </Link>
-              ) : (
-                <span className="border-border text-muted-foreground/40 inline-flex cursor-not-allowed items-center gap-1 rounded-md border px-3 py-2 text-sm">
-                  {t('next')}
-                  <ChevronRight className="size-4" />
-                </span>
-              )}
-            </nav>
-          ) : null}
-        </>
+        <PostList posts={posts} />
       )}
     </div>
   );

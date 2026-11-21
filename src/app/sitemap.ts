@@ -2,8 +2,7 @@ import type { MetadataRoute } from 'next';
 import { siteUrl } from '@/env';
 import { defaultLocale } from '@/i18n/config';
 import { localeUrl } from '@/lib/i18n-url';
-import { blog } from '@/content/blog';
-import { changelog } from '@/content/changelog';
+import { getPosts } from '@/lib/blog/source';
 import { licence } from '@/content/pages/licence';
 import { privacy } from '@/content/pages/privacy';
 import { refund } from '@/content/pages/refund';
@@ -11,12 +10,18 @@ import { terms } from '@/content/pages/terms';
 
 /**
  * /sitemap.xml, built from the routes and the content this site serves
- * (replaces next-sitemap). English only for now, so there are no hreflang
+ * (replaces next-sitemap). Posts and release notes come from BuildBase Blogs
+ * (src/lib/blog/source.ts), so a post published in the console is listed
+ * once the `blog.*` webhook revalidates its `buildbase:blog` tag and this
+ * path. English only for now, so there are no hreflang
  * alternates. `lastModified` is set only where a real date exists (a post's
  * date, a legal page's "last updated"); routes without one omit it rather
  * than claim a date. Never listed: /api, /dashboard, /order (per buyer),
  * drafts, feeds.
  */
+
+/** ISR: rebuilt when a `blog.*` webhook revalidates it; hourly otherwise. */
+export const revalidate = 3600;
 
 const toIso = (value: string | undefined): string | undefined => {
   if (!value) return undefined;
@@ -28,8 +33,8 @@ const url = (path: string) => localeUrl(siteUrl, defaultLocale, path);
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [posts, entries, ...legal] = await Promise.all([
-    blog.getAllPosts(defaultLocale),
-    changelog.getAll(),
+    getPosts('blog'),
+    getPosts('changelog'),
     licence.get(defaultLocale),
     refund.get(defaultLocale),
     privacy.get(defaultLocale),
@@ -48,7 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     {
       url: url('/changelog'),
-      lastModified: toIso(entries[0]?.date),
+      lastModified: toIso(entries[0]?.updated ?? entries[0]?.date),
       changeFrequency: 'weekly',
       priority: 0.6,
     },
@@ -73,7 +78,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const entryPages: MetadataRoute.Sitemap = entries.map((entry) => ({
     url: url(`/changelog/${entry.slug}`),
-    lastModified: toIso(entry.date),
+    lastModified: toIso(entry.updated ?? entry.date),
     changeFrequency: 'monthly',
     priority: 0.5,
   }));

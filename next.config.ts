@@ -1,7 +1,6 @@
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 import bundleAnalyzer from '@next/bundle-analyzer';
-import { withContentlayer } from 'next-contentlayer2';
 import { withSentryConfig, type SentryBuildOptions } from '@sentry/nextjs';
 import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 
@@ -33,14 +32,6 @@ const nextConfig: NextConfig = {
         ]
       : [];
   },
-  // next-contentlayer2 exposes its TypeScript source files, which Next.js 16's
-  // bundler-level type checker follows into node_modules and flags as errors.
-  // Type safety is enforced separately via `npm run typecheck` (tsc --noEmit)
-  // in CI and pre-commit hooks, so suppressing the redundant build-time check
-  // here is intentional and safe.
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   // Next.js externalises @prisma/client and traces the whole package, which
   // drags in the Prisma CLI, its dev server (PGlite) and query compilers for
   // every database. OpenNext bundles every traced .wasm into the Worker, which
@@ -58,17 +49,12 @@ const nextConfig: NextConfig = {
       'node_modules/@electric-sql/**',
       'node_modules/@prisma/client/runtime/*.{cockroachdb,mysql,postgresql,sqlserver}.*',
       'node_modules/@prisma/client/runtime/*.{cockroachdb,mysql,postgresql,sqlserver}.wasm*',
-      // Build-time only (Contentlayer image metadata). Its package ships
-      // zero-byte .wasm placeholders that workerd refuses to compile.
-      'node_modules/imagescript/**',
     ],
   },
 };
 
-// Compose plugins: first intl, then contentlayer, then bundle analyzer
-const composedConfig = withBundleAnalyzer(
-  withContentlayer(withNextIntl(nextConfig))
-);
+// Compose plugins: first intl, then bundle analyzer
+const composedConfig = withBundleAnalyzer(withNextIntl(nextConfig));
 
 // Only wrap with Sentry if DSN is configured. Leave NEXT_PUBLIC_SENTRY_DSN
 // unset for Cloudflare Workers builds: @sentry/nextjs's server SDK targets
