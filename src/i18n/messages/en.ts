@@ -53,6 +53,7 @@ const messages: Messages = {
       },
       links: {
         pricing: 'Pricing',
+        docs: 'Docs',
         dashboard: 'Dashboard',
         waitlist: 'Waitlist',
         help: 'Help',
