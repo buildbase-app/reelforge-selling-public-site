@@ -157,7 +157,7 @@ export default async function ChangelogEntryPage({
 
         {entry.body?.code ? (
           <div className="mt-12">
-            <MdxRenderer code={entry.body.code} />
+            <MdxRenderer code={entry.body.code} html={entry.bodyHtml} />
           </div>
         ) : null}
       </article>

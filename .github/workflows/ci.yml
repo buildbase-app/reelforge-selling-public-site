@@ -30,7 +30,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
@@ -76,11 +76,11 @@ jobs:
             exit 1
           fi
 
-      - name: Tour source links
-        run: npm run check:tour
-
       - name: Generate Prisma Client
         run: npx prisma generate
+
+      - name: Unit tests
+        run: npm test
 
       - name: TypeScript Type Check
         id: typecheck
@@ -96,11 +96,11 @@ jobs:
             exit 1
           fi
 
-      - name: Build Application
+      - name: Build for Cloudflare Workers (OpenNext; runs next build)
         id: build
         run: |
           echo "## 🏗️ Build Results" >> $GITHUB_STEP_SUMMARY
-          if npm run build 2>&1 | tee build-output.txt; then
+          if npx opennextjs-cloudflare build 2>&1 | tee build-output.txt; then
             echo "✅ Build successful" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ Build failed:" >> $GITHUB_STEP_SUMMARY

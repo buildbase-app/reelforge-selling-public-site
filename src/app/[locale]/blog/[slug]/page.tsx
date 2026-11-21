@@ -190,7 +190,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         {/* Table of contents + body */}
         <div className="mt-12">
           <TableOfContents />
-          <MdxRenderer code={post.bodyCode} />
+          <MdxRenderer code={post.bodyCode} html={post.bodyHtml} />
         </div>
 
         {/* Share */}

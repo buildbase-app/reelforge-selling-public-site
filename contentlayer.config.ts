@@ -9,6 +9,10 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypePrettyCode, {
   type Options as PrettyCodeOptions,
 } from 'rehype-pretty-code';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
 
 /**
  * Contentlayer schema for content.
@@ -25,6 +29,41 @@ import rehypePrettyCode, {
  * name it `{locale}.mdx`. The `locale` computed field picks it up from
  * the filesystem path.
  */
+
+// -----------------------------------------------------------------------------
+// Pre-rendered HTML
+// -----------------------------------------------------------------------------
+
+/**
+ * The MDX body rendered to static HTML at build time.
+ *
+ * Cloudflare Workers forbid `new Function`, which Contentlayer's MDX runtime
+ * (`useMDXComponent`) needs, so the server sends this HTML instead and the
+ * browser swaps in the full MDX component after hydration (see
+ * `src/components/marketing/mdx/mdx-renderer.tsx`). Custom JSX components
+ * (`<Callout>`, `<WhenAuthenticated>`, ...) are left out of this HTML and
+ * appear once the client renders the MDX.
+ */
+async function renderBodyHtml(raw: string): Promise<string> {
+  const file = await unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeAutolinkHeadings, {
+      behavior: 'wrap',
+      properties: { className: ['heading-anchor'] },
+    })
+    .use(rehypePrettyCode, prettyCodeOptions)
+    .use(rehypeStringify)
+    .process(raw);
+  return String(file);
+}
+
+const bodyHtml = {
+  type: 'string',
+  resolve: (doc: { body: { raw: string } }) => renderBodyHtml(doc.body.raw),
+} as const;
 
 // -----------------------------------------------------------------------------
 // Shared nested types
@@ -71,6 +110,7 @@ export const Author = defineDocumentType(() => ({
       type: 'string',
       resolve: (doc) => doc._raw.sourceFileName.replace(/\.mdx$/, ''),
     },
+    bodyHtml,
   },
 }));
 
@@ -121,6 +161,7 @@ export const Post = defineDocumentType(() => ({
         return `${minutes} min read`;
       },
     },
+    bodyHtml,
   },
 }));
 
@@ -134,6 +175,7 @@ const pageLocaleComputed = {
     resolve: (doc: { _raw: { sourceFileName: string } }) =>
       doc._raw.sourceFileName.replace(/\.mdx$/, ''),
   },
+  bodyHtml,
 } as const;
 
 export const AboutPage = defineDocumentType(() => ({
@@ -212,6 +254,7 @@ export const ChangelogEntry = defineDocumentType(() => ({
         return `${minutes} min read`;
       },
     },
+    bodyHtml,
   },
 }));
 

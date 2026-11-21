@@ -16,12 +16,6 @@ export const env = createEnv({
    * These are only available on the server.
    */
   server: {
-    // Database
-    DATABASE_URL: z
-      .string()
-      .url('DATABASE_URL must be a valid PostgreSQL connection URL')
-      .optional(),
-
     // Security
     SYSTEM_SECRET: z
       .string()
@@ -98,7 +92,6 @@ export const env = createEnv({
    */
   runtimeEnv: {
     // Server
-    DATABASE_URL: process.env.DATABASE_URL,
     SYSTEM_SECRET: process.env.SYSTEM_SECRET,
     BUILDBASE_CLIENT_SECRET: process.env.BUILDBASE_CLIENT_SECRET,
     BUILDBASE_API_TOKEN: process.env.BUILDBASE_API_TOKEN,

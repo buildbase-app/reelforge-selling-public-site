@@ -128,7 +128,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
       {/* Author Bio (MDX body) */}
       {author.bodyCode ? (
         <section className="border-border mb-12 border-t pt-8">
-          <MdxRenderer code={author.bodyCode} />
+          <MdxRenderer code={author.bodyCode} html={author.bodyHtml} />
         </section>
       ) : null}
 

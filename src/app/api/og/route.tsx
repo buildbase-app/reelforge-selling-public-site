@@ -3,8 +3,6 @@ import { type NextRequest } from 'next/server';
 import { locales, type Locale } from '@/i18n/config';
 import { messages } from '@/i18n/messages';
 
-export const runtime = 'edge';
-
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 

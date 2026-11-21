@@ -3,6 +3,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 import bundleAnalyzer from '@next/bundle-analyzer';
 import { withContentlayer } from 'next-contentlayer2';
 import { withSentryConfig, type SentryBuildOptions } from '@sentry/nextjs';
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
@@ -19,12 +20,27 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  // Next.js 16+ has instrumentation enabled by default
-  // Enable standalone output for Docker builds (Vercel ignores this)
-  output: process.env.DOCKER_BUILD ? 'standalone' : undefined,
-  // Trace MDX files into production bundle for runtime fs access (RSS feeds)
-  outputFileTracingIncludes: {
-    '/**': ['./src/content/**/*.mdx'],
+  // Next.js externalises @prisma/client and traces the whole package, which
+  // drags in the Prisma CLI, its dev server (PGlite) and query compilers for
+  // every database. OpenNext bundles every traced .wasm into the Worker, which
+  // pushed it past Cloudflare's 64 MiB limit. The app only needs the SQLite
+  // compiler that the generated client (src/generated/prisma) ships itself.
+  outputFileTracingExcludes: {
+    '*': [
+      'node_modules/prisma/**',
+      'node_modules/@prisma/dev/**',
+      'node_modules/@prisma/engines/**',
+      'node_modules/@prisma/fetch-engine/**',
+      'node_modules/@prisma/studio-core/**',
+      'node_modules/@prisma/streams-local/**',
+      'node_modules/@prisma/query-plan-executor/**',
+      'node_modules/@electric-sql/**',
+      'node_modules/@prisma/client/runtime/*.{cockroachdb,mysql,postgresql,sqlserver}.*',
+      'node_modules/@prisma/client/runtime/*.{cockroachdb,mysql,postgresql,sqlserver}.wasm*',
+      // Build-time only (Contentlayer image metadata). Its package ships
+      // zero-byte .wasm placeholders that workerd refuses to compile.
+      'node_modules/imagescript/**',
+    ],
   },
 };
 
@@ -33,7 +49,9 @@ const composedConfig = withBundleAnalyzer(
   withContentlayer(withNextIntl(nextConfig))
 );
 
-// Only wrap with Sentry if DSN is configured
+// Only wrap with Sentry if DSN is configured. Leave NEXT_PUBLIC_SENTRY_DSN
+// unset for Cloudflare Workers builds: @sentry/nextjs's server SDK targets
+// Node.js and Vercel's edge runtime, not workerd (see DEPLOY_CLOUDFLARE.md).
 const isSentryEnabled = !!process.env.NEXT_PUBLIC_SENTRY_DSN;
 
 // Sentry configuration options
@@ -78,3 +96,7 @@ const sentryConfig: SentryBuildOptions = {
 export default isSentryEnabled
   ? withSentryConfig(composedConfig, sentryConfig)
   : composedConfig;
+
+// Gives `next dev` the Cloudflare bindings from wrangler.jsonc (a local D1
+// for `DB`), so getCloudflareContext() works outside the Workers runtime.
+initOpenNextCloudflareForDev();

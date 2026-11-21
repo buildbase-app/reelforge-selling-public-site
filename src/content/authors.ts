@@ -23,6 +23,7 @@ export interface AuthorProfile {
   github?: string;
   linkedin?: string;
   bodyCode: string;
+  bodyHtml: string;
 }
 
 function toAuthorProfile(doc: Author): AuthorProfile {
@@ -37,6 +38,7 @@ function toAuthorProfile(doc: Author): AuthorProfile {
     github: doc.github,
     linkedin: doc.linkedin,
     bodyCode: doc.body.code,
+    bodyHtml: doc.bodyHtml,
   };
 }
 

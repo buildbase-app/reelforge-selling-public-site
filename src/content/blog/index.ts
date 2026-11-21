@@ -31,6 +31,7 @@ export interface BlogPost {
   tags: string[];
   image?: string;
   bodyCode: string;
+  bodyHtml: string;
   bodyRaw: string;
 }
 
@@ -72,6 +73,7 @@ function toBlogPost(post: Post): BlogPost | null {
     tags: (post.tags ?? []) as string[],
     image: post.image,
     bodyCode: post.body.code,
+    bodyHtml: post.bodyHtml,
     bodyRaw: post.body.raw,
   };
 }

@@ -1,10 +1,13 @@
+// Cloudflare D1 (SQLite) through @prisma/adapter-d1. The client is generated
+// for the Workers runtime; see src/lib/db.ts for how it gets the D1 binding.
 generator client {
-  provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  runtime  = "cloudflare"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 model User {

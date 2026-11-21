@@ -1,0 +1,68 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // The ReelForge store on Cloudflare Workers, built with OpenNext
+  // (`npm run preview` / `npm run deploy`). See DEPLOY_CLOUDFLARE.md.
+  "name": "reelforge-store",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-11-01",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS",
+  },
+  "services": [
+    {
+      // Lets the Worker call itself (OpenNext uses it for revalidation).
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "reelforge-store",
+    },
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "reelforge-store",
+      "database_id": "1a493bb6-eb14-444e-b1c1-53d40e447711",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "observability": {
+    "enabled": true,
+  },
+  // Public values come from .env.production (inlined at build time, embedded
+  // for runtime). Secrets: `wrangler secret put` (see DEPLOY_CLOUDFLARE.md).
+
+  // Planned dev environment: `npm run deploy:dev`. Wrangler environments do not
+  // inherit bindings or vars, so everything is repeated here.
+  "env": {
+    "dev": {
+      "name": "reelforge-store-dev",
+      "services": [
+        {
+          "binding": "WORKER_SELF_REFERENCE",
+          "service": "reelforge-store-dev",
+        },
+      ],
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "reelforge-store-dev",
+          // PLACEHOLDER: replace with the id printed by
+          // `npx wrangler d1 create reelforge-store-dev`.
+          "database_id": "00000000-0000-0000-0000-000000000000",
+          "migrations_dir": "migrations",
+        },
+      ],
+      // Runtime values for server code; they override .env.production.
+      // NEXT_PUBLIC_* are inlined at build time by the deploy:dev script.
+      "vars": {
+        "SITE_URL": "https://reelforge-store-dev.hackathon-f12.workers.dev",
+        "NEXT_PUBLIC_SITE_URL": "https://reelforge-store-dev.hackathon-f12.workers.dev",
+        "NEXT_PUBLIC_BUILDBASE_REDIRECT_URL": "https://reelforge-store-dev.hackathon-f12.workers.dev",
+        "NEXT_PUBLIC_BUILDBASE_ENVIRONMENT": "fsyqdskf",
+      },
+      "observability": {
+        "enabled": true,
+      },
+    },
+  },
+}

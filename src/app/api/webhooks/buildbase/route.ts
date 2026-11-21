@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { parseWebhookEvent } from '@buildbase/sdk';
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/db';
 import { logger } from '@/lib/logger';
 

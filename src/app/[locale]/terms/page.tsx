@@ -50,7 +50,7 @@ export default async function TermsPage({ params }: TermsPageProps) {
       </header>
 
       <div>
-        <MdxRenderer code={content.body.code} />
+        <MdxRenderer code={content.body.code} html={content.bodyHtml} />
       </div>
     </div>
   );
