@@ -132,6 +132,14 @@ export function getRichContent(slug: string = CONTENT_SLUGS.richText) {
   );
 }
 
+/**
+ * The content client itself (null without a token), for readers that live
+ * elsewhere (the /docs pages, src/lib/docs/source.ts). Same cache and tags.
+ */
+export function contentClient() {
+  return content;
+}
+
 /** True when the server can read console content (an org API token is set). */
 export function hasContentApi(): boolean {
   return content !== null;

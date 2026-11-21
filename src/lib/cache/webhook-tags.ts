@@ -32,7 +32,8 @@ export function tagsForWebhookEvent(
  * The ISR pages the same event makes stale, as internal (locale-prefixed)
  * paths for `revalidatePath`. Belt and braces beside the tags: a page
  * prerendered at build time without a server token made no tagged read, so
- * only its path reaches it.
+ * only its path reaches it. A `doc.*` event also names /docs, the page it
+ * carries (`data.path`), and the sitemap.
  */
 export function pathsForWebhookEvent(
   event: string,
@@ -44,9 +45,16 @@ export function pathsForWebhookEvent(
     : isContentWebhookEvent(event)
       ? ['/', '/pricing', '/help']
       : [];
-  return locales.flatMap((locale) =>
+  if (event.startsWith('doc.')) {
+    pages.push('/docs');
+    const path =
+      typeof data?.path === 'string' ? data.path.replace(/^\/+|\/+$/g, '') : '';
+    if (/^[a-z0-9-]+(\/[a-z0-9-]+)*$/.test(path)) pages.push(`/docs/${path}`);
+  }
+  const localized = locales.flatMap((locale) =>
     pages.map((page) => `/${locale}${page === '/' ? '' : page}`)
   );
+  return event.startsWith('doc.') ? [...localized, '/sitemap.xml'] : localized;
 }
 
 /**

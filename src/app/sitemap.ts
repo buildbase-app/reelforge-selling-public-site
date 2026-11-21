@@ -7,6 +7,7 @@ import { licence } from '@/content/pages/licence';
 import { privacy } from '@/content/pages/privacy';
 import { refund } from '@/content/pages/refund';
 import { terms } from '@/content/pages/terms';
+import { getDocsSite } from '@/lib/docs/source';
 
 /**
  * /sitemap.xml, built from the routes and the content this site serves
@@ -21,10 +22,12 @@ import { terms } from '@/content/pages/terms';
  */
 
 /**
- * Built per request: the posts come from BuildBase at runtime (the build has
- * no API token), through a read cached under `buildbase:blog`, which a
- * `blog.*` webhook revalidates. A prerendered copy would list no posts until
- * its first revalidation.
+ * Built per request: the docs and the posts come from BuildBase at runtime
+ * (the build has no API token), through reads cached under the SDK's
+ * `buildbase:doc*` and `buildbase:blog` tags, which the `doc.*` and `blog.*`
+ * webhooks revalidate. A page or post published in the console is listed
+ * without a deploy, and the request costs a cache lookup; a prerendered copy
+ * would list nothing until its first revalidation.
  */
 export const dynamic = 'force-dynamic';
 
@@ -37,7 +40,8 @@ const toIso = (value: string | undefined): string | undefined => {
 const url = (path: string) => localeUrl(siteUrl, defaultLocale, path);
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [posts, entries, ...legal] = await Promise.all([
+  const [docsSite, posts, entries, ...legal] = await Promise.all([
+    getDocsSite(),
     getPosts('blog'),
     getPosts('changelog'),
     licence.get(defaultLocale),
@@ -51,6 +55,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: url('/pricing'), changeFrequency: 'weekly', priority: 0.9 },
     { url: url('/agents'), changeFrequency: 'weekly', priority: 0.8 },
     { url: url('/help'), changeFrequency: 'weekly', priority: 0.7 },
+    {
+      url: url('/docs'),
+      lastModified: latest(docsSite.nav.pages.map((p) => p.updatedAt)),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
     {
       url: url('/blog'),
       lastModified: toIso(posts[0]?.updated ?? posts[0]?.date),
@@ -89,9 +99,27 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.5,
   }));
 
-  return [...pages, ...postPages, ...entryPages, ...legalPages].map((entry) =>
-    entry.lastModified ? entry : omitUndefined(entry)
-  );
+  const docPages: MetadataRoute.Sitemap = docsSite.nav.pages.map((page) => ({
+    url: url(page.href),
+    lastModified: toIso(page.updatedAt ?? undefined),
+    changeFrequency: 'weekly',
+    priority: 0.7,
+  }));
+
+  return [
+    ...pages,
+    ...docPages,
+    ...postPages,
+    ...entryPages,
+    ...legalPages,
+  ].map((entry) => (entry.lastModified ? entry : omitUndefined(entry)));
+}
+
+function latest(values: Array<string | null>): string | undefined {
+  const times = values
+    .map((v) => (v ? new Date(v).getTime() : NaN))
+    .filter((t) => !Number.isNaN(t));
+  return times.length ? new Date(Math.max(...times)).toISOString() : undefined;
 }
 
 function omitUndefined<T extends object>(entry: T): T {

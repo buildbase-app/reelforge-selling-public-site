@@ -41,6 +41,7 @@ function AuthButton() {
 
 const NAV_HREFS = [
   '/agents',
+  '/docs',
   '/pricing',
   '/help',
   '/blog',
@@ -60,6 +61,7 @@ export function HomeHeader({ title }: HomeHeaderProps) {
     // English only for now (src/i18n/config.ts): no message key yet.
     '/agents': 'Agents',
     '/pricing': t('footer.links.pricing'),
+    '/docs': t('footer.links.docs'),
     '/help': t('footer.links.help'),
     '/blog': t('footer.links.blog'),
     '/changelog': t('footer.links.changelog'),

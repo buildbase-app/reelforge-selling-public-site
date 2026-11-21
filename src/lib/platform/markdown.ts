@@ -30,7 +30,8 @@ export interface RenderedMarkdown {
   text: string;
 }
 
-const schema = {
+/** GitHub's allow-list; shared with the docs renderer (src/lib/docs/markdown.ts). */
+export const schema = {
   ...defaultSchema,
   // Keep heading ids readable: no `user-content-` prefix is needed because
   // nothing on these pages uses the same ids.
@@ -38,7 +39,7 @@ const schema = {
 };
 
 /** Marks absolute http(s) links as external. Runs after sanitising. */
-function externalLinks() {
+export function externalLinks() {
   return (tree: Root) => {
     const visit = (node: Root | RootContent) => {
       if (node.type === 'element') {
