@@ -3,6 +3,11 @@
   // The ReelForge store on Cloudflare Workers, built with OpenNext
   // (`npm run preview` / `npm run deploy`). See DEPLOY_CLOUDFLARE.md.
   "name": "reelforge-store",
+  // The Cloudflare account that owns the buildbase.app zone: a Worker's custom
+  // domain must be in the same account as its DNS zone.
+  "account_id": "0109f7bce7af42ac8a88104d324efe4d",
+  "routes": [{ "pattern": "reelforge.buildbase.app", "custom_domain": true }],
+  "workers_dev": false,
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
@@ -25,7 +30,7 @@
     {
       "binding": "DB",
       "database_name": "reelforge-store",
-      "database_id": "1a493bb6-eb14-444e-b1c1-53d40e447711",
+      "database_id": "db8c0262-90be-47d0-8bf3-84ce75365682",
       "migrations_dir": "migrations",
     },
   ],
@@ -40,6 +45,8 @@
   "env": {
     "dev": {
       "name": "reelforge-store-dev",
+      "routes": [{ "pattern": "reelforge-dev.buildbase.app", "custom_domain": true }],
+      "workers_dev": false,
       "services": [
         {
           "binding": "WORKER_SELF_REFERENCE",
@@ -59,9 +66,9 @@
       // Runtime values for server code; they override .env.production.
       // NEXT_PUBLIC_* are inlined at build time by the deploy:dev script.
       "vars": {
-        "SITE_URL": "https://reelforge-store-dev.hackathon-f12.workers.dev",
-        "NEXT_PUBLIC_SITE_URL": "https://reelforge-store-dev.hackathon-f12.workers.dev",
-        "NEXT_PUBLIC_BUILDBASE_REDIRECT_URL": "https://reelforge-store-dev.hackathon-f12.workers.dev",
+        "SITE_URL": "https://reelforge-dev.buildbase.app",
+        "NEXT_PUBLIC_SITE_URL": "https://reelforge-dev.buildbase.app",
+        "NEXT_PUBLIC_BUILDBASE_REDIRECT_URL": "https://reelforge-dev.buildbase.app",
         "NEXT_PUBLIC_BUILDBASE_ENVIRONMENT": "fsyqdskf",
       },
       "observability": {

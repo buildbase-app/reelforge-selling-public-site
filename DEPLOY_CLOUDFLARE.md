@@ -5,13 +5,13 @@ The store runs on Cloudflare Workers through
 Cloudflare D1 as its database. Everything below fits the Workers **free**
 plan, with the caveats at the end.
 
-|                       | Production                                                 | Dev (planned)                                                      |
-| --------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------ |
-| Worker                | `reelforge-store`                                          | `reelforge-store-dev`                                              |
-| URL                   | https://reelforge-store.hackathon-f12.workers.dev          | https://reelforge-store-dev.hackathon-f12.workers.dev              |
-| D1 database           | `reelforge-store` (`1a493bb6-eb14-444e-b1c1-53d40e447711`) | `reelforge-store-dev` (id still a placeholder in `wrangler.jsonc`) |
-| BuildBase environment | production (`NEXT_PUBLIC_BUILDBASE_ENVIRONMENT` empty)     | `fsyqdskf`                                                         |
-| Config                | top level of `wrangler.jsonc`, `.env.production`           | `env.dev` in `wrangler.jsonc`, `deploy:dev` script                 |
+|                       | Production                                                                                             | Dev (planned)                                                      |
+| --------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| Worker                | `reelforge-store`                                                                                      | `reelforge-store-dev`                                              |
+| URL                   | https://reelforge.buildbase.app                                                                        | https://reelforge-dev.buildbase.app                                |
+| D1 database           | `reelforge-store` (`db8c0262-90be-47d0-8bf3-84ce75365682`, account `0109f7bce7af42ac8a88104d324efe4d`) | `reelforge-store-dev` (id still a placeholder in `wrangler.jsonc`) |
+| BuildBase environment | production (`NEXT_PUBLIC_BUILDBASE_ENVIRONMENT` empty)                                                 | `fsyqdskf`                                                         |
+| Config                | top level of `wrangler.jsonc`, `.env.production`                                                       | `env.dev` in `wrangler.jsonc`, `deploy:dev` script                 |
 
 ## Prerequisites
 
@@ -72,15 +72,15 @@ npm ci
 
 4. **BuildBase console** (ReelForge organization):
    - Auth: the OAuth client `XUlR38I2gOAZOCpxleNxgPURGpHlzsykAMwypHS8` must list
-     `https://reelforge-store.hackathon-f12.workers.dev` as a redirect URL.
+     `https://reelforge.buildbase.app` as a redirect URL.
    - Settings, Webhooks: endpoint
-     `https://reelforge-store.hackathon-f12.workers.dev/api/webhooks/buildbase`;
+     `https://reelforge.buildbase.app/api/webhooks/buildbase`;
      its signing secret is `BUILDBASE_WEBHOOK_SECRET`.
 
 5. **Check:**
 
    ```bash
-   curl -s "https://reelforge-store.hackathon-f12.workers.dev/api/health?deep=true"
+   curl -s "https://reelforge.buildbase.app/api/health?deep=true"
    ```
 
    `checks.database.status` should be `up`.

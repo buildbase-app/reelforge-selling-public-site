@@ -1,0 +1,64 @@
+name: Deploy to Cloudflare
+
+# Builds the store with OpenNext and deploys it to the reelforge-store Worker
+# (https://reelforge.buildbase.app). Needs the repository secret
+# CLOUDFLARE_API_TOKEN: Workers Scripts, D1 and Account Settings on the
+# account that owns buildbase.app, Workers Routes, DNS and Zone on the zone.
+# Runtime secrets (BuildBase client and webhook secrets, SYSTEM_SECRET) live
+# on the Worker itself and are never needed here.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [claude/eloquent-wright-tm3cs7]
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: 0109f7bce7af42ac8a88104d324efe4d
+      # Build-time only: env validation is skipped and SYSTEM_SECRET is a
+      # placeholder; the Worker reads the real secret at runtime.
+      SKIP_ENV_VALIDATION: 'true'
+      SYSTEM_SECRET: ci-build-only-not-a-secret-0123456789abcdef
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Check the token is configured
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Add the CLOUDFLARE_API_TOKEN repository secret (Settings > Secrets and variables > Actions)."
+            exit 1
+          fi
+
+      - run: npm ci
+
+      - name: Apply D1 migrations
+        run: npx wrangler d1 migrations apply reelforge-store --remote
+
+      - name: Build and deploy
+        run: npm run deploy
+
+      - name: Smoke test
+        run: |
+          for i in 1 2 3 4 5 6; do
+            code=$(curl -s -o /dev/null -w '%{http_code}' "https://reelforge.buildbase.app/api/health?deep=true" || true)
+            echo "health: $code"
+            [ "$code" = "200" ] && exit 0
+            sleep 10
+          done
+          echo "::warning::Health check did not return 200 yet (a new custom domain's certificate can take a few minutes)."
