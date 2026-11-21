@@ -1,11 +1,12 @@
-import type { Messages } from '../types';
+// Not served: English only for now (src/i18n/config.ts). Starter demo copy;
+// translate from en.ts before adding this locale back.
+import type { DraftMessages } from '../types';
 
-const messages: Messages = {
+const messages: DraftMessages = {
   common: {
     nav: {
       home: 'Accueil',
       dashboard: 'Tableau de bord',
-      documents: 'Documents',
       team: 'Équipe',
       notifications: 'Notifications',
       settings: 'Paramètres',
@@ -17,31 +18,15 @@ const messages: Messages = {
       generalSettings: 'Paramètres généraux',
       userManagement: 'Gestion des utilisateurs',
       billingPayments: 'Facturation et paiements',
-      credits: 'Crédits',
-      creditUsage: 'Utilisation des crédits',
-      creditsAvailable: 'Disponibles',
-      usage: 'Utilisation',
-      permissions: 'Permissions',
-      events: 'Événements',
       invoices: 'Factures',
       workspace: 'Espace de travail',
-      tour: 'Visite',
       inbox: 'Boîte de réception',
-      modules: 'Modules',
       sections: {
         start: 'Démarrer',
         product: 'Produit',
         billing: 'Facturation',
         platform: 'Plateforme',
       },
-      forms: 'Formulaires',
-      collections: 'Collections',
-      assets: 'Fichiers',
-      links: 'Liens courts',
-      audience: 'Audience',
-      tracking: 'Suivi',
-      automations: 'Automatisations',
-      reports: 'Rapports',
     },
     buttons: {
       signIn: 'Se connecter',
@@ -68,14 +53,10 @@ const messages: Messages = {
         legal: 'Légal',
       },
       links: {
-        features: 'Fonctionnalités',
         pricing: 'Tarifs',
         dashboard: 'Tableau de bord',
-        credits: 'Crédits',
         blog: 'Blog',
         changelog: 'Journal des modifications',
-        tour: 'Visite',
-        github: 'Code sur GitHub',
         privacy: 'Politique de confidentialité',
         terms: "Conditions d'utilisation",
       },
@@ -388,153 +369,6 @@ const messages: Messages = {
       },
     },
   },
-  documents: {
-    featureGates: {
-      title: 'Portes de fonctionnalités',
-      description:
-        'Les parties de ce produit qu’un flag d’espace ou d’utilisateur active.',
-    },
-    workbench: {
-      title: 'Vos documents',
-      description:
-        'Les documents vivent dans la base de cette app ; la plateforme les mesure.',
-      search: 'Rechercher des documents',
-      allStatuses: 'Tous les statuts',
-      allTags: 'Toutes les étiquettes',
-      newDocument: 'Nouveau document',
-      newDocumentHint:
-        'En créer un enregistre un usage sur le quota documents et dépense un crédit.',
-      titleLabel: 'Titre',
-      contentLabel: 'Contenu (Markdown)',
-      statusLabel: 'Statut',
-      tagsLabel: 'Étiquettes, séparées par des virgules',
-      create: 'Créer',
-      creating: 'Création…',
-      created: 'Document créé',
-      deleted: 'Document supprimé',
-      delete: 'Supprimer',
-      loadSamples: 'Charger des documents d’exemple',
-      clearSamples: 'Retirer les exemples',
-      samplesLoaded: '{count} documents d’exemple chargés',
-      samplesAlready: 'Exemples déjà chargés',
-      samplesCleared: '{count} documents d’exemple retirés',
-      sample: 'Exemple',
-      empty: 'Aucun document pour l’instant.',
-      total: '{count} au total',
-      words: '{count} mots',
-      loadFailed: 'Impossible de charger les documents',
-      viewerNotice:
-        'Votre rôle ici est {role} : lecture seule. Les boutons sont désactivés et le serveur refuse de toute façon.',
-      quotaExhausted:
-        'Le quota documents de ce plan est épuisé et sans dépassement. Passez au plan supérieur pour en créer plus.',
-      quotaExhaustedShort: 'Quota épuisé',
-      quotaWarning:
-        'Vous avez utilisé plus de 80 % du quota documents de ce plan.',
-      creditsLow: 'Les crédits s’épuisent. Chaque document en dépense un.',
-      creditsExhausted:
-        'Plus de crédits. Les documents sont quand même créés ; la ligne de mesure montre que la dépense a été ignorée.',
-      refusedQuota:
-        'Refusé : {consumed} documents sur {included} utilisés et le plan est plafonné.',
-      refusedRole: 'Refusé : le rôle {role} ne peut pas écrire.',
-      meteringTitle: 'Ce que la plateforme a enregistré',
-      meteringUsage: 'Usage : {used} documents sur {included}',
-      meteringUsageSkipped:
-        'Usage : non enregistré (ce plan n’a pas de quota documents)',
-      meteringCredits: 'Crédits : {amount} dépensés, {balance} restants',
-      meteringCreditsSkipped: 'Crédits : non dépensés (pas de solde)',
-      statuses: {
-        draft: 'Brouillon',
-        in_review: 'En relecture',
-        published: 'Publié',
-        archived: 'Archivé',
-      },
-    },
-    title: 'Documents',
-    description:
-      'Les documents de votre espace : créés ici ou par un agent, mesurés par la plateforme.',
-    stats: {
-      featureSections: 'Sections de fonctionnalités',
-      featureSectionsSubtitle: 'fonctionnalités de documents',
-      enabled: "Activées pour l'espace",
-      enabledSubtitle: 'fonctionnalités actives',
-      locked: 'Verrouillées',
-      lockedSubtitle: 'fonctionnalités inactives',
-    },
-    features: {
-      enabled: 'Activé',
-      disabled: 'Désactivé',
-    },
-    allFeatures: {
-      title: "Toutes les fonctionnalités de l'espace",
-      description: 'État de tous les indicateurs',
-      empty: 'Aucun indicateur de fonctionnalité configuré pour cet espace.',
-    },
-    featureSections: {
-      advancedExports: {
-        label: 'Exportations avancées',
-        description: 'Exporter des documents en PDF, DOCX ou CSV',
-        content: 'Export PDF, Word et CSV disponible dans votre plan.',
-        lockedMessage:
-          "Activez la fonctionnalité d'exportations avancées pour débloquer les exportations.",
-      },
-      documentSharing: {
-        label: 'Partage de documents',
-        description: 'Partagez des documents avec des collaborateurs externes',
-        content:
-          "Les liens de partage et l'accès externe aux collaborateurs sont activés.",
-        lockedMessage:
-          "Activez le partage de documents pour permettre l'accès externe.",
-      },
-      eSignatures: {
-        label: 'Signatures électroniques',
-        description: 'Collecter des signatures légalement contraignantes',
-        content: 'La collecte de signatures électroniques est active.',
-        lockedMessage:
-          'Activez les signatures électroniques pour collecter des signatures sur les documents.',
-      },
-    },
-  },
-  events: {
-    webhooks: {
-      title: 'Webhooks reçus',
-      description:
-        'Livraisons signées de serveur à serveur depuis la plateforme, enregistrées par /api/webhooks/buildbase pour cet espace de travail.',
-      empty:
-        'Aucun webhook pour l’instant. Abonnez-vous, invitez quelqu’un ou achetez des crédits et la plateforme appellera cette app.',
-      refresh: 'Actualiser',
-      event: 'Événement',
-      received: 'Reçu',
-      signature: 'Signature',
-      verified: 'Vérifiée',
-      payload: 'Contenu',
-      when: 'Heure plateforme',
-    },
-    title: "Journal d'événements SDK",
-    description: 'Événements SDK en temps réel',
-    clearButton: 'Effacer',
-    listenCard: {
-      title: 'Écoute des événements',
-      description:
-        "Ces événements se déclenchent automatiquement lors de l'utilisation du SDK — changez d'espace, connectez-vous ou invitez un membre pour les voir.",
-    },
-    liveCard: {
-      title: 'Flux en direct',
-      captured: '{count} événements capturés',
-      empty:
-        "Aucun événement pour l'instant. Essayez de changer d'espace de travail ou de recharger la page.",
-    },
-    eventLabels: {
-      userCreated: 'Utilisateur créé',
-      userUpdated: 'Utilisateur mis à jour',
-      workspaceChanged: 'Espace changé',
-      workspaceUpdated: 'Espace mis à jour',
-      memberAdded: 'Membre ajouté',
-      memberRemoved: 'Membre supprimé',
-      roleChanged: 'Rôle modifié',
-      workspaceCreated: 'Espace créé',
-      workspaceDeleted: 'Espace supprimé',
-    },
-  },
   invoices: {
     title: 'Factures',
     description: 'Historique de facturation',
@@ -653,35 +487,6 @@ const messages: Messages = {
       networkError: 'Erreur réseau — impossible de se connecter au serveur',
     },
   },
-  permissions: {
-    title: 'Permissions',
-    description: 'Résolution des permissions en temps réel',
-    cards: {
-      role: 'Votre rôle',
-      owner: 'Propriétaire',
-      ownerYes: 'Oui',
-      ownerNo: 'Non',
-      granted: 'Permissions accordées',
-    },
-    ownerAdmin: {
-      title: 'Propriétaire / Administrateur uniquement',
-      notVisible: 'Non visible pour votre rôle ({role}).',
-      visible:
-        'Vous pouvez voir cela car vous êtes propriétaire ou administrateur.',
-    },
-    allMembers: {
-      title: 'Tous les membres',
-      notMember: "Vous n'êtes pas membre de cet espace de travail.",
-      visible: "Vous pouvez voir cela car vous êtes membre de l'espace.",
-    },
-    matrix: {
-      title: 'Matrice des permissions',
-      description:
-        'Toutes les permissions vérifiées par rapport à votre rôle actuel',
-      denied: 'Refusé',
-      grantedStatus: 'Accordé',
-    },
-  },
   profile: {
     agents: {
       title: 'Agents connectés',
@@ -727,58 +532,6 @@ const messages: Messages = {
       disabled: 'Désactivé',
     },
   },
-  usage: {
-    title: 'Utilisation des quotas',
-    description: 'Consommation des quotas en temps réel',
-    loading: 'Chargement des quotas...',
-    error: 'Erreur lors du chargement des données de quota.',
-    empty: 'Aucun quota configuré pour cet espace de travail.',
-    quotaCard: {
-      remaining: '{count} restants',
-      unlimited: 'Illimité',
-      exhausted: 'Épuisé',
-      overage: 'Dépassement',
-      threshold: 'Plus de 80% utilisé ({pct}%) — proche de la limite',
-      overageMsg: 'Dépassement de {count} unités',
-      exhaustedMsg:
-        'Quota épuisé — les actions utilisant ce quota sont bloquées',
-      used: 'utilisé',
-      overageAllowed: '(autorisé)',
-    },
-    record: {
-      title: "Enregistrer l'utilisation",
-      description: "Enregistrer manuellement l'utilisation du quota",
-      slugPlaceholder: 'identifiant du quota (ex. api_calls)',
-      qtyPlaceholder: 'quantité',
-      recording: 'Enregistrement…',
-      record: 'Enregistrer',
-      success: '{qty} unité(s) enregistrée(s) pour « {slug} ».',
-      failed: "Échec de l'enregistrement de l'utilisation.",
-    },
-    logs: {
-      title: "Journal d'utilisation",
-      description: "Entrées d'utilisation récentes",
-      loading: 'Chargement des journaux…',
-      empty:
-        "Aucune entrée d'utilisation. Enregistrez une utilisation ci-dessous pour voir les entrées.",
-      table: {
-        quota: 'Quota',
-        quantity: 'Quantité',
-        source: 'Source',
-        date: 'Date',
-      },
-    },
-  },
-  creditStore: {
-    title: 'Packs de crédits',
-    subtitle:
-      'Achetez des crédits pour débloquer des fonctionnalités premium comme la génération IA, les exportations et plus encore.',
-    buy: 'Acheter des crédits',
-    validFor: 'Valable {days} jours',
-    noExpiry: 'Sans expiration',
-    noPackages: 'Aucun pack de crédits disponible pour le moment.',
-    error: 'Erreur lors du chargement des packs de crédits',
-  },
   pricing: {
     title: 'Tarifs',
     subtitle: 'Choisissez le plan adapté à vos besoins',
@@ -803,67 +556,6 @@ const messages: Messages = {
     meta: {
       title: 'Tarifs',
       description: 'Voir nos plans et tarifs',
-    },
-  },
-  credits: {
-    title: 'Crédits',
-    description:
-      "Utilisez des crédits pour des actions premium. Gérez les packs dans les paramètres de l'espace.",
-    balance: 'Solde de crédits',
-    creditsAvailable: 'crédits disponibles',
-    manageCredits: 'Gérer les crédits',
-    buyCredits: 'Acheter des crédits',
-    choosePlan: 'Choisir un plan',
-    noCredits:
-      "Vous n'avez plus de crédits. Achetez-en davantage pour continuer à utiliser les fonctionnalités premium.",
-    buyMore: 'Acheter des crédits',
-    packages: {
-      title: 'Packs de crédits',
-      loading: 'Chargement des packs…',
-      error: 'Erreur lors du chargement des packs.',
-      empty: "Aucun pack de crédits configuré pour l'instant.",
-      credits: 'crédits',
-      validFor: 'Valable {days} jours',
-      buyNow: 'Acheter maintenant',
-    },
-    testConsume: {
-      title: 'Tester la consommation de crédits',
-      description:
-        'Utilisez ces boutons pour tester la consommation de crédits depuis votre solde.',
-      use: 'Utiliser {amount}',
-      apiDescription: 'Test : consommer {amount} crédits',
-      success: '{amount} crédits consommés. Solde : {balance}',
-      insufficient:
-        'Crédits insuffisants. Disponibles : {available}, Demandés : {requested}',
-    },
-    lowCredits: {
-      title: 'Peu de crédits',
-      description:
-        'Votre solde de crédits est faible. Rechargez maintenant pour éviter les interruptions.',
-    },
-    expiring: {
-      title: 'Crédits expirant bientôt',
-      description: 'Crédits expirant dans les 30 prochains jours',
-      expiresIn: 'Expire le {date}',
-      noExpiring: "Aucun crédit n'expire bientôt",
-      days: '{count} crédits',
-      loading: 'Chargement...',
-    },
-    transactions: {
-      title: 'Historique des transactions',
-      description: 'Ajouts et déductions de crédits récents',
-      empty: 'Aucune transaction pour le moment',
-      loading: 'Chargement...',
-      columns: {
-        type: 'Type',
-        amount: 'Montant',
-        balance: 'Solde après',
-        description: 'Description',
-      },
-      types: {
-        credit: 'Crédit',
-        debit: 'Débit',
-      },
     },
   },
   errors: {
@@ -956,37 +648,6 @@ const messages: Messages = {
         'Chaque élément montre ce qu’ont fait l’e-mail et le push, pour voir pourquoi un canal est resté muet.',
     },
   },
-  tour: {
-    title: 'La visite',
-    subtitle:
-      '{total} choses à essayer, chacune une capacité de BuildBase et d’où elle vient.',
-    progress: '{done} sur {total} faites',
-    markDone: 'Marquer comme faite',
-    undo: 'Annuler',
-    open: 'Ouvrir',
-    detected: 'Détecté automatiquement',
-    manual: 'À confirmer vous-même',
-    why: 'Pourquoi c’est important',
-    steps: 'Que faire',
-    fromSdk: 'Depuis le SDK',
-    fromConsole: 'Configuré dans la console',
-    fromApp: 'Dans cette app',
-    requires: 'À faire d’abord',
-    allDone: 'Vous avez tout fait. Emportez-le chez vous.',
-    homeTitle: 'Essayez tout, une tâche à la fois',
-    homeSubtitle:
-      'Connectez-vous et parcourez {total} tâches en {groups} groupes. Chacune montre une capacité de BuildBase, son rendu dans une app et où elle se configure.',
-    homeCta: 'Commencer la visite',
-    dashboardCard: 'Votre visite',
-    next: 'Suivant',
-    cloneTitle: 'Clonez cette app',
-    cloneBody:
-      'Chaque page et chaque tâche ici sont dans un seul dépôt ouvert. Voyez comment tout fonctionne, ou clonez-le pour démarrer votre propre app.',
-    browseCode: 'Parcourir le code',
-    copy: 'Copier',
-    copied: 'Copié',
-    dashboardCta: 'Continuer',
-  },
   help: {
     title: "Centre d'aide",
     description:
@@ -1013,267 +674,6 @@ const messages: Messages = {
     },
     testimonials: {
       title: 'Ce que disent les clients',
-    },
-  },
-  forms: {
-    title: 'Formulaires',
-    description:
-      'Un formulaire créé dans la console, rendu depuis son schéma en ligne et envoyé via cette app.',
-    loading: 'Chargement du formulaire…',
-    fromConsole:
-      'Les champs viennent de la console ; ajoutez-en un là-bas et rechargez.',
-    submit: 'Envoyer',
-    sending: 'Envoi…',
-    sent: 'Envoyé',
-    hint: "Les envois sont stockés comme enregistrements d'une collection et déclenchent l'événement form.submitted.",
-    errors: {
-      title: 'La plateforme a refusé cet envoi',
-      generic: "Quelque chose n'a pas été accepté.",
-    },
-    missing: {
-      title: 'Pas encore de formulaire de contact',
-      token:
-        "Cette app n'a pas de jeton d'API d'organisation. Définissez BUILDBASE_API_TOKEN.",
-      form: "L'organisation n'a pas de formulaire nommé Contact. Initialisez-le avec :",
-    },
-    toast: {
-      sent: "Envoyé. C'est maintenant un enregistrement sur la plateforme.",
-    },
-    submissions: {
-      title: 'Derniers envois',
-      description: 'Relus depuis la collection du formulaire.',
-      refresh: 'Actualiser',
-      empty: "Rien d'envoyé pour l'instant.",
-    },
-  },
-  collections: {
-    title: 'Collections',
-    description:
-      'Données personnalisées sur la plateforme : un schéma versionné, des enregistrements sur la version en ligne.',
-    loading: 'Chargement des enregistrements…',
-    liveVersion: 'Version en ligne {version} ({name}), {fields} champs',
-    noLiveVersion: 'Aucune version en ligne. Publiez-en une dans la console.',
-    refresh: 'Actualiser',
-    empty:
-      'Aucun enregistrement. Initialisez-en ou ajoutez-en un dans la console.',
-    actions: 'Actions',
-    delete: "Supprimer l'enregistrement",
-    hint: 'Publiez une nouvelle version avec un champ supplémentaire dans la console ; la colonne apparaît ici au rechargement.',
-    missing: {
-      title: 'Pas encore de collection release-notes',
-      token:
-        "Cette app n'a pas de jeton d'API d'organisation. Définissez BUILDBASE_API_TOKEN.",
-      collection:
-        "L'organisation n'a pas de collection avec le slug release-notes. Initialisez-la avec :",
-    },
-    toast: {
-      deleted: 'Enregistrement supprimé sur la plateforme.',
-      deleteFailed: "Impossible de supprimer l'enregistrement.",
-    },
-  },
-  tracking: {
-    title: 'Suivi',
-    description:
-      'Tags d’analyse et de publicité définis dans la console, chargés après consentement, avec vos propres événements et l’attribution.',
-    loading: 'Chargement…',
-    consent: {
-      title: 'Consentement',
-      description:
-        'Construit à partir des tags rattachés à cette app, jamais de toute la bibliothèque.',
-      noTags:
-        'Aucun tag n’est rattaché à cette app. Ajoutez-en un dans la console sous Paramètres → Suivi et rattachez-le au client.',
-      privacy: 'Confidentialité',
-      analytics: 'analyse',
-      marketing: 'marketing',
-      change: 'Modifier les choix de cookies',
-      state: 'État actuel',
-      unset: 'pas encore demandé',
-    },
-    installed: {
-      title: 'Fournisseurs installés',
-      description:
-        'Ce qui s’est réellement chargé dans ce navigateur après consentement.',
-      none: 'Rien n’est chargé. Donnez votre consentement, ou rattachez un tag dans la console.',
-    },
-    custom: {
-      title: 'Suivre un événement personnalisé',
-      description:
-        'Vos propres événements vont à la couche de données et à chaque fournisseur installé.',
-      button: 'Suivre report_exported',
-      fired: 'Envoyé {count} fois',
-    },
-    attribution: {
-      title: 'Attribution',
-      description:
-        'D’où vient ce visiteur : identifiants de clic et paramètres de campagne, capturés sur la première page.',
-      empty: 'Rien de capturé. Rechargez avec',
-    },
-    log: {
-      title: 'Journal des événements en direct',
-      description:
-        'Chaque événement envoyé par le SDK dans cet onglet, y compris ceux qu’il envoie de lui-même.',
-      empty: 'Pas encore d’événement. Naviguez, ou suivez-en un ci-dessus.',
-    },
-  },
-  automations: {
-    title: 'Automatisations',
-    description:
-      'Les workflows se construisent dans la console ; cette app provoque les événements qu’ils écoutent et lit ce qui a tourné pour vous.',
-    refresh: 'Actualiser',
-    loading: 'Chargement…',
-    notConfigured:
-      'BUILDBASE_API_TOKEN n’est pas configuré, cette app ne peut donc pas lire les exécutions.',
-    error: 'Impossible de charger les exécutions',
-    runs: {
-      title: 'Vos exécutions',
-      description:
-        'Instances de workflow lancées par la plateforme pour votre compte.',
-      empty:
-        'Pas encore d’exécution. Envoyez le formulaire de contact ou inscrivez un nouvel utilisateur, puis actualisez.',
-      workflow: 'Workflow',
-      event: 'Événement',
-      status: 'Statut',
-      nodes: 'Nœuds terminés',
-      started: 'Début',
-    },
-    calls: {
-      title: 'Appels vers cette app',
-      description:
-        'Ce que l’action HTTP Webhook d’un workflow a envoyé à /api/buildbase/provision, vérifié par secret partagé.',
-      empty: 'Aucun appel de provisionnement reçu pour l’instant.',
-    },
-  },
-  reports: {
-    title: 'Rapports',
-    description:
-      'Chaque module rapporte via les mêmes endpoints de graphiques et de comptages ; trois d’entre eux, sur les trente derniers jours.',
-    notConfigured:
-      'BUILDBASE_API_TOKEN n’est pas configuré, cette app ne peut donc pas lire les rapports.',
-    loading: 'Chargement…',
-    refresh: 'Actualiser',
-    window: 'Du {from} au {to}',
-    counts: {
-      current: 'Utilisateurs, 30 derniers jours',
-      previous: 'Utilisateurs, 30 jours précédents',
-    },
-    unavailable: 'Indisponible',
-    series: {
-      users: {
-        title: 'Inscriptions',
-        description: 'Nouveaux utilisateurs par jour.',
-      },
-      forms: {
-        title: 'Envois de formulaire',
-        description: 'Envois du formulaire de contact par jour.',
-      },
-      links: {
-        title: 'Clics sur liens',
-        description: 'Clics sur liens courts par jour.',
-      },
-    },
-  },
-  assets: {
-    title: 'Fichiers',
-    description:
-      'Fichiers envoyés depuis cette app, stockés et servis par la plateforme.',
-    upload: 'Envoyer un fichier',
-    uploading: 'Envoi…',
-    limit: 'Jusqu’à 5 Mo. Les images ont un aperçu.',
-    uploaded: 'Envoyé',
-    gallery: 'Fichiers',
-    empty: 'Aucun fichier pour l’instant. Envoyez-en un ci-dessus.',
-    public: 'Public',
-    private: 'Privé',
-    makePrivate: 'Rendre privé',
-    makePublic: 'Rendre public',
-    nowPublic: 'Désormais public : l’URL fonctionne à nouveau.',
-    nowPrivate: 'Désormais privé : l’URL publique ne fonctionne plus.',
-    openUrl: 'Ouvrir',
-    tooLarge: 'Ce fichier dépasse 5 Mo.',
-    loadFailed: 'Impossible de joindre la plateforme.',
-    notConfigured:
-      'Cette page lit l’organisation via un jeton d’API. Définissez BUILDBASE_API_TOKEN (console → Settings → Tokens) et redémarrez.',
-  },
-  links: {
-    title: 'Liens courts',
-    description:
-      'Des liens de partage que la plateforme redirige et compte, clic après clic.',
-    create: 'Créer un lien court',
-    createHint:
-      'N’importe quelle URL. La plateforme attribue un id de 12 caractères et enregistre chaque clic avec son pays et son appareil.',
-    name: 'Nom',
-    url: 'URL de destination',
-    createButton: 'Créer',
-    created: 'Lien créé',
-    yourLinks: 'Vos liens',
-    clicksHint:
-      'Suivez un lien puis actualisez : le compte vient de la plateforme, pas de cette page.',
-    refresh: 'Actualiser',
-    empty: 'Aucun lien pour l’instant.',
-    clicks: 'clics',
-    copy: 'Copier l’URL courte',
-    copied: 'Copié',
-    follow: 'Suivre',
-    changeDestination: 'Changer la destination',
-    save: 'Enregistrer',
-    cancel: 'Annuler',
-    updated: 'Destination changée. L’URL courte reste la même.',
-    chart: 'Clics, 14 derniers jours',
-    chartHint: 'Tous les liens ensemble, par jour.',
-    chartEmpty: 'Aucun clic pour l’instant.',
-    loadFailed: 'Impossible de joindre la plateforme.',
-    notConfigured:
-      'Cette page lit l’organisation via un jeton d’API. Définissez BUILDBASE_API_TOKEN (console → Settings → Tokens) et redémarrez.',
-  },
-  audience: {
-    title: 'Audience et attributs',
-    description:
-      'Ce que la plateforme garde d’une personne au-delà du compte : attributs personnalisés, contact marketing et liste d’attente.',
-    failed: 'Enregistrement impossible.',
-    notConfigured:
-      'La newsletter a besoin de BUILDBASE_API_TOKEN côté serveur.',
-    onboarding: {
-      title: 'Liste d’intégration',
-      description:
-        'Cochez les trois et enregistrez : le SDK écrit onboarded=true et votre fonction comme attributs utilisateur, dans votre navigateur, en votre nom.',
-      items: {
-        profile: 'J’ai rempli mon profil',
-        workspace: 'J’ai créé un espace de travail',
-        invite: 'J’ai invité quelqu’un',
-      },
-      role: 'Votre fonction (facultatif)',
-      save: 'Terminer l’intégration',
-      saved: 'Enregistré. Ouvrez votre fiche dans la console pour le voir.',
-      already: 'Déjà intégré, d’après vos attributs.',
-    },
-    attributes: {
-      title: 'Vos attributs',
-      description:
-        'Les clés sont définies dans la console (Users → Attributes) ; les valeurs vivent sur votre utilisateur.',
-      empty: 'Aucun attribut pour l’instant.',
-    },
-    locale: {
-      title: 'Pays, fuseau horaire, devise',
-      description:
-        'Les listes sont fournies avec le SDK (@buildbase/sdk/data), sans téléchargement.',
-      country: 'Pays',
-      timezone: 'Fuseau horaire',
-      currency: 'Devise',
-      save: 'Enregistrer les préférences',
-      saved: 'Préférences enregistrées comme attributs.',
-    },
-    newsletter: {
-      title: 'Newsletter',
-      description:
-        'Un contact marketing est distinct de votre compte : il peut exister sans lui. Le serveur le crée avec le jeton de l’organisation et l’ajoute à la liste newsletter.',
-      email: 'E-mail',
-      subscribe: 'S’abonner',
-      subscribed: 'Abonné',
-      listed: 'Ajouté à la liste {list}.',
-      noList:
-        'Contact créé ; cette organisation n’a pas encore de liste newsletter.',
-      waitlistHint:
-        'Les visiteurs non connectés peuvent rejoindre la liste d’attente bêta sur',
     },
   },
   waitlist: {

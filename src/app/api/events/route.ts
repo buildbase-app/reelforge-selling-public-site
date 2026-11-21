@@ -191,8 +191,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // The tour ticks off tasks from the trace they leave.
-
     logger.debug('Event processed successfully', { eventType });
     return NextResponse.json({ success: true });
   } catch (error) {

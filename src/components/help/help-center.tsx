@@ -36,9 +36,6 @@ export async function HelpCenter({
         <p className="text-muted-foreground mt-1">
           {configured ? t('notConfigured.empty') : t('notConfigured.token')}
         </p>
-        <code className="bg-background mt-3 block rounded border px-2 py-1 font-mono text-xs">
-          node scripts/seed-org.mjs content
-        </code>
       </div>
     );
   }

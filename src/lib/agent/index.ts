@@ -1,7 +1,7 @@
 import 'server-only';
 import { createAgentStack } from '@buildbase/sdk/mcp';
 import { env, siteUrl, buildbaseEnvironment } from '@/env';
-import { siteConfig } from '@/config/site';
+import { contactUri, siteConfig } from '@/config/site';
 import { logger } from '@/lib/logger';
 import { SCOPES, storeTools, storeResources, storePrompts } from './tools';
 import { buildLlmsTxt, buildLlmsFullTxt, buildSkillMarkdown } from './content';
@@ -28,8 +28,10 @@ export const agent = createAgentStack({
     name: siteConfig.name,
     description: siteConfig.description,
     documentationUrl: `${siteUrl}/llms-full.txt`,
-    contactEmail: siteConfig.contact.support,
-    provider: { name: 'BuildBase', url: siteConfig.buildbase.url },
+    ...(siteConfig.contact.support
+      ? { contactEmail: siteConfig.contact.support }
+      : {}),
+    provider: { name: siteConfig.name, url: siteUrl },
   },
   secret: env.SYSTEM_SECRET,
   scopes: [...SCOPES],
@@ -39,7 +41,7 @@ export const agent = createAgentStack({
     tools: [...storeTools],
     handler: {
       instructions:
-        "This is the ReelForge store. Built-in tools read the signed-in customer's account (workspaces, subscription, invoices). There are no write tools. Ask for a workspaceId when the user has several workspaces.",
+        "This is the ReelForge store. Built-in tools read the signed-in customer's account (workspaces, invoices, profile). There are no write tools; purchases happen on the website. Ask for a workspaceId when the user has several workspaces.",
       builtinResources: true,
       resources: storeResources,
       prompts: storePrompts,
@@ -60,14 +62,13 @@ export const agent = createAgentStack({
       {
         name: 'reelforge-store',
         description:
-          'Read a ReelForge customer account over MCP: workspaces, subscription and invoices.',
+          "Read a ReelForge customer's account over MCP (read-only).",
         content: buildSkillMarkdown(),
       },
     ],
     security: {
-      contact: `mailto:${siteConfig.contact.security}`,
+      contact: contactUri(),
       expires: '2027-09-01T00:00:00.000Z',
-      policy: `${siteConfig.repo}/blob/main/SECURITY.md`,
     },
     apiCatalog: [
       {

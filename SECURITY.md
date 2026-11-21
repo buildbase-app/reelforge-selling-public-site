@@ -10,9 +10,9 @@
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-If you discover a security vulnerability in this template, please report it by emailing:
-
-**support@buildbase.app**
+If you discover a security vulnerability in the ReelForge store, please report
+it privately through GitHub's "Report a vulnerability" (Security Advisories)
+on this repository.
 
 Include as much of the following information as possible to help us understand and resolve the issue quickly:
 

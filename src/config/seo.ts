@@ -14,6 +14,9 @@ import { siteConfig } from '@/config/site';
  * same regardless of language.
  */
 
+/** Shown wherever the seller's legal name belongs until it is confirmed. */
+export const LEGAL_ENTITY_PLACEHOLDER = '[Legal entity to be confirmed]';
+
 type ContactPoint = {
   telephone?: string;
   contactType?: string;
@@ -25,20 +28,25 @@ export const seoConfig = {
   brand: {
     /** Product / company name used everywhere (JSON-LD, OG, Twitter). */
     name: siteConfig.name,
-    legalName: 'BuildBase',
+    /**
+     * PLACEHOLDER: the legal entity that sells ReelForge is not confirmed
+     * yet (founder decision). Replace this string once it is; the legal
+     * pages show the same placeholder.
+     */
+    legalName: LEGAL_ENTITY_PLACEHOLDER,
     description: siteConfig.description,
-    tagline: 'Everything a SaaS needs, wired and working.',
+    tagline: 'Polished Reels, rendered on your own machine.',
     url: siteUrl,
     /** Path relative to public/ or absolute URL. Used for Organization JSON-LD. */
     logo: '/logo.png',
     foundingDate: undefined as string | undefined,
   },
   author: {
-    name: 'BuildBase Team',
-    url: siteConfig.buildbase.url,
+    name: 'ReelForge team',
+    url: siteUrl,
   },
   publisher: {
-    name: 'BuildBase',
+    name: siteConfig.name,
     logo: '/logo.png',
   },
   social: {

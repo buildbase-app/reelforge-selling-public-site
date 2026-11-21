@@ -9,23 +9,25 @@ Built with Next.js 16 on [BuildBase](https://buildbase.app) (sign-in,
 workspaces, billing, notifications) and deployed to Cloudflare Workers with
 OpenNext. See `DEPLOY_CLOUDFLARE.md`.
 
-> **Status:** started from the BuildBase Next.js starter. The BuildBase demo
-> (guided tour, Documents, links, collections, automations, tracking, reports,
-> credits, usage and permissions pages) has been removed. Product pages,
-> checkout, license keys and downloads are still to be built. Marketing copy
-> and translations still describe the starter in places.
+> **Status:** started from the BuildBase Next.js starter; the BuildBase demo
+> pages and the org-token demo routes have been removed. ReelForge is not on
+> sale yet.
+>
+> **Language:** English only for now. `locales` in `src/i18n/config.ts` is
+> `['en']`; the other message files in `src/i18n/messages/` are kept but not
+> served (they still hold starter copy). Translate one, then add its code back
+> to `locales` and to `src/i18n/messages/index.ts`.
 
 ## What is in here
 
-| Area                                                                                          | Where                                                                              |
-| --------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| Marketing: home, pricing, blog, changelog, help, legal                                        | `src/app/[locale]/...`, `src/content/` (MDX via Contentlayer)                      |
-| Sign-in and session (BuildBase hosted pages, httpOnly cookie)                                 | `src/components/saas-provider.tsx`, `src/app/api/auth/*`, `src/lib/server-auth.ts` |
-| Customer dashboard: team, invoices, profile, security, settings, notifications, inbox, events | `src/app/[locale]/dashboard/*`                                                     |
-| Org-API modules kept: assets, audience (waitlist), forms (contact)                            | `src/app/[locale]/dashboard/{assets,audience,forms}`, `src/app/api/*`              |
-| Mirroring BuildBase into the database (SDK events, signed webhooks)                           | `src/app/api/events`, `src/app/api/webhooks/buildbase`                             |
-| Agents: MCP server at `/api/mcp`, OAuth discovery, `llms.txt`, `openapi.json`                 | `src/lib/agent/`                                                                   |
-| Database (Prisma)                                                                             | `prisma/schema.prisma`, `src/lib/db.ts`                                            |
+| Area                                                                                  | Where                                                                              |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| Marketing: home, pricing, blog, changelog, help, legal                                | `src/app/[locale]/...`, `src/content/` (MDX via Contentlayer)                      |
+| Sign-in and session (BuildBase hosted pages, httpOnly cookie)                         | `src/components/saas-provider.tsx`, `src/app/api/auth/*`, `src/lib/server-auth.ts` |
+| Customer dashboard: team, invoices, profile, security, settings, notifications, inbox | `src/app/[locale]/dashboard/*`                                                     |
+| Mirroring BuildBase into the database (SDK events, signed webhooks)                   | `src/app/api/events`, `src/app/api/webhooks/buildbase`                             |
+| Agents: MCP server at `/api/mcp`, OAuth discovery, `llms.txt`, `openapi.json`         | `src/lib/agent/`                                                                   |
+| Database (Prisma)                                                                     | `prisma/schema.prisma`, `src/lib/db.ts`                                            |
 
 ## Environment
 
@@ -38,7 +40,8 @@ OpenNext. See `DEPLOY_CLOUDFLARE.md`.
 | `NEXT_PUBLIC_BUILDBASE_REDIRECT_URL` | Where the hosted sign-in returns to; one of the client's redirect URLs                       |
 | `SYSTEM_SECRET`                      | At least 32 characters (`openssl rand -base64 32`). Signs tokens this app mints              |
 | `BUILDBASE_WEBHOOK_SECRET`           | Console, Settings, Webhooks: endpoint `<site>/api/webhooks/buildbase`. Optional until set up |
-| `BUILDBASE_API_TOKEN`                | Console, Settings, Tokens. Needed for the assets, audience, forms and help pages             |
+| `BUILDBASE_API_TOKEN`                | Console, Settings, Tokens. Optional; only the help page's console content uses it            |
+| `NEXT_PUBLIC_SUPPORT_EMAIL`          | Public support address. Optional; unset, pages point to `/contact` and `/help` instead       |
 | `SITE_URL`, `NEXT_PUBLIC_SITE_URL`   | The public URL                                                                               |
 
 `src/env.ts` validates these at boot.

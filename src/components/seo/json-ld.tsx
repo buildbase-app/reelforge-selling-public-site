@@ -5,7 +5,12 @@ import {
   OrganizationJsonLd as NextSeoOrganizationJsonLd,
   SoftwareApplicationJsonLd as NextSeoSoftwareApplicationJsonLd,
 } from 'next-seo';
-import { absoluteUrl, brandLogoUrl, seoConfig } from '@/config/seo';
+import {
+  absoluteUrl,
+  brandLogoUrl,
+  LEGAL_ENTITY_PLACEHOLDER,
+  seoConfig,
+} from '@/config/seo';
 
 /**
  * JSON-LD Structured Data Components
@@ -49,7 +54,12 @@ export function OrganizationJsonLd({
   return (
     <NextSeoOrganizationJsonLd
       name={name}
-      legalName={seoConfig.brand.legalName}
+      legalName={
+        // Not emitted while the legal entity is still a placeholder.
+        seoConfig.brand.legalName === LEGAL_ENTITY_PLACEHOLDER
+          ? undefined
+          : seoConfig.brand.legalName
+      }
       url={url}
       logo={logo ? absoluteUrl(logo) : brandLogoUrl()}
       description={description}

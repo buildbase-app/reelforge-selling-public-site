@@ -1,11 +1,12 @@
-import type { Messages } from '../types';
+// Not served: English only for now (src/i18n/config.ts). Starter demo copy;
+// translate from en.ts before adding this locale back.
+import type { DraftMessages } from '../types';
 
-const messages: Messages = {
+const messages: DraftMessages = {
   common: {
     nav: {
       home: 'ホーム',
       dashboard: 'ダッシュボード',
-      documents: 'ドキュメント',
       team: 'チーム',
       notifications: '通知',
       settings: '設定',
@@ -17,31 +18,15 @@ const messages: Messages = {
       generalSettings: '一般設定',
       userManagement: 'ユーザー管理',
       billingPayments: '請求・支払い',
-      credits: 'クレジット',
-      creditUsage: 'クレジット使用状況',
-      creditsAvailable: '利用可能',
-      usage: '使用状況',
-      permissions: '権限',
-      events: 'イベント',
       invoices: '請求書',
       workspace: 'ワークスペース',
-      tour: 'ツアー',
       inbox: '受信箱',
-      modules: 'モジュール',
       sections: {
         start: 'はじめに',
         product: 'プロダクト',
         billing: '請求',
         platform: 'プラットフォーム',
       },
-      forms: 'フォーム',
-      collections: 'コレクション',
-      assets: 'アセット',
-      links: '短縮リンク',
-      audience: 'オーディエンス',
-      tracking: 'トラッキング',
-      automations: '自動化',
-      reports: 'レポート',
     },
     buttons: {
       signIn: 'サインイン',
@@ -68,14 +53,10 @@ const messages: Messages = {
         legal: '法律',
       },
       links: {
-        features: '機能',
         pricing: '料金',
         dashboard: 'ダッシュボード',
-        credits: 'クレジット',
         blog: 'ブログ',
         changelog: '変更履歴',
-        tour: 'ツアー',
-        github: 'GitHubのソース',
         privacy: 'プライバシーポリシー',
         terms: '利用規約',
       },
@@ -385,152 +366,6 @@ const messages: Messages = {
       },
     },
   },
-  documents: {
-    featureGates: {
-      title: '機能ゲート',
-      description:
-        'ワークスペースまたはユーザーの機能フラグで有効になる、この製品の部分。',
-    },
-    workbench: {
-      title: 'あなたのドキュメント',
-      description:
-        'ドキュメントはこのアプリ自身のデータベースにあり、プラットフォームが計測します。',
-      search: 'ドキュメントを検索',
-      allStatuses: 'すべてのステータス',
-      allTags: 'すべてのタグ',
-      newDocument: '新しいドキュメント',
-      newDocumentHint:
-        '作成すると documents クォータに使用量が記録され、クレジットを1つ消費します。',
-      titleLabel: 'タイトル',
-      contentLabel: '内容（Markdown）',
-      statusLabel: 'ステータス',
-      tagsLabel: 'タグ（カンマ区切り）',
-      create: '作成',
-      creating: '作成中…',
-      created: 'ドキュメントを作成しました',
-      deleted: 'ドキュメントを削除しました',
-      delete: '削除',
-      loadSamples: 'サンプルを読み込む',
-      clearSamples: 'サンプルを削除',
-      samplesLoaded: 'サンプル{count}件を読み込みました',
-      samplesAlready: 'サンプルは読み込み済みです',
-      samplesCleared: 'サンプル{count}件を削除しました',
-      sample: 'サンプル',
-      empty: 'まだドキュメントはありません。',
-      total: '合計{count}件',
-      words: '{count}語',
-      loadFailed: 'ドキュメントを読み込めませんでした',
-      viewerNotice:
-        'ここでのあなたの役割は{role}です。閲覧はできますが編集はできません。ボタンは無効で、サーバーも拒否します。',
-      quotaExhausted:
-        'このプランの documents クォータは使い切られ、超過は許可されていません。さらに作成するにはアップグレードしてください。',
-      quotaExhaustedShort: 'クォータ上限',
-      quotaWarning: 'このプランの documents クォータの80%以上を使用しました。',
-      creditsLow:
-        'クレジットが残り少なくなっています。ドキュメントごとに1つ消費します。',
-      creditsExhausted:
-        'クレジットがありません。ドキュメントは作成されますが、計測行に消費が省略されたことが表示されます。',
-      refusedQuota:
-        '拒否: {included}件中{consumed}件使用済みで、プランには上限があります。',
-      refusedRole: '拒否: {role} ロールは書き込めません。',
-      meteringTitle: 'プラットフォームが記録した内容',
-      meteringUsage: '使用量: {included}件中{used}件',
-      meteringUsageSkipped:
-        '使用量: 未記録（このプランに documents クォータはありません）',
-      meteringCredits: 'クレジット: {amount}消費、残り{balance}',
-      meteringCreditsSkipped: 'クレジット: 未消費（残高なし）',
-      statuses: {
-        draft: '下書き',
-        in_review: 'レビュー中',
-        published: '公開済み',
-        archived: 'アーカイブ',
-      },
-    },
-    title: 'ドキュメント',
-    description:
-      'ワークスペースのドキュメント。ここで、またはエージェントが作成し、プラットフォームが計測します。',
-    stats: {
-      featureSections: 'フィーチャーセクション',
-      featureSectionsSubtitle: 'ドキュメント機能',
-      enabled: 'ワークスペースで有効',
-      enabledSubtitle: 'アクティブな機能',
-      locked: 'ロック済み',
-      lockedSubtitle: '非アクティブな機能',
-    },
-    features: {
-      enabled: '有効',
-      disabled: '無効',
-    },
-    allFeatures: {
-      title: 'すべてのワークスペース機能',
-      description: 'すべてのフラグのステータス',
-      empty: 'このワークスペースにはフィーチャーフラグが設定されていません。',
-    },
-    featureSections: {
-      advancedExports: {
-        label: '高度なエクスポート',
-        description: 'ドキュメントをPDF、DOCX、CSVとしてエクスポート',
-        content: 'PDF、Word、CSVエクスポートがプランで利用可能です。',
-        lockedMessage:
-          'エクスポートをアンロックするには高度なエクスポート機能を有効にしてください。',
-      },
-      documentSharing: {
-        label: 'ドキュメント共有',
-        description: '外部の共同作業者とドキュメントを共有',
-        content: '共有リンクと外部コラボレーターアクセスが有効です。',
-        lockedMessage:
-          '外部アクセスを許可するにはドキュメント共有を有効にしてください。',
-      },
-      eSignatures: {
-        label: '電子署名',
-        description: '法的拘束力のある署名を収集',
-        content: '電子署名の収集がアクティブです。',
-        lockedMessage:
-          'ドキュメントで署名を収集するには電子署名を有効にしてください。',
-      },
-    },
-  },
-  events: {
-    webhooks: {
-      title: '受信したWebhook',
-      description:
-        'プラットフォームからの署名付きサーバー間配信。このワークスペース向けに /api/webhooks/buildbase が保存します。',
-      empty:
-        'まだWebhookはありません。購読、招待、クレジット購入を行うとプラットフォームがこのアプリを呼び出します。',
-      refresh: '更新',
-      event: 'イベント',
-      received: '受信',
-      signature: '署名',
-      verified: '検証済み',
-      payload: 'ペイロード',
-      when: 'プラットフォーム時刻',
-    },
-    title: 'SDKイベントログ',
-    description: 'リアルタイムSDKイベント',
-    clearButton: 'クリア',
-    listenCard: {
-      title: 'イベントをリッスン中',
-      description:
-        'これらのイベントはSDK使用時に自動的にトリガーされます — ワークスペースを変更、サインイン、またはメンバーを招待して確認してください。',
-    },
-    liveCard: {
-      title: 'ライブストリーム',
-      captured: '{count}件のイベントをキャプチャ',
-      empty:
-        'まだイベントがありません。ワークスペースを切り替えるかページをリロードしてみてください。',
-    },
-    eventLabels: {
-      userCreated: 'ユーザーが作成されました',
-      userUpdated: 'ユーザーが更新されました',
-      workspaceChanged: 'ワークスペースが変更されました',
-      workspaceUpdated: 'ワークスペースが更新されました',
-      memberAdded: 'メンバーが追加されました',
-      memberRemoved: 'メンバーが削除されました',
-      roleChanged: '役割が変更されました',
-      workspaceCreated: 'ワークスペースが作成されました',
-      workspaceDeleted: 'ワークスペースが削除されました',
-    },
-  },
   invoices: {
     title: '請求書',
     description: '請求履歴',
@@ -647,33 +482,6 @@ const messages: Messages = {
       networkError: 'ネットワークエラー — サーバーに接続できませんでした',
     },
   },
-  permissions: {
-    title: '権限',
-    description: 'リアルタイム権限解決',
-    cards: {
-      role: 'あなたの役割',
-      owner: 'オーナー',
-      ownerYes: 'はい',
-      ownerNo: 'いいえ',
-      granted: '付与された権限',
-    },
-    ownerAdmin: {
-      title: 'オーナー / 管理者のみ',
-      notVisible: 'あなたの役割（{role}）では表示されません。',
-      visible: 'あなたはオーナーまたは管理者のためこれが表示されています。',
-    },
-    allMembers: {
-      title: 'すべてのメンバー',
-      notMember: 'あなたはこのワークスペースのメンバーではありません。',
-      visible: 'あなたはワークスペースのメンバーのためこれが表示されています。',
-    },
-    matrix: {
-      title: '権限マトリックス',
-      description: '現在の役割に対してすべての権限を確認',
-      denied: '拒否',
-      grantedStatus: '付与済み',
-    },
-  },
   profile: {
     agents: {
       title: '接続済みエージェント',
@@ -719,58 +527,6 @@ const messages: Messages = {
       disabled: '無効',
     },
   },
-  usage: {
-    title: 'クォータ使用状況',
-    description: 'リアルタイムクォータ消費',
-    loading: 'クォータを読み込み中...',
-    error: 'クォータデータの読み込みエラー。',
-    empty: 'このワークスペースにはクォータが設定されていません。',
-    quotaCard: {
-      remaining: '{count}残り',
-      unlimited: '無制限',
-      exhausted: '使い切り',
-      overage: '超過',
-      threshold: '80%以上使用済み（{pct}%）— 制限に近づいています',
-      overageMsg: '{count}ユニット超過',
-      exhaustedMsg:
-        'クォータを使い切りました — このクォータを使用するアクションはブロックされています',
-      used: '使用済み',
-      overageAllowed: '（許可）',
-    },
-    record: {
-      title: '使用状況を記録',
-      description: 'クォータ使用状況を手動で記録',
-      slugPlaceholder: 'クォータスラッグ（例：api_calls）',
-      qtyPlaceholder: '数量',
-      recording: '記録中…',
-      record: '記録',
-      success: '「{slug}」に{qty}ユニットを記録しました。',
-      failed: '使用状況の記録に失敗しました。',
-    },
-    logs: {
-      title: '使用状況ログ',
-      description: '最近の使用状況エントリ',
-      loading: 'ログを読み込み中…',
-      empty:
-        'まだ使用状況エントリがありません。エントリを表示するには以下で使用状況を記録してください。',
-      table: {
-        quota: 'クォータ',
-        quantity: '数量',
-        source: 'ソース',
-        date: '日付',
-      },
-    },
-  },
-  creditStore: {
-    title: 'クレジットパッケージ',
-    subtitle:
-      'AI生成、エクスポートなどのプレミアム機能をアンロックするためにクレジットを購入してください。',
-    buy: 'クレジットを購入',
-    validFor: '{days}日間有効',
-    noExpiry: '有効期限なし',
-    noPackages: '現在クレジットパッケージがありません。',
-    error: 'クレジットパッケージの読み込みエラー',
-  },
   pricing: {
     title: '料金',
     subtitle: 'ニーズに合ったプランを選択してください',
@@ -795,67 +551,6 @@ const messages: Messages = {
     meta: {
       title: '料金',
       description: 'プランと料金を確認',
-    },
-  },
-  credits: {
-    title: 'クレジット',
-    description:
-      'プレミアムアクションにクレジットを使用してください。ワークスペース設定でパッケージを管理できます。',
-    balance: 'クレジット残高',
-    creditsAvailable: 'クレジット利用可能',
-    manageCredits: 'クレジットを管理',
-    buyCredits: 'クレジットを購入',
-    choosePlan: 'プランを選択',
-    noCredits:
-      'クレジットが残っていません。プレミアム機能を引き続き使用するには追加購入してください。',
-    buyMore: 'クレジットを購入',
-    packages: {
-      title: 'クレジットパッケージ',
-      loading: 'パッケージを読み込み中…',
-      error: 'パッケージの読み込みエラー。',
-      empty: 'まだクレジットパッケージが設定されていません。',
-      credits: 'クレジット',
-      validFor: '{days}日間有効',
-      buyNow: '今すぐ購入',
-    },
-    testConsume: {
-      title: 'クレジット消費テスト',
-      description:
-        'これらのボタンを使用して残高からのクレジット消費をテストしてください。',
-      use: '{amount}を使用',
-      apiDescription: 'テスト：{amount}クレジットを消費',
-      success: '{amount}クレジットを消費しました。残高：{balance}',
-      insufficient:
-        'クレジットが不足しています。利用可能：{available}、要求：{requested}',
-    },
-    lowCredits: {
-      title: 'クレジット残高が少ない',
-      description:
-        'クレジット残高が少なくなっています。中断を避けるために今すぐチャージしてください。',
-    },
-    expiring: {
-      title: 'まもなく期限切れのクレジット',
-      description: '今後30日以内に期限切れになるクレジット',
-      expiresIn: '{date}に期限切れ',
-      noExpiring: 'まもなく期限切れになるクレジットはありません',
-      days: '{count}クレジット',
-      loading: '読み込み中...',
-    },
-    transactions: {
-      title: '取引履歴',
-      description: '最近のクレジット追加・差引',
-      empty: 'まだ取引がありません',
-      loading: '読み込み中...',
-      columns: {
-        type: '種類',
-        amount: '金額',
-        balance: '取引後残高',
-        description: '説明',
-      },
-      types: {
-        credit: 'クレジット',
-        debit: 'デビット',
-      },
     },
   },
   errors: {
@@ -943,37 +638,6 @@ const messages: Messages = {
         '各項目にメールとプッシュの結果が表示されるので、チャネルが動かなかった理由が分かります。',
     },
   },
-  tour: {
-    title: 'ツアー',
-    subtitle:
-      '試せることが{total}件。それぞれがBuildBaseの機能と、その出どころです。',
-    progress: '{total}件中{done}件完了',
-    markDone: '完了にする',
-    undo: '元に戻す',
-    open: '開く',
-    detected: '自動で検出されます',
-    manual: 'ご自身で確認',
-    why: 'なぜ重要か',
-    steps: 'やること',
-    fromSdk: 'SDKから',
-    fromConsole: 'コンソールで設定',
-    fromApp: 'このアプリ内',
-    requires: '先にやること',
-    allDone: 'すべて完了しました。持ち帰りましょう。',
-    homeTitle: 'ひとつずつ、すべて試す',
-    homeSubtitle:
-      'サインインして{groups}グループ・{total}件のタスクを進めます。それぞれがBuildBaseの機能、アプリでの見え方、設定場所を示します。',
-    homeCta: 'ツアーを始める',
-    dashboardCard: 'あなたのツアー',
-    next: '次',
-    cloneTitle: 'このアプリをクローン',
-    cloneBody:
-      'ここにあるすべてのページとタスクは、ひとつの公開リポジトリにあります。仕組みを読むことも、クローンして自分のアプリを始めることもできます。',
-    browseCode: 'コードを見る',
-    copy: 'コピー',
-    copied: 'コピーしました',
-    dashboardCta: '続ける',
-  },
   help: {
     title: 'ヘルプセンター',
     description:
@@ -999,266 +663,6 @@ const messages: Messages = {
     },
     testimonials: {
       title: 'お客様の声',
-    },
-  },
-  forms: {
-    title: 'フォーム',
-    description:
-      'コンソールで作ったフォームを、そのライブスキーマから描画し、このアプリから送信します。',
-    loading: 'フォームを読み込み中…',
-    fromConsole:
-      'フィールドはコンソールから来ます。そこで追加して再読み込みしてください。',
-    submit: '送信',
-    sending: '送信中…',
-    sent: '送信済み',
-    hint: '送信内容はコレクションのレコードとして保存され、form.submittedイベントを発火します。',
-    errors: {
-      title: 'プラットフォームがこの送信を拒否しました',
-      generic: '受け付けられない項目があります。',
-    },
-    missing: {
-      title: 'お問い合わせフォームがまだありません',
-      token:
-        'このアプリには組織のAPIトークンがありません。BUILDBASE_API_TOKENを設定してください。',
-      form: '組織にContactという名前のフォームがありません。次で作成できます：',
-    },
-    toast: {
-      sent: '送信しました。プラットフォーム上のレコードになりました。',
-    },
-    submissions: {
-      title: '最近の送信',
-      description: 'フォームのコレクションから読み戻しています。',
-      refresh: '更新',
-      empty: 'まだ送信はありません。',
-    },
-  },
-  collections: {
-    title: 'コレクション',
-    description:
-      'プラットフォーム上のカスタムデータ：バージョン管理されたスキーマと、ライブバージョンに対するレコード。',
-    loading: 'レコードを読み込み中…',
-    liveVersion: 'ライブバージョン {version}（{name}）、{fields} フィールド',
-    noLiveVersion:
-      'ライブバージョンがありません。コンソールで公開してください。',
-    refresh: '更新',
-    empty: 'レコードがありません。シードするかコンソールで追加してください。',
-    actions: '操作',
-    delete: 'レコードを削除',
-    hint: 'コンソールでフィールドを追加した新バージョンを公開すると、再読み込みでここに列が現れます。',
-    missing: {
-      title: 'release-notesコレクションがまだありません',
-      token:
-        'このアプリには組織のAPIトークンがありません。BUILDBASE_API_TOKENを設定してください。',
-      collection:
-        '組織にスラッグrelease-notesのコレクションがありません。次で作成できます：',
-    },
-    toast: {
-      deleted: 'プラットフォーム上のレコードを削除しました。',
-      deleteFailed: 'レコードを削除できませんでした。',
-    },
-  },
-  tracking: {
-    title: 'トラッキング',
-    description:
-      'コンソールで設定した分析・広告タグを同意後に読み込み、独自イベントとアトリビューションを扱います。',
-    loading: '読み込み中…',
-    consent: {
-      title: '同意',
-      description:
-        'このアプリに紐づくタグから構成され、ライブラリ全体からではありません。',
-      noTags:
-        'このアプリにタグはまだ紐づいていません。コンソールの設定 → トラッキングで追加し、クライアントに紐づけてください。',
-      privacy: 'プライバシー',
-      analytics: '分析',
-      marketing: 'マーケティング',
-      change: 'Cookieの設定を変更',
-      state: '現在の状態',
-      unset: '未回答',
-    },
-    installed: {
-      title: '読み込まれたプロバイダー',
-      description: '同意後にこのブラウザーで実際に読み込まれたもの。',
-      none: '何も読み込まれていません。同意するか、コンソールでタグを紐づけてください。',
-    },
-    custom: {
-      title: 'カスタムイベントを送る',
-      description:
-        '独自イベントはデータレイヤーと読み込まれた各ベンダーに届きます。',
-      button: 'report_exported を送る',
-      fired: '{count} 回送信',
-    },
-    attribution: {
-      title: 'アトリビューション',
-      description:
-        '訪問者の流入元：最初のページで取得したクリックIDとキャンペーンパラメーター。',
-      empty: '取得なし。次を付けて再読み込み:',
-    },
-    log: {
-      title: 'ライブイベントログ',
-      description: 'このタブでSDKが送ったすべてのイベント（自動送信を含む）。',
-      empty:
-        'イベントはまだありません。ページを移動するか、上で送ってください。',
-    },
-  },
-  automations: {
-    title: '自動化',
-    description:
-      'ワークフローはコンソールで作ります。このアプリはそのイベントを発生させ、あなた向けに実行された内容を読み取ります。',
-    refresh: '更新',
-    loading: '読み込み中…',
-    notConfigured:
-      'BUILDBASE_API_TOKEN が未設定のため、実行履歴を読み取れません。',
-    error: '実行履歴を読み込めませんでした',
-    runs: {
-      title: 'あなたの実行',
-      description:
-        'プラットフォームがあなたのアカウント向けに開始したワークフローインスタンス。',
-      empty:
-        'まだ実行はありません。お問い合わせフォームを送信するか新規ユーザーを登録して更新してください。',
-      workflow: 'ワークフロー',
-      event: 'イベント',
-      status: '状態',
-      nodes: '完了ノード',
-      started: '開始',
-    },
-    calls: {
-      title: 'このアプリへの呼び出し',
-      description:
-        'ワークフローの HTTP Webhook アクションが /api/buildbase/provision に送った内容。共有シークレットで検証済み。',
-      empty: 'プロビジョニング呼び出しはまだありません。',
-    },
-  },
-  reports: {
-    title: 'レポート',
-    description:
-      '各モジュールは同じチャート・カウントのエンドポイントで報告します。直近30日の3つを表示。',
-    notConfigured:
-      'BUILDBASE_API_TOKEN が未設定のため、レポートを読み取れません。',
-    loading: '読み込み中…',
-    refresh: '更新',
-    window: '{from} 〜 {to}',
-    counts: {
-      current: 'ユーザー（直近30日）',
-      previous: 'ユーザー（その前の30日）',
-    },
-    unavailable: '利用不可',
-    series: {
-      users: {
-        title: '登録',
-        description: '1日あたりの新規ユーザー。',
-      },
-      forms: {
-        title: 'フォーム送信',
-        description: '1日あたりのお問い合わせフォーム送信。',
-      },
-      links: {
-        title: 'リンククリック',
-        description: '1日あたりの短縮リンククリック。',
-      },
-    },
-  },
-  assets: {
-    title: 'アセット',
-    description:
-      'このアプリからアップロードし、プラットフォームが保存・配信するファイル。',
-    upload: 'ファイルをアップロード',
-    uploading: 'アップロード中…',
-    limit: '5 MBまで。画像はプレビュー表示されます。',
-    uploaded: 'アップロードしました',
-    gallery: 'ファイル',
-    empty: 'まだファイルがありません。上からアップロードしてください。',
-    public: '公開',
-    private: '非公開',
-    makePrivate: '非公開にする',
-    makePublic: '公開にする',
-    nowPublic: '公開になりました。URLが再び有効です。',
-    nowPrivate: '非公開になりました。公開URLは無効になります。',
-    openUrl: '開く',
-    tooLarge: 'このファイルは5 MBを超えています。',
-    loadFailed: 'プラットフォームに接続できませんでした。',
-    notConfigured:
-      'このページはAPIトークンで組織を読み取ります。BUILDBASE_API_TOKEN（コンソール → Settings → Tokens）を設定して再起動してください。',
-  },
-  links: {
-    title: '短縮リンク',
-    description:
-      'プラットフォームがリダイレクトし、クリックを1件ずつ数える共有リンク。',
-    create: '短縮リンクを作成',
-    createHint:
-      '任意のURL。プラットフォームが12文字のIDを発行し、国とデバイスとともに全クリックを記録します。',
-    name: '名前',
-    url: 'リンク先URL',
-    createButton: '作成',
-    created: 'リンクを作成しました',
-    yourLinks: 'あなたのリンク',
-    clicksHint:
-      'リンクを開いてから更新してください。件数はこのページではなくプラットフォームから来ます。',
-    refresh: '更新',
-    empty: 'まだリンクがありません。',
-    clicks: 'クリック',
-    copy: '短縮URLをコピー',
-    copied: 'コピーしました',
-    follow: '開く',
-    changeDestination: 'リンク先を変更',
-    save: '保存',
-    cancel: 'キャンセル',
-    updated: 'リンク先を変更しました。短縮URLは同じです。',
-    chart: 'クリック数（過去14日）',
-    chartHint: '全リンク合計、日別。',
-    chartEmpty: 'まだクリックがありません。',
-    loadFailed: 'プラットフォームに接続できませんでした。',
-    notConfigured:
-      'このページはAPIトークンで組織を読み取ります。BUILDBASE_API_TOKEN（コンソール → Settings → Tokens）を設定して再起動してください。',
-  },
-  audience: {
-    title: 'オーディエンスと属性',
-    description:
-      'アカウント以外にプラットフォームが保持する情報：カスタム属性、マーケティング連絡先、ウェイトリスト。',
-    failed: '保存できませんでした。',
-    notConfigured:
-      'ニュースレターにはサーバー側のBUILDBASE_API_TOKENが必要です。',
-    onboarding: {
-      title: 'オンボーディングチェックリスト',
-      description:
-        '3つにチェックして保存すると、SDKがブラウザからあなたとして onboarded=true と役職をユーザー属性に書き込みます。',
-      items: {
-        profile: 'プロフィールを入力した',
-        workspace: 'ワークスペースを作成した',
-        invite: '誰かを招待した',
-      },
-      role: '役職（任意）',
-      save: 'オンボーディングを完了',
-      saved: '保存しました。コンソールで自分のレコードを開いて確認できます。',
-      already: '属性によると、すでにオンボーディング済みです。',
-    },
-    attributes: {
-      title: 'あなたの属性',
-      description:
-        'キーはコンソール（Users → Attributes）で定義され、値はユーザーに保存されます。',
-      empty: 'まだ属性がありません。',
-    },
-    locale: {
-      title: '国・タイムゾーン・通貨',
-      description:
-        'リストはSDK（@buildbase/sdk/data）に同梱、ダウンロード不要。',
-      country: '国',
-      timezone: 'タイムゾーン',
-      currency: '通貨',
-      save: '設定を保存',
-      saved: '設定を属性として保存しました。',
-    },
-    newsletter: {
-      title: 'ニュースレター',
-      description:
-        'マーケティング連絡先はアカウントとは別で、アカウントなしでも存在できます。サーバーが組織トークンで作成し、ニュースレターリストに追加します。',
-      email: 'メール',
-      subscribe: '購読',
-      subscribed: '購読しました',
-      listed: '{list} リストに追加しました。',
-      noList:
-        '連絡先を作成しました。この組織にはまだニュースレターリストがありません。',
-      waitlistHint:
-        'サインアウト中の訪問者はベータ版ウェイトリストに参加できます：',
     },
   },
   waitlist: {

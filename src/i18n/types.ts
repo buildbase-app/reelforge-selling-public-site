@@ -5,7 +5,6 @@ export interface CommonMessages {
   nav: {
     home: string;
     dashboard: string;
-    documents: string;
     team: string;
     notifications: string;
     settings: string;
@@ -17,31 +16,15 @@ export interface CommonMessages {
     generalSettings: string;
     userManagement: string;
     billingPayments: string;
-    credits: string;
-    creditUsage: string;
-    creditsAvailable: string;
-    usage: string;
-    permissions: string;
-    events: string;
     invoices: string;
     workspace: string;
-    tour: string;
     inbox: string;
-    modules: string;
     sections: {
       start: string;
       product: string;
       billing: string;
       platform: string;
     };
-    forms: string;
-    collections: string;
-    assets: string;
-    links: string;
-    audience: string;
-    tracking: string;
-    automations: string;
-    reports: string;
   };
   buttons: {
     signIn: string;
@@ -67,14 +50,10 @@ export interface CommonMessages {
       legal: string;
     };
     links: {
-      features: string;
       pricing: string;
       dashboard: string;
-      credits: string;
       blog: string;
       changelog: string;
-      tour: string;
-      github: string;
       privacy: string;
       terms: string;
     };
@@ -340,126 +319,6 @@ export interface SettingsMessages {
   };
 }
 
-export interface DocumentsFeatureSection {
-  label: string;
-  description: string;
-  content: string;
-  lockedMessage: string;
-}
-
-export interface DocumentsMessages {
-  featureGates: { title: string; description: string };
-  workbench: {
-    title: string;
-    description: string;
-    search: string;
-    allStatuses: string;
-    allTags: string;
-    newDocument: string;
-    newDocumentHint: string;
-    titleLabel: string;
-    contentLabel: string;
-    statusLabel: string;
-    tagsLabel: string;
-    create: string;
-    creating: string;
-    created: string;
-    deleted: string;
-    delete: string;
-    loadSamples: string;
-    clearSamples: string;
-    samplesLoaded: string;
-    samplesAlready: string;
-    samplesCleared: string;
-    sample: string;
-    empty: string;
-    total: string;
-    words: string;
-    loadFailed: string;
-    viewerNotice: string;
-    quotaExhausted: string;
-    quotaExhaustedShort: string;
-    quotaWarning: string;
-    creditsLow: string;
-    creditsExhausted: string;
-    refusedQuota: string;
-    refusedRole: string;
-    meteringTitle: string;
-    meteringUsage: string;
-    meteringUsageSkipped: string;
-    meteringCredits: string;
-    meteringCreditsSkipped: string;
-    statuses: {
-      draft: string;
-      in_review: string;
-      published: string;
-      archived: string;
-    };
-  };
-  title: string;
-  description: string;
-  stats: {
-    featureSections: string;
-    featureSectionsSubtitle: string;
-    enabled: string;
-    enabledSubtitle: string;
-    locked: string;
-    lockedSubtitle: string;
-  };
-  features: {
-    enabled: string;
-    disabled: string;
-  };
-  allFeatures: {
-    title: string;
-    description: string;
-    empty: string;
-  };
-  featureSections: {
-    advancedExports: DocumentsFeatureSection;
-    documentSharing: DocumentsFeatureSection;
-    eSignatures: DocumentsFeatureSection;
-  };
-}
-
-export interface EventsMessages {
-  webhooks: {
-    title: string;
-    description: string;
-    empty: string;
-    refresh: string;
-    event: string;
-    received: string;
-    signature: string;
-    verified: string;
-    payload: string;
-    when: string;
-  };
-  title: string;
-  description: string;
-  clearButton: string;
-  listenCard: {
-    title: string;
-    description: string;
-  };
-  liveCard: {
-    title: string;
-    captured: string;
-    empty: string;
-  };
-  eventLabels: {
-    userCreated: string;
-    userUpdated: string;
-    workspaceChanged: string;
-    workspaceUpdated: string;
-    memberAdded: string;
-    memberRemoved: string;
-    roleChanged: string;
-    workspaceCreated: string;
-    workspaceDeleted: string;
-  };
-}
-
 export interface InvoicesMessages {
   title: string;
   description: string;
@@ -574,34 +433,6 @@ export interface NotificationsMessages {
   };
 }
 
-export interface PermissionsMessages {
-  title: string;
-  description: string;
-  cards: {
-    role: string;
-    owner: string;
-    ownerYes: string;
-    ownerNo: string;
-    granted: string;
-  };
-  ownerAdmin: {
-    title: string;
-    notVisible: string;
-    visible: string;
-  };
-  allMembers: {
-    title: string;
-    notMember: string;
-    visible: string;
-  };
-  matrix: {
-    title: string;
-    description: string;
-    denied: string;
-    grantedStatus: string;
-  };
-}
-
 export interface ProfileMessages {
   agents: {
     title: string;
@@ -643,47 +474,6 @@ export interface ProfileMessages {
     loading: string;
     enabled: string;
     disabled: string;
-  };
-}
-
-export interface UsageMessages {
-  title: string;
-  description: string;
-  loading: string;
-  error: string;
-  empty: string;
-  quotaCard: {
-    remaining: string;
-    unlimited: string;
-    exhausted: string;
-    overage: string;
-    threshold: string;
-    overageMsg: string;
-    exhaustedMsg: string;
-    used: string;
-    overageAllowed: string;
-  };
-  record: {
-    title: string;
-    description: string;
-    slugPlaceholder: string;
-    qtyPlaceholder: string;
-    recording: string;
-    record: string;
-    success: string;
-    failed: string;
-  };
-  logs: {
-    title: string;
-    description: string;
-    loading: string;
-    empty: string;
-    table: {
-      quota: string;
-      quantity: string;
-      source: string;
-      date: string;
-    };
   };
 }
 
@@ -731,73 +521,6 @@ export interface ErrorMessages {
     description: string;
     browseAll: string;
   };
-}
-
-export interface CreditsMessages {
-  title: string;
-  description: string;
-  balance: string;
-  creditsAvailable: string;
-  manageCredits: string;
-  buyCredits: string;
-  choosePlan: string;
-  noCredits: string;
-  buyMore: string;
-  packages: {
-    title: string;
-    loading: string;
-    error: string;
-    empty: string;
-    credits: string;
-    validFor: string;
-    buyNow: string;
-  };
-  testConsume: {
-    title: string;
-    description: string;
-    use: string;
-    apiDescription: string;
-    success: string;
-    insufficient: string;
-  };
-  lowCredits: {
-    title: string;
-    description: string;
-  };
-  expiring: {
-    title: string;
-    description: string;
-    expiresIn: string;
-    noExpiring: string;
-    days: string;
-    loading: string;
-  };
-  transactions: {
-    title: string;
-    description: string;
-    empty: string;
-    loading: string;
-    columns: {
-      type: string;
-      amount: string;
-      balance: string;
-      description: string;
-    };
-    types: {
-      credit: string;
-      debit: string;
-    };
-  };
-}
-
-export interface CreditStoreMessages {
-  title: string;
-  subtitle: string;
-  buy: string;
-  validFor: string;
-  noExpiry: string;
-  noPackages: string;
-  error: string;
 }
 
 export interface BlogMessages {
@@ -865,35 +588,6 @@ export interface InboxMessages {
   };
 }
 
-export interface TourMessages {
-  title: string;
-  subtitle: string;
-  progress: string;
-  markDone: string;
-  undo: string;
-  open: string;
-  detected: string;
-  manual: string;
-  why: string;
-  steps: string;
-  fromSdk: string;
-  fromConsole: string;
-  fromApp: string;
-  requires: string;
-  allDone: string;
-  homeTitle: string;
-  homeSubtitle: string;
-  homeCta: string;
-  dashboardCard: string;
-  next: string;
-  cloneTitle: string;
-  cloneBody: string;
-  browseCode: string;
-  copy: string;
-  copied: string;
-  dashboardCta: string;
-}
-
 export interface HelpMessages {
   title: string;
   description: string;
@@ -917,237 +611,6 @@ export interface HelpMessages {
   };
   testimonials: {
     title: string;
-  };
-}
-
-export interface FormsMessages {
-  title: string;
-  description: string;
-  loading: string;
-  fromConsole: string;
-  submit: string;
-  sending: string;
-  sent: string;
-  hint: string;
-  errors: {
-    title: string;
-    generic: string;
-  };
-  missing: {
-    title: string;
-    token: string;
-    form: string;
-  };
-  toast: {
-    sent: string;
-  };
-  submissions: {
-    title: string;
-    description: string;
-    refresh: string;
-    empty: string;
-  };
-}
-
-export interface CollectionsMessages {
-  title: string;
-  description: string;
-  loading: string;
-  liveVersion: string;
-  noLiveVersion: string;
-  refresh: string;
-  empty: string;
-  actions: string;
-  delete: string;
-  hint: string;
-  missing: {
-    title: string;
-    token: string;
-    collection: string;
-  };
-  toast: {
-    deleted: string;
-    deleteFailed: string;
-  };
-}
-
-export interface TrackingMessages {
-  title: string;
-  description: string;
-  loading: string;
-  consent: {
-    title: string;
-    description: string;
-    noTags: string;
-    privacy: string;
-    analytics: string;
-    marketing: string;
-    change: string;
-    state: string;
-    unset: string;
-  };
-  installed: {
-    title: string;
-    description: string;
-    none: string;
-  };
-  custom: {
-    title: string;
-    description: string;
-    button: string;
-    fired: string;
-  };
-  attribution: {
-    title: string;
-    description: string;
-    empty: string;
-  };
-  log: {
-    title: string;
-    description: string;
-    empty: string;
-  };
-}
-
-export interface AutomationsMessages {
-  title: string;
-  description: string;
-  refresh: string;
-  loading: string;
-  notConfigured: string;
-  error: string;
-  runs: {
-    title: string;
-    description: string;
-    empty: string;
-    workflow: string;
-    event: string;
-    status: string;
-    nodes: string;
-    started: string;
-  };
-  calls: {
-    title: string;
-    description: string;
-    empty: string;
-  };
-}
-
-export interface ReportsMessages {
-  title: string;
-  description: string;
-  notConfigured: string;
-  loading: string;
-  refresh: string;
-  window: string;
-  counts: { current: string; previous: string };
-  unavailable: string;
-  series: {
-    users: {
-      title: string;
-      description: string;
-    };
-    forms: {
-      title: string;
-      description: string;
-    };
-    links: {
-      title: string;
-      description: string;
-    };
-  };
-}
-
-export interface AssetsMessages {
-  title: string;
-  description: string;
-  upload: string;
-  uploading: string;
-  limit: string;
-  uploaded: string;
-  gallery: string;
-  empty: string;
-  public: string;
-  private: string;
-  makePrivate: string;
-  makePublic: string;
-  nowPublic: string;
-  nowPrivate: string;
-  openUrl: string;
-  tooLarge: string;
-  loadFailed: string;
-  notConfigured: string;
-}
-
-export interface LinksMessages {
-  title: string;
-  description: string;
-  create: string;
-  createHint: string;
-  name: string;
-  url: string;
-  createButton: string;
-  created: string;
-  yourLinks: string;
-  clicksHint: string;
-  refresh: string;
-  empty: string;
-  clicks: string;
-  copy: string;
-  copied: string;
-  follow: string;
-  changeDestination: string;
-  save: string;
-  cancel: string;
-  updated: string;
-  chart: string;
-  chartHint: string;
-  chartEmpty: string;
-  loadFailed: string;
-  notConfigured: string;
-}
-
-export interface AudienceMessages {
-  title: string;
-  description: string;
-  failed: string;
-  notConfigured: string;
-  onboarding: {
-    title: string;
-    description: string;
-    items: {
-      profile: string;
-      workspace: string;
-      invite: string;
-    };
-    role: string;
-    save: string;
-    saved: string;
-    already: string;
-  };
-  attributes: {
-    title: string;
-    description: string;
-    empty: string;
-  };
-  locale: {
-    title: string;
-    description: string;
-    country: string;
-    timezone: string;
-    currency: string;
-    save: string;
-    saved: string;
-  };
-  newsletter: {
-    title: string;
-    description: string;
-    email: string;
-    subscribe: string;
-    subscribed: string;
-    listed: string;
-    noList: string;
-    waitlistHint: string;
   };
 }
 
@@ -1273,30 +736,15 @@ export interface Messages {
   dashboard: DashboardMessages;
   team: TeamMessages;
   settings: SettingsMessages;
-  documents: DocumentsMessages;
-  events: EventsMessages;
   invoices: InvoicesMessages;
   notifications: NotificationsMessages;
-  permissions: PermissionsMessages;
   profile: ProfileMessages;
-  usage: UsageMessages;
-  credits: CreditsMessages;
-  creditStore: CreditStoreMessages;
   pricing: PricingMessages;
   errors: ErrorMessages;
   blog: BlogMessages;
   changelog: ChangelogMessages;
-  tour: TourMessages;
   inbox: InboxMessages;
-  tracking: TrackingMessages;
-  automations: AutomationsMessages;
-  reports: ReportsMessages;
   help: HelpMessages;
-  forms: FormsMessages;
-  collections: CollectionsMessages;
-  assets: AssetsMessages;
-  links: LinksMessages;
-  audience: AudienceMessages;
   waitlist: WaitlistMessages;
   account: AccountMessages;
 }
@@ -1306,3 +754,14 @@ declare module 'next-intl' {
   // eslint-disable-next-line @typescript-eslint/no-empty-object-type
   interface IntlMessages extends Messages {}
 }
+
+type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
+};
+
+/**
+ * Message files for languages that are not served (see `locales` in
+ * ./config.ts). They may lag behind English; a key missing here falls back
+ * to nothing, so fill every key from en.ts before serving the language.
+ */
+export type DraftMessages = DeepPartial<Messages>;

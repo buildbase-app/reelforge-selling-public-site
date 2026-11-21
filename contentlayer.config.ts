@@ -23,7 +23,7 @@ import rehypeStringify from 'rehype-stringify';
  *   - Blog posts — `src/content/blog/{locale}/{slug}.mdx` → `Post` type
  *   - Changelog — `src/content/changelog/{slug}.mdx` → `ChangelogEntry` type
  *   - Marketing pages — `src/content/pages/{page}/{locale}.mdx` → one
- *     bespoke document type per page (`AboutPage`, `PrivacyPage`, …).
+ *     bespoke document type per page (`PrivacyPage`, `TermsPage`).
  *
  * Adding a new locale = drop a file under the locale-keyed folder or
  * name it `{locale}.mdx`. The `locale` computed field picks it up from
@@ -68,15 +68,6 @@ const bodyHtml = {
 // -----------------------------------------------------------------------------
 // Shared nested types
 // -----------------------------------------------------------------------------
-
-const IconCard = defineNestedType(() => ({
-  name: 'IconCard',
-  fields: {
-    icon: { type: 'string', required: true },
-    title: { type: 'string', required: true },
-    description: { type: 'string', required: true },
-  },
-}));
 
 const ChangelogHighlight = defineNestedType(() => ({
   name: 'ChangelogHighlight',
@@ -178,24 +169,6 @@ const pageLocaleComputed = {
   bodyHtml,
 } as const;
 
-export const AboutPage = defineDocumentType(() => ({
-  name: 'AboutPage',
-  filePathPattern: 'pages/about/*.mdx',
-  contentType: 'mdx',
-  fields: {
-    heroEyebrow: { type: 'string', required: true },
-    heroTitle: { type: 'string', required: true },
-    heroDescription: { type: 'string', required: true },
-    seoTitle: { type: 'string', required: false },
-    seoDescription: { type: 'string', required: false },
-    missionHeading: { type: 'string', required: true },
-    valuesEyebrow: { type: 'string', required: true },
-    valuesHeading: { type: 'string', required: true },
-    values: { type: 'list', of: IconCard, required: true },
-  },
-  computedFields: pageLocaleComputed,
-}));
-
 const legalFields = {
   heroEyebrow: { type: 'string', required: true },
   heroTitle: { type: 'string', required: true },
@@ -270,14 +243,7 @@ const prettyCodeOptions: PrettyCodeOptions = {
 
 export default makeSource({
   contentDirPath: 'src/content',
-  documentTypes: [
-    Author,
-    Post,
-    AboutPage,
-    PrivacyPage,
-    TermsPage,
-    ChangelogEntry,
-  ],
+  documentTypes: [Author, Post, PrivacyPage, TermsPage, ChangelogEntry],
   mdx: {
     remarkPlugins: [remarkGfm],
     rehypePlugins: [

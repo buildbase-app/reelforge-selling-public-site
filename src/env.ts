@@ -86,6 +86,10 @@ export const env = createEnv({
 
     // Sentry (client-side)
     NEXT_PUBLIC_SENTRY_DSN: z.url().optional(),
+
+    // Public support address shown on /contact, /help, /order and in agent
+    // documents. Optional: without it those pages link to /contact and /help.
+    NEXT_PUBLIC_SUPPORT_EMAIL: z.email().optional(),
   },
 
   /**
@@ -119,6 +123,7 @@ export const env = createEnv({
     NEXT_PUBLIC_BUILDBASE_ENVIRONMENT:
       process.env.NEXT_PUBLIC_BUILDBASE_ENVIRONMENT,
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    NEXT_PUBLIC_SUPPORT_EMAIL: process.env.NEXT_PUBLIC_SUPPORT_EMAIL,
   },
 
   /**

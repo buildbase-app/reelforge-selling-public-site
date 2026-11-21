@@ -7,13 +7,6 @@ import { siteConfig } from '@/config/site';
  */
 export function buildOpenApiSpec() {
   const b = siteConfig.url.replace(/\/$/, '');
-  const workspaceParam = {
-    name: 'workspaceId',
-    in: 'query',
-    required: true,
-    schema: { type: 'string' },
-    description: 'BuildBase workspace id the caller belongs to.',
-  };
   const unauthorized = {
     description: 'Not signed in or not a workspace member.',
   };
@@ -27,11 +20,12 @@ export function buildOpenApiSpec() {
     openapi: '3.1.0',
     info: {
       title: `${siteConfig.name} API`,
-      version: '0.3.0',
+      version: '0.1.0',
       description:
-        'Routes exposed by the BuildBase demo app. Authenticate with the httpOnly session cookie (browser) or a bearer token minted by /api/auth/oauth2-token (agents and integrations). The MCP server at /api/mcp exposes the same capabilities as tools.',
-      contact: { email: siteConfig.contact.support },
-      license: { name: 'MIT', url: 'https://opensource.org/licenses/MIT' },
+        'Routes exposed by the ReelForge store. Authenticate with the httpOnly session cookie (browser) or a bearer token minted by /api/auth/oauth2-token (agents and integrations). The MCP server at /api/mcp is read-only.',
+      contact: siteConfig.contact.support
+        ? { email: siteConfig.contact.support }
+        : { url: siteConfig.contact.page },
     },
     externalDocs: {
       description: 'Full guide for agents',
@@ -40,7 +34,6 @@ export function buildOpenApiSpec() {
     servers: [{ url: b, description: 'Production' }],
     security: [{ bearerAuth: [] }, { sessionCookie: [] }],
     tags: [
-      { name: 'billing', description: 'Public plans.' },
       { name: 'events', description: 'SDK events and platform webhooks.' },
       {
         name: 'auth',
@@ -77,44 +70,7 @@ export function buildOpenApiSpec() {
           },
         },
       },
-      '/api/plans': {
-        get: {
-          tags: ['billing'],
-          summary: 'Public pricing plans',
-          description:
-            'The plan group shown on /pricing, straight from the BuildBase console. No auth.',
-          operationId: 'getPublicPlans',
-          security: [],
-          parameters: [
-            {
-              name: 'slug',
-              in: 'query',
-              schema: { type: 'string', default: 'main-pricing' },
-            },
-          ],
-          responses: {
-            '200': ok({ type: 'object', additionalProperties: true }),
-            '404': { description: 'No public plan group with that slug.' },
-          },
-        },
-      },
       '/api/events': {
-        get: {
-          tags: ['events'],
-          summary: 'Recent events for a workspace',
-          description:
-            'Client SDK lifecycle events (persisted via POST) and signed platform webhooks, newest first.',
-          operationId: 'listEvents',
-          parameters: [
-            workspaceParam,
-            {
-              name: 'limit',
-              in: 'query',
-              schema: { type: 'integer', default: 50, maximum: 200 },
-            },
-          ],
-          responses: { '200': ok(ref('EventList')), '401': unauthorized },
-        },
         post: {
           tags: ['events'],
           summary: 'Persist a client SDK event',
@@ -278,35 +234,6 @@ export function buildOpenApiSpec() {
         sessionCookie: { type: 'apiKey', in: 'cookie', name: 'bb-session-id' },
       },
       schemas: {
-        EventList: {
-          type: 'object',
-          properties: {
-            sdkEvents: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  id: { type: 'string' },
-                  eventType: { type: 'string' },
-                  payload: { type: 'object' },
-                  createdAt: { type: 'string', format: 'date-time' },
-                },
-              },
-            },
-            webhooks: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  id: { type: 'string' },
-                  event: { type: 'string' },
-                  payload: { type: 'object' },
-                  receivedAt: { type: 'string', format: 'date-time' },
-                },
-              },
-            },
-          },
-        },
         User: {
           type: 'object',
           properties: {

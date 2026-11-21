@@ -90,10 +90,6 @@ export async function POST(request: NextRequest) {
         });
       });
 
-    // Signing in is the proof that the account exists; the tour's first task
-    // waits on this rather than on a user:created event the SDK fires only
-    // for an account it created itself.
-
     const token = createAuthToken({
       userId,
       workspaceId: null,

@@ -1,11 +1,12 @@
-import type { Messages } from '../types';
+// Not served: English only for now (src/i18n/config.ts). Starter demo copy;
+// translate from en.ts before adding this locale back.
+import type { DraftMessages } from '../types';
 
-const messages: Messages = {
+const messages: DraftMessages = {
   common: {
     nav: {
       home: 'الرئيسية',
       dashboard: 'لوحة التحكم',
-      documents: 'المستندات',
       team: 'الفريق',
       notifications: 'الإشعارات',
       settings: 'الإعدادات',
@@ -17,31 +18,15 @@ const messages: Messages = {
       generalSettings: 'الإعدادات العامة',
       userManagement: 'إدارة المستخدمين',
       billingPayments: 'الفواتير والمدفوعات',
-      credits: 'الاعتمادات',
-      creditUsage: 'استخدام الاعتمادات',
-      creditsAvailable: 'متاح',
-      usage: 'الاستخدام',
-      permissions: 'الأذونات',
-      events: 'الأحداث',
       invoices: 'الفواتير',
       workspace: 'مساحة العمل',
-      tour: 'الجولة',
       inbox: 'البريد الوارد',
-      modules: 'الوحدات',
       sections: {
         start: 'البداية',
         product: 'المنتج',
         billing: 'الفوترة',
         platform: 'المنصة',
       },
-      forms: 'النماذج',
-      collections: 'المجموعات',
-      assets: 'الملفات',
-      links: 'الروابط القصيرة',
-      audience: 'الجمهور',
-      tracking: 'التتبع',
-      automations: 'الأتمتة',
-      reports: 'التقارير',
     },
     buttons: {
       signIn: 'تسجيل الدخول',
@@ -68,14 +53,10 @@ const messages: Messages = {
         legal: 'قانوني',
       },
       links: {
-        features: 'الميزات',
         pricing: 'الأسعار',
         dashboard: 'لوحة التحكم',
-        credits: 'الاعتمادات',
         blog: 'المدونة',
         changelog: 'سجل التغييرات',
-        tour: 'الجولة',
-        github: 'المصدر على GitHub',
         privacy: 'سياسة الخصوصية',
         terms: 'شروط الخدمة',
       },
@@ -382,150 +363,6 @@ const messages: Messages = {
       },
     },
   },
-  documents: {
-    featureGates: {
-      title: 'بوابات الميزات',
-      description:
-        'أجزاء هذا المنتج التي يشغّلها علم ميزة لمساحة العمل أو للمستخدم.',
-    },
-    workbench: {
-      title: 'مستنداتك',
-      description:
-        'تعيش المستندات في قاعدة بيانات هذا التطبيق؛ وتقيسها المنصة.',
-      search: 'ابحث في المستندات',
-      allStatuses: 'كل الحالات',
-      allTags: 'كل الوسوم',
-      newDocument: 'مستند جديد',
-      newDocumentHint:
-        'إنشاء مستند يسجّل استخدامًا على حصة documents وينفق رصيدًا واحدًا.',
-      titleLabel: 'العنوان',
-      contentLabel: 'المحتوى (Markdown)',
-      statusLabel: 'الحالة',
-      tagsLabel: 'وسوم مفصولة بفواصل',
-      create: 'إنشاء',
-      creating: 'جارٍ الإنشاء…',
-      created: 'تم إنشاء المستند',
-      deleted: 'تم حذف المستند',
-      delete: 'حذف',
-      loadSamples: 'تحميل مستندات نموذجية',
-      clearSamples: 'إزالة النماذج',
-      samplesLoaded: 'تم تحميل {count} مستندات نموذجية',
-      samplesAlready: 'النماذج محمّلة مسبقًا',
-      samplesCleared: 'تمت إزالة {count} مستندات نموذجية',
-      sample: 'نموذج',
-      empty: 'لا مستندات بعد.',
-      total: '{count} إجمالًا',
-      words: '{count} كلمة',
-      loadFailed: 'تعذّر تحميل المستندات',
-      viewerNotice:
-        'دورك هنا هو {role}: يمكنك القراءة لا الكتابة. الأزرار معطّلة والخادم يرفض على أي حال.',
-      quotaExhausted:
-        'حصة documents لهذه الخطة مستنفدة ولا تسمح بالتجاوز. رقِّ الخطة لإنشاء المزيد.',
-      quotaExhaustedShort: 'الحصة مستنفدة',
-      quotaWarning: 'استخدمت أكثر من 80% من حصة documents لهذه الخطة.',
-      creditsLow: 'الرصيد ينفد. كل مستند ينفق رصيدًا واحدًا.',
-      creditsExhausted:
-        'لا رصيد متبقٍ. تُنشأ المستندات مع ذلك؛ ويُظهر سطر القياس أن الإنفاق تم تخطيه.',
-      refusedQuota:
-        'مرفوض: استُخدم {consumed} من {included} مستندات والخطة ذات حد صارم.',
-      refusedRole: 'مرفوض: دور {role} لا يمكنه الكتابة.',
-      meteringTitle: 'ما سجّلته المنصة',
-      meteringUsage: 'الاستخدام: {used} من {included} مستندات',
-      meteringUsageSkipped:
-        'الاستخدام: غير مسجّل (لا حصة documents في هذه الخطة)',
-      meteringCredits: 'الرصيد: أُنفق {amount}، المتبقي {balance}',
-      meteringCreditsSkipped: 'الرصيد: لم يُنفق (لا رصيد)',
-      statuses: {
-        draft: 'مسودة',
-        in_review: 'قيد المراجعة',
-        published: 'منشور',
-        archived: 'مؤرشف',
-      },
-    },
-    title: 'المستندات',
-    description:
-      'مستندات مساحة عملك: تُنشأ هنا أو بواسطة وكيل، وتقيسها المنصة.',
-    stats: {
-      featureSections: 'أقسام الميزات',
-      featureSectionsSubtitle: 'ميزات المستندات',
-      enabled: 'مفعّل لمساحة العمل',
-      enabledSubtitle: 'ميزات نشطة',
-      locked: 'مقفل',
-      lockedSubtitle: 'ميزات غير نشطة',
-    },
-    features: {
-      enabled: 'مفعّل',
-      disabled: 'معطّل',
-    },
-    allFeatures: {
-      title: 'جميع ميزات مساحة العمل',
-      description: 'حالة علامات الميزات الخام',
-      empty: 'لا توجد علامات ميزات مكوّنة لهذه مساحة العمل.',
-    },
-    featureSections: {
-      advancedExports: {
-        label: 'التصدير المتقدم',
-        description: 'تصدير المستندات كـPDF أو DOCX أو CSV',
-        content: 'التصدير إلى PDF وWord وCSV متاح في خطتك.',
-        lockedMessage: 'فعّل ميزة advanced-exports لفتح تصدير المستندات.',
-      },
-      documentSharing: {
-        label: 'مشاركة المستندات',
-        description: 'مشاركة المستندات مع المتعاونين الخارجيين',
-        content: 'روابط المشاركة والوصول للمتعاونين الخارجيين مفعّلة.',
-        lockedMessage:
-          'فعّل document-sharing للسماح بالمشاركة مع أشخاص خارج مساحة عملك.',
-      },
-      eSignatures: {
-        label: 'التوقيعات الإلكترونية',
-        description: 'جمع التوقيعات الملزمة قانونياً',
-        content:
-          'جمع التوقيعات الإلكترونية نشط. أرسل طلبات التوقيع من أي مستند.',
-        lockedMessage:
-          'فعّل e-signatures لجمع التوقيعات الملزمة قانونياً على المستندات.',
-      },
-    },
-  },
-  events: {
-    webhooks: {
-      title: 'الويب هوكس المستلمة',
-      description:
-        'عمليات تسليم موقّعة من خادم إلى خادم من المنصة، يخزّنها /api/webhooks/buildbase لمساحة العمل هذه.',
-      empty:
-        'لا ويب هوكس بعد. اشترك أو ادعُ شخصًا أو اشترِ رصيدًا وستستدعي المنصة هذا التطبيق.',
-      refresh: 'تحديث',
-      event: 'الحدث',
-      received: 'وقت الاستلام',
-      signature: 'التوقيع',
-      verified: 'موثّق',
-      payload: 'المحتوى',
-      when: 'وقت المنصة',
-    },
-    title: 'سجل أحداث SDK',
-    description: 'أحداث SDK في الوقت الفعلي',
-    clearButton: 'مسح',
-    listenCard: {
-      title: 'الاستماع للأحداث',
-      description:
-        'تُطلق هذه الأحداث تلقائياً أثناء استخدام SDK — بدّل مساحات العمل أو سجّل الدخول أو ادعُ عضواً لرؤيتها تظهر.',
-    },
-    liveCard: {
-      title: 'البث المباشر',
-      captured: '{count} حدث مُلتقط',
-      empty: 'لا أحداث بعد. جرّب تبديل مساحات العمل أو تحديث الصفحة.',
-    },
-    eventLabels: {
-      userCreated: 'مستخدم جديد',
-      userUpdated: 'تحديث مستخدم',
-      workspaceChanged: 'تغيير مساحة العمل',
-      workspaceUpdated: 'تحديث مساحة العمل',
-      memberAdded: 'إضافة عضو',
-      memberRemoved: 'إزالة عضو',
-      roleChanged: 'تغيير الدور',
-      workspaceCreated: 'إنشاء مساحة عمل',
-      workspaceDeleted: 'حذف مساحة عمل',
-    },
-  },
   invoices: {
     title: 'الفواتير',
     description: 'سجل الفواتير',
@@ -642,33 +479,6 @@ const messages: Messages = {
       networkError: 'خطأ في الشبكة — تعذّر الوصول للخادم',
     },
   },
-  permissions: {
-    title: 'الأذونات',
-    description: 'تحليل الأذونات المباشر',
-    cards: {
-      role: 'دورك',
-      owner: 'مالك',
-      ownerYes: 'نعم',
-      ownerNo: 'لا',
-      granted: 'الأذونات الممنوحة',
-    },
-    ownerAdmin: {
-      title: 'مالك / مدير فقط',
-      notVisible: 'غير مرئي لدورك ({role}).',
-      visible: 'يمكنك رؤية هذا لأنك مالك أو مدير.',
-    },
-    allMembers: {
-      title: 'جميع الأعضاء',
-      notMember: 'لست عضواً في هذه مساحة العمل.',
-      visible: 'يمكنك رؤية هذا لأنك عضو في مساحة العمل.',
-    },
-    matrix: {
-      title: 'مصفوفة الأذونات',
-      description: 'جميع أذونات المنصة مفحوصة مقابل دورك الحالي',
-      denied: 'مرفوض',
-      grantedStatus: 'ممنوح',
-    },
-  },
   profile: {
     agents: {
       title: 'الوكلاء المتصلون',
@@ -714,57 +524,6 @@ const messages: Messages = {
       disabled: 'معطّل',
     },
   },
-  usage: {
-    title: 'استخدام الحصص',
-    description: 'استهلاك الحصص المباشر',
-    loading: 'جاري تحميل الحصص...',
-    error: 'فشل تحميل بيانات الحصص.',
-    empty: 'لا توجد حصص مكوّنة لهذه مساحة العمل.',
-    quotaCard: {
-      remaining: '{count} متبقٍ',
-      unlimited: 'غير محدود',
-      exhausted: 'منتهية',
-      overage: 'زيادة',
-      threshold: 'تجاوز 80% ({pct}%) — يقترب من الحد',
-      overageMsg: 'زيادة بمقدار {count} وحدة',
-      exhaustedMsg: 'الحصة منتهية — الإجراءات التي تستخدم هذه الحصة محظورة',
-      used: 'مستخدم',
-      overageAllowed: '(مسموح)',
-    },
-    record: {
-      title: 'تسجيل الاستخدام',
-      description: 'تسجيل استخدام الحصة يدوياً',
-      slugPlaceholder: 'معرّف الحصة (مثال: api_calls)',
-      qtyPlaceholder: 'الكمية',
-      recording: 'جاري التسجيل…',
-      record: 'تسجيل',
-      success: 'تم تسجيل {qty} وحدة لـ"{slug}".',
-      failed: 'فشل تسجيل الاستخدام.',
-    },
-    logs: {
-      title: 'سجل الاستخدام',
-      description: 'أحدث سجلات الاستخدام',
-      loading: 'جاري تحميل السجلات…',
-      empty:
-        'لا توجد سجلات استخدام بعد. سجّل بعض الاستخدام أدناه لرؤية السجلات.',
-      table: {
-        quota: 'الحصة',
-        quantity: 'الكمية',
-        source: 'المصدر',
-        date: 'التاريخ',
-      },
-    },
-  },
-  creditStore: {
-    title: 'حزم الاعتمادات',
-    subtitle:
-      'اشترِ اعتمادات لفتح الميزات المميزة مثل توليد AI والتصدير وغيرها.',
-    buy: 'شراء اعتمادات',
-    validFor: 'صالح لمدة {days} يوم',
-    noExpiry: 'لا تنتهي أبداً',
-    noPackages: 'لا توجد حزم اعتمادات متاحة حالياً.',
-    error: 'فشل تحميل حزم الاعتمادات',
-  },
   pricing: {
     title: 'الأسعار',
     subtitle: 'اختر الخطة التي تناسب احتياجاتك',
@@ -789,65 +548,6 @@ const messages: Messages = {
     meta: {
       title: 'الأسعار',
       description: 'عرض خططنا وأسعارنا',
-    },
-  },
-  credits: {
-    title: 'الاعتمادات',
-    description:
-      'استخدم الاعتمادات للإجراءات المميزة. أدر الحزم في إعدادات مساحة العمل.',
-    balance: 'رصيد الاعتمادات',
-    creditsAvailable: 'اعتمادات متاحة',
-    manageCredits: 'إدارة الاعتمادات',
-    buyCredits: 'شراء اعتمادات',
-    choosePlan: 'اختر خطة',
-    noCredits:
-      'لا يوجد اعتمادات متبقية. اشترِ المزيد للاستمرار في استخدام الميزات المميزة.',
-    buyMore: 'شراء اعتمادات',
-    packages: {
-      title: 'حزم الاعتمادات',
-      loading: 'جاري تحميل الحزم…',
-      error: 'فشل تحميل الحزم.',
-      empty: 'لا توجد حزم اعتمادات مكوّنة بعد.',
-      credits: 'اعتمادات',
-      validFor: 'صالح لمدة {days} يوم',
-      buyNow: 'اشترِ الآن',
-    },
-    testConsume: {
-      title: 'اختبار استهلاك الاعتمادات',
-      description: 'استخدم هذه الأزرار لاختبار استهلاك الاعتمادات من رصيدك.',
-      use: 'استخدام {amount}',
-      apiDescription: 'اختبار: استهلاك {amount} اعتماد',
-      success: 'تم استهلاك {amount} اعتماد. الرصيد: {balance}',
-      insufficient:
-        'اعتمادات غير كافية. المتاح: {available}، المطلوب: {requested}',
-    },
-    lowCredits: {
-      title: 'الرصيد منخفض',
-      description: 'رصيد الاعتمادات لديك منخفض. قم بالشحن الآن لتجنب الانقطاع.',
-    },
-    expiring: {
-      title: 'الاعتمادات قاربت على الانتهاء',
-      description: 'الاعتمادات التي تنتهي صلاحيتها خلال 30 يومًا القادمة',
-      expiresIn: 'تنتهي في {date}',
-      noExpiring: 'لا توجد اعتمادات قاربت على الانتهاء',
-      days: '{count} اعتماد',
-      loading: 'جاري التحميل...',
-    },
-    transactions: {
-      title: 'سجل المعاملات',
-      description: 'أحدث إضافات وخصومات الاعتمادات',
-      empty: 'لا توجد معاملات بعد',
-      loading: 'جاري التحميل...',
-      columns: {
-        type: 'النوع',
-        amount: 'المبلغ',
-        balance: 'الرصيد بعد',
-        description: 'الوصف',
-      },
-      types: {
-        credit: 'إضافة',
-        debit: 'خصم',
-      },
     },
   },
   errors: {
@@ -934,36 +634,6 @@ const messages: Messages = {
       email: 'يعرض كل عنصر ما فعله البريد والدفع، لتعرف لماذا صمت قناة ما.',
     },
   },
-  tour: {
-    title: 'الجولة',
-    subtitle: '{total} شيئًا لتجربته، كل واحد قدرة من BuildBase ومصدرها.',
-    progress: '{done} من {total} منجزة',
-    markDone: 'وضع علامة منجز',
-    undo: 'تراجع',
-    open: 'فتح',
-    detected: 'يُكتشف تلقائيًا',
-    manual: 'أكّده بنفسك',
-    why: 'لماذا يهم',
-    steps: 'ما يجب فعله',
-    fromSdk: 'من SDK',
-    fromConsole: 'مُعدّ في وحدة التحكم',
-    fromApp: 'في هذا التطبيق',
-    requires: 'افعل أولًا',
-    allDone: 'لقد أنجزت كل شيء. خذه معك.',
-    homeTitle: 'جرّب كل شيء، مهمة تلو الأخرى',
-    homeSubtitle:
-      'سجّل الدخول وأنجز {total} مهمة في {groups} مجموعات. كل مهمة تعرض قدرة من BuildBase، وشكلها في التطبيق، ومكان إعدادها.',
-    homeCta: 'ابدأ الجولة',
-    dashboardCard: 'جولتك',
-    next: 'التالي',
-    cloneTitle: 'استنسخ هذا التطبيق',
-    cloneBody:
-      'كل صفحة وكل مهمة هنا موجودة في مستودع مفتوح واحد. اقرأ كيف يعمل أي جزء، أو استنسخه وابدأ تطبيقك الخاص منه.',
-    browseCode: 'تصفح الكود',
-    copy: 'نسخ',
-    copied: 'تم النسخ',
-    dashboardCta: 'متابعة',
-  },
   help: {
     title: 'مركز المساعدة',
     description:
@@ -989,252 +659,6 @@ const messages: Messages = {
     },
     testimonials: {
       title: 'ماذا يقول العملاء',
-    },
-  },
-  forms: {
-    title: 'النماذج',
-    description:
-      'نموذج مبني في وحدة التحكم، يُعرض من مخططه المباشر ويُرسل عبر هذا التطبيق.',
-    loading: 'جارٍ تحميل النموذج…',
-    fromConsole: 'الحقول تأتي من وحدة التحكم؛ أضف حقلًا هناك وأعد التحميل.',
-    submit: 'إرسال',
-    sending: 'جارٍ الإرسال…',
-    sent: 'أُرسل',
-    hint: 'تُحفظ الإرسالات كسجلات في مجموعة وتطلق الحدث form.submitted.',
-    errors: {
-      title: 'رفضت المنصة هذا الإرسال',
-      generic: 'لم يُقبل شيء ما.',
-    },
-    missing: {
-      title: 'لا نموذج تواصل بعد',
-      token: 'لا يملك هذا التطبيق رمز API للمؤسسة. اضبط BUILDBASE_API_TOKEN.',
-      form: 'لا تملك المؤسسة نموذجًا باسم Contact. أنشئه بـ:',
-    },
-    toast: {
-      sent: 'أُرسل. صار الآن سجلًا على المنصة.',
-    },
-    submissions: {
-      title: 'آخر الإرسالات',
-      description: 'مقروءة من مجموعة النموذج.',
-      refresh: 'تحديث',
-      empty: 'لم يُرسل شيء بعد.',
-    },
-  },
-  collections: {
-    title: 'المجموعات',
-    description:
-      'بيانات مخصصة على المنصة: مخطط بإصدارات، وسجلات على الإصدار المباشر.',
-    loading: 'جارٍ تحميل السجلات…',
-    liveVersion: 'الإصدار المباشر {version} ({name})، {fields} حقول',
-    noLiveVersion: 'لا إصدار مباشر. انشر واحدًا في وحدة التحكم.',
-    refresh: 'تحديث',
-    empty: 'لا سجلات. أنشئ بعضها أو أضف واحدًا في وحدة التحكم.',
-    actions: 'إجراءات',
-    delete: 'حذف السجل',
-    hint: 'انشر إصدارًا جديدًا بحقل إضافي في وحدة التحكم؛ يظهر العمود هنا عند إعادة التحميل.',
-    missing: {
-      title: 'لا مجموعة release-notes بعد',
-      token: 'لا يملك هذا التطبيق رمز API للمؤسسة. اضبط BUILDBASE_API_TOKEN.',
-      collection: 'لا تملك المؤسسة مجموعة بالمعرّف release-notes. أنشئها بـ:',
-    },
-    toast: {
-      deleted: 'حُذف السجل على المنصة.',
-      deleteFailed: 'تعذّر حذف السجل.',
-    },
-  },
-  tracking: {
-    title: 'التتبع',
-    description:
-      'وسوم التحليلات والإعلانات من وحدة التحكم، تُحمَّل بعد الموافقة، مع أحداثك الخاصة والإسناد.',
-    loading: 'جارٍ التحميل…',
-    consent: {
-      title: 'الموافقة',
-      description: 'مبنية من الوسوم المرتبطة بهذا التطبيق، لا من المكتبة كلها.',
-      noTags:
-        'لا توجد وسوم مرتبطة بهذا التطبيق بعد. أضف واحدًا في وحدة التحكم ضمن الإعدادات → التتبع واربطه بالعميل.',
-      privacy: 'الخصوصية',
-      analytics: 'تحليلات',
-      marketing: 'تسويق',
-      change: 'تغيير خيارات ملفات تعريف الارتباط',
-      state: 'الحالة الحالية',
-      unset: 'لم يُسأل بعد',
-    },
-    installed: {
-      title: 'المزودون المثبتون',
-      description: 'ما تم تحميله فعلًا في هذا المتصفح بعد الموافقة.',
-      none: 'لم يُحمَّل شيء. وافق، أو اربط وسمًا في وحدة التحكم.',
-    },
-    custom: {
-      title: 'تتبع حدث مخصص',
-      description: 'أحداثك الخاصة تذهب إلى طبقة البيانات وإلى كل مزود مثبت.',
-      button: 'تتبع report_exported',
-      fired: 'أُرسل {count} مرة',
-    },
-    attribution: {
-      title: 'الإسناد',
-      description:
-        'من أين جاء هذا الزائر: معرفات النقر ومعاملات الحملة، تُلتقط في الصفحة الأولى.',
-      empty: 'لم يُلتقط شيء. أعد التحميل مع',
-    },
-    log: {
-      title: 'سجل الأحداث المباشر',
-      description:
-        'كل حدث أرسله SDK في هذا التبويب، بما فيها ما يرسله من تلقاء نفسه.',
-      empty: 'لا أحداث بعد. تنقّل في الصفحات، أو تتبّع حدثًا أعلاه.',
-    },
-  },
-  automations: {
-    title: 'الأتمتة',
-    description:
-      'تُبنى سير العمل في وحدة التحكم؛ هذا التطبيق يسبّب الأحداث التي تستمع إليها ويقرأ ما نُفّذ لك.',
-    refresh: 'تحديث',
-    loading: 'جارٍ التحميل…',
-    notConfigured:
-      'BUILDBASE_API_TOKEN غير مضبوط، لذا لا يمكن لهذا التطبيق قراءة عمليات التشغيل.',
-    error: 'تعذّر تحميل عمليات التشغيل',
-    runs: {
-      title: 'عمليات تشغيلك',
-      description: 'نسخ سير العمل التي بدأتها المنصة لحسابك.',
-      empty:
-        'لا عمليات بعد. أرسل نموذج الاتصال أو سجّل مستخدمًا جديدًا ثم حدّث.',
-      workflow: 'سير العمل',
-      event: 'الحدث',
-      status: 'الحالة',
-      nodes: 'عُقد منجزة',
-      started: 'البداية',
-    },
-    calls: {
-      title: 'استدعاءات إلى هذا التطبيق',
-      description:
-        'ما أرسله إجراء HTTP Webhook في سير العمل إلى /api/buildbase/provision، مُتحقق منه بسر مشترك.',
-      empty: 'لم تُستلم استدعاءات تهيئة بعد.',
-    },
-  },
-  reports: {
-    title: 'التقارير',
-    description:
-      'كل وحدة تُبلغ عبر نقاط نهاية الرسوم والعدّ نفسها؛ ثلاث منها لآخر ثلاثين يومًا.',
-    notConfigured:
-      'BUILDBASE_API_TOKEN غير مضبوط، لذا لا يمكن لهذا التطبيق قراءة التقارير.',
-    loading: 'جارٍ التحميل…',
-    refresh: 'تحديث',
-    window: 'من {from} إلى {to}',
-    counts: {
-      current: 'المستخدمون، آخر 30 يومًا',
-      previous: 'المستخدمون، الـ 30 يومًا السابقة',
-    },
-    unavailable: 'غير متاح',
-    series: {
-      users: {
-        title: 'التسجيلات',
-        description: 'مستخدمون جدد يوميًا.',
-      },
-      forms: {
-        title: 'إرسالات النموذج',
-        description: 'إرسالات نموذج الاتصال يوميًا.',
-      },
-      links: {
-        title: 'نقرات الروابط',
-        description: 'نقرات الروابط القصيرة يوميًا.',
-      },
-    },
-  },
-  assets: {
-    title: 'الملفات',
-    description: 'ملفات مرفوعة من هذا التطبيق، تخزّنها المنصة وتقدّمها.',
-    upload: 'رفع ملف',
-    uploading: 'جارٍ الرفع…',
-    limit: 'حتى 5 ميغابايت. الصور تُعرض معاينتها.',
-    uploaded: 'تم الرفع',
-    gallery: 'الملفات',
-    empty: 'لا ملفات بعد. ارفع واحدًا أعلاه.',
-    public: 'عام',
-    private: 'خاص',
-    makePrivate: 'اجعله خاصًا',
-    makePublic: 'اجعله عامًا',
-    nowPublic: 'أصبح عامًا: الرابط يعمل من جديد.',
-    nowPrivate: 'أصبح خاصًا: الرابط العام يتوقف عن العمل.',
-    openUrl: 'فتح',
-    tooLarge: 'هذا الملف يتجاوز 5 ميغابايت.',
-    loadFailed: 'تعذّر الاتصال بالمنصة.',
-    notConfigured:
-      'تقرأ هذه الصفحة المؤسسة عبر رمز API. عيّن BUILDBASE_API_TOKEN (وحدة التحكم → Settings → Tokens) وأعد التشغيل.',
-  },
-  links: {
-    title: 'الروابط القصيرة',
-    description: 'روابط مشاركة تعيد المنصة توجيهها وتعدّ نقراتها، نقرة بنقرة.',
-    create: 'إنشاء رابط قصير',
-    createHint:
-      'أي عنوان URL. تصدر المنصة معرّفًا من 12 حرفًا وتسجّل كل نقرة مع بلدها وجهازها.',
-    name: 'الاسم',
-    url: 'عنوان الوجهة',
-    createButton: 'إنشاء',
-    created: 'تم إنشاء الرابط',
-    yourLinks: 'روابطك',
-    clicksHint: 'اتبع رابطًا ثم حدّث: العدد يأتي من المنصة لا من هذه الصفحة.',
-    refresh: 'تحديث',
-    empty: 'لا روابط بعد.',
-    clicks: 'نقرات',
-    copy: 'نسخ الرابط القصير',
-    copied: 'تم النسخ',
-    follow: 'اتباع',
-    changeDestination: 'تغيير الوجهة',
-    save: 'حفظ',
-    cancel: 'إلغاء',
-    updated: 'تغيّرت الوجهة. الرابط القصير كما هو.',
-    chart: 'النقرات، آخر 14 يومًا',
-    chartHint: 'كل الروابط معًا، يوميًا.',
-    chartEmpty: 'لا نقرات بعد.',
-    loadFailed: 'تعذّر الاتصال بالمنصة.',
-    notConfigured:
-      'تقرأ هذه الصفحة المؤسسة عبر رمز API. عيّن BUILDBASE_API_TOKEN (وحدة التحكم → Settings → Tokens) وأعد التشغيل.',
-  },
-  audience: {
-    title: 'الجمهور والسمات',
-    description:
-      'ما تحتفظ به المنصة عن الشخص خارج الحساب: سمات مخصصة، وجهة اتصال تسويقية، وقائمة انتظار.',
-    failed: 'تعذّر الحفظ.',
-    notConfigured: 'تحتاج النشرة إلى BUILDBASE_API_TOKEN على الخادم.',
-    onboarding: {
-      title: 'قائمة التهيئة',
-      description:
-        'علّم الثلاثة واحفظ: يكتب SDK في متصفحك وباسمك onboarded=true ومسمّاك الوظيفي كسمات مستخدم.',
-      items: {
-        profile: 'أكملت ملفي الشخصي',
-        workspace: 'أنشأت مساحة عمل',
-        invite: 'دعوت شخصًا',
-      },
-      role: 'مسمّاك الوظيفي (اختياري)',
-      save: 'إنهاء التهيئة',
-      saved: 'تم الحفظ. افتح سجلك في وحدة التحكم لرؤيته.',
-      already: 'أنت مهيّأ مسبقًا وفق سماتك.',
-    },
-    attributes: {
-      title: 'سماتك',
-      description:
-        'تُعرّف المفاتيح في وحدة التحكم (Users → Attributes)؛ والقيم على حساب المستخدم.',
-      empty: 'لا سمات بعد.',
-    },
-    locale: {
-      title: 'البلد والمنطقة الزمنية والعملة',
-      description: 'القوائم مرفقة مع SDK (@buildbase/sdk/data) دون تنزيل.',
-      country: 'البلد',
-      timezone: 'المنطقة الزمنية',
-      currency: 'العملة',
-      save: 'حفظ التفضيلات',
-      saved: 'حُفظت التفضيلات كسمات.',
-    },
-    newsletter: {
-      title: 'النشرة البريدية',
-      description:
-        'جهة الاتصال التسويقية منفصلة عن حسابك ويمكن أن توجد بدونه. ينشئها الخادم برمز المؤسسة ويضيفها إلى قائمة النشرة.',
-      email: 'البريد الإلكتروني',
-      subscribe: 'اشتراك',
-      subscribed: 'تم الاشتراك',
-      listed: 'أُضيف إلى قائمة {list}.',
-      noList: 'أُنشئت جهة الاتصال؛ لا توجد قائمة نشرة في هذه المؤسسة بعد.',
-      waitlistHint:
-        'يمكن للزوار غير المسجلين الانضمام إلى قائمة انتظار الإصدار التجريبي على',
     },
   },
   waitlist: {

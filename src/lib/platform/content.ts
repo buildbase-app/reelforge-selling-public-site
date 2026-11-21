@@ -71,7 +71,7 @@ const content = process.env.BUILDBASE_API_TOKEN
       apiToken: process.env.BUILDBASE_API_TOKEN,
       // Names this template in the `X-BuildBase-Client` header (beside the
       // SDK version and runtime); it carries no user or org data.
-      source: 'nextjs-starter',
+      source: 'reelforge-store',
       ...withNextCache({ revalidate: 300 }),
     })
   : null;

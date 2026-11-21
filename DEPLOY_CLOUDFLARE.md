@@ -31,6 +31,13 @@ builds with the production values in `.env.production`.
 Open decision (founder): deploying production from a release branch (`main`)
 or a tag instead of from the working branch.
 
+## Language
+
+The store ships in English only for now: `locales` in `src/i18n/config.ts` is
+`['en']`. The other message files (`src/i18n/messages/{ar,de,es,fr,hi,ja,zh}.ts`)
+stay in the repo, unused and out of date. To bring a language back, translate
+its file and add the code to `locales` again.
+
 ## Prerequisites
 
 - Node.js 22, `npm ci`.

@@ -72,8 +72,6 @@ export async function POST(request: NextRequest) {
             });
           });
 
-        // The tour: an agent just finished the OAuth flow as this person.
-
         return mintAgentToken({
           claims,
           secret: env.SYSTEM_SECRET,
