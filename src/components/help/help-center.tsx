@@ -1,101 +1,93 @@
 import { getTranslations } from 'next-intl/server';
-import { BookOpen, FileText, MessageCircleQuestion, Quote } from 'lucide-react';
 import {
-  sanitizeHtml,
-  type DocFolder,
-  type DocPost,
-  type Faq,
-  type RichContent,
-  type Testimonial,
+  Bot,
+  BookOpen,
+  FileText,
+  MessageCircleQuestion,
+  Quote,
+} from 'lucide-react';
+import type {
+  DocFolder,
+  DocPost,
+  RichContent,
+  Testimonial,
 } from '@/lib/platform/content';
-import { FaqList } from './faq-list';
+import type { FaqSectionData } from '@/lib/platform/faqs';
+import { renderMarkdown } from '@/lib/platform/markdown';
+import { MarkdownHtml } from '@/components/content/markdown-html';
 import { DocsBrowser } from './docs-browser';
+import { FaqSection } from './faq-section';
 
 interface HelpCenterProps {
   configured: boolean;
+  storeFaq: FaqSectionData;
+  agentsFaq: FaqSectionData;
   policy: RichContent | null;
-  faqs: Faq[];
   docs: { folders: DocFolder[]; posts: DocPost[] };
   testimonials: Testimonial[];
 }
 
+/**
+ * Bodies from the console (the policy block, docs) are Markdown: they are
+ * rendered and sanitised here on the server, never injected as HTML.
+ */
 export async function HelpCenter({
   configured,
+  storeFaq,
+  agentsFaq,
   policy,
-  faqs,
   docs,
   testimonials,
 }: HelpCenterProps) {
   const t = await getTranslations('help');
-  const empty = !policy && faqs.length === 0 && docs.posts.length === 0;
-
-  if (!configured || empty) {
-    return (
-      <div className="bg-muted/40 mt-8 rounded-xl border p-6 text-sm">
-        <p className="font-medium">{t('notConfigured.title')}</p>
-        <p className="text-muted-foreground mt-1">
-          {configured ? t('notConfigured.empty') : t('notConfigured.token')}
-        </p>
-        <code className="bg-background mt-3 block rounded border px-2 py-1 font-mono text-xs">
-          node scripts/seed-org.mjs content
-        </code>
-      </div>
-    );
-  }
+  const policyHtml = policy ? renderMarkdown(policy.content).html : '';
+  const empty = !policyHtml && docs.posts.length === 0;
 
   return (
     <div className="mt-10 space-y-14">
-      {policy && (
+      <section id="faq" className="scroll-mt-20">
+        <SectionHeading icon={MessageCircleQuestion} title={t('faq.title')} />
+        <FaqSection items={storeFaq.items} />
+      </section>
+
+      {agentsFaq.items.length > 0 && (
+        <section id="agents" className="scroll-mt-20">
+          <SectionHeading icon={Bot} title="Using ReelForge with your agent" />
+          <FaqSection items={agentsFaq.items} />
+        </section>
+      )}
+
+      {(!configured || empty) && (
+        <p className="text-muted-foreground text-sm">
+          {configured ? t('notConfigured.empty') : t('notConfigured.token')}
+        </p>
+      )}
+      {policy && policyHtml && (
         <section id="policy" className="scroll-mt-20">
-          <SectionHeading
-            icon={FileText}
-            title={policy.title}
-            hint={t('from.richContent')}
-          />
-          <div
-            className="prose prose-neutral dark:prose-invert mt-4 max-w-none text-[15px] leading-relaxed [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-semibold [&_p]:my-3 [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-6"
-            dangerouslySetInnerHTML={{ __html: sanitizeHtml(policy.content) }}
+          <SectionHeading icon={FileText} title={policy.title} />
+          <MarkdownHtml
+            html={policyHtml}
+            className="mt-4 max-w-none text-[15px] leading-relaxed [&_h2]:mt-6 [&_h2]:text-lg [&_h2]:font-semibold [&_p]:my-3"
           />
         </section>
       )}
 
       {docs.posts.length > 0 && (
         <section id="docs" className="scroll-mt-20">
-          <SectionHeading
-            icon={BookOpen}
-            title={t('docs.title')}
-            hint={t('from.docs')}
-          />
+          <SectionHeading icon={BookOpen} title={t('docs.title')} />
           <DocsBrowser
             folders={docs.folders}
             posts={docs.posts.map((p) => ({
               ...p,
-              content: sanitizeHtml(p.content ?? ''),
+              content: renderMarkdown(p.content).html,
             }))}
-          />
-        </section>
-      )}
-
-      {faqs.length > 0 && (
-        <section id="faq" className="scroll-mt-20">
-          <SectionHeading
-            icon={MessageCircleQuestion}
-            title={t('faq.title')}
-            hint={t('from.faqs')}
-          />
-          <FaqList
-            faqs={faqs.map((f) => ({ ...f, answer: sanitizeHtml(f.answer) }))}
           />
         </section>
       )}
 
       {testimonials.length > 0 && (
         <section id="testimonials" className="scroll-mt-20">
-          <SectionHeading
-            icon={Quote}
-            title={t('testimonials.title')}
-            hint={t('from.testimonials')}
-          />
+          <SectionHeading icon={Quote} title={t('testimonials.title')} />
           <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {testimonials.map((item) => (
               <li
@@ -122,18 +114,13 @@ export async function HelpCenter({
 function SectionHeading({
   icon: Icon,
   title,
-  hint,
 }: {
   icon: React.ElementType;
   title: string;
-  hint: string;
 }) {
   return (
-    <div className="flex flex-wrap items-baseline justify-between gap-2">
-      <h2 className="flex items-center gap-2 text-xl font-semibold tracking-tight">
-        <Icon className="text-muted-foreground h-5 w-5" /> {title}
-      </h2>
-      <span className="text-muted-foreground font-mono text-xs">{hint}</span>
-    </div>
+    <h2 className="flex items-center gap-2 text-xl font-semibold tracking-tight">
+      <Icon className="text-muted-foreground h-5 w-5" /> {title}
+    </h2>
   );
 }

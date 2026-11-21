@@ -1,18 +1,27 @@
 import 'server-only';
-import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { Pool } from 'pg';
-import { env } from '@/env';
+import { getCloudflareContext } from '@opennextjs/cloudflare';
+import type { D1Database } from '@cloudflare/workers-types';
+import { PrismaD1 } from '@prisma/adapter-d1';
+import { PrismaClient } from '@/generated/prisma/client';
 import { logger } from '@/lib/logger';
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
+/**
+ * Database access on Cloudflare D1.
+ *
+ * A Worker gets its D1 binding per request (`getCloudflareContext().env.DB`),
+ * so there is no module-level client. `prisma` below is a proxy: each property
+ * access resolves the client for the current request, creating it once per
+ * binding. Under `next dev`, `initOpenNextCloudflareForDev()` in next.config.ts
+ * provides a local D1 through Wrangler, so the same code runs locally.
+ *
+ * Every write to a model other than AuditLog also writes an AuditLog row. On
+ * Workers those writes are handed to `ctx.waitUntil` so they finish after the
+ * response is sent instead of being cancelled with the request.
+ */
 
 // Log all models except AuditLog itself (prevents infinite recursion)
 const EXCLUDED_MODELS = ['AuditLog'];
 
-// Audit context — set per-request before DB operations
 interface AuditContext {
   userId?: string;
   workspaceId?: string;
@@ -21,22 +30,49 @@ interface AuditContext {
   source?: string; // 'api' | 'event' | 'system'
 }
 
-let _auditContext: AuditContext = {};
+type Ctx = { waitUntil(promise: Promise<unknown>): void };
+
+/** Audit context per request, keyed by the request's ExecutionContext. */
+const auditByRequest = new WeakMap<object, AuditContext>();
+/** Fallback when no request context exists (scripts, build time). */
+let fallbackAudit: AuditContext = {};
+
+function requestCtx(): Ctx | null {
+  try {
+    return (getCloudflareContext().ctx as Ctx | undefined) ?? null;
+  } catch {
+    return null;
+  }
+}
+
+function currentAudit(): AuditContext {
+  const ctx = requestCtx();
+  return ctx ? (auditByRequest.get(ctx) ?? {}) : fallbackAudit;
+}
+
+function updateAudit(patch: Partial<AuditContext>) {
+  const ctx = requestCtx();
+  const next = { ...currentAudit(), ...patch };
+  if (ctx) auditByRequest.set(ctx, next);
+  else fallbackAudit = next;
+}
 
 export function setAuditUser(userId: string | undefined) {
-  _auditContext.userId = userId;
+  updateAudit({ userId });
 }
 
 export function setAuditWorkspace(workspaceId: string | undefined) {
-  _auditContext.workspaceId = workspaceId;
+  updateAudit({ workspaceId });
 }
 
 export function setAuditContext(ctx: Partial<AuditContext>) {
-  _auditContext = { ..._auditContext, ...ctx };
+  updateAudit(ctx);
 }
 
 export function clearAuditContext() {
-  _auditContext = {};
+  const ctx = requestCtx();
+  if (ctx) auditByRequest.delete(ctx);
+  else fallbackAudit = {};
 }
 
 function getRecordId(record: Record<string, unknown> | null): string | null {
@@ -49,6 +85,11 @@ function getRecordId(record: Record<string, unknown> | null): string | null {
   return null;
 }
 
+/** JSON.stringify cannot serialise BigInt (WebhookEvent.timestamp). */
+function bigintSafe(_key: string, value: unknown) {
+  return typeof value === 'bigint' ? value.toString() : value;
+}
+
 function writeAuditLog(
   client: PrismaClient,
   action: string,
@@ -57,165 +98,101 @@ function writeAuditLog(
   before: unknown,
   after: unknown
 ) {
+  const audit = currentAudit();
   const write = client.auditLog
     .create({
       data: {
         action,
         model,
         recordId,
-        userId: _auditContext.userId ?? null,
-        workspaceId: _auditContext.workspaceId ?? null,
-        ipAddress: _auditContext.ipAddress ?? null,
-        userAgent: _auditContext.userAgent ?? null,
-        source: _auditContext.source ?? null,
-        before: before ? JSON.parse(JSON.stringify(before)) : null,
-        after: after ? JSON.parse(JSON.stringify(after)) : null,
+        userId: audit.userId ?? null,
+        workspaceId: audit.workspaceId ?? null,
+        ipAddress: audit.ipAddress ?? null,
+        userAgent: audit.userAgent ?? null,
+        source: audit.source ?? null,
+        before: before ? JSON.parse(JSON.stringify(before, bigintSafe)) : null,
+        after: after ? JSON.parse(JSON.stringify(after, bigintSafe)) : null,
       },
     })
     .catch((err: unknown) => {
       logger.error('Failed to write audit log', { error: err, model, action });
     });
-  // Not awaited, so the write never slows the request. On Cloudflare, work left
-  // running after the response is cancelled unless registered with waitUntil.
-  cloudflareRequestContext()?.ctx?.waitUntil(write);
+  // Keep the Worker alive until the audit row is written.
+  requestCtx()?.waitUntil(write);
 }
 
-function createPrismaClient(pool: Pool) {
-  const adapter = new PrismaPg(pool);
-  const base = new PrismaClient({ adapter });
+const AUDITED = new Set(['create', 'update', 'delete', 'upsert']);
+
+function createPrismaClient(db: D1Database) {
+  const base = new PrismaClient({ adapter: new PrismaD1(db) });
 
   return base.$extends({
     query: {
       $allOperations({ model, operation, args, query }) {
-        if (!model || EXCLUDED_MODELS.includes(model)) {
+        if (
+          !model ||
+          EXCLUDED_MODELS.includes(model) ||
+          !AUDITED.has(operation)
+        ) {
           return query(args);
         }
-
-        if (operation === 'create') {
-          return query(args).then((result) => {
-            const recordId = getRecordId(
-              result as Record<string, unknown> | null
+        return query(args).then((result) => {
+          const recordId = getRecordId(
+            result as Record<string, unknown> | null
+          );
+          if (recordId) {
+            const removed = operation === 'delete';
+            writeAuditLog(
+              base,
+              operation,
+              model,
+              recordId,
+              removed ? result : null,
+              removed ? null : result
             );
-            if (recordId) {
-              writeAuditLog(base, 'create', model, recordId, null, result);
-            }
-            return result;
-          });
-        }
-
-        if (operation === 'update') {
-          return query(args).then((result) => {
-            const recordId = getRecordId(
-              result as Record<string, unknown> | null
-            );
-            if (recordId) {
-              writeAuditLog(base, 'update', model, recordId, null, result);
-            }
-            return result;
-          });
-        }
-
-        if (operation === 'delete') {
-          return query(args).then((result) => {
-            const recordId = getRecordId(
-              result as Record<string, unknown> | null
-            );
-            if (recordId) {
-              writeAuditLog(base, 'delete', model, recordId, result, null);
-            }
-            return result;
-          });
-        }
-
-        if (operation === 'upsert') {
-          return query(args).then((result) => {
-            const recordId = getRecordId(
-              result as Record<string, unknown> | null
-            );
-            if (recordId) {
-              writeAuditLog(base, 'upsert', model, recordId, null, result);
-            }
-            return result;
-          });
-        }
-
-        return query(args);
+          }
+          return result;
+        });
       },
     },
   }) as unknown as PrismaClient;
 }
 
-// Read DATABASE_URL directly from process.env so the Pool always uses the
-// live value — env.DATABASE_URL is captured at module evaluation time and
-// can be undefined on the first Turbopack compile before .env.local loads.
-function databaseUrl(): string | undefined {
-  return process.env.DATABASE_URL ?? env.DATABASE_URL;
-}
+const clients = new WeakMap<D1Database, PrismaClient>();
 
-/**
- * The Cloudflare request context, when running on Cloudflare Workers.
- *
- * The OpenNext adapter (`npm run cf:deploy`) exposes `{ env, ctx, cf }` for the
- * current request on this global. On Vercel, Docker and `next dev` it is
- * undefined. Read it directly rather than importing @opennextjs/cloudflare, so
- * the Node build never pulls the adapter in.
- */
-interface CloudflareRequestContext {
-  env: { HYPERDRIVE?: { connectionString: string } };
-  ctx?: { waitUntil(promise: Promise<unknown>): void };
-}
-
-function cloudflareRequestContext(): CloudflareRequestContext | undefined {
-  return (globalThis as Record<symbol, unknown>)[
-    Symbol.for('__cloudflare-context__')
-  ] as CloudflareRequestContext | undefined;
-}
-
-// A Worker cannot reuse a socket opened while serving another request, so on
-// Cloudflare each request gets its own client. Keyed on the request's context
-// object, which the adapter creates afresh for every request.
-const clientPerRequest = new WeakMap<object, PrismaClient>();
-
-function clientForCloudflare(ctx: CloudflareRequestContext): PrismaClient {
-  let client = clientPerRequest.get(ctx);
-  if (!client) {
-    client = createPrismaClient(
-      new Pool({
-        // Hyperdrive pools connections at Cloudflare's edge when bound;
-        // otherwise connect straight to the database.
-        connectionString: ctx.env.HYPERDRIVE?.connectionString ?? databaseUrl(),
-        // Workers cap concurrent outbound connections per request.
-        max: 5,
-      })
+/** The Prisma client for the current request's D1 binding. */
+export function getPrisma(): PrismaClient {
+  let db: D1Database | undefined;
+  try {
+    db = (getCloudflareContext().env as { DB?: D1Database }).DB;
+  } catch (error) {
+    throw new Error(
+      'No Cloudflare context: the database is only available while handling a request ' +
+        '(or under `next dev` with initOpenNextCloudflareForDev). ' +
+        (error instanceof Error ? error.message : '')
     );
-    clientPerRequest.set(ctx, client);
+  }
+  if (!db) {
+    throw new Error(
+      'D1 binding "DB" is missing. Check d1_databases in wrangler.jsonc.'
+    );
+  }
+  let client = clients.get(db);
+  if (!client) {
+    client = createPrismaClient(db);
+    clients.set(db, client);
   }
   return client;
 }
 
-// Vercel, Docker and local dev: one long-lived pool for the whole process.
-function clientForNode(): PrismaClient {
-  if (!globalForPrisma.prisma) {
-    globalForPrisma.prisma = createPrismaClient(
-      new Pool({ connectionString: databaseUrl() })
-    );
-  }
-  return globalForPrisma.prisma;
-}
-
-function currentClient(): PrismaClient {
-  const cf = cloudflareRequestContext();
-  return cf ? clientForCloudflare(cf) : clientForNode();
-}
-
 /**
- * The Prisma client. Resolves to the right client on every access, so the
- * same import works on Vercel, Docker and Cloudflare Workers.
+ * Drop-in replacement for the old module-level client: `prisma.user.findMany()`
+ * resolves the current request's client on each access.
  */
-export const prisma = new Proxy({} as PrismaClient, {
-  get(_target, prop) {
-    const client = currentClient();
-    const value = Reflect.get(client, prop, client);
+export const prisma: PrismaClient = new Proxy({} as PrismaClient, {
+  get(_target, property) {
+    const client = getPrisma();
+    const value = Reflect.get(client, property, client);
     return typeof value === 'function' ? value.bind(client) : value;
   },
 });

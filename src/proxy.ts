@@ -32,11 +32,19 @@ function buildbaseConnectSources(): string[] {
 function addSecurityHeaders(response: NextResponse): NextResponse {
   const cspDirectives = [
     "default-src 'self'",
-    // 'unsafe-eval' required for Contentlayer MDX runtime
-    "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+    // 'unsafe-eval' required for Contentlayer MDX runtime.
+    // ship-or-die.com: the hackathon's traffic verification script.
+    // static.cloudflareinsights.com: Cloudflare Web Analytics, which the
+    // buildbase.app zone injects into every page.
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.ship-or-die.com https://static.cloudflareinsights.com",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https: blob:",
     "font-src 'self' data:",
+    // Reels and posters: the R2 bucket on media.reelforge.buildbase.app.
+    "media-src 'self' https://media.reelforge.buildbase.app",
+    // Service workers (push-sw.js) and any worker the site starts: own
+    // origin only.
+    "worker-src 'self'",
     ["connect-src 'self' https:", ...buildbaseConnectSources()].join(' '),
     "frame-ancestors 'none'",
     "base-uri 'self'",
@@ -57,6 +65,10 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
     'Permissions-Policy',
     'camera=(), microphone=(), geolocation=(), interest-cohort=()'
   );
+  // Note: the live header is `max-age=0; includeSubDomains; preload`. That
+  // comes from the buildbase.app zone's HSTS setting at Cloudflare's edge,
+  // which replaces this value on every response (static assets the Worker
+  // never touches show it too). It is fixed in the zone, not here.
   response.headers.set(
     'Strict-Transport-Security',
     'max-age=31536000; includeSubDomains; preload'
@@ -140,8 +152,11 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - sitemap.xml and robots.txt (SEO files)
+     * - agent discovery documents (llms.txt, auth.md, security.txt, ...):
+     *   served by route handlers, so the locale middleware must not
+     *   rewrite them to /en/... (that answered 404)
      * - public folder assets
      */
-    '/((?!_next/static|_next/image|favicon.ico|push-sw\\.js|sitemap\\.xml|sitemap-\\d+\\.xml|robots\\.txt|llms\\.txt|llms-full\\.txt|openapi\\.json|\\.well-known/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|push-sw\\.js|sitemap\\.xml|sitemap-\\d+\\.xml|robots\\.txt|llms\\.txt|llms-full\\.txt|openapi\\.json|auth\\.md|security\\.txt|\\.well-known/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)$).*)',
   ],
 };

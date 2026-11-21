@@ -1,38 +1,27 @@
 'use client';
 
-import { ArrowRight } from 'lucide-react';
-import { GitHubIcon } from '@/components/icons/brand';
 import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
+import { ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Link } from '@/i18n/routing';
+import { StoreCtas } from '@/components/store/store-ctas';
 import { siteConfig } from '@/config/site';
-import {
-  WhenAuthenticated,
-  WhenUnauthenticated,
-  useSaaSAuth,
-} from '@buildbase/sdk/react';
 
+// The four rendering engines, the agent interfaces and how it ships.
 const TECH_STACK = [
-  { name: 'Next.js 16', icon: '▲' },
-  { name: 'TypeScript', icon: 'TS' },
-  { name: 'Tailwind CSS', icon: '✦' },
-  { name: 'shadcn/ui', icon: '◈' },
-  { name: 'Prisma', icon: '⬡' },
-  { name: 'BuildBase SDK', icon: '⬢' },
+  { name: 'Remotion', icon: '▶' },
+  { name: 'Motion Canvas', icon: '◆' },
+  { name: 'HTML', icon: '<>' },
+  { name: 'HyperFrames', icon: '▤' },
+  { name: 'REST + MCP', icon: '⇄' },
+  { name: 'Docker', icon: '⬢' },
 ] as const;
 
-function SignInCta({ label }: { label: string }) {
-  const { signIn } = useSaaSAuth();
-  return (
-    <Button size="lg" className="gap-2 px-8" onClick={() => signIn()}>
-      {label}
-      <ArrowRight className="h-4 w-4" />
-    </Button>
-  );
-}
-
-export function HeroSection() {
+/**
+ * `onSale` comes from the page's server read of the store's items;
+ * undefined when that read was not possible, and the buttons then decide in
+ * the browser.
+ */
+export function HeroSection({ onSale }: { onSale?: boolean }) {
   const t = useTranslations('home');
 
   return (
@@ -71,25 +60,26 @@ export function HeroSection() {
       </p>
 
       {/* CTAs */}
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <WhenUnauthenticated>
-          <SignInCta label={t('hero.signInToExplore')} />
-        </WhenUnauthenticated>
-        <WhenAuthenticated>
-          <Button size="lg" className="gap-2 px-8" asChild>
-            <Link href="/dashboard">
-              {t('hero.openDashboard')}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-        </WhenAuthenticated>
-        <Button size="lg" variant="outline" className="gap-2 px-8" asChild>
-          <a href={siteConfig.repo} target="_blank" rel="noopener noreferrer">
-            <GitHubIcon className="h-4 w-4" />
-            {t('hero.viewSource')}
-          </a>
-        </Button>
-      </div>
+      <StoreCtas
+        labels={{
+          waitlist: t('hero.waitlist'),
+          pricing: t('hero.pricing'),
+          buy: t('hero.buy'),
+          faq: t('hero.faq'),
+        }}
+        onSale={onSale}
+      />
+
+      {/* The product repository: public, source-available. */}
+      <a
+        href={siteConfig.repo.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-muted-foreground hover:text-foreground -mt-2 inline-flex items-center gap-1.5 text-sm underline-offset-4 hover:underline"
+      >
+        {t('hero.source')}
+        <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+      </a>
 
       {/* Tech stack */}
       <div className="flex flex-wrap items-center justify-center gap-4 pt-4">

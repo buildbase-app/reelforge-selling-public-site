@@ -4,9 +4,9 @@ import { createAuthToken } from '@/lib/auth';
 import { SESSION_COOKIE_NAME } from '@/lib/buildbase';
 import { authCodeSchema } from '@/lib/validation/schemas';
 import { validateBody, isValidationError } from '@/lib/validation/api';
-import { env } from '@/env';
+import { environmentId } from '@buildbase/sdk';
+import { buildbaseEnvironment, env } from '@/env';
 import { logger } from '@/lib/logger';
-import { detect } from '@/tour/progress';
 
 export async function POST(request: NextRequest) {
   // Validate request body with Zod
@@ -29,7 +29,12 @@ export async function POST(request: NextRequest) {
           code,
           clientId: env.NEXT_PUBLIC_BUILDBASE_CLIENT_ID,
           clientSecret: env.BUILDBASE_CLIENT_SECRET,
-          orgId: env.NEXT_PUBLIC_BUILDBASE_ORG_ID,
+          // <orgId>-<key> in a development or staging environment; the bare
+          // org id in production.
+          orgId: environmentId(
+            env.NEXT_PUBLIC_BUILDBASE_ORG_ID,
+            buildbaseEnvironment
+          ),
         }),
       }
     );
@@ -90,11 +95,6 @@ export async function POST(request: NextRequest) {
           userId,
         });
       });
-
-    // Signing in is the proof that the account exists; the tour's first task
-    // waits on this rather than on a user:created event the SDK fires only
-    // for an account it created itself.
-    await detect(userId, { kind: 'action', action: 'auth:signed-in' });
 
     const token = createAuthToken({
       userId,

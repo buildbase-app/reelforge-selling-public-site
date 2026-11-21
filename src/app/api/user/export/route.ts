@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma, setAuditContext } from '@/lib/db';
 import { getSessionContext } from '@/lib/server-auth';
 import { logger } from '@/lib/logger';
-import { detect } from '@/tour/progress';
 
 /**
  * GDPR Data Export — Right of Access (Article 15)
@@ -56,8 +55,6 @@ export async function GET(request: NextRequest) {
     const workspaces = await prisma.workspace.findMany({
       where: { id: { in: workspaceIds } },
     });
-
-    await detect(userId, { kind: 'action', action: 'user:exported' });
 
     const exportData = {
       exportedAt: new Date().toISOString(),

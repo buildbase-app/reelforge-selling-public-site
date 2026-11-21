@@ -7,15 +7,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (licensing, founder decision 2026-11-21)
+
+- ReelForge is source-available (public repository
+  `buildbase-app/reelforge-studio`): a free Personal licence key for
+  noncommercial use (PolyForm Noncommercial 1.0.0) and a paid one-time
+  Commercial licence. All "locked Docker image" and "source not included"
+  wording is gone from the site, metadata, llms.txt and agent docs.
+- Pricing (and the home pricing section): Personal first ("Free for personal
+  use", "Get it free", a free claim with no payment page), then the
+  Commercial tiers; a "Which licence do I need?" block; FAQ "What counts as
+  commercial use?". Edition from item metadata, known ids or the free price
+  (`src/lib/store/edition.ts`), never titles.
+- `/licence` summarises both licences (Commercial marked draft); `/terms` and
+  `/refund` say Personal keys are free and not refundable.
+- Order page and Dashboard, Licences label each key Personal or Commercial;
+  Personal keys show "noncommercial use only — upgrade for commercial use".
+- Footer and hero link the source on GitHub.
+
 ### Added
+
+- `scripts/e2e-personal-claim.cjs`: claims the free Personal licence on the
+  test site end to end. A unit test fails if "open source" appears in the
+  marketing copy.
+
+- Server-rendered prices on `/` and `/pricing` from the store's published
+  items (server commerce API, tag `store:items`, revalidated by `item.*`
+  webhooks), with `SoftwareApplication` + `Offer` JSON-LD only while
+  something is on sale. Without a server token the browser read is kept.
+- ISR on Workers: D1-backed incremental and tag caches
+  (`src/lib/cache/d1-over-static-assets.ts`, OpenNext D1 tag cache) and the
+  memory queue. `/`, `/pricing` and `/help` revalidate by tag and path from
+  `/api/webhooks/buildbase`.
+- FAQ collections `store-faq`, `home-faq`, `pricing-faq`, `agents-faq` and
+  content blocks `announcement-bar`, `launch-price-note`, `remotion-notice`,
+  read from BuildBase with local fallbacks; FAQPage JSON-LD from the same data.
+- `app/sitemap.ts` and a `robots.txt` with Content Signals from the agent
+  stack (replace next-sitemap). CSP `media-src` (R2 media host) and
+  `worker-src`. Search engine verification tokens from env.
 
 - Sentry error monitoring integration with session replay
 - Global error boundary (`src/app/global-error.tsx`)
 - Sentry utility functions (`src/lib/sentry.ts`)
-- Deploys to Cloudflare Workers (OpenNext) as well as Vercel and Docker, with a
-  GitHub Actions deploy on push to `main` once `CLOUDFLARE_API_TOKEN` is set.
+- Deploys to Cloudflare Workers (OpenNext) from GitHub Actions
+  (`.github/workflows/deploy.yml`) on every push to the store branch
+  (`claude/eloquent-wright-tm3cs7`): first the test copy
+  (https://reelforge-dev.buildbase.app, ReelForge Test organization), then,
+  only if that succeeds, production (https://reelforge.buildbase.app). Needs
+  the `CLOUDFLARE_API_TOKEN` repository secret.
 
 ### Changed
+
+- Positioning: ReelForge is driven by the buyer's AI agent over REST and
+  MCP, with four engines (Remotion, Motion Canvas, HTML, HyperFrames). (The
+  earlier closed-distribution wording is replaced by the licensing change
+  above.)
+- BuildBase Markdown bodies render on the server with remark/rehype and
+  `rehype-sanitize`; the regex `sanitizeHtml` is gone.
+- No hreflang alternates while English is the only served language.
 
 - `@buildbase/sdk` 1.8.0 (from 0.0.78). The deprecated hook keys
   (`isLoading`, `refreshAttributes`, `refreshFeatures`) and the profile's `_id`

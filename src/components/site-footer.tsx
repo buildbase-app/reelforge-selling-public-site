@@ -3,7 +3,6 @@ import { Link } from '@/i18n/routing';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { BuildBaseBadge } from '@buildbase/sdk/react';
-import { GitHubIcon } from '@/components/icons/brand';
 import { siteConfig } from '@/config/site';
 
 interface SiteFooterProps {
@@ -19,21 +18,26 @@ export async function SiteFooter({ title }: SiteFooterProps) {
       section: t('footer.sections.product'),
       links: [
         { label: t('footer.links.pricing'), href: '/pricing' },
+        { label: t('footer.links.waitlist'), href: '/waitlist' },
+        { label: t('footer.links.changelog'), href: '/changelog' },
         { label: t('footer.links.dashboard'), href: '/dashboard' },
-        { label: t('footer.links.credits'), href: '/dashboard/credits' },
       ],
     },
     {
       section: t('footer.sections.resources'),
       links: [
+        // The product's public, source-available repository.
+        { label: t('footer.links.github'), href: siteConfig.repo.url },
+        { label: t('footer.links.help'), href: '/help' },
+        { label: t('footer.links.contact'), href: '/contact' },
         { label: t('footer.links.blog'), href: '/blog' },
-        { label: t('footer.links.changelog'), href: '/changelog' },
-        { label: t('footer.links.tour'), href: '/#tour' },
       ],
     },
     {
       section: t('footer.sections.legal'),
       links: [
+        { label: t('footer.links.licence'), href: '/licence' },
+        { label: t('footer.links.refund'), href: '/refund' },
         { label: t('footer.links.privacy'), href: '/privacy' },
         { label: t('footer.links.terms'), href: '/terms' },
       ],
@@ -66,12 +70,23 @@ export async function SiteFooter({ title }: SiteFooterProps) {
               <ul className="flex flex-col gap-2">
                 {links.map((link) => (
                   <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      className="text-muted-foreground hover:text-foreground text-sm transition-colors"
-                    >
-                      {link.label}
-                    </Link>
+                    {/^https?:\/\//.test(link.href) ? (
+                      <a
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="text-muted-foreground hover:text-foreground text-sm transition-colors"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -86,15 +101,6 @@ export async function SiteFooter({ title }: SiteFooterProps) {
           </p>
           <div className="flex items-center gap-3">
             {/* The platform's badge: an image and a link, no script, no network call. */}
-            <a
-              href={siteConfig.repo}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-xs"
-            >
-              <GitHubIcon className="h-3.5 w-3.5" />
-              {t('footer.links.github')}
-            </a>
             <BuildBaseBadge variant="built-with" theme="auto" size="sm" />
             <LanguageSwitcher />
             <ThemeToggle />

@@ -9,6 +9,10 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypePrettyCode, {
   type Options as PrettyCodeOptions,
 } from 'rehype-pretty-code';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
 
 /**
  * Contentlayer schema for content.
@@ -19,7 +23,8 @@ import rehypePrettyCode, {
  *   - Blog posts — `src/content/blog/{locale}/{slug}.mdx` → `Post` type
  *   - Changelog — `src/content/changelog/{slug}.mdx` → `ChangelogEntry` type
  *   - Marketing pages — `src/content/pages/{page}/{locale}.mdx` → one
- *     bespoke document type per page (`AboutPage`, `PrivacyPage`, …).
+ *     bespoke document type per page (`PrivacyPage`, `TermsPage`,
+ *     `LicencePage`, `RefundPage`).
  *
  * Adding a new locale = drop a file under the locale-keyed folder or
  * name it `{locale}.mdx`. The `locale` computed field picks it up from
@@ -27,17 +32,43 @@ import rehypePrettyCode, {
  */
 
 // -----------------------------------------------------------------------------
-// Shared nested types
+// Pre-rendered HTML
 // -----------------------------------------------------------------------------
 
-const IconCard = defineNestedType(() => ({
-  name: 'IconCard',
-  fields: {
-    icon: { type: 'string', required: true },
-    title: { type: 'string', required: true },
-    description: { type: 'string', required: true },
-  },
-}));
+/**
+ * The MDX body rendered to static HTML at build time.
+ *
+ * Cloudflare Workers forbid `new Function`, which Contentlayer's MDX runtime
+ * (`useMDXComponent`) needs, so the server sends this HTML instead and the
+ * browser swaps in the full MDX component after hydration (see
+ * `src/components/marketing/mdx/mdx-renderer.tsx`). Custom JSX components
+ * (`<Callout>`, `<WhenAuthenticated>`, ...) are left out of this HTML and
+ * appear once the client renders the MDX.
+ */
+async function renderBodyHtml(raw: string): Promise<string> {
+  const file = await unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkRehype)
+    .use(rehypeSlug)
+    .use(rehypeAutolinkHeadings, {
+      behavior: 'wrap',
+      properties: { className: ['heading-anchor'] },
+    })
+    .use(rehypePrettyCode, prettyCodeOptions)
+    .use(rehypeStringify)
+    .process(raw);
+  return String(file);
+}
+
+const bodyHtml = {
+  type: 'string',
+  resolve: (doc: { body: { raw: string } }) => renderBodyHtml(doc.body.raw),
+} as const;
+
+// -----------------------------------------------------------------------------
+// Shared nested types
+// -----------------------------------------------------------------------------
 
 const ChangelogHighlight = defineNestedType(() => ({
   name: 'ChangelogHighlight',
@@ -71,6 +102,7 @@ export const Author = defineDocumentType(() => ({
       type: 'string',
       resolve: (doc) => doc._raw.sourceFileName.replace(/\.mdx$/, ''),
     },
+    bodyHtml,
   },
 }));
 
@@ -121,6 +153,7 @@ export const Post = defineDocumentType(() => ({
         return `${minutes} min read`;
       },
     },
+    bodyHtml,
   },
 }));
 
@@ -134,25 +167,8 @@ const pageLocaleComputed = {
     resolve: (doc: { _raw: { sourceFileName: string } }) =>
       doc._raw.sourceFileName.replace(/\.mdx$/, ''),
   },
+  bodyHtml,
 } as const;
-
-export const AboutPage = defineDocumentType(() => ({
-  name: 'AboutPage',
-  filePathPattern: 'pages/about/*.mdx',
-  contentType: 'mdx',
-  fields: {
-    heroEyebrow: { type: 'string', required: true },
-    heroTitle: { type: 'string', required: true },
-    heroDescription: { type: 'string', required: true },
-    seoTitle: { type: 'string', required: false },
-    seoDescription: { type: 'string', required: false },
-    missionHeading: { type: 'string', required: true },
-    valuesEyebrow: { type: 'string', required: true },
-    valuesHeading: { type: 'string', required: true },
-    values: { type: 'list', of: IconCard, required: true },
-  },
-  computedFields: pageLocaleComputed,
-}));
 
 const legalFields = {
   heroEyebrow: { type: 'string', required: true },
@@ -161,6 +177,8 @@ const legalFields = {
   seoTitle: { type: 'string', required: false },
   seoDescription: { type: 'string', required: false },
   lastUpdated: { type: 'string', required: true },
+  /** Shows a "Draft – pending review" note above the page. */
+  pendingReview: { type: 'boolean', required: false },
 } as const;
 
 export const PrivacyPage = defineDocumentType(() => ({
@@ -174,6 +192,22 @@ export const PrivacyPage = defineDocumentType(() => ({
 export const TermsPage = defineDocumentType(() => ({
   name: 'TermsPage',
   filePathPattern: 'pages/terms/*.mdx',
+  contentType: 'mdx',
+  fields: legalFields,
+  computedFields: pageLocaleComputed,
+}));
+
+export const LicencePage = defineDocumentType(() => ({
+  name: 'LicencePage',
+  filePathPattern: 'pages/licence/*.mdx',
+  contentType: 'mdx',
+  fields: legalFields,
+  computedFields: pageLocaleComputed,
+}));
+
+export const RefundPage = defineDocumentType(() => ({
+  name: 'RefundPage',
+  filePathPattern: 'pages/refund/*.mdx',
   contentType: 'mdx',
   fields: legalFields,
   computedFields: pageLocaleComputed,
@@ -212,6 +246,7 @@ export const ChangelogEntry = defineDocumentType(() => ({
         return `${minutes} min read`;
       },
     },
+    bodyHtml,
   },
 }));
 
@@ -230,9 +265,10 @@ export default makeSource({
   documentTypes: [
     Author,
     Post,
-    AboutPage,
     PrivacyPage,
     TermsPage,
+    LicencePage,
+    RefundPage,
     ChangelogEntry,
   ],
   mdx: {

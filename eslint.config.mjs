@@ -15,9 +15,10 @@ const eslintConfig = defineConfig([
     '.contentlayer/**',
     // Generated pagefind search index (third-party, built at postbuild)
     'public/pagefind/**',
-    // Cloudflare Workers build output (npm run cf:build / cf:preview)
+    // Cloudflare / OpenNext build output, local Wrangler state, generated code
     '.open-next/**',
     '.wrangler/**',
+    'src/generated/**',
     'cloudflare-env.d.ts',
   ]),
 ]);

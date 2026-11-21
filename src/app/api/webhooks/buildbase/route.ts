@@ -1,9 +1,13 @@
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 import { parseWebhookEvent } from '@buildbase/sdk';
-import type { Prisma } from '@prisma/client';
+import type { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/db';
 import { logger } from '@/lib/logger';
-import { detect } from '@/tour/progress';
+import {
+  pathsForWebhookEvent,
+  tagsForWebhookEvent,
+} from '@/lib/cache/webhook-tags';
 
 /**
  * Platform webhooks (server to server).
@@ -21,6 +25,13 @@ import { detect } from '@/tour/progress';
  *
  * Deliveries are at-least-once with no event id, so the row key is a hash of
  * the raw body: a retry lands on the same row instead of a duplicate.
+ *
+ * Cached pages: an `item.*` event revalidates the store's items (prices on
+ * `/` and `/pricing`), a content event the `buildbase:*` tags it names
+ * (`/help`, FAQs, content blocks), plus the paths of those ISR pages
+ * (src/lib/cache/webhook-tags.ts). Tags expire at once, so the next request
+ * renders fresh data. Done before storing, so a storage failure (and the
+ * retry it triggers) never delays a price change.
  */
 export async function POST(request: NextRequest) {
   const secret = process.env.BUILDBASE_WEBHOOK_SECRET;
@@ -48,6 +59,19 @@ export async function POST(request: NextRequest) {
   }
 
   const data = event.data ?? {};
+
+  const tags = tagsForWebhookEvent(event.event, data);
+  const paths = pathsForWebhookEvent(event.event);
+  try {
+    for (const tag of tags) revalidateTag(tag, { expire: 0 });
+    for (const path of paths) revalidatePath(path);
+  } catch (error) {
+    logger.warn('Webhook: revalidation failed', {
+      event: event.event,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+
   const workspaceId =
     typeof data.workspaceId === 'string' ? data.workspaceId : null;
   const userId = typeof data.userId === 'string' ? data.userId : null;
@@ -78,25 +102,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Storage failed' }, { status: 500 });
   }
 
-  // The tour: a webhook has no session, so credit the people it is about -
-  // every member of the workspace it names, plus the user it names.
-  const people = new Set<string>();
-  if (userId) people.add(userId);
-  if (workspaceId) {
-    const members = await prisma.userWorkspace.findMany({
-      where: { workspaceId },
-      select: { userId: true },
-    });
-    for (const m of members) people.add(m.userId);
-  }
-  await Promise.all(
-    [...people].map((person) =>
-      detect(person, { kind: 'webhook', event: event.event }, { workspaceId })
-    )
-  );
-
   logger.debug('Webhook stored', { event: event.event, workspaceId });
-  return NextResponse.json({ received: true });
+  return NextResponse.json({ received: true, revalidated: tags });
 }
 
 async function bodyHash(body: string): Promise<string> {

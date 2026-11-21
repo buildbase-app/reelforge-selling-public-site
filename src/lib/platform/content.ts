@@ -12,9 +12,39 @@ import { logger } from '@/lib/logger';
 
 export const CONTENT_SLUGS = {
   richText: 'refund-policy',
-  faqCollection: 'demo-help',
   docsFolder: 'getting-started',
 } as const;
+
+/**
+ * FAQ collections (console: Content, FAQs). Each page reads its own; when a
+ * collection is missing or empty the page shows its local defaults
+ * (`src/lib/platform/faqs.ts`).
+ */
+export const FAQ_COLLECTIONS = {
+  store: 'store-faq',
+  home: 'home-faq',
+  pricing: 'pricing-faq',
+  agents: 'agents-faq',
+} as const;
+export type FaqCollectionKey = keyof typeof FAQ_COLLECTIONS;
+
+/**
+ * Content blocks (console: Content, Content blocks), each with a local
+ * fallback (`src/lib/platform/blocks.ts`).
+ */
+export const CONTENT_BLOCKS = {
+  announcementBar: 'announcement-bar',
+  launchPriceNote: 'launch-price-note',
+  remotionNotice: 'remotion-notice',
+} as const;
+
+/**
+ * How long a cached BuildBase read (and the ISR page built from it) is kept
+ * before it is checked again. The content webhook revalidates the exact tags
+ * an edit names long before that, so this is only the safety net. Kept long
+ * because every refresh is a write to the cache database.
+ */
+export const CONTENT_REVALIDATE_SECONDS = 3600;
 
 export interface RichContent {
   _id: string;
@@ -60,8 +90,9 @@ export interface Testimonial {
 
 /**
  * The SDK's server content client: authenticates with the org API token, so
- * it only runs here. Reads go through Next's data cache, tagged, and
- * `/api/webhooks/content` revalidates exactly the tags an edit names, so a
+ * it only runs here. Reads go through Next's data cache under the SDK's
+ * `buildbase:*` tags, and the webhook routes (`/api/webhooks/buildbase`,
+ * `/api/webhooks/content`) revalidate exactly the tags an edit names, so a
  * change in the console shows up on the next request instead of after the
  * TTL. Lists return published items only.
  */
@@ -71,8 +102,8 @@ const content = process.env.BUILDBASE_API_TOKEN
       apiToken: process.env.BUILDBASE_API_TOKEN,
       // Names this template in the `X-BuildBase-Client` header (beside the
       // SDK version and runtime); it carries no user or org data.
-      source: 'nextjs-starter',
-      ...withNextCache({ revalidate: 300 }),
+      source: 'reelforge-store',
+      ...withNextCache({ revalidate: CONTENT_REVALIDATE_SECONDS }),
     })
   : null;
 
@@ -91,14 +122,19 @@ async function safely<T>(
   }
 }
 
-export function getRichContent(slug = CONTENT_SLUGS.richText) {
+export function getRichContent(slug: string = CONTENT_SLUGS.richText) {
   return safely(
     'rich content',
     async (c) => (await c.richContent.get(slug)) as RichContent | null
   );
 }
 
-export async function getFaqs(collectionSlug = CONTENT_SLUGS.faqCollection) {
+/** True when the server can read console content (an org API token is set). */
+export function hasContentApi(): boolean {
+  return content !== null;
+}
+
+export async function getFaqs(collectionSlug: string) {
   return (
     (await safely(
       'faqs',
@@ -131,14 +167,4 @@ export async function getTestimonials() {
           .docs as unknown as Testimonial[]
     )) ?? []
   );
-}
-
-/** Console-authored HTML, minus anything executable. */
-export function sanitizeHtml(html: string): string {
-  return html
-    .replace(/<script[\s\S]*?<\/script>/gi, '')
-    .replace(/<iframe[\s\S]*?<\/iframe>/gi, '')
-    .replace(/\son\w+="[^"]*"/gi, '')
-    .replace(/\son\w+='[^']*'/gi, '')
-    .replace(/javascript:/gi, '');
 }

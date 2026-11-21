@@ -1,10 +1,13 @@
+// Cloudflare D1 (SQLite) through @prisma/adapter-d1. The client is generated
+// for the Workers runtime; see src/lib/db.ts for how it gets the D1 binding.
 generator client {
-  provider = "prisma-client-js"
-  output   = "../node_modules/.prisma/client"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  runtime  = "cloudflare"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
 }
 
 model User {
@@ -65,30 +68,6 @@ model AuditLog {
   @@index([createdAt])
 }
 
-/// The demo's own product data — documents owned by a BuildBase workspace.
-/// Creating one records usage against the `documents` quota and consumes a
-/// credit, so billing, quotas and feature flags have something real to gate.
-model Document {
-  id            String   @id @default(cuid())
-  workspaceId   String
-  title         String
-  content       String
-  /// draft | in_review | published | archived
-  status        String   @default("draft")
-  tags          String[] @default([])
-  createdById   String
-  createdByName String?
-  updatedById   String?
-  /// true for rows inserted by the "Load sample data" action
-  isSample      Boolean  @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([workspaceId, updatedAt])
-  @@index([workspaceId, status])
-}
-
 /// Server-to-server webhooks delivered by BuildBase (84 event types), verified
 /// with `parseWebhookEvent` and kept so the Events page can show them.
 model WebhookEvent {
@@ -120,18 +99,3 @@ model AppEvent {
   @@index([eventType])
 }
 
-/// One row per tour task a person has completed. The tour is the demo's own
-/// checklist of things to try; most rows are written by detection (an SDK
-/// event, a webhook, an action in this app), the rest by "Mark done".
-model TourProgress {
-  id          String   @id @default(cuid())
-  userId      String
-  taskId      String
-  /// detected | manual
-  source      String   @default("manual")
-  meta        Json?
-  completedAt DateTime @default(now())
-
-  @@unique([userId, taskId])
-  @@index([userId])
-}

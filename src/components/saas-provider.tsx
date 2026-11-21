@@ -2,12 +2,10 @@
 
 import { ApiVersion, type EventType, type EventData } from '@buildbase/sdk';
 import React from 'react';
-import { env } from '@/env';
+import { buildbaseEnvironment, env } from '@/env';
 import { SaaSOSProvider } from '@buildbase/sdk/react';
 import { useLocale } from 'next-intl';
 import { Locale } from '@/i18n/config';
-import { pushTrackingEvent } from '@/lib/tracking-bus';
-import { DEFAULT_DOCUMENT_PERMISSIONS } from '@/lib/documents/roles';
 
 const config = {
   serverUrl: env.NEXT_PUBLIC_BUILDBASE_SERVER_URL,
@@ -54,23 +52,17 @@ export function SaaSProvider({ children }: { children: React.ReactNode }) {
       serverUrl={config.serverUrl}
       version={ApiVersion.V1}
       orgId={config.orgId}
+      environment={buildbaseEnvironment}
       locale={locale}
       // Analytics and ad tags come from the console (Settings → Tracking)
-      // and load only after consent. Every event the SDK fires goes through
-      // `onEvent` into a small in-memory log the Tracking page renders.
+      // and load only after consent.
       tracking={{
         enabled: true,
         consent: 'auto',
         autoPageview: true,
         events: { mode: 'auto' },
         debug: process.env.NODE_ENV !== 'production',
-        onEvent: (event) => {
-          pushTrackingEvent(event);
-        },
       }}
-      // Used only for keys the organization has not defined in the console;
-      // once it has, its grants (custom roles included) decide.
-      defaultPermissions={DEFAULT_DOCUMENT_PERMISSIONS}
       auth={{
         clientId: config.clientId,
         redirectUrl: config.redirectUrl,

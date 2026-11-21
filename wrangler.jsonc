@@ -1,48 +1,95 @@
-// Cloudflare Workers config. Used only when deploying to Cloudflare
-// (`npm run cf:deploy` or Workers Builds); Vercel and Docker ignore it.
-// See README → Deployment → Cloudflare.
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
-  // The Worker's name in your Cloudflare account. If you change it, change
-  // WORKER_SELF_REFERENCE's "service" below to match.
-  "name": "demo-buildbase-app",
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // The ReelForge store on Cloudflare Workers, built with OpenNext
+  // (`npm run preview` / `npm run deploy`). See DEPLOY_CLOUDFLARE.md.
+  "name": "reelforge-store",
+  // The Cloudflare account that owns the buildbase.app zone: a Worker's custom
+  // domain must be in the same account as its DNS zone.
+  "account_id": "0109f7bce7af42ac8a88104d324efe4d",
+  "routes": [{ "pattern": "reelforge.buildbase.app", "custom_domain": true }],
+  "workers_dev": false,
   "main": ".open-next/worker.js",
-  "compatibility_date": "2026-11-13",
+  "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  // esbuild's keepNames wraps functions in __name(...). Next.js serialises some
+  // functions (the next-themes no-flash script) into the HTML, where __name
+  // does not exist, so it must stay off.
+  "keep_names": false,
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS",
   },
   "services": [
-    // Lets the Worker call itself for on-demand revalidation.
-    { "binding": "WORKER_SELF_REFERENCE", "service": "demo-buildbase-app" },
-  ],
-  // Serves the Worker on this hostname (zone must be in the same Cloudflare
-  // account). Change or remove it when deploying your own copy.
-  "routes": [{ "pattern": "demo.buildbase.app", "custom_domain": true }],
-  // Bundle without esbuild's keepNames: it wraps functions in __name(...),
-  // which breaks functions that are stringified into inline <script> tags
-  // (next-themes' theme script threw "__name is not defined" in browsers).
-  "keep_names": false,
-  "upload_source_maps": true,
-  "observability": { "enabled": true },
-
-  // Hyperdrive pools Postgres connections at Cloudflare's edge. This id is the
-  // demo.buildbase.app deployment's; in your own account create one with
-  //   npx wrangler hyperdrive create my-db --connection-string="postgres://..."
-  // and paste its id, or delete this entry to connect with DATABASE_URL
-  // directly (src/lib/db.ts). localConnectionString is only used by local
-  // tooling (cf:preview, and the deploy step's emulator); it is never uploaded.
-  "hyperdrive": [
     {
-      "binding": "HYPERDRIVE",
-      "id": "308d63e8ff284edf80aeef41d4f47220",
-      "localConnectionString": "postgresql://postgres:postgres@localhost:5432/buildbase",
+      // Lets the Worker call itself (OpenNext uses it for revalidation).
+      "binding": "WORKER_SELF_REFERENCE",
+      "service": "reelforge-store",
     },
   ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "reelforge-store",
+      "database_id": "db8c0262-90be-47d0-8bf3-84ce75365682",
+      "migrations_dir": "migrations",
+    },
+    {
+      // OpenNext's caches: the tag cache (`revalidations`, revalidateTag)
+      // and the incremental cache (`incremental_cache`, ISR pages and tagged
+      // data written at runtime). Their own database, so Prisma migrations
+      // never see these tables. See open-next.config.ts.
+      "binding": "NEXT_TAG_CACHE_D1",
+      "database_name": "reelforge-store-tag-cache",
+      "database_id": "93907848-dcf0-493c-8e58-1304d582580f",
+    },
+  ],
+  "observability": {
+    "enabled": true,
+  },
+  // Public values come from .env.production (inlined at build time, embedded
+  // for runtime). Secrets: `wrangler secret put` (see DEPLOY_CLOUDFLARE.md).
 
-  // Secrets (SYSTEM_SECRET, BUILDBASE_CLIENT_SECRET, DATABASE_URL, ...) are not
-  // kept here. Set them with `npx wrangler secret put NAME` or in the dashboard
-  // (Worker → Settings → Variables and Secrets), and put .env.example's
-  // NEXT_PUBLIC_* values in Workers Builds' build variables too.
+  // Planned dev environment: `npm run deploy:dev`. Wrangler environments do not
+  // inherit bindings or vars, so everything is repeated here.
+  "env": {
+    "dev": {
+      "name": "reelforge-store-dev",
+      "routes": [
+        { "pattern": "reelforge-dev.buildbase.app", "custom_domain": true },
+      ],
+      "workers_dev": false,
+      "services": [
+        {
+          "binding": "WORKER_SELF_REFERENCE",
+          "service": "reelforge-store-dev",
+        },
+      ],
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "reelforge-store-dev",
+          "database_id": "319f3e96-5c82-488e-92bf-3f7fcc794dcf",
+          "migrations_dir": "migrations",
+        },
+        {
+          "binding": "NEXT_TAG_CACHE_D1",
+          "database_name": "reelforge-store-dev-tag-cache",
+          "database_id": "9ceb6a6f-d20c-46e8-9e38-750a1d73f39f",
+        },
+      ],
+      // Runtime values for server code; they override .env.production.
+      // NEXT_PUBLIC_* are inlined at build time by the deploy:dev script.
+      "vars": {
+        "SITE_URL": "https://reelforge-dev.buildbase.app",
+        "NEXT_PUBLIC_SITE_URL": "https://reelforge-dev.buildbase.app",
+        "NEXT_PUBLIC_BUILDBASE_REDIRECT_URL": "https://reelforge-dev.buildbase.app",
+        "NEXT_PUBLIC_BUILDBASE_ORG_ID": "6b01478bb42d2c444e99fcd8",
+        "NEXT_PUBLIC_BUILDBASE_CLIENT_ID": "gqLbQtwsNKyzl2dKtx7v2u2GVAhP6AzPpAe1GvL7",
+        "NEXT_PUBLIC_BUILDBASE_ENVIRONMENT": "fsyqdskf",
+      },
+      "observability": {
+        "enabled": true,
+      },
+    },
+  },
 }

@@ -1,6 +1,6 @@
 import { ImageResponse } from 'next/og';
 import { type NextRequest } from 'next/server';
-import { locales, type Locale } from '@/i18n/config';
+import { isRtlLocale, locales, type Locale } from '@/i18n/config';
 import { messages } from '@/i18n/messages';
 
 // Runs on the default Node.js runtime: the Cloudflare adapter (OpenNext)
@@ -10,13 +10,13 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
 
   // Get parameters
-  const title = searchParams.get('title') || 'My App';
+  const title = searchParams.get('title') || 'ReelForge';
   const description = searchParams.get('description') || '';
   const locale = (searchParams.get('locale') || 'en') as Locale;
 
   // Validate locale and get tagline from centralized translations
   const validLocale = locales.includes(locale) ? locale : 'en';
-  const isRtl = validLocale === 'ar';
+  const isRtl = isRtlLocale(validLocale);
   const tagline =
     messages[validLocale]?.home.meta.tagline || messages.en.home.meta.tagline;
 
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
           }}
         >
           <span style={{ fontSize: '32px', color: 'white', fontWeight: 700 }}>
-            M
+            R
           </span>
         </div>
         <span
@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
             fontWeight: 500,
           }}
         >
-          My App
+          ReelForge
         </span>
       </div>
 

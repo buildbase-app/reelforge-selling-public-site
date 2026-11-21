@@ -26,6 +26,9 @@ export function LanguageSwitcher() {
     router.replace(pathname, { locale: newLocale });
   };
 
+  // Nothing to switch to while only one language is served.
+  if (locales.length < 2) return null;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

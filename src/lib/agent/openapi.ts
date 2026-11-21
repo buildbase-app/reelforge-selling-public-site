@@ -7,19 +7,6 @@ import { siteConfig } from '@/config/site';
  */
 export function buildOpenApiSpec() {
   const b = siteConfig.url.replace(/\/$/, '');
-  const workspaceParam = {
-    name: 'workspaceId',
-    in: 'query',
-    required: true,
-    schema: { type: 'string' },
-    description: 'BuildBase workspace id the caller belongs to.',
-  };
-  const idParam = {
-    name: 'id',
-    in: 'path',
-    required: true,
-    schema: { type: 'string' },
-  };
   const unauthorized = {
     description: 'Not signed in or not a workspace member.',
   };
@@ -33,11 +20,12 @@ export function buildOpenApiSpec() {
     openapi: '3.1.0',
     info: {
       title: `${siteConfig.name} API`,
-      version: '0.3.0',
+      version: '0.1.0',
       description:
-        'Routes exposed by the BuildBase demo app. Authenticate with the httpOnly session cookie (browser) or a bearer token minted by /api/auth/oauth2-token (agents and integrations). The MCP server at /api/mcp exposes the same capabilities as tools.',
-      contact: { email: siteConfig.contact.support },
-      license: { name: 'MIT', url: 'https://opensource.org/licenses/MIT' },
+        'Routes exposed by the ReelForge store. Authenticate with the httpOnly session cookie (browser) or a bearer token minted by /api/auth/oauth2-token (agents and integrations). The MCP server at /api/mcp is read-only.',
+      contact: siteConfig.contact.support
+        ? { email: siteConfig.contact.support }
+        : { url: siteConfig.contact.page },
     },
     externalDocs: {
       description: 'Full guide for agents',
@@ -46,11 +34,6 @@ export function buildOpenApiSpec() {
     servers: [{ url: b, description: 'Production' }],
     security: [{ bearerAuth: [] }, { sessionCookie: [] }],
     tags: [
-      {
-        name: 'documents',
-        description: 'The demo product: workspace documents.',
-      },
-      { name: 'billing', description: 'Public plans.' },
       { name: 'events', description: 'SDK events and platform webhooks.' },
       {
         name: 'auth',
@@ -87,158 +70,7 @@ export function buildOpenApiSpec() {
           },
         },
       },
-      '/api/plans': {
-        get: {
-          tags: ['billing'],
-          summary: 'Public pricing plans',
-          description:
-            'The plan group shown on /pricing, straight from the BuildBase console. No auth.',
-          operationId: 'getPublicPlans',
-          security: [],
-          parameters: [
-            {
-              name: 'slug',
-              in: 'query',
-              schema: { type: 'string', default: 'main-pricing' },
-            },
-          ],
-          responses: {
-            '200': ok({ type: 'object', additionalProperties: true }),
-            '404': { description: 'No public plan group with that slug.' },
-          },
-        },
-      },
-      '/api/documents': {
-        get: {
-          tags: ['documents'],
-          summary: 'List documents',
-          operationId: 'listDocuments',
-          parameters: [
-            workspaceParam,
-            { name: 'status', in: 'query', schema: ref('DocumentStatus') },
-            { name: 'tag', in: 'query', schema: { type: 'string' } },
-            {
-              name: 'q',
-              in: 'query',
-              schema: { type: 'string' },
-              description: 'Full-text search in title and body.',
-            },
-            {
-              name: 'limit',
-              in: 'query',
-              schema: {
-                type: 'integer',
-                minimum: 1,
-                maximum: 100,
-                default: 20,
-              },
-            },
-            { name: 'cursor', in: 'query', schema: { type: 'string' } },
-          ],
-          responses: { '200': ok(ref('DocumentList')), '401': unauthorized },
-        },
-        post: {
-          tags: ['documents'],
-          summary: 'Create a document',
-          description:
-            'Records one unit of the `documents` quota and consumes one credit. The `metering` object reports whether each succeeded.',
-          operationId: 'createDocument',
-          parameters: [workspaceParam],
-          requestBody: {
-            required: true,
-            content: { 'application/json': { schema: ref('DocumentInput') } },
-          },
-          responses: {
-            '201': ok(ref('DocumentCreated'), 'Created'),
-            '400': { description: 'Validation failed.' },
-            '401': unauthorized,
-            '403': { description: 'Role cannot write.' },
-          },
-        },
-      },
-      '/api/documents/{id}': {
-        get: {
-          tags: ['documents'],
-          summary: 'Get a document',
-          operationId: 'getDocument',
-          parameters: [idParam, workspaceParam],
-          responses: {
-            '200': ok(ref('Document')),
-            '404': { description: 'Not found.' },
-          },
-        },
-        patch: {
-          tags: ['documents'],
-          summary: 'Update a document',
-          operationId: 'updateDocument',
-          parameters: [idParam, workspaceParam],
-          requestBody: {
-            content: { 'application/json': { schema: ref('DocumentUpdate') } },
-          },
-          responses: {
-            '200': ok(ref('Document')),
-            '404': { description: 'Not found.' },
-          },
-        },
-        delete: {
-          tags: ['documents'],
-          summary: 'Delete a document',
-          operationId: 'deleteDocument',
-          parameters: [idParam, workspaceParam],
-          responses: {
-            '204': { description: 'Deleted.' },
-            '404': { description: 'Not found.' },
-          },
-        },
-      },
-      '/api/documents/seed': {
-        post: {
-          tags: ['documents'],
-          summary: 'Load sample documents',
-          description:
-            'Inserts 12 realistic documents once per workspace. No metering.',
-          operationId: 'seedDocuments',
-          parameters: [workspaceParam],
-          responses: {
-            '200': ok({
-              type: 'object',
-              properties: {
-                inserted: { type: 'integer' },
-                alreadySeeded: { type: 'boolean' },
-              },
-            }),
-          },
-        },
-        delete: {
-          tags: ['documents'],
-          summary: 'Remove sample documents',
-          operationId: 'clearSampleDocuments',
-          parameters: [workspaceParam],
-          responses: {
-            '200': ok({
-              type: 'object',
-              properties: { removed: { type: 'integer' } },
-            }),
-          },
-        },
-      },
       '/api/events': {
-        get: {
-          tags: ['events'],
-          summary: 'Recent events for a workspace',
-          description:
-            'Client SDK lifecycle events (persisted via POST) and signed platform webhooks, newest first.',
-          operationId: 'listEvents',
-          parameters: [
-            workspaceParam,
-            {
-              name: 'limit',
-              in: 'query',
-              schema: { type: 'integer', default: 50, maximum: 200 },
-            },
-          ],
-          responses: { '200': ok(ref('EventList')), '401': unauthorized },
-        },
         post: {
           tags: ['events'],
           summary: 'Persist a client SDK event',
@@ -402,118 +234,6 @@ export function buildOpenApiSpec() {
         sessionCookie: { type: 'apiKey', in: 'cookie', name: 'bb-session-id' },
       },
       schemas: {
-        DocumentStatus: {
-          type: 'string',
-          enum: ['draft', 'in_review', 'published', 'archived'],
-        },
-        Document: {
-          type: 'object',
-          properties: {
-            id: { type: 'string' },
-            workspaceId: { type: 'string' },
-            title: { type: 'string' },
-            content: { type: 'string', description: 'Markdown' },
-            status: ref('DocumentStatus'),
-            tags: { type: 'array', items: { type: 'string' } },
-            createdById: { type: 'string' },
-            createdByName: { type: 'string', nullable: true },
-            isSample: { type: 'boolean' },
-            createdAt: { type: 'string', format: 'date-time' },
-            updatedAt: { type: 'string', format: 'date-time' },
-          },
-        },
-        DocumentSummary: {
-          allOf: [ref('Document')],
-          properties: {
-            excerpt: { type: 'string' },
-            wordCount: { type: 'integer' },
-          },
-        },
-        DocumentList: {
-          type: 'object',
-          properties: {
-            items: { type: 'array', items: ref('DocumentSummary') },
-            nextCursor: { type: 'string', nullable: true },
-          },
-        },
-        DocumentInput: {
-          type: 'object',
-          required: ['title', 'content'],
-          properties: {
-            title: { type: 'string', maxLength: 200 },
-            content: { type: 'string', maxLength: 50000 },
-            status: ref('DocumentStatus'),
-            tags: { type: 'array', items: { type: 'string' }, maxItems: 10 },
-          },
-        },
-        DocumentUpdate: {
-          type: 'object',
-          properties: {
-            title: { type: 'string' },
-            content: { type: 'string' },
-            status: ref('DocumentStatus'),
-            tags: { type: 'array', items: { type: 'string' } },
-          },
-        },
-        Metering: {
-          type: 'object',
-          description:
-            'What BuildBase metering did when the document was created.',
-          properties: {
-            usage: {
-              type: 'object',
-              properties: {
-                recorded: { type: 'boolean' },
-                used: { type: 'integer' },
-                included: { type: 'integer' },
-                available: { type: 'integer' },
-                reason: { type: 'string' },
-              },
-            },
-            credits: {
-              type: 'object',
-              properties: {
-                consumed: { type: 'boolean' },
-                amount: { type: 'integer' },
-                balanceAfter: { type: 'integer' },
-                reason: { type: 'string' },
-              },
-            },
-          },
-        },
-        DocumentCreated: {
-          type: 'object',
-          properties: { document: ref('Document'), metering: ref('Metering') },
-        },
-        EventList: {
-          type: 'object',
-          properties: {
-            sdkEvents: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  id: { type: 'string' },
-                  eventType: { type: 'string' },
-                  payload: { type: 'object' },
-                  createdAt: { type: 'string', format: 'date-time' },
-                },
-              },
-            },
-            webhooks: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  id: { type: 'string' },
-                  event: { type: 'string' },
-                  payload: { type: 'object' },
-                  receivedAt: { type: 'string', format: 'date-time' },
-                },
-              },
-            },
-          },
-        },
         User: {
           type: 'object',
           properties: {

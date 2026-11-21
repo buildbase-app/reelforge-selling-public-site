@@ -16,11 +16,6 @@ export const env = createEnv({
    * These are only available on the server.
    */
   server: {
-    // Database
-    DATABASE_URL: z
-      .url('DATABASE_URL must be a valid PostgreSQL connection URL')
-      .optional(),
-
     // Security
     SYSTEM_SECRET: z
       .string()
@@ -33,9 +28,12 @@ export const env = createEnv({
 
     // BuildBase OAuth2 — used by /api/auth/oauth2-token and /api/auth/oauth2-profile
     // This is the clientSecret from the OAuth2 auth settings (may differ from the main client secret)
-    // Organization API token (console → Settings → Tokens) for the modules the
-    // SDK does not wrap: content, forms, collections, assets, links, audience,
-    // workflows, reporting. Server-only.
+    // Organization API token (console → Settings → API keys). Server-only.
+    // Used for console content reads (src/lib/platform/content.ts) and the
+    // published-items read behind server-rendered prices
+    // (src/lib/store/items.ts), whose output is reduced to public fields.
+    // Never add a route that uses it for a signed-in visitor without an
+    // org-admin check (buildbase-app/reelforge-studio#4).
     BUILDBASE_API_TOKEN: z.string().optional(),
     // Shared secret for the platform's webhook deliveries.
     BUILDBASE_WEBHOOK_SECRET: z.string().optional(),
@@ -79,6 +77,10 @@ export const env = createEnv({
       .string()
       .min(1, 'NEXT_PUBLIC_BUILDBASE_CLIENT_ID is required'),
 
+    // Key of a non-production BuildBase environment (console → Environments).
+    // Empty or unset means production.
+    NEXT_PUBLIC_BUILDBASE_ENVIRONMENT: z.string().optional(),
+
     NEXT_PUBLIC_BUILDBASE_REDIRECT_URL: z
       .url('NEXT_PUBLIC_BUILDBASE_REDIRECT_URL must be a valid URL')
       .optional()
@@ -86,6 +88,10 @@ export const env = createEnv({
 
     // Sentry (client-side)
     NEXT_PUBLIC_SENTRY_DSN: z.url().optional(),
+
+    // Public support address shown on /contact, /help, /order and in agent
+    // documents. Optional: without it those pages link to /contact and /help.
+    NEXT_PUBLIC_SUPPORT_EMAIL: z.email().optional(),
   },
 
   /**
@@ -94,7 +100,6 @@ export const env = createEnv({
    */
   runtimeEnv: {
     // Server
-    DATABASE_URL: process.env.DATABASE_URL,
     SYSTEM_SECRET: process.env.SYSTEM_SECRET,
     BUILDBASE_CLIENT_SECRET: process.env.BUILDBASE_CLIENT_SECRET,
     BUILDBASE_API_TOKEN: process.env.BUILDBASE_API_TOKEN,
@@ -117,7 +122,10 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_BUILDBASE_CLIENT_ID,
     NEXT_PUBLIC_BUILDBASE_REDIRECT_URL:
       process.env.NEXT_PUBLIC_BUILDBASE_REDIRECT_URL,
+    NEXT_PUBLIC_BUILDBASE_ENVIRONMENT:
+      process.env.NEXT_PUBLIC_BUILDBASE_ENVIRONMENT,
     NEXT_PUBLIC_SENTRY_DSN: process.env.NEXT_PUBLIC_SENTRY_DSN,
+    NEXT_PUBLIC_SUPPORT_EMAIL: process.env.NEXT_PUBLIC_SUPPORT_EMAIL,
   },
 
   /**
@@ -137,3 +145,15 @@ export const env = createEnv({
  */
 export const siteUrl =
   process.env.SITE_URL || env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
+
+/** The test copy of the store: never indexed (see next.config.ts). */
+export const isNoindexSite = (process.env.NEXT_PUBLIC_SITE_URL ?? '').includes(
+  'reelforge-dev'
+);
+
+/**
+ * The BuildBase environment key, or undefined for production. An empty string
+ * (how `.env.production` leaves it) also means production.
+ */
+export const buildbaseEnvironment: string | undefined =
+  process.env.NEXT_PUBLIC_BUILDBASE_ENVIRONMENT || undefined;

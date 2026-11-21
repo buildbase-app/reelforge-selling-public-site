@@ -3,7 +3,6 @@ import { handleAppTokenRequest, mintAgentToken } from '@buildbase/sdk';
 import { prisma, setAuditContext } from '@/lib/db';
 import { env } from '@/env';
 import { logger } from '@/lib/logger';
-import { detect } from '@/tour/progress';
 
 /**
  * Application Token URL (`applicationTokenUrl` in the BuildBase OAuth2 client).
@@ -72,9 +71,6 @@ export async function POST(request: NextRequest) {
               userId: claims.id,
             });
           });
-
-        // The tour: an agent just finished the OAuth flow as this person.
-        await detect(claims.id, { kind: 'action', action: 'agent:connected' });
 
         return mintAgentToken({
           claims,

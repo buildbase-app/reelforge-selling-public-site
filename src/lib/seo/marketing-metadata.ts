@@ -78,14 +78,19 @@ export function buildMarketingMetadata({
 }: MarketingMetadataOptions): Metadata {
   const canonicalUrl = localeUrl(siteUrl, locale, path);
 
+  // hreflang only when the page exists in more than one served language:
+  // with English alone, alternates would just repeat the canonical.
+  const servedLocales = supportedLocales.filter((l) =>
+    (allLocales as readonly string[]).includes(l)
+  );
   const languages: Record<string, string> = {};
-  for (const loc of supportedLocales) {
-    languages[loc] = localeUrl(siteUrl, loc, path);
-  }
-  const xDefaultLocale = supportedLocales.includes(defaultLocale)
-    ? defaultLocale
-    : supportedLocales[0];
-  if (xDefaultLocale) {
+  if (servedLocales.length > 1) {
+    for (const loc of servedLocales) {
+      languages[loc] = localeUrl(siteUrl, loc, path);
+    }
+    const xDefaultLocale = servedLocales.includes(defaultLocale)
+      ? defaultLocale
+      : servedLocales[0];
     languages['x-default'] = localeUrl(siteUrl, xDefaultLocale, path);
   }
 
@@ -96,7 +101,7 @@ export function buildMarketingMetadata({
     description,
     alternates: {
       canonical: canonicalUrl,
-      languages,
+      ...(Object.keys(languages).length > 0 ? { languages } : {}),
       ...(alternatesTypes ? { types: alternatesTypes } : {}),
     },
     openGraph: {

@@ -1,190 +1,108 @@
-import { siteConfig } from '@/config/site';
+import { contactUri, siteConfig } from '@/config/site';
 
 /**
  * Agent-facing prose: llms.txt, llms-full.txt and the installable SKILL.md.
- * Generated from one feature inventory so the machine-readable tour and the
- * human dashboard never drift apart.
+ * Generated from one page inventory so agents and people see the same store.
+ * Only list pages that exist; say "not on sale yet" rather than invent
+ * products or prices (prices come from BuildBase items at runtime).
  */
 
-export interface FeatureEntry {
-  slug: string;
+export interface PageEntry {
   title: string;
   path: string;
   summary: string;
-  sdk: string[];
-  mcpTools?: string[];
 }
 
-export const FEATURES: FeatureEntry[] = [
+export const PAGES: PageEntry[] = [
   {
-    slug: 'auth',
-    title: 'OAuth sign-in and sessions',
-    path: '/dashboard',
+    title: 'Home',
+    path: '/',
     summary:
-      'Hosted BuildBase login (email, magic link, social, passkeys). The app exchanges the code server-side, stores the platform session in an httpOnly cookie and mints its own app token.',
-    sdk: [
-      'SaaSOSProvider',
-      'useSaaSAuth',
-      'WhenAuthenticated',
-      'BuildBase().auth()',
-    ],
-    mcpTools: ['get_user_profile'],
+      'What ReelForge is: a source-available, agent-driven short-form video studio that an AI agent drives over REST and MCP, rendering with Remotion, Motion Canvas, HTML and HyperFrames. Free for personal use; one-time commercial licence.',
   },
   {
-    slug: 'workspaces',
-    title: 'Multi-tenant workspaces and seats',
-    path: '/dashboard/team',
-    summary:
-      'Users belong to many workspaces with owner/admin/member/viewer roles; seat limits come from the plan.',
-    sdk: [
-      'useSaaSWorkspaces',
-      'WorkspaceSwitcher',
-      'useSeatStatus',
-      'WhenWorkspaceRoles',
-    ],
-    mcpTools: ['list_workspaces', 'get_workspace', 'list_workspace_users'],
-  },
-  {
-    slug: 'subscriptions',
-    title: 'Plans, trials and subscriptions',
+    title: 'Pricing',
     path: '/pricing',
     summary:
-      'Public pricing table from the console, 14-day trials, Stripe checkout and billing portal, plan-based gates.',
-    sdk: [
-      'usePublicPlans',
-      'PricingPage',
-      'useSubscription',
-      'useTrialStatus',
-      'WhenSubscriptionToPlans',
-    ],
-    mcpTools: ['get_public_plans', 'get_subscription', 'get_plans'],
+      'The free Personal licence (noncommercial use, claimed with no payment page) first, then the Commercial licence tiers and their prices, read from the store and rendered on the server. Also: which licence you need. While nothing is on sale, it says so and links to the waitlist.',
   },
   {
-    slug: 'invoices',
-    title: 'Invoices',
-    path: '/dashboard/invoices',
+    title: 'Order',
+    path: '/order',
     summary:
-      'Stripe invoices listed in-app with hosted and PDF links; opens the billing portal.',
-    sdk: ['useInvoices', 'useBillingPortal'],
-    mcpTools: ['list_invoices', 'get_invoice'],
+      'Where a buyer lands after checkout or a free claim: order status and the licence key, labelled Personal or Commercial. Guests open it with the link from their receipt.',
   },
   {
-    slug: 'usage',
-    title: 'Usage quotas and overage',
-    path: '/dashboard/usage',
-    summary:
-      'Plan quotas (for example `documents`) with included units, overage pricing and threshold alerts. Creating a document records usage.',
-    sdk: [
-      'useAllQuotaUsage',
-      'useRecordUsage',
-      'WhenQuotaThreshold',
-      'WhenQuotaExhausted',
-      'bb.usage.record()',
-    ],
-    mcpTools: ['get_all_quota_usage', 'get_usage_logs'],
+    title: 'Waitlist',
+    path: '/waitlist',
+    summary: 'Leave a name and email to hear when ReelForge can be bought.',
   },
   {
-    slug: 'credits',
-    title: 'Prepaid credits',
-    path: '/dashboard/credits',
+    title: 'Help',
+    path: '/help',
     summary:
-      'Credit packages, balances with expiring buckets, consumption and a transaction ledger. Creating a document consumes one credit.',
-    sdk: [
-      'CreditBalance',
-      'useConsumeCredits',
-      'useCreditPackages',
-      'WhenCreditsLow',
-      'bb.credits.consume()',
-    ],
-    mcpTools: [
-      'get_credit_balance',
-      'list_credit_transactions',
-      'get_credit_packages',
-    ],
+      'Frequently asked questions: what you get, using ReelForge with an AI agent, what is not ready yet, Remotion licensing.',
   },
   {
-    slug: 'feature-flags',
-    title: 'Feature flags',
-    path: '/dashboard/documents',
+    title: 'Account',
+    path: '/dashboard',
     summary:
-      'Workspace-level flags (`advanced-exports`, `document-sharing`, `e-signatures`) and user-level flags gate parts of the documents UI.',
-    sdk: ['WhenWorkspaceFeatureEnabled', 'useUserFeatures'],
-    mcpTools: ['check_feature_flag'],
+      'Signed-in customers: licence keys (Personal or Commercial), recent orders, invoices, notification settings, security (sessions, devices, connected agents).',
   },
   {
-    slug: 'permissions',
-    title: 'Roles and permissions',
-    path: '/dashboard/permissions',
+    title: 'Licences',
+    path: '/licence',
     summary:
-      'Default role permissions plus per-workspace overrides, evaluated client- and server-side.',
-    sdk: ['usePermissions', 'WhenPermission', 'bb.permissions.check()'],
-    mcpTools: ['check_permission', 'resolve_permissions'],
+      'Summary of the two licences: Personal (PolyForm Noncommercial 1.0.0) and the ReelForge Commercial License (draft), with the trademark policy.',
   },
   {
-    slug: 'documents',
-    title: 'Documents (the demo product)',
-    path: '/dashboard/documents',
-    summary:
-      "Markdown documents owned by a workspace, stored in the app's own Postgres. Create, search, tag, change status; sample data loads with one click. The same service backs the REST API and the MCP tools.",
-    sdk: ['getWorkspaceContext()', 'bb.usage.record()', 'bb.credits.consume()'],
-    mcpTools: [
-      'list_documents',
-      'search_documents',
-      'get_document',
-      'get_document_stats',
-      'create_document',
-      'update_document_status',
-    ],
+    title: 'Blog',
+    path: '/blog',
+    summary: 'Announcements and guides.',
   },
   {
-    slug: 'notifications',
-    title: 'Push and email notifications',
-    path: '/dashboard/notifications',
-    summary:
-      'Web-push subscription in the browser and server-side sends to one user or a whole workspace.',
-    sdk: ['usePushNotifications', 'bb.notification.send()'],
-    mcpTools: ['send_notification'],
-  },
-  {
-    slug: 'events',
-    title: 'Events and webhooks',
-    path: '/dashboard/events',
-    summary:
-      'Client SDK lifecycle events persisted through /api/events, and signed server-to-server webhooks received at /api/webhooks/buildbase.',
-    sdk: ['eventEmitter', 'handleEvent', 'parseWebhookEvent'],
-  },
-  {
-    slug: 'security',
-    title: 'Devices, sessions and connected agents',
-    path: '/dashboard/security',
-    summary:
-      'See and revoke signed-in devices, sessions and the AI agents that hold a grant.',
-    sdk: ['Devices', 'Sessions', 'ConnectedAgents'],
-  },
-  {
-    slug: 'agents',
-    title: 'AI agents over MCP',
-    path: '/dashboard/profile',
-    summary:
-      'A remote MCP server at /api/mcp with OAuth 2.1 + PKCE, discovery documents under /.well-known, and a connect guide for Claude, ChatGPT, Cursor and VS Code.',
-    sdk: [
-      'createAgentStack',
-      'defineMcpTool',
-      'ConnectMcpGuide',
-      'useMcpConnection',
-    ],
-  },
-  {
-    slug: 'i18n',
-    title: 'Eight languages with RTL',
-    path: '/ar',
-    summary:
-      'next-intl routing with type-safe keys; the SDK UI follows the app locale.',
-    sdk: ['SaaSOSProvider locale'],
+    title: 'Changelog',
+    path: '/changelog',
+    summary: 'Release notes for the store and the product.',
   },
 ];
 
+/**
+ * What ReelForge is and what is verified, in plain lines. Keep it to facts
+ * true today (docs/research/DESIGN_BRIEF.md §7); say what is not verified
+ * rather than leave it implied.
+ */
+export const PRODUCT_FACTS = [
+  '- ReelForge is a source-available, agent-driven short-form video studio that the buyer self-hosts on their own machine or cloud server. The code is public to read; the licence limits how it may be used.',
+  `- Source: ${siteConfig.repo.url} (licensing: ${siteConfig.repo.licensing}).`,
+  '- Personal use is free under the PolyForm Noncommercial License 1.0.0, with a free Personal licence key claimed with a BuildBase account. Any commercial use needs a paid ReelForge Commercial License (one-time; Solo, Studio and Agency tiers, prices read from the store).',
+  '- Every released Docker image activates with a licence key from BuildBase. No resale, redistribution, rebranding or competing hosted service under either licence; forks must be renamed.',
+  "- The buyer's own AI agent drives it over a REST API and an MCP server running on the buyer's machine (any MCP client; tested with Claude Code). The agent plans every scene and its timing.",
+  '- Four rendering engines: Remotion, Motion Canvas, HTML and HyperFrames. The output is one vertical MP4.',
+  '- Verified: an end-to-end run in Docker, and headless Claude Code making an 18-second reel with all four engines over MCP only.',
+  "- Not verified yet, so not offered as features: rendering on the buyer's AWS (Remotion Lambda), burned-in captions, live ElevenLabs voice-over, Codex and Cursor as clients.",
+  '- No per-video fees to ReelForge. Remotion is not covered by either ReelForge licence and requires its own licence for companies over 3 people (https://www.remotion.dev/license).',
+].join('\n');
+
 const base = () => siteConfig.url.replace(/\/$/, '');
+
+/** Where the source and the licence texts are, for llms.txt and llms-full.txt. */
+function licensingLinks(b: string): string {
+  return [
+    `- [Source on GitHub](${siteConfig.repo.url}): source-available, default branch \`main\`.`,
+    `- [LICENSING.md](${siteConfig.repo.licensing}): which licence you need.`,
+    `- [Personal licence: PolyForm Noncommercial 1.0.0](${siteConfig.repo.license}) (canonical text: ${siteConfig.polyformNoncommercial}).`,
+    `- [ReelForge Commercial License (draft)](${siteConfig.repo.commercialLicense}).`,
+    `- [Trademark policy](${siteConfig.repo.trademark}): forks must be renamed.`,
+    `- [Licences summary](${b}/licence) and [pricing](${b}/pricing) on this site.`,
+  ].join('\n');
+}
+
+function contactLines(): string {
+  return siteConfig.contact.support
+    ? `Support: ${siteConfig.contact.support}`
+    : `Support: ${siteConfig.contact.page}`;
+}
 
 export function buildLlmsTxt(): string {
   const b = base();
@@ -192,28 +110,27 @@ export function buildLlmsTxt(): string {
 
 > ${siteConfig.description}
 
-This is a public demo of the BuildBase SDK (${siteConfig.buildbase.url}). Source: ${siteConfig.repo}. Everything below is live; sign in to try it as a human, or connect over MCP to try it as an agent.
+This is the ${siteConfig.name} store: where people learn about ReelForge, claim a free Personal licence key or buy a Commercial licence, and manage their keys. The source itself is on GitHub. ReelForge is early access; nothing here should be read as a promise of features that are not listed.
+
+## The product
+
+${PRODUCT_FACTS}
+
+## Licensing
+
+${licensingLinks(b)}
 
 ## For agents
 
-- [MCP server](${b}/api/mcp): Streamable HTTP, OAuth 2.1 + PKCE. Start with the 401 challenge or the server card.
+- [MCP server](${b}/api/mcp): Streamable HTTP, OAuth 2.1 + PKCE. Read-only access to the signed-in customer's account.
 - [MCP server card](${b}/.well-known/mcp/server-card.json): endpoint, transport, capabilities.
-- [Protected resource metadata](${b}/.well-known/oauth-protected-resource/mcp): authorization server and scopes.
 - [Auth instructions](${b}/auth.md): how to register a client and get a token.
-- [Agent skill](${b}/.well-known/agent-skills/index.json): installable SKILL.md for using this demo.
-- [OpenAPI](${b}/openapi.json): the REST routes this app exposes.
-- [Public plans](${b}/api/plans): machine-readable pricing.
-- [Full guide](${b}/llms-full.txt): every feature, route and tool.
+- [OpenAPI](${b}/openapi.json): the REST routes this site exposes.
+- [Full guide](${b}/llms-full.txt): every page, route and tool.
 
-## Features
+## Pages
 
-${FEATURES.map((f) => `- [${f.title}](${b}${f.path}): ${f.summary}`).join('\n')}
-
-## Content
-
-- [Blog](${b}/blog): implementation guides. Add \`Accept: text/markdown\` or use /api/content/blog/{slug}.
-- [Changelog](${b}/changelog): release notes.
-- [Pricing](${b}/pricing): plans rendered from the BuildBase console.
+${PAGES.map((p) => `- [${p.title}](${b}${p.path}): ${p.summary}`).join('\n')}
 
 ## Optional
 
@@ -225,71 +142,52 @@ ${FEATURES.map((f) => `- [${f.title}](${b}${f.path}): ${f.summary}`).join('\n')}
 
 export function buildLlmsFullTxt(): string {
   const b = base();
-  const features = FEATURES.map(
-    (f) => `### ${f.title}
+  const pages = PAGES.map(
+    (p) => `### ${p.title}
 
-Path: ${b}${f.path}
+Path: ${b}${p.path}
 
-${f.summary}
-
-SDK surface: ${f.sdk.map((s) => `\`${s}\``).join(', ')}${
-      f.mcpTools?.length
-        ? `\nMCP tools: ${f.mcpTools.map((t) => `\`${t}\``).join(', ')}`
-        : ''
-    }`
+${p.summary}`
   ).join('\n\n');
 
-  return `# ${siteConfig.name} — full guide
+  return `# ${siteConfig.name}: full guide
 
 > ${siteConfig.description}
 
-Source code: ${siteConfig.repo}
-Platform: ${siteConfig.buildbase.url}
-SDK: ${siteConfig.buildbase.sdkDocs} (\`@buildbase/sdk\`)
-Agent guide: ${siteConfig.buildbase.agentGuide}
+## The product
 
-## What this app is
+${PRODUCT_FACTS}
 
-A Next.js 16 application that a SaaS team could ship as-is. BuildBase supplies identity, tenancy, billing, quotas, credits, flags, notifications and the OAuth authorization server. The app owns its product data (documents), its API routes, its access tokens and its MCP server.
+## What this site is
+
+The ReelForge store. ReelForge itself runs on the buyer's own computer or cloud server; this site does not render video. Here people claim the free Personal licence key or buy a Commercial licence, then find their keys on the order page and under Dashboard, Licences. The store runs on BuildBase (${siteConfig.buildbase.url}) for sign-in, checkout and downloads. Prices and what each option includes are read from the store's items at runtime; while none are published, the pricing page says ReelForge is not on sale yet.
+
+## Licensing
+
+${licensingLinks(b)}
+
+Remotion note: ReelForge includes Remotion-based templates. Remotion is free for individuals and companies of up to 3 people; larger companies need their own Remotion licence (https://www.remotion.dev/license).
 
 ## How an agent connects
 
-1. POST ${b}/api/mcp with no token → 401 with \`WWW-Authenticate: Bearer resource_metadata="${b}/.well-known/oauth-protected-resource/mcp"\`.
-2. GET that metadata → \`authorization_servers\` and \`scopes_supported\`.
-3. GET the authorization server's \`/.well-known/oauth-authorization-server\` (also mirrored at ${b}/.well-known/oauth-authorization-server).
-4. Register a public client (RFC 7591, \`token_endpoint_auth_method: none\`) or use one issued in the BuildBase console.
-5. Authorize with PKCE; the user signs in and consents to scopes.
-6. Exchange the code. The platform calls this app's \`/api/auth/oauth2-token\`, which mints a token signed with the app's own secret.
-7. Call ${b}/api/mcp with \`Authorization: Bearer <token>\`.
+1. POST ${b}/api/mcp with no token: 401 with \`WWW-Authenticate: Bearer resource_metadata="${b}/.well-known/oauth-protected-resource/mcp"\`.
+2. GET that metadata: \`authorization_servers\` and \`scopes_supported\`.
+3. Register a public client (RFC 7591, \`token_endpoint_auth_method: none\`), authorize with PKCE, exchange the code.
+4. Call ${b}/api/mcp with \`Authorization: Bearer <token>\`.
 
-Scopes: \`documents:read\` (default for reads), \`documents:write\` (required for create_document and update_document_status). Built-in BuildBase tools are read-only.
-
-## MCP surface
-
-Tools (built-in, read-only): list_workspaces, get_workspace, get_user_profile, list_workspace_users, get_subscription, get_plans, get_public_plans, list_invoices, get_invoice, get_quota_usage, get_all_quota_usage, get_usage_logs, get_credit_balance, list_credit_transactions, get_credit_packages, get_expiring_credits, check_feature_flag, check_permission, resolve_permissions, get_settings.
-
-Tools (this app): list_documents, search_documents, get_document, get_document_stats, create_document, update_document_status.
-
-Resources: \`buildbase://profile\`, \`buildbase://workspaces\`, \`buildbase://workspace/{workspaceId}\`, \`demo://guide\`, \`demo://workspace/{workspaceId}/documents/{documentId}\`.
-
-Prompts: \`summarize_workspace\`.
+Scopes: \`account:read\`. Every tool is read-only; purchases happen on the website.
 
 ## REST API
 
 See ${b}/openapi.json. Highlights:
 
-- GET /api/health — liveness (add ?deep=true for a database ping)
-- GET /api/plans — public pricing as JSON
-- GET|POST /api/documents?workspaceId= — list or create documents (session cookie or bearer token)
-- GET|PATCH|DELETE /api/documents/{id}?workspaceId=
-- POST|DELETE /api/documents/seed?workspaceId= — load or remove sample data
-- GET /api/events?workspaceId= — persisted SDK events and webhooks
-- GET /api/content/blog/{slug} — blog post as markdown
-- GET /api/user/export, DELETE /api/user/delete — GDPR
+- GET /api/health: liveness (add ?deep=true for a database ping)
+- GET /api/content/blog/{slug}: blog post as markdown
+- GET /api/user/export, DELETE /api/user/delete: personal data export and erasure (signed in)
 
-## Features
+## Pages
 
-${features}
+${pages}
 
 ## Discovery documents
 
@@ -299,15 +197,9 @@ ${[
   '/auth.md',
   '/security.txt',
   '/openapi.json',
-  '/.well-known/agent.json',
   '/.well-known/agent-card.json',
   '/.well-known/mcp/server-card.json',
-  '/.well-known/mcp.json',
-  '/.well-known/oauth-protected-resource',
   '/.well-known/oauth-protected-resource/mcp',
-  '/.well-known/oauth-authorization-server',
-  '/.well-known/openid-configuration',
-  '/.well-known/agent-skills/index.json',
   '/.well-known/api-catalog',
 ]
   .map((p) => `- ${b}${p}`)
@@ -315,41 +207,33 @@ ${[
 
 ## Contact
 
-Support: ${siteConfig.contact.support}
-Security: ${siteConfig.contact.security}
+${contactLines()}
+Security: ${contactUri()}
 `;
 }
 
 export function buildSkillMarkdown(): string {
   const b = base();
   return `---
-name: buildbase-demo
-description: Use the BuildBase Demo app as a signed-in user over MCP — read workspaces, billing, usage and credits, and manage documents.
+name: reelforge-store
+description: Read a ReelForge customer's account over MCP (read-only).
 ---
 
-# BuildBase Demo skill
+# ReelForge store skill
 
 ## When to use
-The user asks about their BuildBase Demo workspace: plan, trial, seats, quota headroom, credits, invoices, or the documents their team keeps.
+The user asks about their ReelForge account on ${b}: invoices, workspaces, profile.
 
 ## Connect
 1. Add the MCP server \`${b}/api/mcp\` to your client (Streamable HTTP).
-2. Complete the OAuth flow when prompted; request \`documents:write\` only if you need to create or change documents.
-
-## Recommended flow
-1. \`list_workspaces\` → pick the workspace (or pass none if the user has one).
-2. \`get_subscription\`, \`get_all_quota_usage\`, \`get_credit_balance\` for the account picture.
-3. \`list_documents\` / \`search_documents\` / \`get_document\` for content.
-4. Use the \`summarize_workspace\` prompt for a one-page status.
+2. Complete the OAuth flow when prompted.
 
 ## Guardrails
-- Built-in BuildBase tools are read-only here; billing changes go through the app's UI.
-- \`create_document\` records usage and consumes a credit — tell the user before creating many.
-- Never paste tokens into documents.
+- Every tool is read-only; purchases, downloads and billing changes happen on the website.
+- Never paste tokens into chats or files.
 
 ## References
 - Full guide: ${b}/llms-full.txt
 - OpenAPI: ${b}/openapi.json
-- SDK agent guide: ${siteConfig.buildbase.agentGuide}
 `;
 }

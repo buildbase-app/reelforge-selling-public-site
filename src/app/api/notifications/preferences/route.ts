@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ApiVersion, WorkspaceApi } from '@buildbase/sdk';
-import { env } from '@/env';
+import { ApiVersion, WorkspaceApi, environmentId } from '@buildbase/sdk';
+import { buildbaseEnvironment, env } from '@/env';
 import { getWorkspaceContext, type WorkspaceContext } from '@/lib/server-auth';
-import { detect } from '@/tour/progress';
 
 /**
  * The signed-in member's own notification settings in one workspace: the
@@ -16,7 +15,10 @@ function workspaceApi(ctx: WorkspaceContext) {
   return new WorkspaceApi({
     serverUrl: env.NEXT_PUBLIC_BUILDBASE_SERVER_URL,
     version: ApiVersion.V1,
-    orgId: env.NEXT_PUBLIC_BUILDBASE_ORG_ID,
+    orgId: environmentId(
+      env.NEXT_PUBLIC_BUILDBASE_ORG_ID,
+      buildbaseEnvironment
+    ),
     sessionId: ctx.sessionId,
   });
 }
@@ -112,10 +114,6 @@ export async function PATCH(request: NextRequest) {
       ctx.workspaceId,
       preferences
     );
-    await detect(ctx.userId, {
-      kind: 'action',
-      action: 'notifications:preferences-saved',
-    });
     return NextResponse.json(saved);
   } catch (err) {
     return failure(err);

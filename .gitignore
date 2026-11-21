@@ -33,6 +33,8 @@ yarn-error.log*
 # env files
 .env*
 !.env.example
+# Public, non-secret production values only (see the file header)
+!.env.production
 
 # AI IDE rule files (contain project-specific dev context)
 .cursorrules
@@ -61,9 +63,11 @@ public/pagefind
 # content pulled at build time (npm run content:pull)
 .buildbase
 
-# cloudflare (OpenNext / wrangler)
-/.open-next
-/.wrangler
+# Cloudflare / OpenNext
+.open-next/
+.wrangler/
 .dev.vars*
 !.dev.vars.example
-cloudflare-env.d.ts
+# Prisma: generated client and the scratch DB its migration tooling uses
+src/generated/
+prisma/tooling.db*

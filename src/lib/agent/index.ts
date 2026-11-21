@@ -1,17 +1,15 @@
 import 'server-only';
+import { AI_BOT_USER_AGENTS } from '@buildbase/sdk';
 import { createAgentStack } from '@buildbase/sdk/mcp';
-import { env, siteUrl } from '@/env';
-import { siteConfig } from '@/config/site';
+import { env, siteUrl, buildbaseEnvironment } from '@/env';
+import { contactUri, siteConfig } from '@/config/site';
 import { logger } from '@/lib/logger';
-import {
-  SCOPES,
-  documentTools,
-  documentResources,
-  documentResourceTemplates,
-  documentPrompts,
-} from './tools';
+import { SCOPES, storeTools, storeResources, storePrompts } from './tools';
 import { buildLlmsTxt, buildLlmsFullTxt, buildSkillMarkdown } from './content';
 import { buildOpenApiSpec } from './openapi';
+
+/** Never crawled: the API, signed-in pages and per-buyer order pages. */
+const DISALLOW = ['/api/', '/dashboard/', '/order'];
 
 /**
  * The agent stack: MCP server + every discovery document, from one config.
@@ -28,27 +26,29 @@ import { buildOpenApiSpec } from './openapi';
 export const agent = createAgentStack({
   serverUrl: env.NEXT_PUBLIC_BUILDBASE_SERVER_URL,
   orgId: env.NEXT_PUBLIC_BUILDBASE_ORG_ID,
+  environment: buildbaseEnvironment,
   siteUrl,
   site: {
     name: siteConfig.name,
     description: siteConfig.description,
     documentationUrl: `${siteUrl}/llms-full.txt`,
-    contactEmail: siteConfig.contact.support,
-    provider: { name: 'BuildBase', url: siteConfig.buildbase.url },
+    ...(siteConfig.contact.support
+      ? { contactEmail: siteConfig.contact.support }
+      : {}),
+    provider: { name: siteConfig.name, url: siteUrl },
   },
   secret: env.SYSTEM_SECRET,
   scopes: [...SCOPES],
   mcp: {
-    serverInfo: { name: 'buildbase-demo', version: '0.3.0' },
+    serverInfo: { name: 'reelforge-store', version: '0.1.0' },
     builtinTools: 'readonly',
-    tools: documentTools,
+    tools: [...storeTools],
     handler: {
       instructions:
-        "This is the BuildBase Demo. Built-in tools read the user's BuildBase account (workspaces, subscription, usage, credits). The document tools read and write the demo's own data. Ask for a workspaceId when the user has several workspaces.",
+        "This is the ReelForge store. Built-in tools read the signed-in customer's account (workspaces, invoices, profile). There are no write tools; purchases happen on the website. Ask for a workspaceId when the user has several workspaces.",
       builtinResources: true,
-      resources: documentResources,
-      resourceTemplates: documentResourceTemplates,
-      prompts: documentPrompts,
+      resources: storeResources,
+      prompts: storePrompts,
       onError: (error, ctx) => {
         logger.error('MCP error', {
           error: error instanceof Error ? error.message : String(error),
@@ -60,20 +60,32 @@ export const agent = createAgentStack({
     },
   },
   discovery: {
+    // /robots.txt (src/app/robots.txt/route.ts). Content Signals: search and
+    // AI answers (ai-input) may use the site; `aiTrain` is left unset (no
+    // preference stated) until the founder decides it.
+    robots: {
+      policies: [{ userAgent: '*', allow: ['/'], disallow: DISALLOW }],
+      aiBots: AI_BOT_USER_AGENTS.map((userAgent) => ({
+        userAgent,
+        allow: ['/'],
+        disallow: DISALLOW,
+      })),
+      contentSignals: { search: true, aiInput: true },
+      sitemaps: [`${siteUrl}/sitemap.xml`],
+    },
     llmsTxt: buildLlmsTxt(),
     llmsFullTxt: buildLlmsFullTxt(),
     skills: [
       {
-        name: 'buildbase-demo',
+        name: 'reelforge-store',
         description:
-          'Operate the BuildBase Demo as a signed-in user: account, billing, usage, credits and documents over MCP.',
+          "Read a ReelForge customer's account over MCP (read-only).",
         content: buildSkillMarkdown(),
       },
     ],
     security: {
-      contact: `mailto:${siteConfig.contact.security}`,
+      contact: contactUri(),
       expires: '2027-09-01T00:00:00.000Z',
-      policy: `${siteConfig.repo}/blob/main/SECURITY.md`,
     },
     apiCatalog: [
       {

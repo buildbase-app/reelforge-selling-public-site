@@ -14,6 +14,9 @@ import { siteConfig } from '@/config/site';
  * same regardless of language.
  */
 
+/** Shown wherever the seller's legal name belongs until it is confirmed. */
+export const LEGAL_ENTITY_PLACEHOLDER = '[Legal entity to be confirmed]';
+
 type ContactPoint = {
   telephone?: string;
   contactType?: string;
@@ -25,20 +28,29 @@ export const seoConfig = {
   brand: {
     /** Product / company name used everywhere (JSON-LD, OG, Twitter). */
     name: siteConfig.name,
-    legalName: 'BuildBase',
+    /**
+     * PLACEHOLDER: the legal entity that sells ReelForge is not confirmed
+     * yet (founder decision). Replace this string once it is; the legal
+     * pages show the same placeholder.
+     */
+    legalName: LEGAL_ENTITY_PLACEHOLDER,
     description: siteConfig.description,
-    tagline: 'Everything a SaaS needs, wired and working.',
+    tagline: 'Your agent directs. Your server renders.',
+    /** The product's public, source-available repository. */
+    repository: siteConfig.repo.url,
+    /** Licensing overview (Personal: PolyForm Noncommercial; Commercial). */
+    license: siteConfig.repo.licensing,
     url: siteUrl,
     /** Path relative to public/ or absolute URL. Used for Organization JSON-LD. */
     logo: '/logo.png',
     foundingDate: undefined as string | undefined,
   },
   author: {
-    name: 'BuildBase Team',
-    url: siteConfig.buildbase.url,
+    name: 'ReelForge team',
+    url: siteUrl,
   },
   publisher: {
-    name: 'BuildBase',
+    name: siteConfig.name,
     logo: '/logo.png',
   },
   social: {
@@ -56,13 +68,19 @@ export const seoConfig = {
   },
   contactPoint: undefined as ContactPoint | undefined,
   /**
-   * Search engine verification tokens. Leave empty until you own the
-   * property in the respective console — empty values are skipped.
+   * Search engine verification tokens, from the environment (public values:
+   * the content of each engine's verification meta tag). Empty or unset
+   * means the tag is omitted. Set them in `.env.production` (production) or
+   * the `deploy:dev` script; they are inlined at build time.
+   *
+   * - NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: Google Search Console
+   * - NEXT_PUBLIC_BING_SITE_VERIFICATION: Bing Webmaster Tools (msvalidate.01)
+   * - NEXT_PUBLIC_YANDEX_SITE_VERIFICATION: Yandex Webmaster
    */
   verification: {
-    google: '' as string,
-    bing: '' as string,
-    yandex: '' as string,
+    google: (process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ?? '').trim(),
+    bing: (process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION ?? '').trim(),
+    yandex: (process.env.NEXT_PUBLIC_YANDEX_SITE_VERIFICATION ?? '').trim(),
   },
   defaults: {
     twitterCard: 'summary_large_image' as const,

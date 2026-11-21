@@ -9,11 +9,9 @@ on:
 env:
   # Skip env validation during CI (no real secrets)
   SKIP_ENV_VALIDATION: true
-  # The SDK refuses to construct without these, and route modules construct
-  # it at import, so the build needs them. Public values, not secrets: the
-  # build only prerenders; nothing here is used to sign in.
-  NEXT_PUBLIC_BUILDBASE_SERVER_URL: https://api.console.buildbase.app
-  NEXT_PUBLIC_BUILDBASE_ORG_ID: 694e64a4e41ec4ca273256e9
+  # The NEXT_PUBLIC_* BuildBase values (server URL, ReelForge org id, client
+  # id) come from the committed .env.production, which `next build` reads, so
+  # CI builds exactly what the production deploy builds. Public values only.
   # The MCP stack needs a signing secret to construct. A throwaway one: CI
   # never serves a request, so nothing it signs is ever checked.
   SYSTEM_SECRET: ci-build-only-not-a-secret-0123456789abcdef
@@ -30,7 +28,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
@@ -76,11 +74,11 @@ jobs:
             exit 1
           fi
 
-      - name: Tour source links
-        run: npm run check:tour
-
       - name: Generate Prisma Client
         run: npx prisma generate
+
+      - name: Unit tests
+        run: npm test
 
       - name: TypeScript Type Check
         id: typecheck
@@ -96,11 +94,11 @@ jobs:
             exit 1
           fi
 
-      - name: Build Application
+      - name: Build for Cloudflare Workers (OpenNext; runs next build)
         id: build
         run: |
           echo "## 🏗️ Build Results" >> $GITHUB_STEP_SUMMARY
-          if npm run build 2>&1 | tee build-output.txt; then
+          if npx opennextjs-cloudflare build 2>&1 | tee build-output.txt; then
             echo "✅ Build successful" >> $GITHUB_STEP_SUMMARY
           else
             echo "❌ Build failed:" >> $GITHUB_STEP_SUMMARY
@@ -109,6 +107,12 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
+
+      - name: Bundle the Worker (dry run, no deploy)
+        run: |
+          npx wrangler deploy --dry-run --outdir .wrangler/dry-run 2>&1 | tee wrangler-output.txt
+          echo "## ☁️ Cloudflare Worker" >> $GITHUB_STEP_SUMMARY
+          grep "Total Upload" wrangler-output.txt >> $GITHUB_STEP_SUMMARY || true
 
       - name: Analyze Bundle Size
         run: |
@@ -148,30 +152,3 @@ jobs:
           echo "| Prettier | ${{ steps.format.outcome == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| TypeScript | ${{ steps.typecheck.outcome == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Build | ${{ steps.build.outcome == 'success' && '✅ Passed' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
-
-  cloudflare:
-    # Keeps the Cloudflare Workers build (OpenNext) working alongside Vercel.
-    name: Cloudflare Workers Build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build for Cloudflare Workers
-        run: npm run cf:build
-
-      - name: Bundle the Worker (dry run, no deploy)
-        run: |
-          npx wrangler deploy --dry-run --outdir .wrangler/dry-run 2>&1 | tee wrangler-output.txt
-          echo "## ☁️ Cloudflare Worker" >> $GITHUB_STEP_SUMMARY
-          grep "Total Upload" wrangler-output.txt >> $GITHUB_STEP_SUMMARY || true

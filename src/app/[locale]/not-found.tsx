@@ -1,22 +1,17 @@
-'use client';
-
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
+import { FileQuestion, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { FileQuestion, Home, ArrowLeft } from 'lucide-react';
+import { BackButton } from '@/components/back-button';
+import { MarketingShell } from '@/components/marketing/marketing-shell';
 import { Link } from '@/i18n/routing';
 
-/**
- * Not Found (404) Page
- *
- * Displayed when a user navigates to a page that doesn't exist.
- * Localized for all supported languages.
- */
-export default function NotFound() {
-  const t = useTranslations('errors');
+/** 404, inside the public site's header and footer. */
+export default async function NotFound() {
+  const t = await getTranslations('errors');
 
   return (
-    <div className="bg-background flex min-h-screen flex-col items-center justify-center p-6">
-      <main id="main-content" className="text-center">
+    <MarketingShell>
+      <div className="flex flex-1 flex-col items-center justify-center px-6 py-24 text-center">
         <div className="mb-6 flex justify-center">
           <div className="bg-muted rounded-full p-4">
             <FileQuestion className="text-muted-foreground h-12 w-12" />
@@ -40,18 +35,9 @@ export default function NotFound() {
               {t('generic.goHome')}
             </Link>
           </Button>
-
-          <Button
-            variant="outline"
-            onClick={() =>
-              typeof window !== 'undefined' && window.history.back()
-            }
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            {t('notFound.goBack')}
-          </Button>
+          <BackButton label={t('notFound.goBack')} />
         </div>
-      </main>
-    </div>
+      </div>
+    </MarketingShell>
   );
 }
