@@ -89,7 +89,7 @@ export default async function DocPage({ params }: DocPageProps) {
   ];
 
   return (
-    <div className="flex-1 px-4 py-8 sm:px-6 lg:py-12">
+    <div className={`${styles.root} flex-1 px-4 py-8 sm:px-6 lg:py-12`}>
       <DocsJsonLd
         title={page.title}
         description={page.description}
@@ -130,26 +130,26 @@ export default async function DocPage({ params }: DocPageProps) {
               )}
             </ol>
           </nav>
-          <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">
+          <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
             {page.title}
           </h1>
           {page.description && (
-            <p className="text-muted-foreground mt-3 text-lg">
+            <p className="text-muted-foreground mt-3 text-lg text-pretty">
               {page.description}
             </p>
           )}
-          <p className="text-muted-foreground mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+          <p className="text-muted-foreground mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
             {updated && (
               <span>
-                Last updated{' '}
-                <time dateTime={updated}>{formatDate(updated)}</time>
+                Updated <time dateTime={updated}>{formatDate(updated)}</time>
               </span>
             )}
             <a
               href={`${href}.md`}
-              className="hover:text-foreground underline underline-offset-2"
+              title="This page as Markdown, for agents"
+              className={`${styles.line} hover:text-foreground rounded-md border px-2 py-0.5 font-mono text-xs transition-colors`}
             >
-              View as Markdown
+              {path.split('/').pop()}.md
             </a>
           </p>
           <div
@@ -161,13 +161,13 @@ export default async function DocPage({ params }: DocPageProps) {
           {(prev || next) && (
             <nav
               aria-label="Previous and next pages"
-              className="mt-12 grid gap-3 border-t pt-6 sm:grid-cols-2"
+              className={`${styles.line} mt-12 grid gap-3 border-t pt-6 sm:grid-cols-2`}
             >
               {prev ? (
                 <Link
                   href={prev.href}
                   rel="prev"
-                  className="hover:bg-muted group rounded-xl border p-4 transition-colors"
+                  className={`${styles.line} hover:bg-muted rounded-xl border p-4 transition-colors`}
                 >
                   <span className="text-muted-foreground flex items-center gap-1 text-xs">
                     <ArrowLeft className="h-3 w-3" aria-hidden /> Previous
@@ -181,7 +181,7 @@ export default async function DocPage({ params }: DocPageProps) {
                 <Link
                   href={next.href}
                   rel="next"
-                  className="hover:bg-muted group rounded-xl border p-4 text-end transition-colors"
+                  className={`${styles.line} hover:bg-muted rounded-xl border p-4 text-end transition-colors`}
                 >
                   <span className="text-muted-foreground flex items-center justify-end gap-1 text-xs">
                     Next <ArrowRight className="h-3 w-3" aria-hidden />

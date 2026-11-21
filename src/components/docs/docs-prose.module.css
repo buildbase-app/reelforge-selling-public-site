@@ -1,7 +1,39 @@
 /*
- * Typography for a docs page body (HTML from src/lib/docs/markdown.ts).
- * Scoped to the article, so the docs never change global styles.
+ * The docs pages' chrome and the typography of a page body (HTML from
+ * src/lib/docs/markdown.ts). Scoped to the docs, so they never change global
+ * styles. Quiet chrome: neutrals tinted a little toward the studio's ink
+ * (the product pages' stage colour), hairlines at 10%, and one accent, the
+ * brand pink, used only for the current page in the navigation. Ink pink
+ * (#c8174d, 5.6:1 on white) on light, the brand pink on dark.
  */
+
+.root {
+  --docs-line: oklch(0.25 0.02 285 / 0.1);
+  --docs-surface: oklch(0.975 0.004 285);
+  --docs-accent: #c8174d;
+  --docs-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:global(.dark) .root {
+  --docs-line: oklch(0.96 0.01 285 / 0.1);
+  --docs-surface: oklch(0.205 0.008 285);
+  --docs-accent: #ff3d71;
+}
+
+/* No motion: nothing on these pages needs to move to be understood. */
+
+/* The current page in the navigation: the one accent on the screen. */
+.current {
+  border-color: var(--docs-accent) !important;
+}
+
+.line {
+  border-color: var(--docs-line);
+}
+
+.surface {
+  background: var(--docs-surface);
+}
 
 .prose {
   font-size: 1rem;
@@ -13,7 +45,7 @@
 .prose :global(h2) {
   margin: 2.5rem 0 0.75rem;
   font-size: 1.5rem;
-  font-weight: 650;
+  font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.3;
   scroll-margin-top: 6rem;
@@ -65,14 +97,14 @@
 }
 
 .prose :global(blockquote) {
-  border-inline-start: 3px solid var(--border);
+  border-inline-start: 2px solid var(--docs-line);
   padding-inline-start: 1rem;
   color: var(--muted-foreground);
 }
 
 .prose :global(hr) {
   margin: 2rem 0;
-  border-color: var(--border);
+  border-color: var(--docs-line);
 }
 
 .prose :global(strong) {
@@ -82,8 +114,8 @@
 /* Inline code */
 .prose :global(:not(pre) > code) {
   border-radius: 0.375rem;
-  background: var(--muted);
-  padding: 0.1rem 0.35rem;
+  background: var(--docs-surface);
+  padding: 0.125rem 0.375rem;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 0.875em;
 }
@@ -101,15 +133,15 @@
 
 .prose :global(th),
 .prose :global(td) {
-  border: 1px solid var(--border);
+  border: 1px solid var(--docs-line);
   padding: 0.5rem 0.75rem;
   text-align: start;
   vertical-align: top;
 }
 
 .prose :global(th) {
-  background: var(--muted);
-  font-weight: 600;
+  background: var(--docs-surface);
+  font-weight: 500;
 }
 
 /* Code blocks: a frame with a Copy button (src/lib/docs/markdown.ts). */
@@ -120,9 +152,9 @@
 
 .prose :global(pre) {
   overflow-x: auto;
-  border: 1px solid var(--border);
+  border: 1px solid var(--docs-line);
   border-radius: 0.75rem;
-  background: var(--muted);
+  background: var(--docs-surface);
   padding: 1rem 1.25rem;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 0.85rem;
@@ -150,15 +182,18 @@
   top: 0.5rem;
   inset-inline-end: 0.5rem;
   z-index: 1;
-  border: 1px solid var(--border);
+  border: 1px solid var(--docs-line);
   border-radius: 0.375rem;
   background: var(--background);
-  padding: 0.15rem 0.55rem;
+  padding: 0.125rem 0.5rem;
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--muted-foreground);
   opacity: 0.85;
   cursor: pointer;
+  transition:
+    color 150ms var(--docs-ease),
+    opacity 150ms var(--docs-ease);
 }
 
 .prose :global(.docs-copy:hover),
