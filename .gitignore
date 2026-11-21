@@ -36,11 +36,9 @@ yarn-error.log*
 # Public, non-secret production values only (see the file header)
 !.env.production
 
-# AI IDE rule files (contain project-specific dev context)
+# Personal AI IDE rule files (AGENTS.md and CLAUDE.md are shared and committed)
 .cursorrules
 .windsurfrules
-CLAUDE.md
-AGENTS.md
 
 # vercel
 .vercel
