@@ -16,7 +16,9 @@ plan, with the caveats at the end.
 
 ## Automatic deploys (GitHub Actions)
 
-Every push to `claude/eloquent-wright-tm3cs7` runs `.github/workflows/deploy.yml`:
+Every push to `main` (that is, every merged pull request) runs
+`.github/workflows/deploy.yml`. Other branches never deploy; run the workflow
+by hand (`workflow_dispatch`) to redeploy:
 
 1. `deploy-test`: D1 migrations on `reelforge-store-dev`, then
    `npm run deploy:dev`, then a health check of the test site.

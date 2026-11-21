@@ -1,16 +1,31 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { HeroSection } from '@/components/marketing/hero-section';
 import { PricingCatalog } from '@/components/store/pricing-catalog';
+import { StoreCtas } from '@/components/store/store-ctas';
 import { RemotionNotice } from '@/components/remotion-notice';
-import { LicenceGuide } from '@/components/store/licence-guide';
-import { CtaBanner } from '@/components/marketing/cta-banner';
 import { AnnouncementBar } from '@/components/content/announcement-bar';
 import { LaunchPriceNote } from '@/components/content/launch-price-note';
 import { FaqSection } from '@/components/help/faq-section';
 import { FAQJsonLd, SoftwareApplicationJsonLd } from '@/components/seo/json-ld';
+import { AgentTabs } from '@/components/product/agent-tabs';
+import {
+  AgentTranscript,
+  ConnectAgent,
+  Engines,
+  EnterpriseStrip,
+  FinalCta,
+  Footnotes,
+  Hero,
+  HowItWorks,
+  LocalNav,
+  NumbersBand,
+  Privacy,
+  ReelGallery,
+} from '@/components/product/home-sections';
+import { Link } from '@/i18n/routing';
 import { absoluteUrl } from '@/config/seo';
 import type { Locale } from '@/i18n/config';
+import { AGENT_CLIENTS } from '@/lib/agents/snippets';
 import { getFaqSection } from '@/lib/platform/faqs';
 import { buildOffers } from '@/lib/store/offers';
 import { getStoreItems, hasOffers } from '@/lib/store/items';
@@ -41,10 +56,17 @@ export async function generateMetadata({
   });
 }
 
+/**
+ * The product page (studio issue #44): an Apple-style story told in
+ * sections, with real reels rendered by ReelForge. Prices stay server-read
+ * (`getStoreItems`) so they and the `SoftwareApplication` offers are in the
+ * HTML; the FAQ is the BuildBase `home-faq` collection (local fallback).
+ */
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [tPricing, store, faq] = await Promise.all([
+  const [t, tPricing, store, faq] = await Promise.all([
+    getTranslations({ locale, namespace: 'home' }),
     getTranslations({ locale, namespace: 'pricing' }),
     getStoreItems(),
     getFaqSection('home'),
@@ -56,8 +78,15 @@ export default async function HomePage({ params }: HomePageProps) {
     : [];
   const onSale = serverItems ? hasOffers(serverItems) : undefined;
 
+  const ctaLabels = {
+    waitlist: t('hero.waitlist'),
+    pricing: t('hero.pricing'),
+    buy: t('hero.buy'),
+    faq: t('hero.faq'),
+  };
+
   return (
-    <div className="flex flex-1 flex-col items-center">
+    <div className="rf-product flex flex-1 flex-col items-center">
       <SoftwareApplicationJsonLd offers={offers} />
       <FAQJsonLd
         items={faq.items.map((item) => ({
@@ -66,35 +95,62 @@ export default async function HomePage({ params }: HomePageProps) {
         }))}
       />
       <AnnouncementBar />
-      <HeroSection onSale={onSale} />
-      <div className="w-full max-w-6xl px-6 py-20">
-        <div className="mb-10 text-center">
-          <h2 className="text-3xl font-bold tracking-tight">
+      <LocalNav onSale={onSale} />
+      <Hero
+        heading={t.rich('hero.heading', {
+          highlight: (chunks) => <span className="rf-accent">{chunks}</span>,
+        })}
+        ctas={
+          <StoreCtas labels={ctaLabels} onSale={onSale} goalSection="hero" />
+        }
+      />
+      <AgentTranscript />
+      <HowItWorks />
+      <ConnectAgent tabs={<AgentTabs clients={AGENT_CLIENTS} />} />
+      <Engines />
+      <ReelGallery />
+      <NumbersBand />
+      <Privacy />
+      <EnterpriseStrip />
+      <section
+        id="pricing"
+        aria-labelledby="pricing-title"
+        className="w-full max-w-6xl scroll-mt-28 px-4 py-24 md:px-6 md:py-32"
+      >
+        <div className="mb-12 text-center">
+          <p className="rf-eyebrow">Pricing</p>
+          <h2 id="pricing-title" className="rf-headline mt-3">
             {tPricing('title')}
           </h2>
-          <p className="text-muted-foreground mx-auto mt-3 max-w-2xl">
+          <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg">
             {tPricing('subtitle')}
           </p>
         </div>
         <PricingCatalog serverItems={serverItems} />
         <LaunchPriceNote className="mt-6" />
-        <LicenceGuide className="mx-auto mt-10 max-w-4xl" />
         <RemotionNotice className="mx-auto mt-10 max-w-3xl" />
-      </div>
+        <p className="mt-8 text-center text-sm">
+          <Link href="/pricing" className="rf-link underline">
+            Which licence do I need? See every licence and what it includes
+          </Link>
+        </p>
+      </section>
       <section
         id="faq"
-        className="w-full max-w-3xl scroll-mt-20 px-6 pb-20"
+        className="w-full max-w-3xl scroll-mt-28 px-4 pb-24 md:px-6"
         aria-labelledby="home-faq-title"
       >
-        <h2
-          id="home-faq-title"
-          className="text-center text-3xl font-bold tracking-tight"
-        >
+        <h2 id="home-faq-title" className="rf-headline text-center">
           Questions
         </h2>
         <FaqSection items={faq.items} />
       </section>
-      <CtaBanner onSale={onSale} />
+      <FinalCta
+        ctas={
+          <StoreCtas labels={ctaLabels} onSale={onSale} goalSection="final" />
+        }
+      />
+      <Footnotes />
     </div>
   );
 }
