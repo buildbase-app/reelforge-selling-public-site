@@ -1,21 +1,14 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { KeyRound, Receipt, ShoppingBag } from 'lucide-react';
+import { useHoldings, useMyOrders, useSaaSAuth } from '@buildbase/sdk/react';
 import {
-  useSaaSAuth,
-  useSaaSWorkspaces,
-  useSubscription,
-  useTrialStatus,
-  useSeatStatus,
-  usePermissions,
-  WhenTrialing,
-  WhenTrialEnding,
-  WhenNotTrialing,
-  WhenSubscription,
-  PendingInvitations,
-  WhenNoSubscription,
-  WhenSubscriptionToPlans,
-} from '@buildbase/sdk/react';
+  formatMinorAmountIntl,
+  orderDisplayStatus,
+  type OrderDisplayStatus,
+} from '@buildbase/sdk';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -24,374 +17,135 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { SubscriptionStatus } from '@buildbase/sdk';
-import { Badge } from '@/components/ui/badge';
-import { CancelResume } from '@/components/billing/cancel-resume';
-import { useCheckoutCompleted } from '@buildbase/sdk/tracking';
-import {
-  AlertTriangle,
-  Calendar,
-  CreditCard,
-  Zap,
-  Users,
-  CheckCircle2,
-} from 'lucide-react';
+import { Link } from '@/i18n/routing';
 
-/** Workspace roles the SDK ships; anything else is the organization's own. */
-const KNOWN_ROLES: string[] = ['owner', 'admin', 'member', 'editor', 'viewer'];
-/** Stripe subscription statuses the SDK enumerates. */
-const KNOWN_STATUSES: string[] = Object.values(SubscriptionStatus);
+// English only for now (src/i18n/config.ts); kept together for translation.
+const ORDER_STATUS: Record<OrderDisplayStatus, string> = {
+  paid: 'Paid',
+  partly_paid: 'Partly paid',
+  checkout_open: 'Waiting for payment',
+  not_completed: 'Not completed',
+  refunded: 'Refunded',
+  partially_refunded: 'Partly refunded',
+  disputed: 'Disputed',
+};
 
+/** The account home: what the person owns and their latest orders. */
 export default function DashboardPage() {
-  const { user, openPlanPicker, openWorkspaceSettings } = useSaaSAuth();
-  const { currentWorkspace } = useSaaSWorkspaces();
   const t = useTranslations('dashboard');
-  const ta = useTranslations('account');
-  const { subscription, loading: subLoading } = useSubscription(
-    currentWorkspace?._id ?? ''
+  const { user } = useSaaSAuth();
+  const { holdings, loading: holdingsLoading } = useHoldings({ limit: 50 });
+  const { orders, loading: ordersLoading } = useMyOrders({ limit: 5 });
+  const available = holdings.filter((h) => h.state === 'available');
+  const keys = available.reduce(
+    (n, h) => n + (h.content?.keys?.length ?? 0),
+    0
   );
-  const { isTrialing, daysRemaining, trialEndsAt } = useTrialStatus();
-  const seatStatus = useSeatStatus(currentWorkspace ?? null);
-  // Stripe returns here after checkout. Fires `purchase` once for a checkout
-  // that is in flight (same id as the subscription's bb_event_id); a no-op
-  // on any other visit, and a refresh cannot count the sale twice.
-  useCheckoutCompleted();
-
-  const plan = subscription?.plan;
-
-  // The role that decides what this person may do here is the workspace one,
-  // not the platform account role (which is "user" for everybody). A role the
-  // organization invented keeps its own name; the built-in ones are
-  // translated.
-  const { role } = usePermissions();
-  const roleLabel = role
-    ? KNOWN_ROLES.includes(role)
-      ? t(`roles.${role}` as 'roles.owner')
-      : role
-    : null;
-  // Stripe's status codes, in the reader's language; an unknown one is shown
-  // as it came rather than hidden.
-  const status = subscription?.subscription?.subscriptionStatus;
-  const statusLabel = status
-    ? KNOWN_STATUSES.includes(status)
-      ? t(`subscription.statuses.${status}` as 'subscription.statuses.active')
-      : status
-    : null;
+  const products = new Set(available.map((h) => h.itemId)).size;
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-3xl font-bold tracking-tight">
           {t('welcome', { name: user?.name || '' })}
+        </h1>
+        <p className="text-muted-foreground">
+          Your ReelForge purchases, downloads and licence keys.
         </p>
       </div>
 
-      {/* Invitations waiting for this person, from other workspaces. Hidden
-          when there are none; accepting one switches to that workspace. */}
-      <PendingInvitations
-        hideWhenEmpty
-        switchOnAccept
-        title={ta('invitations.title')}
-        description={ta('invitations.description')}
-      />
-
-      <WhenTrialEnding daysThreshold={5}>
-        <Card className="border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950">
-          <CardContent className="flex items-start gap-3 pt-6">
-            <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-amber-800 dark:text-amber-200">
-                {t('trial.endingSoon')}
-              </p>
-              <p className="mt-0.5 text-sm text-amber-700 dark:text-amber-300">
-                {t('trial.endingSoonMsg', {
-                  days: daysRemaining ?? 0,
-                  s: daysRemaining !== 1 ? 's' : '',
-                })}
-              </p>
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription className="flex items-center gap-2">
+              <KeyRound className="h-4 w-4" aria-hidden /> Licences
+            </CardDescription>
+            <CardTitle className="text-3xl">
+              {holdingsLoading ? '…' : products}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="text-muted-foreground text-sm">
+            {holdingsLoading
+              ? 'Loading…'
+              : products === 0
+                ? 'Nothing bought yet.'
+                : `${keys} licence key${keys === 1 ? '' : 's'}.`}
+            <div className="mt-3">
+              <Button size="sm" variant="outline" asChild>
+                <Link href="/dashboard/licences">Open licences</Link>
+              </Button>
             </div>
-            <Button size="sm" onClick={openPlanPicker}>
-              {t('trial.upgrade')}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
+            <CardDescription className="flex items-center gap-2">
+              <Receipt className="h-4 w-4" aria-hidden /> Invoices
+            </CardDescription>
+            <CardTitle className="text-base font-medium">
+              Receipts and invoices
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Button size="sm" variant="outline" asChild>
+              <Link href="/dashboard/invoices">Open invoices</Link>
             </Button>
           </CardContent>
         </Card>
-      </WhenTrialEnding>
-
-      <WhenTrialing>
-        <WhenTrialEnding
-          daysThreshold={5}
-          fallbackComponent={
-            <Card className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950">
-              <CardContent className="flex items-center gap-3 pt-6">
-                <Calendar className="h-5 w-5 shrink-0 text-blue-600 dark:text-blue-400" />
-                <div className="flex-1">
-                  <p className="text-sm font-semibold text-blue-800 dark:text-blue-200">
-                    {t('trial.freeTrial')}
-                  </p>
-                  <p className="mt-0.5 text-sm text-blue-700 dark:text-blue-300">
-                    {daysRemaining !== null && daysRemaining > 5
-                      ? t('trial.daysRemaining', { days: daysRemaining })
-                      : trialEndsAt
-                        ? t('trial.endsOn', {
-                            date: new Date(trialEndsAt).toLocaleDateString(),
-                          })
-                        : t('trial.active')}
-                  </p>
-                </div>
-                <Button variant="outline" size="sm" onClick={openPlanPicker}>
-                  {t('trial.viewPlans')}
-                </Button>
-              </CardContent>
-            </Card>
-          }
-        >
-          {null}
-        </WhenTrialEnding>
-      </WhenTrialing>
-
-      <WhenNotTrialing>
-        <WhenNoSubscription fallbackComponent={null}>
-          <Card className="border-dashed">
-            <CardContent className="flex items-center justify-between pt-6">
-              <div>
-                <p className="text-sm font-medium">
-                  {t('noSubscription.title')}
-                </p>
-                <p className="text-muted-foreground mt-0.5 text-xs">
-                  {t('noSubscription.hint')}
-                </p>
-              </div>
-              <Button size="sm" onClick={openPlanPicker}>
-                {t('noSubscription.choosePlan')}
-              </Button>
-            </CardContent>
-          </Card>
-        </WhenNoSubscription>
-      </WhenNotTrialing>
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>{t('cards.workspace.title')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">
-              {currentWorkspace?.name || t('cards.workspace.empty')}
-            </p>
-          </CardContent>
-        </Card>
 
         <Card>
           <CardHeader className="pb-2">
-            <CardDescription>{t('cards.role.title')}</CardDescription>
+            <CardDescription className="flex items-center gap-2">
+              <ShoppingBag className="h-4 w-4" aria-hidden /> Store
+            </CardDescription>
+            <CardTitle className="text-base font-medium">
+              What is on sale
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold capitalize">
-              {roleLabel ?? t('cards.role.empty')}
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>{t('cards.email.title')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="truncate text-lg font-medium">{user?.email}</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>{t('cards.status.title')}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Badge variant="secondary" className="text-sm">
-              {isTrialing ? t('trial.trialBadge') : t('cards.status.active')}
-            </Badge>
+            <Button size="sm" variant="outline" asChild>
+              <Link href="/pricing">See pricing</Link>
+            </Button>
           </CardContent>
         </Card>
       </div>
-
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <div>
-            <CardTitle className="text-base">
-              {t('subscription.title')}
-            </CardTitle>
-            <CardDescription>{t('subscription.description')}</CardDescription>
-          </div>
-          <CreditCard className="text-muted-foreground h-5 w-5" />
-        </CardHeader>
-        <CardContent>
-          {subLoading ? (
-            <p className="text-muted-foreground text-sm">
-              {t('subscription.loading')}
-            </p>
-          ) : plan ? (
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-xl font-bold">{plan.name}</p>
-                <p className="text-muted-foreground mt-0.5 text-sm">
-                  {statusLabel
-                    ? t('subscription.status', { status: statusLabel })
-                    : t('subscription.activeSubscription')}
-                </p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="outline" className="capitalize">
-                  {statusLabel ?? t('subscription.statuses.active')}
-                </Badge>
-                <CancelResume
-                  workspaceId={currentWorkspace?._id ?? ''}
-                  subscription={subscription?.subscription}
-                />
-                <Button variant="outline" size="sm" onClick={openPlanPicker}>
-                  <Zap className="mr-1.5 h-3.5 w-3.5" />
-                  {t('subscription.changePlan')}
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-between">
-              <p className="text-muted-foreground text-sm">
-                {t('subscription.noPlan')}
-              </p>
-              <Button size="sm" onClick={openPlanPicker}>
-                {t('subscription.choosePlan')}
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base">
-              {t('subscriptionGates.whenSubscription.title')}
-            </CardTitle>
-            <CardDescription>
-              {t('subscriptionGates.whenSubscription.description')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <WhenSubscription
-              fallbackComponent={
-                <p className="text-muted-foreground text-sm">
-                  {t('subscriptionGates.whenSubscription.fallback')}
-                </p>
-              }
-            >
-              <p className="flex items-center gap-1.5 text-sm text-green-700 dark:text-green-400">
-                <CheckCircle2 className="h-4 w-4" />
-                {t('subscriptionGates.whenSubscription.content')}
-              </p>
-            </WhenSubscription>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base">
-              {t('subscriptionGates.whenSubscriptionToPlans.title')}
-            </CardTitle>
-            <CardDescription>
-              {t('subscriptionGates.whenSubscriptionToPlans.description')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <WhenSubscriptionToPlans
-              plans={['pro', 'enterprise', 'growth']}
-              fallbackComponent={
-                <p className="text-muted-foreground text-sm">
-                  {t('subscriptionGates.whenSubscriptionToPlans.fallback')}
-                </p>
-              }
-            >
-              <p className="flex items-center gap-1.5 text-sm text-green-700 dark:text-green-400">
-                <CheckCircle2 className="h-4 w-4" />
-                {t('subscriptionGates.whenSubscriptionToPlans.content')}
-              </p>
-            </WhenSubscriptionToPlans>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <div>
-            <CardTitle className="text-base">{t('seatStatus.title')}</CardTitle>
-            <CardDescription>{t('seatStatus.description')}</CardDescription>
-          </div>
-          <Users className="text-muted-foreground h-5 w-5" />
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            <div>
-              <p className="text-muted-foreground text-xs">
-                {t('seatStatus.members')}
-              </p>
-              <p className="text-2xl font-bold">{seatStatus.memberCount}</p>
-            </div>
-            <div>
-              <p className="text-muted-foreground text-xs">
-                {t('seatStatus.includedSeats')}
-              </p>
-              <p className="text-2xl font-bold">
-                {seatStatus.includedSeats || '—'}
-              </p>
-            </div>
-            <div>
-              <p className="text-muted-foreground text-xs">
-                {t('seatStatus.maxUsers')}
-              </p>
-              <p className="text-2xl font-bold">
-                {seatStatus.maxUsers === 0 ? '∞' : seatStatus.maxUsers}
-              </p>
-            </div>
-            <div>
-              <p className="text-muted-foreground text-xs">
-                {t('seatStatus.canInvite')}
-              </p>
-              <Badge variant={seatStatus.canInvite ? 'default' : 'destructive'}>
-                {seatStatus.canInvite
-                  ? t('seatStatus.yes')
-                  : t('seatStatus.no')}
-              </Badge>
-            </div>
-          </div>
-          {!seatStatus.canInvite && (
-            <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">
-              {t('seatStatus.limitReached')}
-            </p>
-          )}
-        </CardContent>
-      </Card>
 
       <Card>
         <CardHeader>
-          <CardTitle>{t('quickActions.title')}</CardTitle>
+          <CardTitle>Recent orders</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-wrap gap-4">
-            <Button onClick={() => openWorkspaceSettings('users')}>
-              {t('quickActionButtons.inviteTeam')}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => openWorkspaceSettings('subscription')}
-            >
-              {t('quickActionButtons.manageSubscription')}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => openWorkspaceSettings('general')}
-            >
-              {t('quickActionButtons.workspaceSettings')}
-            </Button>
-          </div>
+          {ordersLoading ? (
+            <p className="text-muted-foreground text-sm">Loading…</p>
+          ) : orders.length === 0 ? (
+            <p className="text-muted-foreground text-sm">No orders yet.</p>
+          ) : (
+            <ul className="divide-y text-sm">
+              {orders.map((order) => (
+                <li
+                  key={order._id}
+                  className="flex flex-wrap items-center justify-between gap-2 py-2"
+                >
+                  <Link
+                    href={`/order?id=${encodeURIComponent(order._id)}`}
+                    className="underline"
+                  >
+                    {order.lines.map((l) => l.itemTitle).join(', ') ||
+                      order._id}
+                  </Link>
+                  <span className="flex items-center gap-3">
+                    <span className="text-muted-foreground">
+                      {formatMinorAmountIntl(order.total, order.currency, 'en')}
+                    </span>
+                    <Badge variant="secondary">
+                      {ORDER_STATUS[orderDisplayStatus(order)]}
+                    </Badge>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
         </CardContent>
       </Card>
     </div>

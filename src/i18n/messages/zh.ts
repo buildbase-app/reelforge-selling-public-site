@@ -86,9 +86,6 @@ const messages: DraftMessages = {
       heading: 'BuildBase 的每一项能力，<highlight>逐项体验</highlight>',
       description:
         '基于 BuildBase SDK 的真实应用，配有引导式导览：登录后依次体验注册、工作区、计费、用量、积分、通知、代理和 Webhook，每一项都说明它来自哪里。',
-      signInToExplore: '登录探索',
-      openDashboard: '打开仪表板',
-      viewSource: '查看源码',
       builtWith: '使用技术',
     },
     stats: {
@@ -113,9 +110,6 @@ const messages: DraftMessages = {
       heading: '准备好看到一切正常运行了吗？',
       description:
         '登录以打开完整仪表板 — 尝试切换工作区、消费积分、发送推送通知并在所有8种语言之间切换。',
-      signIn: '登录并探索',
-      openDashboard: '打开仪表板',
-      howBuilt: '如何构建的',
     },
     meta: {
       title: '我的应用',
@@ -522,24 +516,6 @@ const messages: DraftMessages = {
   pricing: {
     title: '定价',
     subtitle: '选择适合您需求的方案',
-    billing: '计费',
-    monthly: '月付',
-    quarterly: '季付',
-    yearly: '年付',
-    perMonth: '/月',
-    perQuarter: '/季',
-    perYear: '/年',
-    currency: '货币',
-    quotas: '配额',
-    limits: '限制',
-    credits: 'AI积分',
-    creditsPerPeriod: '积分/周期',
-    features: '功能',
-    included: '包含',
-    perUnit: '之后',
-    loading: '正在加载方案...',
-    noPlans: '暂无可用方案',
-    error: '加载定价失败',
     meta: {
       title: '定价',
       description: '查看我们的方案和价格',

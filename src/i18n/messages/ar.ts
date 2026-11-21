@@ -86,9 +86,6 @@ const messages: DraftMessages = {
       heading: 'كل قدرة من BuildBase، <highlight>مهمة تلو الأخرى</highlight>',
       description:
         'تطبيق حقيقي مبني على BuildBase SDK مع جولة موجهة: سجّل الدخول وجرّب التسجيل ومساحات العمل والفوترة والاستخدام والرصيد والإشعارات والوكلاء والـ webhooks، وكل منها يبيّن مصدره.',
-      signInToExplore: 'سجّل الدخول للاستكشاف',
-      openDashboard: 'فتح لوحة التحكم',
-      viewSource: 'عرض الكود المصدري',
       builtWith: 'مبني باستخدام',
     },
     stats: {
@@ -113,9 +110,6 @@ const messages: DraftMessages = {
       heading: 'هل أنت مستعد لرؤية كل شيء يعمل؟',
       description:
         'سجّل الدخول لفتح لوحة التحكم الكاملة — جرّب تبديل مساحات العمل، واستهلاك الاعتمادات، وإرسال إشعار فوري، والتبديل بين جميع اللغات الـ8.',
-      signIn: 'سجّل الدخول واستكشف',
-      openDashboard: 'فتح لوحة التحكم',
-      howBuilt: 'كيف تم بناؤه',
     },
     meta: {
       title: 'تطبيقي',
@@ -527,24 +521,6 @@ const messages: DraftMessages = {
   pricing: {
     title: 'الأسعار',
     subtitle: 'اختر الخطة التي تناسب احتياجاتك',
-    billing: 'الفوترة',
-    monthly: 'شهري',
-    quarterly: 'ربع سنوي',
-    yearly: 'سنوي',
-    perMonth: '/شهر',
-    perQuarter: '/ربع',
-    perYear: '/سنة',
-    currency: 'العملة',
-    quotas: 'الحصص',
-    limits: 'الحدود',
-    credits: 'اعتمادات AI',
-    creditsPerPeriod: 'اعتمادات / دورة',
-    features: 'الميزات',
-    included: 'مشمول',
-    perUnit: 'بعد ذلك',
-    loading: 'جاري تحميل الخطط...',
-    noPlans: 'لا توجد خطط متاحة',
-    error: 'فشل تحميل الأسعار',
     meta: {
       title: 'الأسعار',
       description: 'عرض خططنا وأسعارنا',

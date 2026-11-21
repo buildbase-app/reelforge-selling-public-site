@@ -19,6 +19,7 @@ export interface CommonMessages {
     invoices: string;
     workspace: string;
     inbox: string;
+    licences: string;
     sections: {
       start: string;
       product: string;
@@ -96,9 +97,10 @@ export interface HomeMessages {
     badge: string;
     heading: string;
     description: string;
-    signInToExplore: string;
-    openDashboard: string;
-    viewSource: string;
+    waitlist: string;
+    pricing: string;
+    buy: string;
+    faq: string;
     builtWith: string;
   };
   stats: {
@@ -110,9 +112,6 @@ export interface HomeMessages {
   cta: {
     heading: string;
     description: string;
-    signIn: string;
-    openDashboard: string;
-    howBuilt: string;
   };
   meta: {
     title: string;
@@ -486,24 +485,7 @@ export interface ProfileMessages {
 export interface PricingMessages {
   title: string;
   subtitle: string;
-  billing: string;
-  monthly: string;
-  quarterly: string;
-  yearly: string;
-  perMonth: string;
-  perQuarter: string;
-  perYear: string;
-  currency: string;
-  quotas: string;
-  limits: string;
-  credits: string;
-  creditsPerPeriod: string;
-  features: string;
-  included: string;
-  perUnit: string;
-  loading: string;
-  noPlans: string;
-  error: string;
+  legal: string;
   meta: {
     title: string;
     description: string;

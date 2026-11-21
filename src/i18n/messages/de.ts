@@ -87,9 +87,6 @@ const messages: DraftMessages = {
         'Jede BuildBase-Fähigkeit, <highlight>eine Aufgabe nach der anderen</highlight>',
       description:
         'Eine echte App auf dem BuildBase SDK, mit geführter Tour: anmelden und Registrierung, Workspaces, Abrechnung, Nutzung, Credits, Benachrichtigungen, Agenten und Webhooks durchgehen, jeweils mit Herkunft.',
-      signInToExplore: 'Anmelden und erkunden',
-      openDashboard: 'Dashboard öffnen',
-      viewSource: 'Quellcode ansehen',
       builtWith: 'Erstellt mit',
     },
     stats: {
@@ -114,9 +111,6 @@ const messages: DraftMessages = {
       heading: 'Bereit, alles in Aktion zu sehen?',
       description:
         'Melde dich an, um das vollständige Dashboard zu öffnen — wechsle Arbeitsbereiche, verbrauche Guthaben, sende eine Push-Benachrichtigung und schalte zwischen allen 8 Sprachen.',
-      signIn: 'Anmelden und erkunden',
-      openDashboard: 'Dashboard öffnen',
-      howBuilt: 'Wie es gebaut wurde',
     },
     meta: {
       title: 'Meine App',
@@ -537,24 +531,6 @@ const messages: DraftMessages = {
   pricing: {
     title: 'Preise',
     subtitle: 'Wählen Sie den Plan, der zu Ihren Bedürfnissen passt',
-    billing: 'Abrechnung',
-    monthly: 'Monatlich',
-    quarterly: 'Vierteljährlich',
-    yearly: 'Jährlich',
-    perMonth: '/Monat',
-    perQuarter: '/Quartal',
-    perYear: '/Jahr',
-    currency: 'Währung',
-    quotas: 'Kontingente',
-    limits: 'Limits',
-    credits: 'KI-Credits',
-    creditsPerPeriod: 'Credits / Zeitraum',
-    features: 'Funktionen',
-    included: 'Enthalten',
-    perUnit: 'danach',
-    loading: 'Pläne werden geladen...',
-    noPlans: 'Keine Pläne verfügbar',
-    error: 'Fehler beim Laden der Preise',
     meta: {
       title: 'Preise',
       description: 'Unsere Pläne und Preise ansehen',

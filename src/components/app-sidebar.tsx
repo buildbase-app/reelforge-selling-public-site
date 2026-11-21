@@ -17,6 +17,7 @@ import {
   Receipt,
   Building2,
   Inbox,
+  KeyRound,
   ShieldCheck,
 } from 'lucide-react';
 import {
@@ -52,6 +53,7 @@ import { LanguageSwitcher } from './language-switcher';
 type NavKey =
   | 'dashboard'
   | 'inbox'
+  | 'licences'
   | 'invoices'
   | 'profile'
   | 'security'
@@ -73,6 +75,7 @@ const sections: { key: SectionKey; items: NavItem[] }[] = [
     key: 'start',
     items: [
       { navKey: 'dashboard', url: '/dashboard', icon: LayoutDashboard },
+      { navKey: 'licences', url: '/dashboard/licences', icon: KeyRound },
       { navKey: 'inbox', url: '/dashboard/inbox', icon: Inbox },
     ],
   },

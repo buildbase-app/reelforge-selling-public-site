@@ -27,6 +27,12 @@ export const PAGES: PageEntry[] = [
       'What can be bought, read live from the store. While nothing is on sale, it says so and links to the waitlist.',
   },
   {
+    title: 'Order',
+    path: '/order',
+    summary:
+      'Where a buyer lands after checkout: order status, downloads and licence keys. Guests open it with the link from their receipt.',
+  },
+  {
     title: 'Waitlist',
     path: '/waitlist',
     summary: 'Leave a name and email to hear when ReelForge can be bought.',
@@ -40,7 +46,7 @@ export const PAGES: PageEntry[] = [
     title: 'Account',
     path: '/dashboard',
     summary:
-      'Signed-in customers: invoices, notification settings, security (sessions, devices, connected agents).',
+      'Signed-in customers: licences (downloads and keys), recent orders, invoices, notification settings, security (sessions, devices, connected agents).',
   },
   {
     title: 'Blog',

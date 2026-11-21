@@ -86,9 +86,6 @@ const messages: DraftMessages = {
       heading: 'BuildBaseのすべての機能を、<highlight>ひとつずつ</highlight>',
       description:
         'BuildBase SDKで作られた実際のアプリとガイド付きツアー。サインインして、登録、ワークスペース、請求、使用量、クレジット、通知、エージェント、Webhookを順に試し、それぞれの出どころを確認できます。',
-      signInToExplore: 'サインインして探索',
-      openDashboard: 'ダッシュボードを開く',
-      viewSource: 'ソースを見る',
       builtWith: '使用技術',
     },
     stats: {
@@ -113,9 +110,6 @@ const messages: DraftMessages = {
       heading: 'すべての動作を確認する準備ができましたか？',
       description:
         'サインインしてフルダッシュボードを開き、ワークスペースの切り替え、クレジット消費、プッシュ通知の送信、8言語の切り替えを試してみてください。',
-      signIn: 'サインインして探索',
-      openDashboard: 'ダッシュボードを開く',
-      howBuilt: '構築方法',
     },
     meta: {
       title: 'マイアプリ',
@@ -530,24 +524,6 @@ const messages: DraftMessages = {
   pricing: {
     title: '料金',
     subtitle: 'ニーズに合ったプランを選択してください',
-    billing: '請求',
-    monthly: '月額',
-    quarterly: '四半期',
-    yearly: '年額',
-    perMonth: '/月',
-    perQuarter: '/四半期',
-    perYear: '/年',
-    currency: '通貨',
-    quotas: 'クォータ',
-    limits: '制限',
-    credits: 'AIクレジット',
-    creditsPerPeriod: 'クレジット / 期間',
-    features: '機能',
-    included: '含まれる',
-    perUnit: 'それ以降',
-    loading: 'プランを読み込み中...',
-    noPlans: 'プランがありません',
-    error: '料金の読み込みエラー',
     meta: {
       title: '料金',
       description: 'プランと料金を確認',

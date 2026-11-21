@@ -87,9 +87,6 @@ const messages: DraftMessages = {
         'Cada capacidad de BuildBase, <highlight>una tarea a la vez</highlight>',
       description:
         'Una app real sobre el SDK de BuildBase, con un recorrido guiado: inicia sesión y prueba registro, espacios de trabajo, facturación, uso, créditos, notificaciones, agentes y webhooks, cada uno mostrando de dónde viene.',
-      signInToExplore: 'Iniciar sesión para explorar',
-      openDashboard: 'Abrir panel',
-      viewSource: 'Ver código',
       builtWith: 'Construido con',
     },
     stats: {
@@ -114,9 +111,6 @@ const messages: DraftMessages = {
       heading: '¿Listo para verlo todo en acción?',
       description:
         'Inicia sesión para abrir el panel completo — prueba cambiar espacios de trabajo, consumir créditos, enviar una notificación push y cambiar entre los 8 idiomas.',
-      signIn: 'Iniciar sesión y explorar',
-      openDashboard: 'Abrir panel',
-      howBuilt: 'Cómo está construido',
     },
     meta: {
       title: 'Mi App',
@@ -536,24 +530,6 @@ const messages: DraftMessages = {
   pricing: {
     title: 'Precios',
     subtitle: 'Elige el plan que se adapte a tus necesidades',
-    billing: 'Facturación',
-    monthly: 'Mensual',
-    quarterly: 'Trimestral',
-    yearly: 'Anual',
-    perMonth: '/mes',
-    perQuarter: '/trim',
-    perYear: '/año',
-    currency: 'Moneda',
-    quotas: 'Cuotas',
-    limits: 'Límites',
-    credits: 'Créditos IA',
-    creditsPerPeriod: 'créditos / período',
-    features: 'Características',
-    included: 'Incluido',
-    perUnit: 'después de eso',
-    loading: 'Cargando planes...',
-    noPlans: 'No hay planes disponibles',
-    error: 'Error al cargar precios',
     meta: {
       title: 'Precios',
       description: 'Ver nuestros planes y precios',

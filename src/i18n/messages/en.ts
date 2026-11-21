@@ -19,6 +19,7 @@ const messages: Messages = {
       invoices: 'Invoices',
       workspace: 'Workspace',
       inbox: 'Inbox',
+      licences: 'Licences',
       sections: {
         start: 'Start',
         product: 'Product',
@@ -90,10 +91,11 @@ const messages: Messages = {
       heading:
         'Polished Reels, rendered <highlight>on your own machine</highlight>',
       description:
-        'ReelForge turns a storyboard into vertical video with two animation engines, Remotion and Motion Canvas, and assembles the result into one MP4. You run it on your computer or server: no seller-run render service, and any AI provider is optional and your own.',
-      signInToExplore: 'Join the waitlist',
-      openDashboard: 'Open Dashboard',
-      viewSource: 'See pricing',
+        'ReelForge turns a storyboard into vertical video with animation engines such as Remotion and Motion Canvas, and assembles the result into one MP4. You run it on your computer or server: no seller-run render service, and any AI provider is optional and your own.',
+      waitlist: 'Join the waitlist',
+      pricing: 'See pricing',
+      buy: 'Buy ReelForge',
+      faq: 'Read the FAQ',
       builtWith: 'Built on',
     },
     stats: {
@@ -118,9 +120,6 @@ const messages: Messages = {
       heading: 'Want it before launch?',
       description:
         'Join the waitlist for early access. We will email you when ReelForge is ready to buy, with setup guides for your own computer or server.',
-      signIn: 'Sign in',
-      openDashboard: 'Open Dashboard',
-      howBuilt: 'Read the blog',
     },
     meta: {
       title: 'ReelForge: self-hosted studio for short-form video',
@@ -533,28 +532,13 @@ const messages: Messages = {
   },
   pricing: {
     title: 'Pricing',
-    subtitle: 'Choose the plan that fits your needs',
-    billing: 'Billing',
-    monthly: 'Monthly',
-    quarterly: 'Quarterly',
-    yearly: 'Yearly',
-    perMonth: '/mo',
-    perQuarter: '/qtr',
-    perYear: '/yr',
-    currency: 'Currency',
-    quotas: 'Quotas',
-    limits: 'Limits',
-    credits: 'AI Credits',
-    creditsPerPeriod: 'credits / period',
-    features: 'Features',
-    included: 'Included',
-    perUnit: 'after that',
-    loading: 'Loading plans...',
-    noPlans: 'No plans available',
-    error: 'Failed to load pricing',
+    subtitle:
+      'Buy ReelForge once and run it on your own computer or server. Prices come straight from the store.',
+    legal:
+      'Buying means you accept the <licence>licence (EULA)</licence>. See the <refund>refund policy</refund>. Both are drafts pending review.',
     meta: {
       title: 'Pricing',
-      description: 'View our plans and pricing',
+      description: 'What ReelForge costs and what each option includes.',
     },
   },
   errors: {

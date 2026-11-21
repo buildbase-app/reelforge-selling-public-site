@@ -87,9 +87,6 @@ const messages: DraftMessages = {
         'BuildBase की हर क्षमता, <highlight>एक बार में एक कार्य</highlight>',
       description:
         'BuildBase SDK पर बना असली ऐप, गाइडेड टूर के साथ: साइन इन करें और साइन-अप, वर्कस्पेस, बिलिंग, उपयोग, क्रेडिट, सूचनाएँ, एजेंट और वेबहुक आज़माएँ, हर एक बताता है कि वह कहाँ से आता है।',
-      signInToExplore: 'साइन इन करके देखें',
-      openDashboard: 'डैशबोर्ड खोलें',
-      viewSource: 'सोर्स देखें',
       builtWith: 'इनके साथ बनाया',
     },
     stats: {
@@ -114,9 +111,6 @@ const messages: DraftMessages = {
       heading: 'सब कुछ काम करता देखना चाहते हैं?',
       description:
         'साइन इन करें और पूरा डैशबोर्ड खोलें — वर्कस्पेस बदलें, क्रेडिट उपयोग करें, पुश नोटिफिकेशन भेजें और सभी 8 भाषाओं में स्विच करें।',
-      signIn: 'साइन इन करें और देखें',
-      openDashboard: 'डैशबोर्ड खोलें',
-      howBuilt: 'कैसे बनाया गया',
     },
     meta: {
       title: 'मेरा ऐप',
@@ -530,24 +524,6 @@ const messages: DraftMessages = {
   pricing: {
     title: 'मूल्य निर्धारण',
     subtitle: 'अपनी जरूरतों के अनुसार प्लान चुनें',
-    billing: 'बिलिंग',
-    monthly: 'मासिक',
-    quarterly: 'त्रैमासिक',
-    yearly: 'वार्षिक',
-    perMonth: '/माह',
-    perQuarter: '/तिमाही',
-    perYear: '/वर्ष',
-    currency: 'मुद्रा',
-    quotas: 'कोटा',
-    limits: 'सीमाएं',
-    credits: 'AI क्रेडिट',
-    creditsPerPeriod: 'क्रेडिट / अवधि',
-    features: 'सुविधाएं',
-    included: 'शामिल',
-    perUnit: 'उसके बाद',
-    loading: 'प्लान लोड हो रहे हैं...',
-    noPlans: 'कोई प्लान उपलब्ध नहीं',
-    error: 'मूल्य निर्धारण लोड करने में त्रुटि',
     meta: {
       title: 'मूल्य निर्धारण',
       description: 'हमारे प्लान और मूल्य निर्धारण देखें',

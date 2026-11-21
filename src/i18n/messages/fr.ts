@@ -87,9 +87,6 @@ const messages: DraftMessages = {
         'Chaque capacité de BuildBase, <highlight>une tâche à la fois</highlight>',
       description:
         "Connectez-vous pour voir l'authentification, les espaces de travail multi-tenant, la facturation de crédits, les notifications push et l'i18n en 8 langues — propulsé par le BuildBase SDK.",
-      signInToExplore: 'Se connecter pour explorer',
-      openDashboard: 'Ouvrir le tableau de bord',
-      viewSource: 'Voir le code source',
       builtWith: 'Construit avec',
     },
     stats: {
@@ -114,9 +111,6 @@ const messages: DraftMessages = {
       heading: 'Prêt à voir tout fonctionner ?',
       description:
         "Connectez-vous pour ouvrir le tableau de bord complet — essayez de changer d'espace de travail, de consommer des crédits, d'envoyer une notification push et de basculer entre les 8 langues.",
-      signIn: 'Se connecter et explorer',
-      openDashboard: 'Ouvrir le tableau de bord',
-      howBuilt: "Comment c'est construit",
     },
     meta: {
       title: 'Mon Application',
@@ -535,24 +529,6 @@ const messages: DraftMessages = {
   pricing: {
     title: 'Tarifs',
     subtitle: 'Choisissez le plan adapté à vos besoins',
-    billing: 'Facturation',
-    monthly: 'Mensuel',
-    quarterly: 'Trimestriel',
-    yearly: 'Annuel',
-    perMonth: '/mois',
-    perQuarter: '/trim.',
-    perYear: '/an',
-    currency: 'Devise',
-    quotas: 'Quotas',
-    limits: 'Limites',
-    credits: 'Crédits IA',
-    creditsPerPeriod: 'crédits / période',
-    features: 'Fonctionnalités',
-    included: 'Inclus',
-    perUnit: 'ensuite',
-    loading: 'Chargement des plans...',
-    noPlans: 'Aucun plan disponible',
-    error: 'Erreur lors du chargement des tarifs',
     meta: {
       title: 'Tarifs',
       description: 'Voir nos plans et tarifs',

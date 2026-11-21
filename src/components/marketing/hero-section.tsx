@@ -1,11 +1,8 @@
 'use client';
 
-import { ArrowRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Link } from '@/i18n/routing';
-import { WhenAuthenticated, WhenUnauthenticated } from '@buildbase/sdk/react';
+import { StoreCtas } from '@/components/store/store-ctas';
 
 const TECH_STACK = [
   { name: 'Remotion', icon: '▶' },
@@ -14,17 +11,6 @@ const TECH_STACK = [
   { name: 'TypeScript', icon: 'TS' },
   { name: 'Node.js', icon: '⬢' },
 ] as const;
-
-function WaitlistCta({ label }: { label: string }) {
-  return (
-    <Button size="lg" className="gap-2 px-8" asChild>
-      <Link href="/waitlist">
-        {label}
-        <ArrowRight className="h-4 w-4" />
-      </Link>
-    </Button>
-  );
-}
 
 export function HeroSection() {
   const t = useTranslations('home');
@@ -65,22 +51,14 @@ export function HeroSection() {
       </p>
 
       {/* CTAs */}
-      <div className="flex flex-col gap-3 sm:flex-row">
-        <WhenUnauthenticated>
-          <WaitlistCta label={t('hero.signInToExplore')} />
-        </WhenUnauthenticated>
-        <WhenAuthenticated>
-          <Button size="lg" className="gap-2 px-8" asChild>
-            <Link href="/dashboard">
-              {t('hero.openDashboard')}
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-        </WhenAuthenticated>
-        <Button size="lg" variant="outline" className="gap-2 px-8" asChild>
-          <Link href="/pricing">{t('hero.viewSource')}</Link>
-        </Button>
-      </div>
+      <StoreCtas
+        labels={{
+          waitlist: t('hero.waitlist'),
+          pricing: t('hero.pricing'),
+          buy: t('hero.buy'),
+          faq: t('hero.faq'),
+        }}
+      />
 
       {/* Tech stack */}
       <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
