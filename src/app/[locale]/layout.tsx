@@ -8,11 +8,7 @@ import {
   setRequestLocale,
 } from 'next-intl/server';
 import { ThemeProvider } from '@/components/theme-provider';
-import { SaaSProvider } from '@/components/saas-provider';
-import { QueryProvider } from '@/components/query-provider';
 import { SkipLink } from '@/components/skip-link';
-import { Toaster } from 'sonner';
-import { CookieConsent } from '@/components/cookie-consent';
 import {
   locales,
   defaultLocale,
@@ -123,23 +119,20 @@ export default async function LocaleLayout({
 
   return (
     <div lang={locale} dir={isRtl ? 'rtl' : 'ltr'} className="contents">
+      {/* No BuildBase provider here (studio issue #79): the dashboard and
+          the (store) pages mount it in their own layouts; the (marketing)
+          pages load tracking and sign-in on demand (MarketingShell). */}
       <NextIntlClientProvider messages={messages}>
-        <QueryProvider>
-          <SaaSProvider>
-            <ThemeProvider
-              nonce={nonce}
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <SkipLink />
-              {children}
-              <Toaster richColors position="bottom-right" />
-              <CookieConsent />
-            </ThemeProvider>
-          </SaaSProvider>
-        </QueryProvider>
+        <ThemeProvider
+          nonce={nonce}
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SkipLink />
+          {children}
+        </ThemeProvider>
       </NextIntlClientProvider>
     </div>
   );

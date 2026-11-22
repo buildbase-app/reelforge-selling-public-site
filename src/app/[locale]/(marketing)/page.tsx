@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { PricingCatalog } from '@/components/store/pricing-catalog';
+import { LitePricingCatalog } from '@/components/store/pricing-catalog-lite';
 import { StoreCtas } from '@/components/store/store-ctas';
 import { RemotionNotice } from '@/components/remotion-notice';
 import { AnnouncementBar } from '@/components/content/announcement-bar';
@@ -71,7 +71,8 @@ export default async function HomePage({ params }: HomePageProps) {
     getStoreItems(),
     getFaqSection('home'),
   ]);
-  // null = the server could not read the store; the browser reads it then.
+  // null = the server could not read the store; the browser reads it then
+  // (LitePricingCatalog loads the provider-backed catalog for that).
   const serverItems = store.source === 'server' ? store.items : null;
   const offers = serverItems
     ? buildOffers(serverItems, absoluteUrl('/pricing'))
@@ -126,7 +127,7 @@ export default async function HomePage({ params }: HomePageProps) {
             {tPricing('subtitle')}
           </p>
         </div>
-        <PricingCatalog serverItems={serverItems} />
+        <LitePricingCatalog serverItems={serverItems} />
         <LaunchPriceNote className="mt-6" />
         <RemotionNotice className="mx-auto mt-10 max-w-3xl" />
         <p className="mt-8 text-center text-sm">
