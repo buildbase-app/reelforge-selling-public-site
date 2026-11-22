@@ -2,9 +2,8 @@
 
 import * as React from 'react';
 import { useTheme } from 'next-themes';
-import { useTranslations } from 'next-intl';
 
-import { ThemeToggleButton } from './theme-toggle';
+import { ThemeToggleButton, type ThemeToggleLabels } from './theme-toggle';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,30 +14,32 @@ import {
 /**
  * The theme menu (Radix). Loaded by `ThemeToggle` on the first press, so
  * Radix's dropdown stays out of the public pages' first load (studio issue
- * #79); `defaultOpen` opens it on that same press.
+ * #79); `defaultOpen` opens it on that same press. The words come from
+ * the server: the public pages have no intl provider.
  */
 export default function ThemeToggleMenu({
   defaultOpen = false,
+  labels,
 }: {
   defaultOpen?: boolean;
+  labels: ThemeToggleLabels;
 }) {
   const { setTheme } = useTheme();
-  const t = useTranslations('common.theme');
 
   return (
     <DropdownMenu defaultOpen={defaultOpen}>
       <DropdownMenuTrigger asChild>
-        <ThemeToggleButton label={t('toggle')} />
+        <ThemeToggleButton label={labels.toggle} />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={() => setTheme('light')}>
-          {t('light')}
+          {labels.light}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('dark')}>
-          {t('dark')}
+          {labels.dark}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme('system')}>
-          {t('system')}
+          {labels.system}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

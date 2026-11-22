@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Link } from '@/i18n/routing';
+import { buttonClass } from '@/components/ui/button-classes';
+import { Link } from '@/i18n/link';
 import { SignInButton } from '@/components/auth/lite-auth-button';
 import { useHasSession } from '@/components/auth/session-hint';
 import type { OfferActionProps } from './offer-grid';
@@ -19,9 +19,15 @@ export function LiteOfferAction({ free, label }: OfferActionProps) {
   const hasSession = useHasSession();
   if (hasSession) {
     return (
-      <Button asChild>
-        <Link href="/pricing">{label}</Link>
-      </Button>
+      <Link
+        href="/pricing"
+        data-slot="button"
+        data-variant="default"
+        data-size="default"
+        className={buttonClass()}
+      >
+        {label}
+      </Link>
     );
   }
   return (

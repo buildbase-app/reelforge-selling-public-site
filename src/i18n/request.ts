@@ -1,5 +1,5 @@
 import { getRequestConfig } from 'next-intl/server';
-import { routing } from './routing';
+import { routing } from './routing-config';
 import { Locale } from './config';
 import { getMessages } from './messages';
 

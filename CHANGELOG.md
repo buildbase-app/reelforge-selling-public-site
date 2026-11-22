@@ -37,6 +37,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   no API token is set, so the home page shows them without the provider.
 - `npm run check:bundle` reports first-load JavaScript per page and fails when
   a page in `(marketing)` is over the budget (150 KB gzip, `BUDGET_KB`).
+- The public pages now meet that budget: 144 to 147 KB of first-load
+  JavaScript (gzip), down from about 181 KB. They no longer load the intl
+  provider (next-intl's message formatter): words are translated on the
+  server, links use `@/i18n/link` (`next/link` with the locale prefix), and
+  the provider moved to a new `(app)` group layout, the parent of `(store)` and the dashboard, which now also mounts the BuildBase provider once for both. The header's
+  buttons, the error pages and the copy and play buttons draw `Button`'s
+  markup and lucide's icons without tailwind-merge, cva or lucide-react's
+  runtime; the 404 renders inside the `(marketing)` layout instead of
+  mounting a second header. Nothing changes on screen.
 
 ### Changed (licensing, founder decision 2026-11-21)
 

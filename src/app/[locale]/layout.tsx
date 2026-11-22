@@ -1,13 +1,9 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
-import { NextIntlClientProvider } from 'next-intl';
-import {
-  getMessages,
-  getTranslations,
-  setRequestLocale,
-} from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ThemeProvider } from '@/components/theme-provider';
+import { ErrorCopyProvider } from '@/components/error-view';
 import { SkipLink } from '@/components/skip-link';
 import {
   locales,
@@ -112,28 +108,36 @@ export default async function LocaleLayout({
   // Cloudflare, where MDX cannot be evaluated at request time).
   setRequestLocale(locale);
 
-  const messages = await getMessages();
+  const t = await getTranslations('errors.generic');
   // The CSP nonce for next-themes' inline script (src/proxy.ts).
   const nonce = (await headers()).get('x-nonce') ?? undefined;
   const isRtl = isRtlLocale(locale as Locale);
 
   return (
     <div lang={locale} dir={isRtl ? 'rtl' : 'ltr'} className="contents">
-      {/* No BuildBase provider here (studio issue #79): the dashboard and
-          the (store) pages mount it in their own layouts; the (marketing)
-          pages load tracking and sign-in on demand (MarketingShell). */}
-      <NextIntlClientProvider messages={messages}>
-        <ThemeProvider
-          nonce={nonce}
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
+      {/* No BuildBase provider and no intl provider here (studio issue
+          #79): the dashboard and the (store) pages get both from the (app)
+          group layout; the (marketing) pages translate on the server and load
+          tracking and sign-in on demand (MarketingShell). */}
+      <ThemeProvider
+        nonce={nonce}
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <ErrorCopyProvider
+          copy={{
+            title: t('title'),
+            description: t('description'),
+            tryAgain: t('tryAgain'),
+            goHome: t('goHome'),
+          }}
         >
           <SkipLink />
           {children}
-        </ThemeProvider>
-      </NextIntlClientProvider>
+        </ErrorCopyProvider>
+      </ThemeProvider>
     </div>
   );
 }

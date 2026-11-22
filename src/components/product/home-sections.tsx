@@ -1,5 +1,5 @@
 import { ArrowRight, Check, ChevronRight } from 'lucide-react';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import { siteConfig } from '@/config/site';
 import {
   enginesOf,

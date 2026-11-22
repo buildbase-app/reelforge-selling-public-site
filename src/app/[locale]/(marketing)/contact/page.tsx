@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { HelpCircle, Mail, ScrollText } from 'lucide-react';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
 import { SUPPORT_EMAIL_TODO, siteConfig } from '@/config/site';
 import { LEGAL_ENTITY_PLACEHOLDER } from '@/config/seo';

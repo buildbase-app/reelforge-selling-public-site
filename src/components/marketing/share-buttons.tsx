@@ -1,17 +1,26 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
-import { Check, Copy } from 'lucide-react';
+import { Check, Copy } from '@/components/icons/lite';
 import { FacebookIcon, LinkedInIcon, XIcon } from '@/components/icons/brand';
+
+export interface ShareLabels {
+  share: string;
+  x: string;
+  linkedin: string;
+  facebook: string;
+  copy: string;
+  copied: string;
+}
 
 interface ShareButtonsProps {
   url: string;
   title: string;
+  /** Translated on the server: the public pages have no intl provider. */
+  labels: ShareLabels;
 }
 
-export function ShareButtons({ url, title }: ShareButtonsProps) {
-  const t = useTranslations('blog');
+export function ShareButtons({ url, title, labels }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
@@ -24,14 +33,14 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-muted-foreground text-sm">{t('share')}</span>
+      <span className="text-muted-foreground text-sm">{labels.share}</span>
       <div className="flex items-center gap-1">
         <a
           href={`https://x.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-muted-foreground hover:text-foreground rounded-md p-2 transition-colors"
-          aria-label={t('shareAriaX')}
+          aria-label={labels.x}
         >
           <XIcon className="size-4" />
         </a>
@@ -40,7 +49,7 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
           target="_blank"
           rel="noopener noreferrer"
           className="text-muted-foreground hover:text-foreground rounded-md p-2 transition-colors"
-          aria-label={t('shareAriaLinkedin')}
+          aria-label={labels.linkedin}
         >
           <LinkedInIcon className="size-4" />
         </a>
@@ -49,14 +58,14 @@ export function ShareButtons({ url, title }: ShareButtonsProps) {
           target="_blank"
           rel="noopener noreferrer"
           className="text-muted-foreground hover:text-foreground rounded-md p-2 transition-colors"
-          aria-label={t('shareAriaFacebook')}
+          aria-label={labels.facebook}
         >
           <FacebookIcon className="size-4" />
         </a>
         <button
           onClick={handleCopy}
           className="text-muted-foreground hover:text-foreground rounded-md p-2 transition-colors"
-          aria-label={copied ? t('shareAriaCopied') : t('shareAriaCopy')}
+          aria-label={copied ? labels.copied : labels.copy}
         >
           {copied ? (
             <Check className="text-success size-4" />

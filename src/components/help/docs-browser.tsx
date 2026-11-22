@@ -1,8 +1,6 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { useTranslations } from 'next-intl';
-import { cn } from '@/lib/utils';
 
 interface Folder {
   _id: string;
@@ -36,15 +34,19 @@ function flatten(
   ]);
 }
 
-/** Folders on the left, the chosen doc on the right. */
+/**
+ * Folders on the left, the chosen doc on the right. `labels` are translated
+ * on the server: the public pages have no intl provider (studio issue #79).
+ */
 export function DocsBrowser({
   folders,
   posts,
+  labels,
 }: {
   folders: Folder[];
   posts: Post[];
+  labels: { title: string; empty: string };
 }) {
-  const t = useTranslations('help');
   const [selected, setSelected] = useState<string>(posts[0]?._id ?? '');
   const current = posts.find((p) => p._id === selected) ?? posts[0];
   const tree = useMemo(() => flatten(folders), [folders]);
@@ -52,7 +54,7 @@ export function DocsBrowser({
 
   return (
     <div className="mt-4 grid gap-6 md:grid-cols-[240px_1fr]">
-      <nav aria-label={t('docs.title')} className="space-y-3 text-sm">
+      <nav aria-label={labels.title} className="space-y-3 text-sm">
         {tree.map((folder) => {
           const inFolder = posts.filter((p) => folderIdOf(p) === folder._id);
           if (inFolder.length === 0) return null;
@@ -105,7 +107,7 @@ export function DocsBrowser({
             />
           </>
         ) : (
-          <p className="text-muted-foreground text-sm">{t('docs.empty')}</p>
+          <p className="text-muted-foreground text-sm">{labels.empty}</p>
         )}
       </article>
     </div>
@@ -126,10 +128,11 @@ function DocLink({
       <button
         type="button"
         onClick={() => onSelect(post._id)}
-        className={cn(
-          'hover:bg-muted w-full rounded-md px-2 py-1 text-start',
-          active && 'bg-muted font-medium'
-        )}
+        className={
+          active
+            ? 'hover:bg-muted bg-muted w-full rounded-md px-2 py-1 text-start font-medium'
+            : 'hover:bg-muted w-full rounded-md px-2 py-1 text-start'
+        }
         aria-current={active ? 'page' : undefined}
       >
         {post.title}

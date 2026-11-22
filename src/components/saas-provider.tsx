@@ -4,8 +4,8 @@ import { ApiVersion, type EventType, type EventData } from '@buildbase/sdk';
 import React from 'react';
 import { buildbaseEnvironment, env } from '@/env';
 import { SaaSOSProvider } from '@buildbase/sdk/react';
-import { useLocale } from 'next-intl';
-import { Locale } from '@/i18n/config';
+import { useParams } from 'next/navigation';
+import { defaultLocale, type Locale } from '@/i18n/config';
 import { clearLegacyAuthToken, setClientAuthToken } from '@/lib/auth-client';
 import { TRACKING } from '@/lib/tracking-config';
 
@@ -53,7 +53,10 @@ export function SaaSProvider({
    */
   tracking?: boolean;
 }) {
-  const locale = useLocale() as Locale;
+  // From the `[locale]` segment, not next-intl: the sign-in island mounts
+  // this provider on public pages, which have no intl provider (#79).
+  const params = useParams<{ locale?: string }>();
+  const locale = (params?.locale ?? defaultLocale) as Locale;
   return (
     <SaaSOSProvider
       serverUrl={config.serverUrl}

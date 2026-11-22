@@ -1,8 +1,6 @@
-'use client';
-
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 
 export interface StoreCtaLabels {
   waitlist: string;
@@ -18,7 +16,8 @@ export interface StoreCtaLabels {
  * changes without a deploy. When the server could not read them (`onSale`
  * undefined), it shows the first pair: both still lead to the prices.
  * No browser read and no BuildBase provider: the home page renders without
- * one (studio issue #79).
+ * one (studio issue #79). A server component: nothing here runs in the
+ * browser, so the buttons' classes and icons cost no JavaScript.
  */
 export function StoreCtas({
   labels,

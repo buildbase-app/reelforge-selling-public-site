@@ -213,7 +213,7 @@ export function AppSidebar({ side = 'left' }: { side?: 'left' | 'right' }) {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <LanguageSwitcher />
+            <LanguageSwitcher label={t('language.select')} />
           </SidebarMenuItem>
           <SidebarMenuItem>
             <DropdownMenu modal={false}>

@@ -14,7 +14,7 @@ vi.mock('@/env', () => ({
   isNoindexSite: false,
   buildbaseEnvironment: undefined,
 }));
-vi.mock('@/i18n/routing', () => ({
+vi.mock('@/i18n/link', () => ({
   Link: ({
     href,
     children,

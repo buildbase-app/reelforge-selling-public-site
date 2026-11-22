@@ -1,10 +1,9 @@
-'use client';
+import { getTranslations } from 'next-intl/server';
+import { Link } from '@/i18n/link';
 
-import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/routing';
-
-export default function BlogNotFound() {
-  const t = useTranslations('errors');
+/** Translated on the server: the public pages have no intl provider. */
+export default async function BlogNotFound() {
+  const t = await getTranslations('errors');
 
   return (
     <div className="mx-auto flex max-w-3xl flex-col items-center px-6 py-32 text-center">

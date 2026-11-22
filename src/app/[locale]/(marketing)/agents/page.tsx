@@ -8,7 +8,7 @@ import { CopyButton } from '@/components/product/copy-button';
 import { ReelVideo } from '@/components/product/reel-video';
 import { Fn, reelSource } from '@/components/product/home-sections';
 import { absoluteUrl } from '@/config/seo';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import type { Locale } from '@/i18n/config';
 import {
   collapsedCalls,

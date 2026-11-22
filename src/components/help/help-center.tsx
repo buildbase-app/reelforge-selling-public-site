@@ -76,6 +76,7 @@ export async function HelpCenter({
         <section id="docs" className="scroll-mt-20">
           <SectionHeading icon={BookOpen} title={t('docs.title')} />
           <DocsBrowser
+            labels={{ title: t('docs.title'), empty: t('docs.empty') }}
             folders={docs.folders}
             posts={docs.posts.map((p) => ({
               ...p,

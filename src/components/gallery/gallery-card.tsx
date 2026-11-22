@@ -1,4 +1,4 @@
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import { ENGINE_LABELS, type GalleryReel } from '@/lib/gallery/model';
 import { GalleryCardVideo } from './gallery-card-video';
 

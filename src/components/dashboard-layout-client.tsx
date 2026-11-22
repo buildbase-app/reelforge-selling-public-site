@@ -87,7 +87,14 @@ export function DashboardLayoutClient({
                   },
                 }}
               />
-              <ThemeToggle label={t('theme.toggle')} />
+              <ThemeToggle
+                labels={{
+                  toggle: t('theme.toggle'),
+                  light: t('theme.light'),
+                  dark: t('theme.dark'),
+                  system: t('theme.system'),
+                }}
+              />
             </header>
             <div
               id="main-content"

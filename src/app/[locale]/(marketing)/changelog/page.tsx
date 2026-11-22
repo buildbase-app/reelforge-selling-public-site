@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { ArrowRight } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import { ArticleHtml } from '@/components/content/article-html';
 import { ItemListJsonLd } from '@/components/seo/json-ld';
 import { RssButton } from '@/components/marketing/rss-button';

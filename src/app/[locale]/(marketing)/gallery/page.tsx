@@ -3,7 +3,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { BreadcrumbJsonLd, ItemListJsonLd } from '@/components/seo/json-ld';
 import { GalleryCard } from '@/components/gallery/gallery-card';
 import { absoluteUrl } from '@/config/seo';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import type { Locale } from '@/i18n/config';
 import {
   ENGINE_LABELS,
