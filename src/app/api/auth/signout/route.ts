@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { refuseCrossSiteAuthPost } from '@buildbase/sdk';
 import { SESSION_COOKIE_NAME } from '@/lib/buildbase';
 
 /**
@@ -9,7 +10,11 @@ import { SESSION_COOKIE_NAME } from '@/lib/buildbase';
  * first would leave the SDK's revoke holding a dead id, and "sign out
  * everywhere" would end only this browser's session.
  */
-export async function POST() {
+export async function POST(request: NextRequest) {
+  // Same-origin JSON only: another site cannot sign a visitor out.
+  const refused = refuseCrossSiteAuthPost(request);
+  if (refused) return refused;
+
   const response = NextResponse.json({ success: true });
 
   response.cookies.set(SESSION_COOKIE_NAME, '', {

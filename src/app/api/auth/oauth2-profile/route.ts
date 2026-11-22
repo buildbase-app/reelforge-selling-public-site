@@ -3,14 +3,15 @@ import { verifyClientJwt, extractBearerToken } from '@buildbase/sdk';
 import { prisma } from '@/lib/db';
 import { env } from '@/env';
 import { logger } from '@/lib/logger';
-import { verifyAuthToken } from '@/lib/auth';
+import { AGENT_TOKEN_AUDIENCES, verifyAuthToken } from '@/lib/auth';
 
 /**
  * Application Profile URL (`applicationProfileUrl` / userinfo).
  *
  * Called by OAuth2 clients (agents, Zapier, n8n, …) to learn who the token
  * belongs to. Accepts either:
- *   - one of OUR access tokens (web or agent, signed with SYSTEM_SECRET), or
+ *   - one of OUR agent access tokens (signed with SYSTEM_SECRET, `aud` bound
+ *     to this site's MCP endpoint or the site), or
  *   - a BuildBase-signed JWT (signed with the shared client secret).
  *
  * Both are verified with the algorithm pinned to HS256 and `exp` required.
@@ -27,7 +28,7 @@ export async function GET(request: NextRequest) {
 
     let userId: string | null = null;
 
-    const appToken = verifyAuthToken(bearer);
+    const appToken = verifyAuthToken(bearer, AGENT_TOKEN_AUDIENCES);
     if (appToken) userId = appToken.userId;
 
     if (!userId) {

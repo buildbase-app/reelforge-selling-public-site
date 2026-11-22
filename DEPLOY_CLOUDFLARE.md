@@ -83,7 +83,14 @@ npm ci
    Optional, when used: `BUILDBASE_API_TOKEN` (console content and the
    server-rendered prices; see "Caching"),
    `BUILDBASE_CONTENT_WEBHOOK_SECRET`, `BUILDBASE_OAUTH2_CLIENT_ID`,
-   `BUILDBASE_OAUTH2_CLIENT_SECRET`.
+   `BUILDBASE_OAUTH2_CLIENT_SECRET`, `BUILDBASE_PROVISION_SECRET`.
+
+   `BUILDBASE_PROVISION_SECRET` authenticates `/api/buildbase/provision` (a
+   workflow's HTTP Webhook action). It is its own random value of at least 32
+   characters, never the webhook signing key; the workflow sends it in the
+   `x-provision-secret` header (a caller that can sign sends
+   `x-provision-timestamp` and `x-provision-signature` instead). Without it
+   the route answers 503.
 
    Secrets are needed at runtime only. The build validates env with
    `@t3-oss/env-nextjs`, so build with `SKIP_ENV_VALIDATION=true` (as CI does)

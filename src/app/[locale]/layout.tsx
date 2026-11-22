@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import {
@@ -116,6 +117,8 @@ export default async function LocaleLayout({
   setRequestLocale(locale);
 
   const messages = await getMessages();
+  // The CSP nonce for next-themes' inline script (src/proxy.ts).
+  const nonce = (await headers()).get('x-nonce') ?? undefined;
   const isRtl = isRtlLocale(locale as Locale);
 
   return (
@@ -124,6 +127,7 @@ export default async function LocaleLayout({
         <QueryProvider>
           <SaaSProvider>
             <ThemeProvider
+              nonce={nonce}
               attribute="class"
               defaultTheme="system"
               enableSystem

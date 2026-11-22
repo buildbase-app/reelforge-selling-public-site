@@ -2,28 +2,34 @@ import { NextRequest, NextResponse } from 'next/server';
 import type { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { authenticateProvisionCall } from '@/lib/security/provision-auth';
 
 /**
  * A workflow's HTTP Webhook action calls this route.
  *
- * Unlike platform webhooks, a workflow's outbound call is not signed: the
- * platform strips the `authorization` header, so the workflow sends a shared
- * secret in `x-webhook-secret` and we compare it to BUILDBASE_WEBHOOK_SECRET.
- * The platform retries up to five times and ignores non-2xx, so the row key
- * is a hash of the body: a retry lands on the same row.
+ * It has its own secret, BUILDBASE_PROVISION_SECRET (never the platform
+ * webhook signing key): a signed call with a five-minute window, or the
+ * secret in `x-provision-secret`, which is what a workflow can send (see
+ * src/lib/security/provision-auth.ts). The platform retries up to five times
+ * and ignores non-2xx, so the row key is a hash of the body: a retry lands
+ * on the same row.
  */
 export async function POST(request: NextRequest) {
-  const secret = process.env.BUILDBASE_WEBHOOK_SECRET;
-  if (!secret) {
-    return NextResponse.json({ error: 'Not configured' }, { status: 503 });
-  }
-  const given = request.headers.get('x-webhook-secret') ?? '';
-  if (!timingSafeEqual(given, secret)) {
-    logger.warn('Provisioning call refused: bad x-webhook-secret');
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-  }
-
   const raw = await request.text();
+  const auth = await authenticateProvisionCall({
+    headers: request.headers,
+    body: raw,
+    secret: process.env.BUILDBASE_PROVISION_SECRET,
+  });
+  if (!auth.ok) {
+    if (auth.status === 401) {
+      logger.warn('Provisioning call refused', { reason: auth.reason });
+    }
+    return NextResponse.json(
+      { error: auth.status === 503 ? 'Not configured' : 'Unauthorized' },
+      { status: auth.status }
+    );
+  }
   let data: Record<string, unknown> = {};
   try {
     const parsed = raw ? JSON.parse(raw) : {};
@@ -61,13 +67,6 @@ export async function POST(request: NextRequest) {
   }
 
   return NextResponse.json({ provisioned: true, id });
-}
-
-function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
 }
 
 async function bodyHash(body: string): Promise<string> {

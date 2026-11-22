@@ -1,9 +1,28 @@
 import 'server-only';
 import jwt from 'jsonwebtoken';
 import { headers } from 'next/headers';
-import { env } from '@/env';
+import { env, siteUrl } from '@/env';
 
 const SYSTEM_SECRET = env.SYSTEM_SECRET;
+
+const origin = siteUrl.replace(/\/+$/, '');
+
+/**
+ * Audiences (`aud`). Web tokens are bound to the site's pages; agent tokens
+ * to the resource the agent asked for (the MCP endpoint, as `buildbaseAuth`
+ * accepts it, or the site). A token is only accepted where its audience is
+ * expected (private security review SEC-19).
+ */
+export const WEB_TOKEN_AUDIENCE = `${origin}/app`;
+export const AGENT_TOKEN_AUDIENCES = [
+  `${origin}/api/mcp`,
+  `${origin}/mcp`,
+  origin,
+  `${origin}/`,
+] as const;
+
+/** Web tokens live in page memory and are re-minted on workspace change. */
+const WEB_TOKEN_LIFETIME = '15m';
 
 /**
  * The app's own access token.
@@ -14,7 +33,8 @@ const SYSTEM_SECRET = env.SYSTEM_SECRET;
  *    `mintAgentToken` (those additionally carry `aud`, `scope` and an
  *    encrypted `sid` claim that the MCP server uses)
  *
- * Both carry `userId`, so the routes below accept either.
+ * Both carry `userId`; `aud` tells them apart, and `verifyAuthToken` takes
+ * the audiences the caller accepts.
  */
 export interface AuthToken {
   userId: string;
@@ -37,14 +57,24 @@ export function createAuthToken(params: CreateAuthTokenParams): string {
   const { userId, workspaceId = null, userRole = 'member' } = params;
   return jwt.sign({ userId, workspaceId, userRole }, SYSTEM_SECRET, {
     algorithm: 'HS256',
-    expiresIn: '7d',
+    expiresIn: WEB_TOKEN_LIFETIME,
+    audience: WEB_TOKEN_AUDIENCE,
   });
 }
 
-export function verifyAuthToken(token: string): AuthToken | null {
+/**
+ * Verify one of our tokens: HS256 only, not expired, and `aud` one of
+ * `audiences` (a token without `aud` is refused).
+ */
+export function verifyAuthToken(
+  token: string,
+  audiences: readonly string[]
+): AuthToken | null {
+  if (audiences.length === 0) return null;
   try {
     const payload = jwt.verify(token, SYSTEM_SECRET, {
       algorithms: ['HS256'],
+      audience: [...audiences] as [string, ...string[]],
     }) as Partial<AuthToken> & { sub?: string };
     const userId = payload.userId ?? payload.sub;
     if (!userId) return null;
@@ -71,7 +101,7 @@ export async function getAuthTokenFromHeader(): Promise<AuthToken | null> {
     const headersList = await headers();
     const authHeader = headersList.get('authorization');
     if (!authHeader?.startsWith('Bearer ')) return null;
-    return verifyAuthToken(authHeader.slice(7));
+    return verifyAuthToken(authHeader.slice(7), [WEB_TOKEN_AUDIENCE]);
   } catch {
     return null;
   }

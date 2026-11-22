@@ -1,7 +1,7 @@
-import { JsonLdScript } from 'next-seo';
 import { absoluteUrl, brandLogoUrl, seoConfig } from '@/config/seo';
 import {
   BreadcrumbJsonLd,
+  JsonLdScript,
   type BreadcrumbItem,
 } from '@/components/seo/json-ld';
 

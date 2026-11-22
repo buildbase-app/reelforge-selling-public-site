@@ -3,6 +3,7 @@ import { handleAppTokenRequest, mintAgentToken } from '@buildbase/sdk';
 import { prisma, setAuditContext } from '@/lib/db';
 import { env } from '@/env';
 import { logger } from '@/lib/logger';
+import { clientIp } from '@/lib/security/client-ip';
 
 /**
  * Application Token URL (`applicationTokenUrl` in the BuildBase OAuth2 client).
@@ -37,10 +38,7 @@ export async function POST(request: NextRequest) {
 
         setAuditContext({
           userId: claims.id,
-          ipAddress:
-            request.headers.get('x-forwarded-for') ||
-            request.headers.get('x-real-ip') ||
-            undefined,
+          ipAddress: clientIp(request.headers),
           userAgent: request.headers.get('user-agent') || undefined,
           source: 'oauth2-token',
         });

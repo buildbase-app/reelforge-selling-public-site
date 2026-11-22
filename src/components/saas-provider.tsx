@@ -6,6 +6,7 @@ import { buildbaseEnvironment, env } from '@/env';
 import { SaaSOSProvider } from '@buildbase/sdk/react';
 import { useLocale } from 'next-intl';
 import { Locale } from '@/i18n/config';
+import { clearLegacyAuthToken, setClientAuthToken } from '@/lib/auth-client';
 
 const config = {
   serverUrl: env.NEXT_PUBLIC_BUILDBASE_SERVER_URL,
@@ -14,13 +15,7 @@ const config = {
   redirectUrl: env.NEXT_PUBLIC_BUILDBASE_REDIRECT_URL,
 };
 
-function storeAuthToken(token: string) {
-  localStorage.setItem('auth_token', token);
-}
-
-function clearAuthToken() {
-  localStorage.removeItem('auth_token');
-}
+clearLegacyAuthToken();
 
 /**
  * Ask the server for a workspace-scoped app token. Only the workspace id is
@@ -36,7 +31,7 @@ async function updateAuthToken(workspaceId: string) {
     });
     const data = await response.json();
     if (data.success && data.token) {
-      storeAuthToken(data.token);
+      setClientAuthToken(data.token);
       return data.token;
     }
   } catch (error) {
@@ -67,7 +62,9 @@ export function SaaSProvider({ children }: { children: React.ReactNode }) {
         clientId: config.clientId,
         redirectUrl: config.redirectUrl,
         callbacks: {
-          // Called on page refresh to restore session from httpOnly cookie
+          // Called on page refresh to restore session from httpOnly cookie.
+          // The SDK (1.8) needs the session id in the browser to call
+          // BuildBase; /api/auth/session answers only same-origin reads.
           getSession: async () => {
             const res = await fetch('/api/auth/session');
             const data = await res.json();
@@ -80,14 +77,16 @@ export function SaaSProvider({ children }: { children: React.ReactNode }) {
               body: JSON.stringify({ code }),
             });
             const data = await response.json();
-            if (data.success && data.token) {
-              storeAuthToken(data.token);
-            }
             return { sessionId: data.sessionId };
           },
           onSignOut: async () => {
-            clearAuthToken();
-            await fetch('/api/auth/signout', { method: 'POST' });
+            setClientAuthToken(null);
+            // JSON, same-origin: the store refuses anything else (SEC-14).
+            await fetch('/api/auth/signout', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: '{}',
+            });
           },
           handleEvent: async (eventType: EventType, data: EventData) => {
             try {
