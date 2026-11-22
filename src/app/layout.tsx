@@ -1,16 +1,13 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
-import { Geist } from 'next/font/google';
 import { OrganizationJsonLd, WebSiteJsonLd } from '@/components/seo/json-ld';
 import { seoConfig } from '@/config/seo';
+import { FontPreload, GEIST_CORE_URL } from '@/lib/fonts';
 import './globals.css';
-// Geist Mono is self-hosted, so /agents can preload it (see the file).
+// Geist and Geist Mono are self-hosted, so pages can preload them, and their
+// variables are set on :root, where Tailwind resolves them (see the files).
+import './geist.css';
 import './geist-mono.css';
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
 
 export const metadata: Metadata = {
   title: {
@@ -45,6 +42,8 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        {/* Geist sets every page's text (see src/lib/fonts.tsx). */}
+        <FontPreload href={GEIST_CORE_URL} />
         {/* Ship or Die hackathon traffic verification, on public pages,
             before any cookie choice; disclosed under "Analytics and
             verification scripts" in src/content/pages/privacy/en.ts. Never
@@ -81,9 +80,7 @@ export default async function RootLayout({
           description={seoConfig.brand.description}
         />
       </head>
-      <body className={`${geistSans.variable} h-screen w-screen antialiased`}>
-        {children}
-      </body>
+      <body className="h-screen w-screen antialiased">{children}</body>
     </html>
   );
 }

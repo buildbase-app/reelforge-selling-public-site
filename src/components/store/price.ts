@@ -15,25 +15,38 @@ const INTERVAL: Record<string, string> = {
   year: 'year',
 };
 
-/** A price as a buyer reads it, from the item's own amounts. */
-export function priceLabel(price: VariantPrice, locale = 'en'): string {
+/**
+ * A price in two parts, the amount and its term ("one-time", "/ month"), so
+ * a card can set the term smaller and never break it across lines.
+ */
+export function priceParts(
+  price: VariantPrice,
+  locale = 'en'
+): { amount: string; term: string | null } {
   const money = (amount: number) =>
     formatMinorAmountIntl(amount, price.currency, locale);
-  let label: string;
-  if (price.mode === 'free') label = 'Free';
+  let amount: string;
+  if (price.mode === 'free') amount = 'Free';
   else if (price.mode === 'pwyw')
-    label = `Pay what you want${
+    amount = `Pay what you want${
       price.minimum ? `, from ${money(price.minimum)}` : ''
     }`;
-  else label = money(price.amount ?? 0);
+  else amount = money(price.amount ?? 0);
+  let term: string | null = null;
   if (price.recurring) {
     const n = price.recurring.intervalCount ?? 1;
     const unit = INTERVAL[price.recurring.interval] ?? price.recurring.interval;
-    label += n === 1 ? ` / ${unit}` : ` every ${n} ${unit}s`;
+    term = n === 1 ? `/ ${unit}` : `every ${n} ${unit}s`;
   } else if (price.mode !== 'free') {
-    label += ' one-time';
+    term = 'one-time';
   }
-  return label;
+  return { amount, term };
+}
+
+/** A price as a buyer reads it, from the item's own amounts. */
+export function priceLabel(price: VariantPrice, locale = 'en'): string {
+  const { amount, term } = priceParts(price, locale);
+  return term ? `${amount} ${term}` : amount;
 }
 
 /** The "was" price shown struck through, when the seller set one. */

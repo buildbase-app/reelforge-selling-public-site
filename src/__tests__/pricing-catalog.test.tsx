@@ -41,7 +41,7 @@ vi.mock('@/i18n/link', () => ({
 }));
 
 import { PricingCatalog } from '@/components/store/pricing-catalog';
-import { priceLabel } from '@/components/store/price';
+import { priceLabel, priceParts } from '@/components/store/price';
 
 function item(overrides: Partial<PublicItemView> = {}): PublicItemView {
   return {
@@ -310,5 +310,22 @@ describe('priceLabel', () => {
       priceLabel({ id: 'x', currency: 'usd', mode: 'fixed', amount: 4900 })
     ).toMatch(/\$49(\.00)? one-time/);
     expect(priceLabel({ id: 'x', currency: 'usd', mode: 'free' })).toBe('Free');
+  });
+
+  it('splits the term from the amount, so a card never breaks "one-time"', () => {
+    expect(
+      priceParts({ id: 'x', currency: 'usd', mode: 'fixed', amount: 4900 })
+    ).toEqual({
+      amount: expect.stringMatching(/^\$49(\.00)?$/),
+      term: 'one-time',
+    });
+    expect(priceParts({ id: 'x', currency: 'usd', mode: 'free' })).toEqual({
+      amount: 'Free',
+      term: null,
+    });
+    state.items = [commercialItem()];
+    render(<PricingCatalog />);
+    const term = screen.getAllByText('one-time')[0]!;
+    expect(term.className).toContain('whitespace-nowrap');
   });
 });

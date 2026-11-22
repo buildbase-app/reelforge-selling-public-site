@@ -14,7 +14,7 @@ import { Link } from '@/i18n/link';
 import {
   compareAtLabel,
   currentPrice,
-  priceLabel,
+  priceParts,
   variantBenefits,
 } from './price';
 import { editionOf, orderByEdition, type Edition } from '@/lib/store/edition';
@@ -116,6 +116,7 @@ function OfferCard({
 }) {
   const benefits = variantBenefits(item, variant).filter((b) => b.title);
   const was = compareAtLabel(price);
+  const { amount, term } = priceParts(price);
   const description = variant.terms || item.summary || item.description;
   const title = variant.label ? `${item.title}: ${variant.label}` : item.title;
   const edition = editionOf(item);
@@ -142,13 +143,18 @@ function OfferCard({
           </span>
         </div>
         <CardTitle className="mt-2 text-lg">{title}</CardTitle>
-        <div className="mt-2 flex items-baseline gap-2">
+        <div className="mt-2 flex flex-wrap items-baseline gap-x-2">
           <span className="text-3xl font-medium tracking-tight tabular-nums">
-            {priceLabel(price)}
-          </span>
+            {amount}
+          </span>{' '}
           {was && (
             <span className="text-muted-foreground text-sm line-through">
               {was}
+            </span>
+          )}
+          {term && (
+            <span className="text-muted-foreground text-sm whitespace-nowrap">
+              {term}
             </span>
           )}
         </div>

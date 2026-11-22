@@ -270,13 +270,17 @@
   opacity: 0;
 }
 
-/* Load-in for the hero text: one short fade and rise. */
+/* Load-in for the hero text: one short fade and rise. It starts faint, not
+   invisible: Chrome skips text painted at opacity 0 when it picks the LCP,
+   then counts it when a web font load repaints it, long after it was read
+   (studio issue #189). Visible from the first paint, the subhead is the LCP
+   at the first paint, whatever loads later. */
 @media (prefers-reduced-motion: no-preference) {
   .rf-fade-up {
-    animation: rf-rise 500ms var(--rf-ease) both;
+    animation: rf-rise-in 500ms var(--rf-ease) both;
   }
   .rf-fade-up-2 {
-    animation: rf-rise 500ms 60ms var(--rf-ease) both;
+    animation: rf-rise-in 500ms 60ms var(--rf-ease) both;
   }
 
   @supports (animation-timeline: scroll()) {
@@ -377,6 +381,12 @@
 @keyframes rf-rise {
   from {
     opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@keyframes rf-rise-in {
+  from {
+    opacity: 0.3;
     transform: translateY(16px);
   }
 }
