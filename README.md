@@ -116,7 +116,8 @@ typed by hand:
   `REELFORGE_LICENCE_MODE=off REELFORGE_BOOTSTRAP_KEY=rf_... pnpm start`), then
   `node scripts/reels/render-demo-reels.mjs <dir>` (drives it over MCP),
   `scripts/reels/transcode.sh <dir>/<slug>/final.mp4 <slug>` (720p H.264 + AV1,
-  AVIF/JPEG posters, content-hashed names) and
+  AVIF/WebP/JPEG posters at 720 px plus 360 and 540 px AVIF/WebP for
+  `srcset`, content-hashed names) and
   `node scripts/reels/build-index.mjs <dir>`. Small files live in `public/`;
   larger media belongs on R2 (`media.reelforge.buildbase.app`, allowed by the CSP).
 - `src/data/mcp-tools.json`: the studio's MCP tools from a live `tools/list`,

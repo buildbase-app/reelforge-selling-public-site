@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (studio issue #186)
+
+- `/gallery/<unknown-slug>` returns the site's 404 page with status 404
+  instead of a 500, also while the gallery is not set up. The route renders
+  on request; a missing API token or an unreadable collection is a logged
+  warning and an empty gallery.
+
+### Changed (performance, studio issue #186)
+
+- The home hero poster is preloaded at high priority from the top of
+  `<head>` and served as 360, 540 and 720 px AVIF and WebP (`srcset`/`sizes`);
+  the posters behind the phone get 240 and 400 px AVIF and WebP.
+- Geist Mono is self-hosted from `public/fonts` (the same files and metrics
+  next/font served, the latin file split into an ASCII core and the rest),
+  so `/agents`, whose largest element is a Geist Mono snippet, preloads its
+  15 KB core.
+
 ### Changed (design, studio issue #81)
 
 - One set of design tokens in `globals.css`: neutrals tinted toward the
