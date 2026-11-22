@@ -1,11 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { render } from '@testing-library/react';
+import { renderToString } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { ReelVideo } from '@/components/product/reel-video';
 import { reelSource } from '@/components/product/home-sections';
 import { reels } from '@/lib/agents/catalog';
-import { GEIST_MONO_CORE_URL } from '@/lib/fonts';
+import { FontPreload, GEIST_CORE_URL, GEIST_MONO_CORE_URL } from '@/lib/fonts';
 
 /**
  * What the LCP work (studio issue #186) relies on: the hero poster comes in
@@ -108,7 +109,90 @@ describe('self-hosted Geist Mono', () => {
     expect(face).toMatch(/unicode-range:\s*U\+0020-007E/);
   });
 
-  it('sets the variable on <body>, where next/font set it', () => {
-    expect(css).toMatch(/body\s*{\s*--font-geist-mono:/);
+  it('sets the variable on :root, where Tailwind resolves it', () => {
+    expect(css).toMatch(/:root\s*{\s*--font-geist-mono:/);
+    expect(css).not.toMatch(/body\s*{[^}]*--font-geist-mono/);
+  });
+});
+
+/**
+ * Body text in Geist (studio issue #189): Tailwind resolves the default font
+ * family (--font-sans, var(--font-geist-sans)) on <html>, so the variable
+ * must be defined there, not on <body> as next/font's class put it. And the
+ * core file is preloaded by a <link> element in the root layout, because
+ * next/font's preloads never reached the browser on Workers.
+ */
+describe('self-hosted Geist', () => {
+  const css = fs.readFileSync(path.join(root, 'src/app/geist.css'), 'utf8');
+  const faces = css.match(/@font-face\s*{[^}]*}/g)!;
+  const globals = fs.readFileSync(
+    path.join(root, 'src/app/globals.css'),
+    'utf8'
+  );
+  const layout = fs.readFileSync(path.join(root, 'src/app/layout.tsx'), 'utf8');
+
+  it('every face points at a file in public/fonts', () => {
+    const urls = [...css.matchAll(/url\('([^']+)'\)/g)].map((m) => m[1]!);
+    expect(urls.length).toBe(6);
+    for (const url of urls) expect(inPublic(url), url).toBe(true);
+    for (const face of faces.filter((f) => /family:\s*'Geist'/.test(f)))
+      expect(face).toMatch(/font-display:\s*swap/);
+  });
+
+  it('defines --font-geist-sans on :root, where Tailwind resolves it', () => {
+    expect(globals).toMatch(/--font-sans:\s*var\(--font-geist-sans\)/);
+    expect(css).toMatch(
+      /:root\s*{\s*--font-geist-sans:\s*'Geist',\s*'Geist Fallback';/
+    );
+    // next/font's variable class on <body> was the bug.
+    expect(layout).not.toMatch(/next\/font/);
+    expect(layout).toMatch(/import '\.\/geist\.css'/);
+  });
+
+  it('preloads the face that draws ASCII', () => {
+    const face = faces.find((f) => f.includes(GEIST_CORE_URL));
+    expect(face).toMatch(/unicode-range:\s*U\+0020-007E/);
+  });
+
+  it('every page preloads the core from <head>, as an element', () => {
+    // An element, not ReactDOM.preload(), which Next moves into a Link
+    // response header that does not reach the browser on Workers.
+    expect(layout).toMatch(/<FontPreload href={GEIST_CORE_URL} \/>/);
+    // The server render puts the element in <head>.
+    /* eslint-disable @next/next/no-head-element */
+    const html = renderToString(
+      <html>
+        <head />
+        <body>
+          <p>text</p>
+          <FontPreload href={GEIST_CORE_URL} />
+        </body>
+      </html>
+    );
+    /* eslint-enable @next/next/no-head-element */
+    const head = html.slice(0, html.indexOf('</head>'));
+    const preload = head.match(/<link rel="preload"[^>]*>/)?.[0];
+    expect(preload).toContain(`href="${GEIST_CORE_URL}"`);
+    expect(preload).toContain('as="font"');
+    expect(preload).toContain('type="font/woff2"');
+    expect(preload).toContain('crossorigin=""');
+  });
+});
+
+describe('hero text load-in', () => {
+  const css = fs.readFileSync(
+    path.join(root, 'src/components/product/product.css'),
+    'utf8'
+  );
+
+  it('starts faint, not invisible, so the subhead is the LCP at the first paint', () => {
+    // Chrome skips text painted at opacity 0 when it picks the LCP, then
+    // counts it when a web font load repaints it (studio issue #189).
+    const rule = css.match(/\.rf-fade-up-2\s*{[^}]*animation:\s*([\w-]+)/)!;
+    const keyframes = css.match(
+      new RegExp(`@keyframes ${rule[1]}\\s*{\\s*from\\s*{([^}]*)}`)
+    )!;
+    const opacity = Number(keyframes[1].match(/opacity:\s*([\d.]+)/)![1]);
+    expect(opacity).toBeGreaterThan(0);
   });
 });

@@ -6,12 +6,14 @@
  * (studio issue #186), so the font was found only after the stylesheet was
  * parsed and the page laid out. These are the files next/font/google served
  * (variable, weights 100 to 900) with the same unicode ranges in the same
- * order and its metric-matched fallback, and the variable is set on <body>
- * as next/font's class did, so nothing renders differently. The latin file
- * is split in two: `latin-core` (ASCII and the punctuation the site uses,
- * 15 KB instead of 23 KB) is what /agents preloads (src/lib/fonts.tsx);
- * `latin-rest` loads only for the other latin characters. Names carry a
- * content hash (cached as immutable, public/_headers).
+ * order and its metric-matched fallback. The variable is set on :root, as
+ * Geist's is (src/app/geist.css): Tailwind resolves --font-mono and the
+ * default mono family on <html>, where a variable set on <body> was not
+ * defined (studio issue #189). The latin file is split in two: `latin-core`
+ * (ASCII and the punctuation the site uses, 15 KB instead of 23 KB) is what
+ * /agents preloads (src/lib/fonts.tsx); `latin-rest` loads only for the
+ * other latin characters. Names carry a content hash (cached as immutable,
+ * public/_headers).
  */
 @font-face {
   font-family: 'Geist Mono';
@@ -91,6 +93,6 @@
   line-gap-override: 0%;
   size-adjust: 134.59%;
 }
-body {
+:root {
   --font-geist-mono: 'Geist Mono', 'Geist Mono Fallback';
 }

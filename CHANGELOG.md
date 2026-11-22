@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (studio issue #189)
+
+- Body text is set in Geist, as the design pass intended. It was in the
+  system font: next/font set `--font-geist-sans` on `<body>`, but Tailwind
+  resolves the default font family on `<html>`. Geist is now self-hosted
+  like Geist Mono (the same files next/font served, the latin file split
+  into a 20 KB ASCII core and the rest), both variables sit on `:root`, and
+  every page preloads the Geist core with a `<link>` in `<head>`. Bare
+  `<code>`/`<pre>` and the docs' code now get Geist Mono for the same reason.
+- Price cards set the term ("one-time") smaller after the amount and never
+  break it at the hyphen.
+- The home and `/agents` hero text fades in from faint instead of from
+  invisible, so the subhead counts as painted at the first paint.
+
 ### Fixed (studio issue #186)
 
 - `/gallery/<unknown-slug>` returns the site's 404 page with status 404

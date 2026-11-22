@@ -121,7 +121,9 @@ describe('LitePricingCatalog (home page, no provider)', () => {
       </SessionHintProvider>
     );
     expect(screen.getByText('Free')).toBeInTheDocument();
-    expect(screen.getByText(/\$49(\.00)? one-time/)).toBeInTheDocument();
+    // The amount, then its term in a smaller element of its own.
+    const amount = screen.getByText(/^\$49(\.00)?$/);
+    expect(amount.parentElement!.textContent).toMatch(/^\$49(\.00)? one-time$/);
     expect(screen.getAllByRole('button').map((b) => b.textContent)).toEqual([
       'Get it free',
       'Sign in to buy',
