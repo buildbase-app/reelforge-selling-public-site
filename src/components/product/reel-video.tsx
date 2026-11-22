@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { preload } from 'react-dom';
 import { Pause, Play } from '@/components/icons/lite';
 
 /**
@@ -11,8 +12,10 @@ import { Pause, Play } from '@/components/icons/lite';
  * shows with a play button. Every reel has a visible pause/play button
  * (WCAG 2.2.2).
  *
- * The poster is a real <img> under the video (AVIF with a JPEG fallback),
- * so it can be the LCP element and the box never shifts (fixed 9:16).
+ * The poster is a real <img> under the video (AVIF, then WebP, then JPEG;
+ * right-sized through `srcset`/`sizes` when the source has them), so it can
+ * be the LCP element and the box never shifts (fixed 9:16). With `priority`
+ * the first poster is also preloaded from <head> at high priority.
  * `sources` with more than one entry play one after another.
  */
 
@@ -21,6 +24,9 @@ export interface ReelSource {
   mp4: string;
   avif: string;
   jpg: string;
+  /** Posters by width (`srcset` values, `w` descriptors), used with `sizes`. */
+  avifSrcSet?: string;
+  webpSrcSet?: string;
   /** What the reel shows, read by screen readers. */
   label: string;
   /** The WebM's `type` (default: AV1). Gallery reels are VP9. */
@@ -67,11 +73,14 @@ function observe(el: Element, fn: Listener): () => void {
 export function ReelVideo({
   sources,
   priority = false,
+  sizes,
   className,
 }: {
   sources: ReelSource[];
-  /** The hero reel: poster fetched first, video metadata preloaded. */
+  /** The hero reel: poster preloaded and fetched first, video metadata preloaded. */
   priority?: boolean;
+  /** The poster's displayed width, for the sources' `srcset`. */
+  sizes?: string;
   className?: string;
 }) {
   const video = useRef<HTMLVideoElement>(null);
@@ -82,6 +91,23 @@ export function ReelVideo({
   const [choice, setChoice] = useState<boolean | null>(null);
   const visible = useRef(false);
   const current = sources[index % sources.length];
+
+  // React puts a high-priority image preload at the top of <head> when this
+  // runs during the server render, before the stylesheets and scripts, so
+  // the LCP poster starts loading with the document. (A preload called from
+  // a server component travels as an RSC hint, which the Workers render
+  // drops.)
+  if (priority) {
+    const first = sources[0];
+    preload(first.avif, {
+      as: 'image',
+      type: 'image/avif',
+      fetchPriority: 'high',
+      ...(first.avifSrcSet && sizes
+        ? { imageSrcSet: first.avifSrcSet, imageSizes: sizes }
+        : {}),
+    });
+  }
 
   const sync = useCallback(() => {
     const v = video.current;
@@ -125,7 +151,14 @@ export function ReelVideo({
   return (
     <div className={className}>
       <picture>
-        <source srcSet={current.avif} type="image/avif" />
+        {current.avifSrcSet && sizes ? (
+          <source srcSet={current.avifSrcSet} sizes={sizes} type="image/avif" />
+        ) : (
+          <source srcSet={current.avif} type="image/avif" />
+        )}
+        {current.webpSrcSet && sizes && (
+          <source srcSet={current.webpSrcSet} sizes={sizes} type="image/webp" />
+        )}
         <img
           src={current.jpg}
           alt=""

@@ -47,11 +47,17 @@ const reels = ORDER.map((slug) => {
   const rm = read('render-manifest.json');
   const master = readFileSync(join(dir, slug, 'final.mp4'));
   const hash = createHash('sha256').update(master).digest('hex').slice(0, 8);
-  const file = (ext) => {
-    const path = `public/reels/${slug}.${hash}.${ext}`;
+  const file = (ext, suffix = '') => {
+    const path = `public/reels/${slug}.${hash}${suffix}.${ext}`;
     if (!existsSync(path)) throw new Error(`${path} missing: run transcode.sh`);
-    return `/reels/${slug}.${hash}.${ext}`;
+    return `/reels/${slug}.${hash}${suffix}.${ext}`;
   };
+  // The poster at the widths the pages show it (transcode.sh writes them).
+  const srcSet = (ext) =>
+    [360, 540]
+      .map((w) => `${file(ext, `-${w}`)} ${w}w`)
+      .concat(`${file(ext)} 720w`)
+      .join(', ');
   return {
     slug,
     title: TITLES[slug] ?? slug,
@@ -95,6 +101,9 @@ const reels = ORDER.map((slug) => {
       webm: file('webm'),
       avif: file('avif'),
       jpg: file('jpg'),
+      webp: file('webp'),
+      avifSrcSet: srcSet('avif'),
+      webpSrcSet: srcSet('webp'),
       width: 720,
       height: 1280,
     },

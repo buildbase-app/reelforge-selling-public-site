@@ -108,6 +108,11 @@ export function mediaOrigin(base: string | undefined): string | null {
 const SAFE_PATH = /^gallery\/[a-z0-9][a-z0-9-]*\/[A-Za-z0-9._-]+$/;
 const SLUG = /^[a-z0-9][a-z0-9-]{0,62}$/;
 
+/** True for a string that could be a reel slug (what `toReel` accepts). */
+export function isReelSlug(slug: string): boolean {
+  return SLUG.test(slug);
+}
+
 function list(s: unknown): string[] {
   return typeof s === 'string'
     ? s

@@ -72,6 +72,10 @@ export interface Reel {
     webm: string;
     avif: string;
     jpg: string;
+    webp: string;
+    /** Posters at 360, 540 and 720 px wide, as `srcset` values. */
+    avifSrcSet: string;
+    webpSrcSet: string;
     width: number;
     height: number;
   };

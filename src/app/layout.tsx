@@ -1,17 +1,14 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Geist } from 'next/font/google';
 import { OrganizationJsonLd, WebSiteJsonLd } from '@/components/seo/json-ld';
 import { seoConfig } from '@/config/seo';
 import './globals.css';
+// Geist Mono is self-hosted, so /agents can preload it (see the file).
+import './geist-mono.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
   subsets: ['latin'],
 });
 
@@ -84,9 +81,7 @@ export default async function RootLayout({
           description={seoConfig.brand.description}
         />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} h-screen w-screen antialiased`}
-      >
+      <body className={`${geistSans.variable} h-screen w-screen antialiased`}>
         {children}
       </body>
     </html>

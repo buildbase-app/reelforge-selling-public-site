@@ -124,6 +124,9 @@
         "webm": "/reels/agent-directs.dd14c5ae.webm",
         "avif": "/reels/agent-directs.dd14c5ae.avif",
         "jpg": "/reels/agent-directs.dd14c5ae.jpg",
+        "webp": "/reels/agent-directs.dd14c5ae.webp",
+        "avifSrcSet": "/reels/agent-directs.dd14c5ae-360.avif 360w, /reels/agent-directs.dd14c5ae-540.avif 540w, /reels/agent-directs.dd14c5ae.avif 720w",
+        "webpSrcSet": "/reels/agent-directs.dd14c5ae-360.webp 360w, /reels/agent-directs.dd14c5ae-540.webp 540w, /reels/agent-directs.dd14c5ae.webp 720w",
         "width": 720,
         "height": 1280
       }
@@ -239,6 +242,9 @@
         "webm": "/reels/hook-tips.f730b6c7.webm",
         "avif": "/reels/hook-tips.f730b6c7.avif",
         "jpg": "/reels/hook-tips.f730b6c7.jpg",
+        "webp": "/reels/hook-tips.f730b6c7.webp",
+        "avifSrcSet": "/reels/hook-tips.f730b6c7-360.avif 360w, /reels/hook-tips.f730b6c7-540.avif 540w, /reels/hook-tips.f730b6c7.avif 720w",
+        "webpSrcSet": "/reels/hook-tips.f730b6c7-360.webp 360w, /reels/hook-tips.f730b6c7-540.webp 540w, /reels/hook-tips.f730b6c7.webp 720w",
         "width": 720,
         "height": 1280
       }
@@ -359,6 +365,9 @@
         "webm": "/reels/release-notes.5ca0ab0d.webm",
         "avif": "/reels/release-notes.5ca0ab0d.avif",
         "jpg": "/reels/release-notes.5ca0ab0d.jpg",
+        "webp": "/reels/release-notes.5ca0ab0d.webp",
+        "avifSrcSet": "/reels/release-notes.5ca0ab0d-360.avif 360w, /reels/release-notes.5ca0ab0d-540.avif 540w, /reels/release-notes.5ca0ab0d.avif 720w",
+        "webpSrcSet": "/reels/release-notes.5ca0ab0d-360.webp 360w, /reels/release-notes.5ca0ab0d-540.webp 540w, /reels/release-notes.5ca0ab0d.webp 720w",
         "width": 720,
         "height": 1280
       }

@@ -42,12 +42,20 @@ export function reelSource(reel: Reel): ReelSource {
     mp4: reel.files.mp4,
     avif: reel.files.avif,
     jpg: reel.files.jpg,
+    avifSrcSet: reel.files.avifSrcSet,
+    webpSrcSet: reel.files.webpSrcSet,
     label: `Silent ${reel.output.durationSeconds}-second reel rendered by ReelForge. On screen: ${reel.scenes
       .map((s) => s.text)
       .filter(Boolean)
       .join(' / ')}`,
   };
 }
+
+/** The phone's screen width (`.rf-phone`: min(72vw, 300px), 10px padding). */
+const PHONE_SIZES = '(min-width: 417px) 280px, calc(72vw - 20px)';
+
+/** A rail card's width (`.rf-rail`). */
+const RAIL_SIZES = '(min-width: 768px) 368px, min(78vw, 300px)';
 
 function Phone({
   sources,
@@ -60,7 +68,12 @@ function Phone({
 }) {
   return (
     <div className={`rf-phone ${className}`}>
-      <ReelVideo sources={sources} priority={priority} className="rf-screen" />
+      <ReelVideo
+        sources={sources}
+        priority={priority}
+        sizes={PHONE_SIZES}
+        className="rf-screen"
+      />
     </div>
   );
 }
@@ -131,7 +144,8 @@ export function LocalNav({ onSale }: { onSale?: boolean }) {
 
 /**
  * Two more real renders for the hero's back layer: posters of gallery reels
- * the studio rendered (public/reels/stack, 400×711 WebP).
+ * the studio rendered (public/reels/stack: 400×711 AVIF and WebP, and 240 px
+ * wide copies for phones).
  */
 const STACK = [
   {
@@ -145,6 +159,15 @@ const STACK = [
     side: 'rf-stack-right',
   },
 ] as const;
+
+/** A back poster's width (`.rf-stack-back`). */
+const STACK_SIZES = 'min(48vw, 208px)';
+
+/** `/reels/stack/x.webp` as a 240w/400w `srcset` in `ext`. */
+function stackSrcSet(src: string, ext: 'avif' | 'webp') {
+  const base = src.replace(/\.webp$/, '');
+  return `${base}-240.${ext} 240w, ${base}.${ext} 400w`;
+}
 
 /** Hero: the promise, the buttons, and the three real reels in a phone. */
 export function Hero({
@@ -190,16 +213,24 @@ export function Hero({
                 key={poster.src}
                 className={`rf-stack-back rf-par-far ${poster.side}`}
               >
-                {/* eslint-disable-next-line @next/next/no-img-element -- a static poster with fixed size, no optimiser on Workers */}
-                <img
-                  src={poster.src}
-                  alt={poster.alt}
-                  width={400}
-                  height={711}
-                  decoding="async"
-                  loading="lazy"
-                  fetchPriority="low"
-                />
+                <picture>
+                  <source
+                    srcSet={stackSrcSet(poster.src, 'avif')}
+                    sizes={STACK_SIZES}
+                    type="image/avif"
+                  />
+                  <img
+                    src={poster.src}
+                    srcSet={stackSrcSet(poster.src, 'webp')}
+                    sizes={STACK_SIZES}
+                    alt={poster.alt}
+                    width={400}
+                    height={711}
+                    decoding="async"
+                    loading="lazy"
+                    fetchPriority="low"
+                  />
+                </picture>
               </div>
             ))}
             <div className="rf-par-near">
@@ -538,6 +569,7 @@ export function ReelGallery() {
               <div className="dark rf-stage relative aspect-[9/16] overflow-hidden rounded-2xl">
                 <ReelVideo
                   sources={[reelSource(reel)]}
+                  sizes={RAIL_SIZES}
                   className="rf-screen absolute inset-0"
                 />
               </div>
