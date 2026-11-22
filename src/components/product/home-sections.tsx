@@ -459,6 +459,9 @@ export function ReelGallery() {
             Every clip here came out of the studio from the prompt under it.
             Copy one and give it to your agent.
           </p>
+          <Link href="/gallery" className="mt-5 inline-block underline">
+            See all reels in the gallery
+          </Link>
         </div>
         <ul className="rf-rail mt-14 pb-4">
           {reels.map((reel) => (
