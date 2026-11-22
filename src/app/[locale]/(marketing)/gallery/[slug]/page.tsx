@@ -12,7 +12,6 @@ import type { Locale } from '@/i18n/config';
 import {
   ENGINE_LABELS,
   agentSnippet,
-  getGallery,
   getGalleryReel,
   videoObject,
 } from '@/lib/gallery';
@@ -23,12 +22,14 @@ interface ReelPageProps {
   params: Promise<{ locale: string; slug: string }>;
 }
 
+/**
+ * Rendered on request, like the blog posts: no `generateStaticParams`. The
+ * build has no API token, so it found no reels and marked the route static
+ * (SSG); an unknown slug then rendered the 404 in a static render, where the
+ * root layout's `headers()` (the CSP nonce) and next-intl threw, and the
+ * visitor got a 500 instead of the 404 (studio issue #186).
+ */
 export const revalidate = 3600;
-export const dynamicParams = true;
-
-export async function generateStaticParams() {
-  return (await getGallery()).map((r) => ({ slug: r.slug }));
-}
 
 export async function generateMetadata({
   params,
