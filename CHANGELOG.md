@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (performance, studio issue #79)
+
+- The BuildBase provider is no longer in the locale layout. The public pages
+  (home, agents, gallery, docs, blog, changelog, help, contact, legal) render
+  without it: `BuildBaseTracking` and a lightweight cookie banner load after
+  hydration, and sign-in loads the SDK only when pressed or when returning
+  from the hosted sign-in page. `/pricing`, `/order`, `/waitlist` (route group
+  `(store)`) and `/dashboard` keep the provider. First-load JavaScript on the
+  public pages drops from about 1.1 MB to about 180 KB (gzip).
+- Browser Sentry no longer ships with every page: it loads when an error is
+  reported, or on idle when a DSN is configured. Server Sentry is unchanged.
+- Store prices are read on the server from BuildBase's public items API when
+  no API token is set, so the home page shows them without the provider.
+- `npm run check:bundle` reports first-load JavaScript per page and fails when
+  a page in `(marketing)` is over the budget (150 KB gzip, `BUDGET_KB`).
+
 ### Changed (licensing, founder decision 2026-11-21)
 
 - ReelForge is source-available (public repository

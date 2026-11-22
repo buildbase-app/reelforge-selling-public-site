@@ -3,8 +3,6 @@
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/routing';
-import { useStoreItems } from './use-store-items';
-import { currentPrice } from './price';
 
 export interface StoreCtaLabels {
   waitlist: string;
@@ -16,8 +14,11 @@ export interface StoreCtaLabels {
 /**
  * The two main buttons: "Join the waitlist" and "See pricing" until the
  * store has something on sale, then "Buy ReelForge" and "Read the FAQ".
- * Decided from the published items, so it changes without a deploy:
- * `onSale` when the page read them on the server, otherwise in the browser.
+ * Decided from the published items the page read on the server, so it
+ * changes without a deploy. When the server could not read them (`onSale`
+ * undefined), it shows the first pair: both still lead to the prices.
+ * No browser read and no BuildBase provider: the home page renders without
+ * one (studio issue #79).
  */
 export function StoreCtas({
   labels,
@@ -32,23 +33,9 @@ export function StoreCtas({
    */
   goalSection?: string;
 }) {
-  if (onSale === undefined)
-    return <LiveStoreCtas labels={labels} goalSection={goalSection} />;
-  return <Ctas labels={labels} onSale={onSale} goalSection={goalSection} />;
-}
-
-function LiveStoreCtas({
-  labels,
-  goalSection,
-}: {
-  labels: StoreCtaLabels;
-  goalSection?: string;
-}) {
-  const { items } = useStoreItems();
-  const onSale = items.some((item) =>
-    item.variants.some((v) => currentPrice(v) !== null)
+  return (
+    <Ctas labels={labels} onSale={onSale ?? false} goalSection={goalSection} />
   );
-  return <Ctas labels={labels} onSale={onSale} goalSection={goalSection} />;
 }
 
 function Ctas({

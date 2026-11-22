@@ -87,7 +87,7 @@ export function DashboardLayoutClient({
                   },
                 }}
               />
-              <ThemeToggle />
+              <ThemeToggle label={t('theme.toggle')} />
             </header>
             <div
               id="main-content"

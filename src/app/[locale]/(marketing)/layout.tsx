@@ -1,9 +1,13 @@
 import { MarketingShell } from '@/components/marketing/marketing-shell';
 
 /**
- * Every public page (home, pricing, legal, blog, changelog, help, waitlist,
- * contact, order) shares the site header and footer. The route group adds
- * no path segment.
+ * The public pages that render without the BuildBase provider (studio issue
+ * #79): home, agents, gallery, docs, blog, changelog, help, contact and the
+ * legal pages. Their first-load JavaScript stays within the budget checked by
+ * `npm run check:bundle` (scripts/check-bundle-budget.mjs), so nothing here
+ * may import `@buildbase/sdk/react` statically: load it on demand instead
+ * (see `@/components/auth/auth-island`). Pages that need the provider live in
+ * `(store)`. The route group adds no path segment.
  */
 export default function MarketingLayout({
   children,

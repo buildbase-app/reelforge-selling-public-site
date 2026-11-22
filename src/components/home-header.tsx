@@ -1,43 +1,7 @@
-'use client';
-
-import { Loader2 } from 'lucide-react';
-import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/button';
+import { getTranslations } from 'next-intl/server';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { Link } from '@/i18n/routing';
-import {
-  useSaaSAuth,
-  WhenAuthenticated,
-  WhenUnauthenticated,
-} from '@buildbase/sdk/react';
-
-function AuthButton() {
-  const { signIn, isLoading, status } = useSaaSAuth();
-  const t = useTranslations('common');
-
-  if (status === 'loading' || status === 'authenticating' || isLoading) {
-    return (
-      <Button variant="outline" disabled>
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        {t('buttons.loading')}
-      </Button>
-    );
-  }
-
-  return (
-    <>
-      <WhenUnauthenticated>
-        <Button onClick={() => signIn()}>{t('buttons.signIn')}</Button>
-      </WhenUnauthenticated>
-      <WhenAuthenticated>
-        <Button asChild>
-          <Link href="/dashboard">{t('nav.dashboard')}</Link>
-        </Button>
-      </WhenAuthenticated>
-    </>
-  );
-}
 
 const NAV_HREFS = [
   '/gallery',
@@ -53,10 +17,16 @@ type NavHref = (typeof NAV_HREFS)[number];
 
 interface HomeHeaderProps {
   title: string;
+  /**
+   * The sign-in / dashboard button: `LiteAuthButton` on provider-free pages,
+   * `ProviderAuthButton` inside `SaaSProvider` (see MarketingShell).
+   */
+  auth: React.ReactNode;
 }
 
-export function HomeHeader({ title }: HomeHeaderProps) {
-  const t = useTranslations('common');
+/** A server component: only its buttons are client code (studio issue #79). */
+export async function HomeHeader({ title, auth }: HomeHeaderProps) {
+  const t = await getTranslations('common');
 
   const NAV_LINK_KEYS: Record<NavHref, string> = {
     // English only for now (src/i18n/config.ts): no message key yet.
@@ -92,8 +62,8 @@ export function HomeHeader({ title }: HomeHeaderProps) {
       </div>
       <div className="flex items-center gap-2">
         <LanguageSwitcher />
-        <ThemeToggle />
-        <AuthButton />
+        <ThemeToggle label={t('theme.toggle')} />
+        {auth}
       </div>
     </header>
   );

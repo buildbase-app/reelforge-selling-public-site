@@ -21,11 +21,12 @@ function isSentryEnabled(): boolean {
 }
 
 /**
- * Lazily import Sentry only when needed
+ * Lazily import Sentry only when needed. The DSN is inlined at build time, so
+ * without one the import is dead code and no Sentry chunk is ever loaded; with
+ * one, the browser loads it on first use, never with the page.
  */
 async function getSentry() {
-  if (!isSentryEnabled()) return null;
-  return import('@sentry/nextjs');
+  return process.env.NEXT_PUBLIC_SENTRY_DSN ? import('@sentry/nextjs') : null;
 }
 
 /**
@@ -64,8 +65,12 @@ export async function captureError(
 }
 
 /**
- * Synchronous version for error boundaries (can't use async in useEffect cleanup)
- * Falls back to console.error if Sentry not available
+ * For error boundaries (a useEffect cannot await): logs to the console when
+ * Sentry is not configured, otherwise reports in the background.
+ *
+ * It used to `require('@sentry/nextjs')`, which put the whole browser SDK
+ * (about 270 KB gzip) in the first load of every page, DSN or not
+ * (studio issue #79). Sentry now loads only when an error is reported.
  */
 export function captureErrorSync(
   error: unknown,
@@ -78,18 +83,9 @@ export function captureErrorSync(
     console.error('[Error]', error, context);
     return;
   }
-
-  // Dynamic require for sync usage
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
-    const Sentry = require('@sentry/nextjs');
-    Sentry.captureException(error, {
-      tags: context?.tags,
-      extra: context?.extra,
-    });
-  } catch {
+  captureError(error, context).catch(() => {
     console.error('[Error]', error, context);
-  }
+  });
 }
 
 /**

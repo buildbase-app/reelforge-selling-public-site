@@ -1,53 +1,18 @@
 'use client';
 
-import { useLocale, useTranslations } from 'next-intl';
-import { usePathname, useRouter } from '@/i18n/routing';
-import { Globe } from 'lucide-react';
-import { locales, localeNames, type Locale } from '@/i18n/config';
-import { setLocaleCookie } from '@/i18n/locale-cookie';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import dynamic from 'next/dynamic';
+import { locales } from '@/i18n/config';
 
+const LanguageSwitcherMenu = dynamic(() => import('./language-switcher-menu'), {
+  ssr: false,
+});
+
+/**
+ * The language menu, or nothing while only one language is served. The
+ * menu (Radix) loads only when it can be shown, so it is not in the public
+ * pages' first load (studio issue #79).
+ */
 export function LanguageSwitcher() {
-  const locale = useLocale() as Locale;
-  const pathname = usePathname();
-  const router = useRouter();
-  const t = useTranslations('common.language');
-
-  const switchLocale = (newLocale: Locale) => {
-    // Persist preference in cookie (1 year expiry)
-    setLocaleCookie(newLocale);
-    // Navigate to same page in new locale
-    router.replace(pathname, { locale: newLocale });
-  };
-
-  // Nothing to switch to while only one language is served.
   if (locales.length < 2) return null;
-
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" title={t('select')}>
-          <Globe className="h-[1.2rem] w-[1.2rem]" />
-          <span className="sr-only">{t('select')}</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        {locales.map((loc) => (
-          <DropdownMenuItem
-            key={loc}
-            onClick={() => switchLocale(loc)}
-            className={locale === loc ? 'bg-accent' : ''}
-          >
-            {localeNames[loc]}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
+  return <LanguageSwitcherMenu />;
 }

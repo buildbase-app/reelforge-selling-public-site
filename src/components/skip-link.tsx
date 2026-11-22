@@ -1,6 +1,4 @@
-'use client';
-
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
 /**
  * Skip-to-Content Link
@@ -12,8 +10,8 @@ import { useTranslations } from 'next-intl';
  * - Becomes visible when focused via keyboard (Tab)
  * - Links to #main-content anchor
  */
-export function SkipLink() {
-  const t = useTranslations('common');
+export async function SkipLink() {
+  const t = await getTranslations('common');
 
   return (
     <a

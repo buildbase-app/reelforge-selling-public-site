@@ -7,6 +7,7 @@ import { SaaSOSProvider } from '@buildbase/sdk/react';
 import { useLocale } from 'next-intl';
 import { Locale } from '@/i18n/config';
 import { clearLegacyAuthToken, setClientAuthToken } from '@/lib/auth-client';
+import { TRACKING } from '@/lib/tracking-config';
 
 const config = {
   serverUrl: env.NEXT_PUBLIC_BUILDBASE_SERVER_URL,
@@ -40,7 +41,18 @@ async function updateAuthToken(workspaceId: string) {
   return null;
 }
 
-export function SaaSProvider({ children }: { children: React.ReactNode }) {
+export function SaaSProvider({
+  children,
+  tracking = true,
+}: {
+  children: React.ReactNode;
+  /**
+   * false inside a page that already mounts `BuildBaseTracking` (the
+   * provider-free public pages' sign-in island), so tags and page views
+   * are not installed twice; the SDK's events reach that tracker instead.
+   */
+  tracking?: boolean;
+}) {
   const locale = useLocale() as Locale;
   return (
     <SaaSOSProvider
@@ -51,13 +63,7 @@ export function SaaSProvider({ children }: { children: React.ReactNode }) {
       locale={locale}
       // Analytics and ad tags come from the console (Settings → Tracking)
       // and load only after consent.
-      tracking={{
-        enabled: true,
-        consent: 'auto',
-        autoPageview: true,
-        events: { mode: 'auto' },
-        debug: process.env.NODE_ENV !== 'production',
-      }}
+      tracking={tracking ? TRACKING : undefined}
       auth={{
         clientId: config.clientId,
         redirectUrl: config.redirectUrl,

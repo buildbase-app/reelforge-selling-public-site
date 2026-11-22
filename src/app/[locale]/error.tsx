@@ -5,7 +5,6 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { AlertCircle, RefreshCw, Home } from 'lucide-react';
 import { Link } from '@/i18n/routing';
-import { logger } from '@/lib/logger';
 import { captureErrorSync } from '@/lib/sentry';
 
 /**
@@ -23,8 +22,9 @@ export default function Error({ error, reset }: ErrorProps) {
   const t = useTranslations('errors');
 
   useEffect(() => {
-    // Log error locally
-    logger.error('Page error caught by error boundary', {
+    // Log locally. console, not '@/lib/logger': this boundary loads with
+    // every page, and the logger is server code (studio issue #79).
+    console.error('Page error caught by error boundary', {
       message: error.message,
       digest: error.digest,
       stack: error.stack,
