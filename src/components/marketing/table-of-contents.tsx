@@ -54,8 +54,8 @@ function useHeadings(): TocItem[] {
 
 /**
  * Auto-generated table of contents from headings in the page.
- * Reads h2/h3 elements from the DOM after mount (works with MDX
- * since headings get id attributes from rehype-slug).
+ * Reads h2/h3 elements from the DOM after mount (the Markdown renderer
+ * gives headings ids with rehype-slug).
  */
 export function TableOfContents() {
   const items = useHeadings();

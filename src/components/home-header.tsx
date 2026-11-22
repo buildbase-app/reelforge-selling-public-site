@@ -42,6 +42,7 @@ function AuthButton() {
 const NAV_HREFS = [
   '/gallery',
   '/agents',
+  '/docs',
   '/pricing',
   '/help',
   '/blog',
@@ -62,6 +63,7 @@ export function HomeHeader({ title }: HomeHeaderProps) {
     '/gallery': 'Gallery',
     '/agents': 'Agents',
     '/pricing': t('footer.links.pricing'),
+    '/docs': t('footer.links.docs'),
     '/help': t('footer.links.help'),
     '/blog': t('footer.links.blog'),
     '/changelog': t('footer.links.changelog'),

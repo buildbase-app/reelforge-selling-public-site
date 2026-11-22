@@ -45,7 +45,7 @@ export default function RootLayout({
       <head>
         {/* Ship or Die hackathon traffic verification. Loads on every page,
             before any cookie choice; disclosed under "Analytics and
-            verification scripts" in src/content/pages/privacy/en.mdx. */}
+            verification scripts" in src/content/pages/privacy/en.ts. */}
         <script
           defer
           src="https://www.ship-or-die.com/hackathon/verify.js"

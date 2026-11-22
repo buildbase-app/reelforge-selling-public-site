@@ -1,5 +1,8 @@
 import 'server-only';
-import { createServerClient } from '@buildbase/sdk/server';
+import {
+  createServerClient,
+  type BlogPost as BuildBaseBlogPost,
+} from '@buildbase/sdk/server';
 import { withNextCache } from '@buildbase/sdk/server/next';
 import { logger } from '@/lib/logger';
 
@@ -129,6 +132,14 @@ export function getRichContent(slug: string = CONTENT_SLUGS.richText) {
   );
 }
 
+/**
+ * The content client itself (null without a token), for readers that live
+ * elsewhere (the /docs pages, src/lib/docs/source.ts). Same cache and tags.
+ */
+export function contentClient() {
+  return content;
+}
+
 /** True when the server can read console content (an org API token is set). */
 export function hasContentApi(): boolean {
   return content !== null;
@@ -166,6 +177,30 @@ export async function getTestimonials() {
         (await c.testimonials.list({ limit: 100 }))
           .docs as unknown as Testimonial[]
     )) ?? []
+  );
+}
+
+/**
+ * Every published blog post (console: Content, Blogs), newest first, with
+ * its folder, authors and tags. The blog and the changelog are folders of
+ * it (src/lib/blog/source.ts). Read in pages of 100 under the SDK's
+ * `buildbase:blog` tag, which every `blog.*` webhook revalidates.
+ */
+export async function getBlogPosts(): Promise<BuildBaseBlogPost[]> {
+  return (
+    (await safely('blogs', async (c) => {
+      const posts: BuildBaseBlogPost[] = [];
+      for (let page = 1; page <= 10; page++) {
+        const res = await c.blogs.list({
+          page,
+          limit: 100,
+          sort: { publishedAt: -1 },
+        });
+        posts.push(...res.docs);
+        if (!res.hasNextPage) break;
+      }
+      return posts;
+    })) ?? []
   );
 }
 

@@ -1,14 +1,21 @@
 import type { Metadata } from 'next';
 import { ArrowRight } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
+import { ArticleHtml } from '@/components/content/article-html';
 import { ItemListJsonLd } from '@/components/seo/json-ld';
-import { changelog } from '@/content/changelog';
 import { RssButton } from '@/components/marketing/rss-button';
+import { PostMeta } from '@/components/marketing/post-meta';
 import type { Locale } from '@/i18n/config';
+import { getPosts } from '@/lib/blog/source';
+import { renderMarkdown } from '@/lib/platform/markdown';
 import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
 
-export const dynamic = 'force-static';
+/**
+ * Release notes: BuildBase Blogs posts in the `changelog` folder, newest
+ * first. ISR, revalidated by the `blog.*` webhook like /blog.
+ */
+export const revalidate = 3600;
 
 interface ChangelogPageProps {
   params: Promise<{ locale: string }>;
@@ -24,35 +31,18 @@ export async function generateMetadata({
     locale: locale as Locale,
     title: t('meta.title'),
     description: t('meta.description'),
-    alternatesTypes: {
-      'application/rss+xml': '/changelog/feed.xml',
-    },
+    alternatesTypes: { 'application/rss+xml': '/changelog/feed.xml' },
   });
-}
-
-const KIND_TOKENS: Record<string, string> = {
-  New: 'text-success',
-  Improved: 'text-primary',
-  Fixed: 'text-warning',
-  Breaking: 'text-destructive',
-};
-
-function formatDate(iso: string, locale: string): string {
-  try {
-    return new Date(iso).toLocaleDateString(locale, {
-      month: 'long',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  } catch {
-    return iso;
-  }
 }
 
 export default async function ChangelogPage({ params }: ChangelogPageProps) {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'changelog' });
-  const entries = await changelog.getAll();
+  setRequestLocale(locale);
+  const [t, tBlog, entries] = await Promise.all([
+    getTranslations({ locale, namespace: 'changelog' }),
+    getTranslations({ locale, namespace: 'blog' }),
+    getPosts('changelog'),
+  ]);
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-16 md:py-24">
@@ -65,94 +55,59 @@ export default async function ChangelogPage({ params }: ChangelogPageProps) {
           description: e.description,
         }))}
       />
-      <header className="mb-12">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-primary font-mono text-xs tracking-wider uppercase">
-              {t('label')}
-            </p>
-            <h1 className="text-foreground mt-2 text-3xl font-bold tracking-tight md:text-5xl">
-              {t('heading')}
-            </h1>
-            <p className="text-muted-foreground mt-4 text-base md:text-lg">
-              {t('description')}
-            </p>
-          </div>
-          <div className="mt-2 shrink-0">
-            <RssButton href="/changelog/feed.xml" label={t('rssLabel')} />
-          </div>
+      <header className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+        <div className="max-w-prose">
+          <h1 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
+            {t('heading')}
+          </h1>
+          <p className="text-muted-foreground mt-3 text-base leading-relaxed md:text-lg">
+            {t('description')}
+          </p>
+        </div>
+        <div className="shrink-0">
+          <RssButton href="/changelog/feed.xml" label={t('rssLabel')} />
         </div>
       </header>
 
-      <div className="flex flex-col gap-16">
-        {entries.map((entry) => (
-          <article key={entry.slug} className="flex flex-col gap-5">
-            <header className="flex flex-wrap items-center gap-3">
-              <time
-                dateTime={entry.date}
-                className="text-muted-foreground font-mono text-xs tracking-wider uppercase"
-              >
-                {formatDate(entry.date, locale)}
-              </time>
-              {entry.tag ? (
-                <span className="bg-primary/10 text-primary rounded-full px-2 py-0.5 text-xs font-medium">
-                  {entry.tag}
-                </span>
-              ) : null}
-              {entry.version ? (
-                <span className="text-muted-foreground font-mono text-xs">
-                  v{entry.version}
-                </span>
-              ) : null}
-              <span className="text-muted-foreground font-mono text-xs">
-                {entry.readingTime}
-              </span>
-            </header>
-
-            <Link
-              href={`/changelog/${entry.slug}`}
-              className="text-foreground hover:text-primary text-2xl font-bold tracking-tight transition-colors md:text-3xl"
-            >
-              {entry.title}
-            </Link>
-
-            <p className="text-muted-foreground text-base leading-relaxed">
-              {entry.description}
-            </p>
-
-            <ul className="border-border divide-border bg-card divide-y overflow-hidden rounded-lg border">
-              {entry.highlights.map((h) => (
-                <li
-                  key={`${entry.slug}-${h.title}`}
-                  className="flex flex-col gap-2 p-5"
-                >
-                  <div className="flex items-center gap-3">
-                    <span
-                      className={`${KIND_TOKENS[h.kind] ?? 'text-muted-foreground'} font-mono text-xs tracking-wider uppercase`}
-                    >
-                      {h.kind}
-                    </span>
-                    <span className="text-foreground text-sm font-medium">
-                      {h.title}
-                    </span>
-                  </div>
-                  <p className="text-muted-foreground text-sm leading-relaxed">
-                    {h.body}
+      {entries.length === 0 ? (
+        <p className="text-muted-foreground border-border border-y py-12 text-base">
+          {tBlog('noPosts')}
+        </p>
+      ) : (
+        <ol className="border-border divide-border divide-y border-y">
+          {entries.map((entry, i) => (
+            <li key={entry.slug} className="py-12 first:pt-10">
+              <article className="flex flex-col gap-4">
+                <PostMeta post={entry} locale={locale} latest={i === 0} />
+                <h2 className="text-foreground text-2xl font-semibold tracking-tight">
+                  <Link
+                    href={`/changelog/${entry.slug}`}
+                    className="decoration-foreground/30 underline-offset-4 hover:underline"
+                  >
+                    {entry.title}
+                  </Link>
+                </h2>
+                {entry.description ? (
+                  <p className="text-muted-foreground max-w-prose text-lg leading-relaxed">
+                    {entry.description}
                   </p>
-                </li>
-              ))}
-            </ul>
-
-            <Link
-              href={`/changelog/${entry.slug}`}
-              className="text-muted-foreground hover:text-foreground inline-flex items-center gap-2 text-sm"
-            >
-              {t('permalink')}
-              <ArrowRight className="size-4" />
-            </Link>
-          </article>
-        ))}
-      </div>
+                ) : null}
+                <ArticleHtml
+                  html={renderMarkdown(entry.markdown).html}
+                  className="mt-2 [&_h2]:mt-8 [&_h2]:text-lg md:[&_h2]:text-xl"
+                />
+                <Link
+                  href={`/changelog/${entry.slug}`}
+                  className="text-muted-foreground hover:text-foreground inline-flex w-fit items-center gap-2 text-sm transition-colors"
+                >
+                  {t('permalink')}
+                  <ArrowRight className="size-4" aria-hidden />
+                </Link>
+              </article>
+            </li>
+          ))}
+        </ol>
+      )}
     </div>
   );
 }

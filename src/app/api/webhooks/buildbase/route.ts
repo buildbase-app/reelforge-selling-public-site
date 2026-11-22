@@ -28,7 +28,7 @@ import {
  *
  * Cached pages: an `item.*` event revalidates the store's items (prices on
  * `/` and `/pricing`), a content event the `buildbase:*` tags it names
- * (`/help`, FAQs, content blocks), plus the paths of those ISR pages
+ * (`/help`, `/docs`, FAQs, content blocks), plus the paths of those ISR pages
  * (src/lib/cache/webhook-tags.ts). Tags expire at once, so the next request
  * renders fresh data. Done before storing, so a storage failure (and the
  * retry it triggers) never delays a price change.
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
   const data = event.data ?? {};
 
   const tags = tagsForWebhookEvent(event.event, data);
-  const paths = pathsForWebhookEvent(event.event);
+  const paths = pathsForWebhookEvent(event.event, data);
   try {
     for (const tag of tags) revalidateTag(tag, { expire: 0 });
     for (const path of paths) revalidatePath(path);

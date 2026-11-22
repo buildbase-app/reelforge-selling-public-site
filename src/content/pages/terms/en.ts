@@ -1,0 +1,35 @@
+import type { LegalPageContent } from '../page-loader';
+
+/** The terms page, English. The body is Markdown, rendered on the server. */
+const page: LegalPageContent = {
+  locale: 'en',
+  heroEyebrow: 'Legal',
+  heroTitle: 'Terms of Service',
+  heroDescription: 'The terms for using this website. Draft, pending review.',
+  lastUpdated: '2026-11-21',
+  pendingReview: true,
+  body: `These terms cover your use of the ReelForge store website and your account on it, provided by **[Legal entity to be confirmed]**. Using ReelForge itself is covered by its [licences](/licence): the free Personal licence (PolyForm Noncommercial 1.0.0, noncommercial use only) or a paid Commercial licence. Paid purchases are also covered by the [refund policy](/refund).
+
+## Acceptance of Terms
+
+By accessing or using our services, you agree to be bound by these Terms of Service.
+
+## Use of Services
+
+You may use our services only in compliance with these terms and all applicable laws.
+
+## Account Responsibilities
+
+You are responsible for maintaining the security of your account and for all activities that occur under your account.
+
+## Limitation of Liability
+
+To the maximum extent permitted by law, we shall not be liable for any indirect, incidental, special, or consequential damages.
+
+## Changes to Terms
+
+We may modify these terms at any time. Your continued use of the services after changes constitutes acceptance of the modified terms.
+`,
+};
+
+export default page;
