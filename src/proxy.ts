@@ -118,6 +118,7 @@ export function proxy(request: NextRequest): Response {
     scope,
     dev: process.env.NODE_ENV !== 'production',
     buildbaseServerUrl: process.env.NEXT_PUBLIC_BUILDBASE_SERVER_URL,
+    galleryMediaUrl: process.env.GALLERY_MEDIA_URL,
   });
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set('x-nonce', nonce);

@@ -5,6 +5,7 @@ import {
   API_CSP,
   apiSecurityHeaders,
   createNonce,
+  mediaOrigin,
   pageCsp,
   pageScope,
 } from '@/lib/security/csp';
@@ -111,6 +112,43 @@ describe('pageCsp (production)', () => {
     expect(directive(dev, 'script-src')).toContain("'unsafe-eval'");
     expect(directive(dev, 'script-src')).not.toContain('unsafe-inline');
     expect(dev).not.toContain('upgrade-insecure-requests');
+  });
+});
+
+describe('gallery media origin', () => {
+  it('uses the R2 custom domain by default', () => {
+    expect(mediaOrigin(undefined)).toBe(
+      'https://media.reelforge.buildbase.app'
+    );
+  });
+
+  it("uses only GALLERY_MEDIA_URL's origin", () => {
+    expect(mediaOrigin('https://cdn.example.com/reels/x.json?y=1')).toBe(
+      'https://cdn.example.com'
+    );
+  });
+
+  it('falls back for invalid or non-http values', () => {
+    expect(mediaOrigin('not a url')).toBe(
+      'https://media.reelforge.buildbase.app'
+    );
+    expect(mediaOrigin('javascript:alert(1)')).toBe(
+      'https://media.reelforge.buildbase.app'
+    );
+    expect(mediaOrigin('https://a.example.com; script-src *')).not.toContain(
+      ';'
+    );
+  });
+
+  it('puts the configured origin in media-src', () => {
+    const csp = pageCsp({
+      nonce: 'N',
+      scope: 'public',
+      galleryMediaUrl: 'http://localhost:9000/gallery',
+    });
+    expect(directive(csp, 'media-src')).toBe(
+      "media-src 'self' blob: http://localhost:9000"
+    );
   });
 });
 

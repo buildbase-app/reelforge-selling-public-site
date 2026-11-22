@@ -23,6 +23,8 @@ export interface ReelSource {
   jpg: string;
   /** What the reel shows, read by screen readers. */
   label: string;
+  /** The WebM's `type` (default: AV1). Gallery reels are VP9. */
+  webmType?: string;
 }
 
 type Listener = (visible: boolean) => void;
@@ -138,7 +140,10 @@ export function ReelVideo({
         onPause={() => setPlaying(false)}
         onEnded={() => setIndex((i) => (i + 1) % sources.length)}
       >
-        <source src={current.webm} type='video/webm; codecs="av01.0.05M.08"' />
+        <source
+          src={current.webm}
+          type={current.webmType ?? 'video/webm; codecs="av01.0.05M.08"'}
+        />
         <source src={current.mp4} type="video/mp4" />
       </video>
       <button

@@ -30,8 +30,26 @@ const PUBLIC_CONNECT_HOSTS = [
   'https://cloudflareinsights.com',
 ] as const;
 
-/** Reels and posters (the R2 bucket). */
+/** Reels and posters (the R2 bucket's custom domain). */
 const MEDIA_HOST = 'https://media.reelforge.buildbase.app';
+
+/**
+ * The gallery's media origin for `media-src`: GALLERY_MEDIA_URL's origin when it
+ * is a valid http(s) URL (a Worker route, or a local static server for a
+ * preview), otherwise the R2 custom domain. Only the origin is used, so a path
+ * or query in the variable cannot widen the policy.
+ */
+export function mediaOrigin(raw: string | undefined): string {
+  if (!raw) return MEDIA_HOST;
+  try {
+    const url = new URL(raw);
+    if (url.protocol !== 'https:' && url.protocol !== 'http:')
+      return MEDIA_HOST;
+    return url.origin;
+  } catch {
+    return MEDIA_HOST;
+  }
+}
 
 export type PageScope = 'public' | 'private';
 
@@ -73,6 +91,8 @@ export interface PageCspOptions {
   dev?: boolean;
   /** NEXT_PUBLIC_BUILDBASE_SERVER_URL. */
   buildbaseServerUrl?: string;
+  /** GALLERY_MEDIA_URL (see mediaOrigin). */
+  galleryMediaUrl?: string;
 }
 
 /** The Content-Security-Policy for an HTML page. */
@@ -81,6 +101,7 @@ export function pageCsp({
   scope,
   dev = false,
   buildbaseServerUrl,
+  galleryMediaUrl,
 }: PageCspOptions): string {
   const isPublic = scope === 'public';
   const bb = buildbaseOrigins(buildbaseServerUrl);
@@ -97,7 +118,7 @@ export function pageCsp({
     // Avatars and console images come from several https hosts.
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
-    `media-src 'self' blob: ${MEDIA_HOST}`,
+    `media-src 'self' blob: ${mediaOrigin(galleryMediaUrl)}`,
     ["connect-src 'self'", ...bb, ...(isPublic ? PUBLIC_CONNECT_HOSTS : [])]
       .join(' ')
       .trim(),

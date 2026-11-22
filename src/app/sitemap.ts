@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 import { siteUrl } from '@/env';
 import { defaultLocale } from '@/i18n/config';
 import { localeUrl } from '@/lib/i18n-url';
+import { getGallery } from '@/lib/gallery';
 import { getPosts } from '@/lib/blog/source';
 import { licence } from '@/content/pages/licence';
 import { privacy } from '@/content/pages/privacy';
@@ -40,7 +41,8 @@ const toIso = (value: string | undefined): string | undefined => {
 const url = (path: string) => localeUrl(siteUrl, defaultLocale, path);
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [docsSite, posts, entries, ...legal] = await Promise.all([
+  const [reels, docsSite, posts, entries, ...legal] = await Promise.all([
+    getGallery(),
     getDocsSite(),
     getPosts('blog'),
     getPosts('changelog'),
@@ -54,6 +56,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: url('/'), changeFrequency: 'weekly', priority: 1 },
     { url: url('/pricing'), changeFrequency: 'weekly', priority: 0.9 },
     { url: url('/agents'), changeFrequency: 'weekly', priority: 0.8 },
+    { url: url('/gallery'), changeFrequency: 'weekly', priority: 0.8 },
     { url: url('/help'), changeFrequency: 'weekly', priority: 0.7 },
     {
       url: url('/docs'),
@@ -106,8 +109,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
+  const reelPages: MetadataRoute.Sitemap = reels.map((reel) => ({
+    url: url(`/gallery/${reel.slug}`),
+    lastModified: toIso(reel.renderedAt),
+    changeFrequency: 'monthly',
+    priority: 0.5,
+  }));
+
   return [
     ...pages,
+    ...reelPages,
     ...docPages,
     ...postPages,
     ...entryPages,

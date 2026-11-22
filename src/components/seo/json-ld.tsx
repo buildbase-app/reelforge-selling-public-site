@@ -456,3 +456,17 @@ export function ItemListJsonLd({ name, items, url }: ItemListJsonLdProps) {
 
   return <JsonLdScript data={data} scriptKey={`itemlist-${name ?? 'list'}`} />;
 }
+
+// =============================================================================
+// VideoObject (gallery watch pages)
+// =============================================================================
+
+export interface VideoObjectJsonLdProps {
+  /** A complete schema.org VideoObject (see `videoObject()` in `@/lib/gallery`). */
+  data: Record<string, unknown>;
+  id: string;
+}
+
+export function VideoObjectJsonLd({ data, id }: VideoObjectJsonLdProps) {
+  return <JsonLdScript data={data} scriptKey={`video-${id}`} />;
+}
