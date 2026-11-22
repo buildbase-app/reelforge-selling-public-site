@@ -92,7 +92,7 @@ export function LocalNav({ onSale }: { onSale?: boolean }) {
       className="rf-local-nav sticky top-[69px] z-40 w-full border-b"
     >
       <div className="mx-auto flex h-12 max-w-[1200px] items-center justify-between gap-4 px-4 md:px-6">
-        <a href="#overview" className="text-sm font-semibold">
+        <a href="#overview" className="text-sm font-medium">
           ReelForge Studio
         </a>
         <ul className="hidden items-center gap-5 text-xs lg:flex">
@@ -129,6 +129,23 @@ export function LocalNav({ onSale }: { onSale?: boolean }) {
   );
 }
 
+/**
+ * Two more real renders for the hero's back layer: posters of gallery reels
+ * the studio rendered (public/reels/stack, 400×711 WebP).
+ */
+const STACK = [
+  {
+    src: '/reels/stack/album-release-countdown.webp',
+    alt: 'Poster of the Afterglow album countdown reel, rendered by ReelForge',
+    side: 'rf-stack-left',
+  },
+  {
+    src: '/reels/stack/beat-drop-visualizer.webp',
+    alt: 'Poster of the Drop beat visualiser reel, rendered by ReelForge',
+    side: 'rf-stack-right',
+  },
+] as const;
+
 /** Hero: the promise, the buttons, and the three real reels in a phone. */
 export function Hero({
   heading,
@@ -142,8 +159,9 @@ export function Hero({
       id="overview"
       aria-labelledby="hero-title"
       className="dark rf-stage w-full scroll-mt-28 overflow-hidden"
+      data-parallax=""
     >
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-12 px-4 pt-16 pb-20 md:px-6 md:pt-24 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:pb-28">
+      <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-16 px-4 pt-16 pb-24 md:px-6 md:pt-24 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12 lg:pb-32">
         <div className="text-center lg:text-left">
           <p className="rf-eyebrow rf-fade-up">
             Source-available · Self-hosted · Driven over MCP
@@ -159,22 +177,39 @@ export function Hero({
           <div className="rf-fade-up-2 mt-8 lg:[&>div]:justify-start">
             {ctas}
           </div>
-          <p className="rf-muted mt-5 text-sm">
+          <p className="rf-muted mt-6 text-sm">
             Free for personal use · One-time Commercial licence · No per-video
             fees to ReelForge
             <Fn n={1} />
           </p>
         </div>
         <figure className="flex flex-col items-center">
-          <Phone
-            sources={reels.map(reelSource)}
-            priority
-            className="rf-phone-in"
-          />
-          <figcaption className="rf-muted mt-5 max-w-[300px] text-center text-xs leading-relaxed">
-            Three reels made with ReelForge Studio {reels[0].versions.studio}{' '}
-            from the prompts further down
-            <Fn n={2} />.
+          <div className="rf-stack">
+            {STACK.map((poster) => (
+              <div
+                key={poster.src}
+                className={`rf-stack-back rf-par-far ${poster.side}`}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element -- a static poster with fixed size, no optimiser on Workers */}
+                <img
+                  src={poster.src}
+                  alt={poster.alt}
+                  width={400}
+                  height={711}
+                  decoding="async"
+                  loading="lazy"
+                  fetchPriority="low"
+                />
+              </div>
+            ))}
+            <div className="rf-par-near">
+              <Phone sources={reels.map(reelSource)} priority />
+            </div>
+          </div>
+          <figcaption className="rf-receipt mt-8 max-w-[320px] text-center">
+            In the phone: three reels made with ReelForge Studio{' '}
+            {reels[0].versions.studio} from the prompts further down
+            <Fn n={2} />. Behind it: two renders from the gallery.
           </figcaption>
         </figure>
       </div>
@@ -196,7 +231,7 @@ export function AgentTranscript() {
         <div className="rf-reveal mx-auto max-w-[980px] text-center">
           <p className="rf-eyebrow">Your agent is the editor</p>
           <h2 id="agent-title" className="rf-headline mt-3">
-            One prompt in. A checked MP4 out.
+            One prompt in. A checked MP4 out
           </h2>
           <p className="rf-muted mx-auto mt-5 max-w-[60ch] text-lg text-pretty">
             The agent reads what the studio can do, writes the scenes, checks
@@ -210,7 +245,7 @@ export function AgentTranscript() {
             aria-label="MCP calls, in order"
           >
             <li className="rf-step rounded-lg bg-white/5 p-3 font-sans text-sm leading-relaxed">
-              <span className="rf-eyebrow block text-xs">Prompt</span>
+              <span className="rf-receipt block">Prompt</span>
               {reel.prompt}
             </li>
             {reel.toolCalls.map((call, i) => (
@@ -220,9 +255,12 @@ export function AgentTranscript() {
                 style={{ '--i': i + 1 } as React.CSSProperties}
               >
                 <span>
-                  <span className="text-[#00d1b2]">→</span> {call.tool}
+                  <span className="rf-muted" aria-hidden>
+                    →
+                  </span>{' '}
+                  {call.tool}
                 </span>
-                <span className="text-xs text-[#c9c9d6]">
+                <span className="rf-muted text-xs">
                   {i === last
                     ? `${reel.output.width}×${reel.output.height} · ${reel.output.fps} fps · ${reel.output.videoCodec.toUpperCase()} + ${reel.output.audioCodec.toUpperCase()} · checks pass`
                     : call.tool === 'get_job'
@@ -234,7 +272,7 @@ export function AgentTranscript() {
           </ol>
           <figure className="flex flex-col items-center">
             <Phone sources={[reelSource(reel)]} />
-            <figcaption className="rf-muted mt-4 max-w-[300px] text-center text-xs leading-relaxed">
+            <figcaption className="rf-receipt mt-4 max-w-[300px] text-center">
               {enginesOf(reel).join(' · ')}: four engines,{' '}
               {reel.output.durationSeconds} seconds, rendered in{' '}
               {reel.renderSeconds} s<Fn n={2} />.
@@ -282,26 +320,54 @@ export function HowItWorks() {
     <section
       id="how"
       aria-labelledby="how-title"
-      className="w-full scroll-mt-28"
+      className="rf-how w-full scroll-mt-28"
     >
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-10 px-4 py-24 md:px-6 md:py-36 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-12 px-4 py-24 md:px-6 md:py-32 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-16">
         <div className="lg:sticky lg:top-40 lg:self-start">
           <p className="rf-eyebrow">How it works</p>
           <h2 id="how-title" className="rf-headline mt-3">
-            Three steps to your first reel.
+            Three steps to your first reel
           </h2>
           <p className="text-muted-foreground mt-5 max-w-[46ch] text-lg text-pretty">
             Everything after the first key happens from your agent: projects,
             renders, more keys, settings.
           </p>
+          <nav aria-label="Steps" className="rf-how-rail mt-10 hidden lg:block">
+            <span className="rf-how-track" aria-hidden />
+            <span className="rf-how-fill" aria-hidden />
+            <ol className="text-[15px]">
+              {STEPS.map((step, i) => (
+                <li key={step.title} className="rf-how-label">
+                  <a
+                    href={`#how-step-${i + 1}`}
+                    className="text-muted-foreground hover:text-foreground grid transition-colors"
+                  >
+                    <span className="col-start-1 row-start-1">
+                      <span className="rf-receipt mr-3">0{i + 1}</span>
+                      {step.title}
+                    </span>
+                    <span
+                      className="rf-how-on col-start-1 row-start-1"
+                      aria-hidden
+                    >
+                      <span className="rf-receipt mr-3">0{i + 1}</span>
+                      {step.title}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
         </div>
-        <ol className="space-y-16 lg:space-y-28">
+        <ol className="rf-how-steps space-y-16 lg:space-y-32">
           {STEPS.map((step, i) => (
-            <li key={step.title} className="rf-reveal">
-              <p className="text-muted-foreground font-mono text-sm">
-                Step {i + 1}
-              </p>
-              <h3 className="mt-2 text-2xl font-semibold tracking-tight md:text-3xl">
+            <li
+              key={step.title}
+              id={`how-step-${i + 1}`}
+              className="rf-reveal scroll-mt-40"
+            >
+              <p className="rf-receipt">Step 0{i + 1}</p>
+              <h3 className="mt-2 text-2xl font-medium tracking-tight md:text-3xl">
                 {step.title}
                 {'fn' in step ? <Fn n={step.fn} /> : null}
               </h3>
@@ -317,7 +383,10 @@ export function HowItWorks() {
                     goalProps={{ step: String(i + 1), section: 'how' }}
                   />
                 </div>
-                <pre className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed">
+                <pre
+                  tabIndex={0}
+                  className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed"
+                >
                   <code>{step.code}</code>
                 </pre>
               </div>
@@ -341,7 +410,7 @@ export function ConnectAgent({ tabs }: { tabs: React.ReactNode }) {
         <div className="rf-reveal text-center">
           <p className="rf-eyebrow">Connect your agent</p>
           <h2 id="connect-title" className="rf-headline mt-3">
-            Paste one line. Ask for a reel.
+            Paste one line. Ask for a reel
           </h2>
           <p className="rf-muted mx-auto mt-5 max-w-[60ch] text-lg text-pretty">
             Your instance, your keys. Keys carry scopes (read, write, render,
@@ -402,7 +471,7 @@ export function Engines() {
         <div className="rf-reveal mx-auto max-w-[980px] text-center">
           <p className="rf-eyebrow">Engines</p>
           <h2 id="engines-title" className="rf-headline mt-3">
-            Four engines. One MP4.
+            Four engines. One MP4
           </h2>
           <p className="text-muted-foreground mx-auto mt-5 max-w-[60ch] text-lg text-pretty">
             Each scene names its engine. ReelForge renders the clips and joins
@@ -410,27 +479,19 @@ export function Engines() {
             timing you get.
           </p>
         </div>
-        <ul className="mt-14 grid gap-4 sm:grid-cols-2">
+        <ul className="mx-auto mt-14 max-w-[980px] border-t">
           {ENGINES.map((engine) => (
             <li
               key={engine.name}
-              className="rf-reveal bg-card rounded-2xl border p-6 md:p-8"
+              className="rf-reveal grid gap-2 border-b py-6 md:grid-cols-[220px_minmax(0,1fr)_200px] md:gap-8 md:py-8"
             >
-              <div className="flex items-center justify-between gap-3">
-                <h3 className="text-xl font-semibold">
-                  {engine.name}
-                  {'fn' in engine ? <Fn n={engine.fn} /> : null}
-                </h3>
-                <span className="inline-flex items-center gap-1 rounded-full border border-[#00d1b2]/40 px-2.5 py-0.5 text-xs font-medium text-[#00796b] dark:text-[#00d1b2]">
-                  <Check className="h-3 w-3" aria-hidden />
-                  Included
-                </span>
-              </div>
-              <p className="text-muted-foreground mt-3 text-pretty">
-                {engine.body}
-              </p>
-              <p className="text-muted-foreground mt-4 font-mono text-xs">
-                template {engine.template}
+              <h3 className="text-xl font-medium tracking-tight">
+                {engine.name}
+                {'fn' in engine ? <Fn n={engine.fn} /> : null}
+              </h3>
+              <p className="text-muted-foreground text-pretty">{engine.body}</p>
+              <p className="rf-receipt md:pt-1 md:text-right">
+                {engine.template}
                 {engine.version ? ` · v${engine.version}` : ''}
               </p>
             </li>
@@ -453,27 +514,35 @@ export function ReelGallery() {
         <div className="rf-reveal mx-auto max-w-[980px] text-center">
           <p className="rf-eyebrow">Made with ReelForge</p>
           <h2 id="reels-title" className="rf-headline mt-3">
-            Real renders. Nothing mocked up.
+            Real renders. Nothing mocked up
           </h2>
           <p className="text-muted-foreground mx-auto mt-5 max-w-[60ch] text-lg text-pretty">
             Every clip here came out of the studio from the prompt under it.
             Copy one and give it to your agent.
           </p>
-          <Link href="/gallery" className="mt-5 inline-block underline">
+          <Link
+            href="/gallery"
+            className="rf-link mt-5 inline-flex items-center"
+          >
             See all reels in the gallery
+            <ChevronRight className="h-4 w-4" aria-hidden />
           </Link>
         </div>
         <ul className="rf-rail mt-14 pb-4">
-          {reels.map((reel) => (
-            <li key={reel.slug} className="flex min-w-0 flex-col">
+          {reels.map((reel, i) => (
+            <li
+              key={reel.slug}
+              className="rf-reveal flex min-w-0 flex-col"
+              style={{ '--i': i } as React.CSSProperties}
+            >
               <div className="dark rf-stage relative aspect-[9/16] overflow-hidden rounded-2xl">
                 <ReelVideo
                   sources={[reelSource(reel)]}
                   className="rf-screen absolute inset-0"
                 />
               </div>
-              <h3 className="mt-4 font-semibold">{reel.title}</h3>
-              <p className="text-muted-foreground mt-1 text-xs">
+              <h3 className="mt-4 font-medium">{reel.title}</h3>
+              <p className="rf-receipt mt-1">
                 {enginesOf(reel).join(' · ')} · {reel.output.durationSeconds} s
                 · rendered in {reel.renderSeconds} s<Fn n={2} />
               </p>
@@ -483,10 +552,10 @@ export function ReelGallery() {
               <CopyButton
                 text={reel.prompt}
                 label="Copy prompt"
-                ariaLabel={`Copy the prompt for the ${reel.title} reel`}
+                ariaLabel={`Copy prompt for the ${reel.title} reel`}
                 goal="copy_reel_prompt"
                 goalProps={{ reel: reel.slug }}
-                className="text-foreground mt-4 self-start border-current/20 hover:bg-current/5"
+                className="mt-4 self-start"
               />
             </li>
           ))}
@@ -519,14 +588,14 @@ export function NumbersBand() {
   ];
   return (
     <section aria-label="ReelForge in numbers" className="w-full">
-      <dl className="mx-auto grid max-w-[1200px] gap-10 px-4 py-20 sm:grid-cols-2 md:px-6 lg:grid-cols-4">
+      <dl className="mx-auto grid max-w-[1200px] gap-10 px-4 py-20 sm:grid-cols-2 md:px-6 lg:grid-cols-[1fr_1fr_1.5fr_1fr] lg:gap-8">
         {facts.map((f) => (
           <div key={f.label} className="rf-reveal flex flex-col">
-            <dt className="text-muted-foreground order-2 mt-2 text-sm text-pretty">
+            <dt className="text-muted-foreground order-2 mt-3 text-sm text-pretty">
               {f.label}
               {f.fn ? <Fn n={f.fn} /> : null}
             </dt>
-            <dd className="order-1 text-[clamp(2.5rem,4.2vw,3.5rem)] font-semibold tracking-tight tabular-nums">
+            <dd className="order-1 text-[clamp(2.5rem,3.6vw,3.25rem)] leading-none font-medium tracking-tight tabular-nums">
               {f.value}
             </dd>
           </div>
@@ -559,7 +628,7 @@ export function Privacy() {
         <div className="rf-reveal mx-auto max-w-[980px] text-center">
           <p className="rf-eyebrow">Self-hosted and private</p>
           <h2 id="private-title" className="rf-headline mt-3">
-            Your server. Your files. Your keys.
+            Your server. Your files. Your keys
           </h2>
           <p className="text-muted-foreground mx-auto mt-5 max-w-[60ch] text-lg text-pretty">
             Own the studio instead of renting one: renders run on hardware you
@@ -573,14 +642,16 @@ export function Privacy() {
           ].map((col) => (
             <div
               key={col.title}
-              className="rf-reveal bg-card rounded-2xl border p-6 md:p-8"
+              className="rf-reveal bg-card rounded-2xl border p-6 shadow-[var(--shadow-sm)] md:p-8"
             >
-              <h3 className="text-xl font-semibold">{col.title}</h3>
+              <h3 className="text-xl font-medium tracking-tight">
+                {col.title}
+              </h3>
               <ul className="text-muted-foreground mt-4 space-y-3">
                 {col.items.map((item) => (
                   <li key={item} className="flex gap-3">
                     <Check
-                      className="mt-1 h-4 w-4 shrink-0 text-[#00796b] dark:text-[#00d1b2]"
+                      className="text-foreground mt-1 h-4 w-4 shrink-0"
                       aria-hidden
                     />
                     <span className="text-pretty">{item}</span>
@@ -641,14 +712,14 @@ export function EnterpriseStrip() {
       <div className="mx-auto max-w-[1200px] px-4 py-20 md:px-6">
         <h2
           id="ops-title"
-          className="rf-reveal text-2xl font-semibold tracking-tight md:text-3xl"
+          className="rf-reveal text-2xl font-medium tracking-tight md:text-3xl"
         >
-          Ready for the server room.
+          Ready for the server room
         </h2>
         <ul className="mt-10 grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
           {ENTERPRISE.map((item) => (
             <li key={item.title} className="rf-reveal">
-              <h3 className="font-semibold">
+              <h3 className="font-medium">
                 {item.title}
                 {item.fn ? <Fn n={item.fn} /> : null}
               </h3>
@@ -670,17 +741,10 @@ export function EnterpriseStrip() {
 
 export function FinalCta({ ctas }: { ctas: React.ReactNode }) {
   return (
-    <section
-      aria-labelledby="final-title"
-      className="dark rf-stage relative w-full overflow-hidden"
-    >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_100%,rgb(255_61_113/0.22),transparent)]"
-      />
-      <div className="relative mx-auto max-w-[980px] px-4 py-28 text-center md:px-6 md:py-40">
+    <section aria-labelledby="final-title" className="dark rf-stage w-full">
+      <div className="rf-reveal mx-auto max-w-[980px] px-4 py-28 text-center md:px-6 md:py-40">
         <h2 id="final-title" className="rf-display">
-          Give your agent a studio.
+          Give your agent a studio
         </h2>
         <p className="rf-muted mx-auto mt-6 max-w-[48ch] text-lg text-pretty">
           Start with the free Personal licence. Upgrade to Commercial when it
@@ -742,7 +806,7 @@ export function Footnotes() {
   return (
     <section aria-labelledby="footnotes-title" className="w-full border-t">
       <div className="mx-auto max-w-[980px] px-4 py-12 md:px-6">
-        <h2 id="footnotes-title" className="text-sm font-semibold">
+        <h2 id="footnotes-title" className="text-sm font-medium">
           Notes
         </h2>
         <ol className="text-muted-foreground mt-4 list-decimal space-y-2 pl-5 text-xs leading-relaxed">

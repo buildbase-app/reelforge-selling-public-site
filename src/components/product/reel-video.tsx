@@ -27,6 +27,22 @@ export interface ReelSource {
   webmType?: string;
 }
 
+/**
+ * The scroll-motion fallback (`@/lib/motion-fallback`), asked for from the
+ * reel players because pages with reels are the pages that move, so no page
+ * pays first-load JavaScript for it. It loads only where CSS scroll-driven
+ * animations are missing (the module then checks reduced motion and
+ * IntersectionObserver) and restarts on the current DOM on each call.
+ */
+let stopMotion: (() => void) | undefined;
+function requestMotionFallback() {
+  if (!window.CSS?.supports?.('animation-timeline: view()'))
+    import('@/lib/motion-fallback').then((m) => {
+      stopMotion?.();
+      stopMotion = m.startMotionFallback();
+    });
+}
+
 type Listener = (visible: boolean) => void;
 const listeners = new Map<Element, Listener>();
 let observer: IntersectionObserver | null = null;
@@ -46,13 +62,6 @@ function observe(el: Element, fn: Listener): () => void {
     listeners.delete(el);
     observer?.unobserve(el);
   };
-}
-
-function prefersReducedMotion(): boolean {
-  return (
-    typeof window !== 'undefined' &&
-    window.matchMedia?.('(prefers-reduced-motion: reduce)').matches === true
-  );
 }
 
 export function ReelVideo({
@@ -77,15 +86,20 @@ export function ReelVideo({
   const sync = useCallback(() => {
     const v = video.current;
     if (!v) return;
+    // Without a choice, play unless the visitor prefers reduced motion.
     const want =
       choice ??
-      (visible.current && !document.hidden && !prefersReducedMotion());
+      !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
     if (want && visible.current && !document.hidden) {
       v.play().catch(() => setPlaying(false));
     } else {
       v.pause();
     }
   }, [choice]);
+
+  // Pages with reels are the pages that move: start the scroll-motion
+  // fallback where CSS scroll-driven animations are missing.
+  useEffect(requestMotionFallback, []);
 
   useEffect(() => {
     const v = video.current;
@@ -132,7 +146,8 @@ export function ReelVideo({
         aria-label={current.label}
         width={720}
         height={1280}
-        style={{ opacity: shown ? 1 : 0, transition: 'opacity 400ms' }}
+        className="rf-reel-video"
+        data-shown={shown ? '' : undefined}
         onPlaying={() => {
           setPlaying(true);
           setShown(true);
@@ -150,7 +165,7 @@ export function ReelVideo({
         type="button"
         onClick={() => setChoice(!playing)}
         aria-label={playing ? 'Pause reel' : 'Play reel'}
-        className="absolute right-3 bottom-3 z-10 grid h-9 w-9 place-items-center rounded-full bg-black/60 text-white backdrop-blur"
+        className="rf-reel-toggle"
       >
         {playing ? (
           <Pause className="h-4 w-4" aria-hidden />

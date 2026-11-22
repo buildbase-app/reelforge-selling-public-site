@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { BreadcrumbJsonLd, ItemListJsonLd } from '@/components/seo/json-ld';
 import { GalleryCard } from '@/components/gallery/gallery-card';
-import { GalleryReveal } from '@/components/gallery/gallery-reveal';
 import { absoluteUrl } from '@/config/seo';
 import { Link } from '@/i18n/routing';
 import type { Locale } from '@/i18n/config';
@@ -46,7 +45,7 @@ export async function generateMetadata({
  * SDK's cached read (the content webhook refreshes it when a record changes).
  * Filters are links with URL parameters (`?category=…&engine=…`): no client
  * fetching, no secrets in the browser. The only client islands are the card
- * players and the scroll-reveal fallback.
+ * players (the scroll-reveal fallback is the site-wide one in MarketingShell).
  */
 export default async function GalleryPage({
   params,
@@ -90,7 +89,7 @@ export default async function GalleryPage({
 
       <div className="mx-auto w-full max-w-[1240px] px-4 pt-12 pb-24 md:px-6 md:pt-20">
         <header className="max-w-[720px]">
-          <h1 className="text-4xl font-semibold tracking-tight text-balance md:text-5xl">
+          <h1 className="text-4xl font-medium tracking-tight text-balance md:text-5xl">
             Reels an agent planned and ReelForge rendered
           </h1>
           <p className="text-muted-foreground mt-4 text-lg text-pretty">
@@ -215,7 +214,6 @@ export default async function GalleryPage({
                 )}
               </section>
             </div>
-            <GalleryReveal targetId="gallery-grid" />
           </>
         )}
       </div>

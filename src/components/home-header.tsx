@@ -40,11 +40,11 @@ export async function HomeHeader({ title, auth }: HomeHeaderProps) {
   };
 
   return (
-    <header className="bg-background/80 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 flex items-center justify-between border-b px-6 py-4 backdrop-blur-md">
+    <header className="bg-background/85 supports-[backdrop-filter]:bg-background/70 sticky top-0 z-50 flex items-center justify-between border-b px-4 py-4 backdrop-blur-md md:px-6">
       <div className="flex items-center gap-8">
         <Link
           href="/"
-          className="text-foreground text-xl font-bold tracking-tight"
+          className="text-foreground text-lg font-semibold tracking-tight"
         >
           {title}
         </Link>

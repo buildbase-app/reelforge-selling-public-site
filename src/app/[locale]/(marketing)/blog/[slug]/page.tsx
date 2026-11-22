@@ -107,7 +107,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
         <PostMeta post={post} locale={localeTyped} />
 
-        <h1 className="text-foreground mt-4 text-3xl font-semibold tracking-tight text-balance md:text-4xl">
+        <h1 className="text-foreground mt-4 text-3xl font-medium tracking-tight text-balance md:text-4xl">
           {post.title}
         </h1>
         {post.description ? (

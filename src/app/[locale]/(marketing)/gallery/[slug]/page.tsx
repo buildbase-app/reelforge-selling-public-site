@@ -131,7 +131,7 @@ export default async function ReelPage({ params }: ReelPageProps) {
 
           <div className="min-w-0">
             <p className="text-muted-foreground text-sm">{reel.category}</p>
-            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-balance md:text-4xl">
+            <h1 className="mt-2 text-3xl font-medium tracking-tight text-balance md:text-4xl">
               {reel.title}
             </h1>
             <p className="gl-receipt text-muted-foreground mt-3 text-sm">
@@ -148,7 +148,7 @@ export default async function ReelPage({ params }: ReelPageProps) {
               <CopyButton
                 text={reel.prompt}
                 label="Copy prompt"
-                ariaLabel={`Copy the prompt for ${reel.title}`}
+                ariaLabel={`Copy prompt for ${reel.title}`}
                 goal="copy_reel_prompt"
                 goalProps={{ reel: reel.slug }}
                 className="mt-3"

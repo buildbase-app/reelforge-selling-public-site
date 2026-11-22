@@ -80,7 +80,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
         <div className="mx-auto max-w-[980px] px-4 pt-16 pb-20 text-center md:px-6 md:pt-24">
           <p className="rf-eyebrow rf-fade-up">Connect your agent</p>
           <h1 id="agents-title" className="rf-display rf-fade-up mt-4">
-            Your agent drives. Over MCP or REST.
+            Your agent drives. Over MCP or REST
           </h1>
           <p className="rf-muted rf-fade-up-2 mx-auto mt-6 max-w-[56ch] text-lg text-pretty md:text-xl">
             ReelForge Studio serves an MCP server at <code>/mcp</code> and a
@@ -107,7 +107,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
       >
         <p className="rf-eyebrow">Keys</p>
         <h2 id="keys-title" className="rf-headline mt-3">
-          One key per agent, with only the scopes it needs.
+          One key per agent, with only the scopes it needs
         </h2>
         <p className="text-muted-foreground mt-5 max-w-[60ch] text-lg text-pretty">
           Keys are created on your studio, shown once and stored hashed. Give
@@ -115,7 +115,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
         </p>
         <div className="dark rf-window mt-8 min-w-0">
           <div className="flex items-center justify-between gap-3 border-b border-white/10 px-3 py-2">
-            <span className="font-mono text-xs text-[#c9c9d6]">Terminal</span>
+            <span className="text-stage-muted font-mono text-xs">Terminal</span>
             <CopyButton
               text={KEY_COMMAND}
               ariaLabel="Copy the command that creates an agent key"
@@ -123,7 +123,10 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
               goalProps={{ client: 'key' }}
             />
           </div>
-          <pre className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed">
+          <pre
+            tabIndex={0}
+            className="overflow-x-auto p-4 font-mono text-[13px] leading-relaxed"
+          >
             <code>{KEY_COMMAND}</code>
           </pre>
         </div>
@@ -131,10 +134,10 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
           <caption className="sr-only">API key scopes</caption>
           <thead>
             <tr className="border-b">
-              <th scope="col" className="py-2 pr-4 font-semibold">
+              <th scope="col" className="py-2 pr-4 font-medium">
                 Scope
               </th>
-              <th scope="col" className="py-2 font-semibold">
+              <th scope="col" className="py-2 font-medium">
                 Lets the agent
               </th>
             </tr>
@@ -178,7 +181,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
           <div className="mx-auto max-w-[980px]">
             <p className="rf-eyebrow">Prompt cookbook</p>
             <h2 id="cookbook-title" className="rf-headline mt-3">
-              A prompt, the tools it calls, the reel it makes.
+              A prompt, the tools it calls, the reel it makes
             </h2>
             <p className="text-muted-foreground mt-5 max-w-[62ch] text-lg text-pretty">
               Each recipe is a real render. No other docs needed: the server
@@ -191,7 +194,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
             {reels.map((reel) => (
               <li
                 key={reel.slug}
-                className="bg-card grid gap-6 rounded-2xl border p-5 md:grid-cols-[160px_1fr] md:p-8"
+                className="rf-reveal bg-card grid gap-6 rounded-2xl border p-5 shadow-[var(--shadow-sm)] md:grid-cols-[160px_1fr] md:p-8"
               >
                 <div className="dark rf-stage relative mx-auto aspect-[9/16] w-40 overflow-hidden rounded-xl md:mx-0">
                   <ReelVideo
@@ -200,7 +203,9 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
                   />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-xl font-semibold">{reel.title}</h3>
+                  <h3 className="text-xl font-medium tracking-tight">
+                    {reel.title}
+                  </h3>
                   <p className="text-muted-foreground mt-1 text-xs">Prompt</p>
                   <blockquote className="mt-1 border-l-2 pl-3 text-pretty">
                     {reel.prompt}
@@ -229,10 +234,10 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
                   <CopyButton
                     text={reel.prompt}
                     label="Copy prompt"
-                    ariaLabel={`Copy the prompt for the ${reel.title} reel`}
+                    ariaLabel={`Copy prompt for the ${reel.title} reel`}
                     goal="copy_reel_prompt"
                     goalProps={{ reel: reel.slug }}
-                    className="text-foreground mt-4 border-current/20 hover:bg-current/5"
+                    className="mt-4"
                   />
                 </div>
               </li>
@@ -249,7 +254,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
         <div className="mx-auto max-w-[980px]">
           <p className="rf-eyebrow">Tools</p>
           <h2 id="tools-title" className="rf-headline mt-3">
-            {toolCatalog.count} MCP tools, grouped by job.
+            {toolCatalog.count} MCP tools, grouped by job
           </h2>
           <p className="text-muted-foreground mt-5 max-w-[62ch] text-lg text-pretty">
             Every REST route has a tool with the same scope, so an agent can do
@@ -259,13 +264,17 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
         </div>
         <div className="mt-12 grid gap-10 lg:grid-cols-2">
           {toolCatalog.groups.map((group) => (
-            <section key={group.id} aria-labelledby={`tools-${group.id}`}>
+            <section
+              key={group.id}
+              aria-labelledby={`tools-${group.id}`}
+              className="rf-reveal"
+            >
               <h3
                 id={`tools-${group.id}`}
-                className="flex items-baseline justify-between gap-3 border-b pb-2 text-lg font-semibold"
+                className="flex items-baseline justify-between gap-3 border-b pb-2 text-lg font-medium"
               >
                 {group.title}
-                <span className="text-muted-foreground text-sm font-normal">
+                <span className="rf-receipt font-normal">
                   {group.tools.length}
                 </span>
               </h3>
@@ -277,9 +286,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
                         {tool.name}
                       </code>
                       {tool.readOnly ? (
-                        <span className="text-muted-foreground rounded-full border px-2 text-[11px]">
-                          read-only
-                        </span>
+                        <span className="rf-receipt">read-only</span>
                       ) : null}
                     </p>
                     <p className="text-muted-foreground mt-1 text-sm text-pretty">
@@ -311,7 +318,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
 
       <section aria-labelledby="agents-notes" className="w-full border-t">
         <div className="mx-auto max-w-[980px] px-4 py-12 md:px-6">
-          <h2 id="agents-notes" className="text-sm font-semibold">
+          <h2 id="agents-notes" className="text-sm font-medium">
             Notes
           </h2>
           <ol className="text-muted-foreground mt-4 list-decimal space-y-2 pl-5 text-xs leading-relaxed">

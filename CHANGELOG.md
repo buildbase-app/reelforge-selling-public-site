@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (design, studio issue #81)
+
+- One set of design tokens in `globals.css`: neutrals tinted toward the
+  studio's ink, one accent (the brand pink, as ink `#c8174d` on light),
+  toned semantic colours, depth and motion tokens. Every text role passes
+  WCAG AA in both themes. Glows, the pink wash, the second (teal) accent,
+  bold headings and tracked uppercase labels are gone.
+- Motion follows the scroll with CSS scroll-driven animations: hero parallax
+  (the phone and two gallery renders behind it), section reveals, a sticky
+  "How it works" rail that fills as the steps pass, and gallery cards that
+  tilt back to flat as they enter. Transform and opacity only; an
+  IntersectionObserver fallback loads on demand where scroll timelines are
+  missing; `prefers-reduced-motion: reduce` turns all of it, and reel
+  autoplay, off.
+
 ### Changed (performance, studio issue #79)
 
 - The BuildBase provider is no longer in the locale layout. The public pages

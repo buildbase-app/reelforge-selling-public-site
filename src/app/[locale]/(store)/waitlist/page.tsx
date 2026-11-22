@@ -31,7 +31,7 @@ export default async function WaitlistPage({ params }: Props) {
     <div className="flex flex-1 flex-col items-center px-6 py-16">
       <div className="w-full max-w-md space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold tracking-tight text-balance">
+          <h1 className="text-3xl font-medium tracking-tight text-balance">
             {t('title')}
           </h1>
           <p className="text-muted-foreground mt-2">{t('description')}</p>

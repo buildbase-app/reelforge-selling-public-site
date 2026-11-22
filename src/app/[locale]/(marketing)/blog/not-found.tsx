@@ -11,7 +11,7 @@ export default function BlogNotFound() {
       <p className="text-muted-foreground font-mono text-sm tabular-nums">
         404
       </p>
-      <h1 className="text-foreground mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
+      <h1 className="text-foreground mt-3 text-3xl font-medium tracking-tight md:text-4xl">
         {t('blogNotFound.title')}
       </h1>
       <p className="text-muted-foreground mt-4 max-w-md text-base md:text-lg">

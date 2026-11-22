@@ -99,7 +99,7 @@ export default async function HomePage({ params }: HomePageProps) {
       <LocalNav onSale={onSale} />
       <Hero
         heading={t.rich('hero.heading', {
-          highlight: (chunks) => <span className="rf-accent">{chunks}</span>,
+          highlight: (chunks) => <span className="rf-quiet">{chunks}</span>,
         })}
         ctas={
           <StoreCtas labels={ctaLabels} onSale={onSale} goalSection="hero" />

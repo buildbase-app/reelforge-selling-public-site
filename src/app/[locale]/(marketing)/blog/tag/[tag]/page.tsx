@@ -69,7 +69,7 @@ export default async function TagPage({ params }: TagPageProps) {
         >
           {t('allPosts')}
         </Link>
-        <h1 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
+        <h1 className="text-foreground text-3xl font-medium tracking-tight md:text-4xl">
           {found.tag.title}
         </h1>
         <p className="text-muted-foreground mt-3 text-base md:text-lg">

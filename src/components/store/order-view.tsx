@@ -213,7 +213,9 @@ function OrderLayout({
             }
             aria-hidden
           />
-          <h1 className="text-3xl font-bold tracking-tight">{status.label}</h1>
+          <h1 className="text-3xl font-medium tracking-tight">
+            {status.label}
+          </h1>
           {status.tone === 'wait' && (
             <Loader2
               className="text-muted-foreground h-5 w-5 animate-spin"
@@ -302,7 +304,7 @@ function Message({
 }) {
   return (
     <div className="py-8">
-      <h1 className="text-3xl font-bold tracking-tight">{title}</h1>
+      <h1 className="text-3xl font-medium tracking-tight">{title}</h1>
       <div className="text-muted-foreground mt-3">{children}</div>
     </div>
   );

@@ -130,7 +130,7 @@ export default async function DocPage({ params }: DocPageProps) {
               )}
             </ol>
           </nav>
-          <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+          <h1 className="text-3xl font-medium tracking-tight text-balance sm:text-4xl">
             {page.title}
           </h1>
           {page.description && (

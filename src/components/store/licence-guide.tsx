@@ -41,7 +41,7 @@ export function LicenceGuide({ className }: { className?: string }) {
     >
       <h2
         id="licence-guide-title"
-        className="text-2xl font-bold tracking-tight"
+        className="text-2xl font-medium tracking-tight"
       >
         Which licence do I need?
       </h2>

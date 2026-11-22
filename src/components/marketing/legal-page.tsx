@@ -34,10 +34,10 @@ export async function LegalPage<T extends LegalPageContent>({
         <DraftNotice date={content.lastUpdated} label={t('pages.draft')} />
       )}
       <header className="mb-12">
-        <p className="text-primary font-mono text-xs tracking-wider uppercase">
+        <p className="text-muted-foreground text-sm font-medium">
           {content.heroEyebrow}
         </p>
-        <h1 className="text-foreground mt-2 text-3xl font-bold tracking-tight md:text-5xl">
+        <h1 className="text-foreground mt-3 text-3xl font-medium tracking-tight md:text-5xl">
           {content.heroTitle}
         </h1>
         <p className="text-muted-foreground mt-4 text-base md:text-lg">

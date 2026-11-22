@@ -5,9 +5,10 @@ import { GalleryCardVideo } from './gallery-card-video';
 /** "Remotion · HTML · 16 s · rendered in 142 s": the reel's render receipt. */
 export function receipt(reel: GalleryReel): string {
   const engines = reel.engines.map((e) => ENGINE_LABELS[e] ?? e).join(' · ');
-  const parts = [engines, `${formatSeconds(reel.durationSeconds)} s`];
+  // A no-break space keeps each number with its unit when the line wraps.
+  const parts = [engines, `${formatSeconds(reel.durationSeconds)}\u00a0s`];
   if (reel.renderSeconds > 0)
-    parts.push(`rendered in ${formatSeconds(reel.renderSeconds)} s`);
+    parts.push(`rendered in ${formatSeconds(reel.renderSeconds)}\u00a0s`);
   return parts.filter(Boolean).join(' · ');
 }
 

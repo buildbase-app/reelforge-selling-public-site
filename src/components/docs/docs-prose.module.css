@@ -1,23 +1,16 @@
 /*
  * The docs pages' chrome and the typography of a page body (HTML from
  * src/lib/docs/markdown.ts). Scoped to the docs, so they never change global
- * styles. Quiet chrome: neutrals tinted a little toward the studio's ink
- * (the product pages' stage colour), hairlines at 10%, and one accent, the
- * brand pink, used only for the current page in the navigation. Ink pink
- * (#c8174d, 5.6:1 on white) on light, the brand pink on dark.
+ * styles. Quiet chrome from the site tokens (globals.css): tinted neutrals,
+ * hairlines and one accent, the brand ink, used only for the current page in
+ * the navigation.
  */
 
 .root {
-  --docs-line: oklch(0.25 0.02 285 / 0.1);
-  --docs-surface: oklch(0.975 0.004 285);
-  --docs-accent: #c8174d;
-  --docs-ease: cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-:global(.dark) .root {
-  --docs-line: oklch(0.96 0.01 285 / 0.1);
-  --docs-surface: oklch(0.205 0.008 285);
-  --docs-accent: #ff3d71;
+  --docs-line: var(--border);
+  --docs-surface: var(--muted);
+  --docs-accent: var(--brand-ink);
+  --docs-ease: var(--ease-out);
 }
 
 /* No motion: nothing on these pages needs to move to be understood. */

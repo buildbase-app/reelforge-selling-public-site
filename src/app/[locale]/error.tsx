@@ -46,7 +46,7 @@ export default function Error({ error, reset }: ErrorProps) {
           </div>
         </div>
 
-        <h1 className="text-foreground mb-2 text-3xl font-bold tracking-tight">
+        <h1 className="text-foreground mb-2 text-3xl font-medium tracking-tight">
           {t('generic.title')}
         </h1>
 

@@ -23,20 +23,16 @@ export function AgentTabs({
   const base = useId();
 
   function onKeyDown(e: KeyboardEvent<HTMLDivElement>) {
-    const last = clients.length - 1;
+    const n = clients.length;
     const next =
       e.key === 'ArrowRight'
-        ? active === last
-          ? 0
-          : active + 1
+        ? (active + 1) % n
         : e.key === 'ArrowLeft'
-          ? active === 0
-            ? last
-            : active - 1
+          ? (active + n - 1) % n
           : e.key === 'Home'
             ? 0
             : e.key === 'End'
-              ? last
+              ? n - 1
               : null;
     if (next === null) return;
     e.preventDefault();
@@ -67,8 +63,8 @@ export function AgentTabs({
             onClick={() => setActive(i)}
             className={
               i === active
-                ? 'shrink-0 rounded-full bg-white px-3.5 py-1.5 text-sm font-medium text-[#0b0b14]'
-                : 'shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium text-white/75 hover:text-white'
+                ? 'bg-stage-text text-stage shrink-0 rounded-lg px-3.5 py-1.5 text-sm font-medium'
+                : 'text-stage-muted hover:text-stage-text shrink-0 rounded-lg px-3.5 py-1.5 text-sm font-medium'
             }
           >
             {client.name}
@@ -85,11 +81,11 @@ export function AgentTabs({
           tabIndex={0}
           className="space-y-4 p-4 md:p-6"
         >
-          <p className="text-sm text-[#c9c9d6]">{client.summary}</p>
+          <p className="text-stage-muted text-sm">{client.summary}</p>
           {client.snippets.map((snippet) => (
             <figure key={snippet.label} className="min-w-0">
               <figcaption className="mb-2 flex items-center justify-between gap-3">
-                <span className="font-mono text-xs text-[#c9c9d6]">
+                <span className="text-stage-muted font-mono text-xs">
                   {snippet.label}
                 </span>
                 <CopyButton
@@ -99,14 +95,17 @@ export function AgentTabs({
                   ariaLabel={`Copy the ${client.name} snippet: ${snippet.label}`}
                 />
               </figcaption>
-              <pre className="overflow-x-auto rounded-lg bg-black/40 p-4 font-mono text-[13px] leading-relaxed text-[#f5f5f7]">
+              <pre
+                tabIndex={0}
+                className="text-stage-text overflow-x-auto rounded-lg bg-black/40 p-4 font-mono text-[13px] leading-relaxed"
+              >
                 <code>{snippet.code}</code>
               </pre>
             </figure>
           ))}
           {showChecked ? (
-            <p className="text-xs text-[#c9c9d6]">
-              <span className="font-semibold text-[#00d1b2]">
+            <p className="text-stage-muted text-xs">
+              <span className="text-stage-text font-medium">
                 What we checked:{' '}
               </span>
               {client.checked}

@@ -18,7 +18,9 @@ export default async function NotFound() {
           </div>
         </div>
 
-        <p className="text-foreground mb-2 text-6xl font-bold">404</p>
+        <p className="text-foreground mb-2 text-6xl font-medium tabular-nums">
+          404
+        </p>
 
         <h1 className="text-foreground mb-2 text-2xl font-semibold tracking-tight">
           {t('notFound.title')}

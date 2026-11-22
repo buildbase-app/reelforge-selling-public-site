@@ -51,7 +51,7 @@ export default async function DocsIndex({ params }: DocsIndexProps) {
           <DocsSidebar nav={nav} />
         </aside>
         <div className={`max-w-3xl min-w-0`}>
-          <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+          <h1 className="text-3xl font-medium tracking-tight sm:text-4xl">
             ReelForge docs
           </h1>
           <p className="text-muted-foreground mt-3 text-lg text-pretty">
