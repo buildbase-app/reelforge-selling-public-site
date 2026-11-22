@@ -1,0 +1,23 @@
+/**
+ * The self-hosted Geist Mono file a page can preload (src/app/geist-mono.css):
+ * its latin "core", which draws ASCII and the site's punctuation. Without a
+ * preload the browser finds a font only after the stylesheet is parsed and
+ * the page laid out, so on a slow link the text that needs it waits a round
+ * trip more. /agents preloads it: its largest element is a terminal snippet
+ * in Geist Mono. (Next's own font preloads never reach the HTML on Workers.)
+ */
+export const GEIST_MONO_CORE_URL =
+  '/fonts/geist-mono-latin-core.1afdd3db.woff2';
+
+/** A font preload; React hoists it into <head> from anywhere in the tree. */
+export function FontPreload({ href }: { href: string }) {
+  return (
+    <link
+      rel="preload"
+      href={href}
+      as="font"
+      type="font/woff2"
+      crossOrigin=""
+    />
+  );
+}

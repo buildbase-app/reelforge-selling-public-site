@@ -3,11 +3,13 @@
 # silent web loops the homepage plays, plus posters:
 #   <slug>.<hash>.mp4   H.264 High, 720x1280, CRF 27, no audio, faststart
 #   <slug>.<hash>.webm  AV1 (SVT-AV1, CRF 46) if ffmpeg has it, else VP9
-#   <slug>.<hash>.avif / .jpg  poster frame at POSTER_AT seconds (default 1.5)
+#   <slug>.<hash>.avif / .webp / .jpg  poster frame at POSTER_AT seconds
+#     (default 1.5), 720 px wide, plus -360 and -540 AVIF/WebP for srcset
 # <hash> is the first 8 hex chars of the master's SHA-256, so the files can be
 # cached as immutable. Usage:
 #   scripts/reels/transcode.sh <final.mp4> <slug> [out-dir=public/reels]
-# Needs ffmpeg 6+ (libx264; libsvtav1 or libvpx-vp9; libaom-av1 for AVIF).
+# Needs ffmpeg 6+ (libx264; libsvtav1 or libvpx-vp9; libaom-av1 for AVIF;
+# libwebp for WebP).
 set -euo pipefail
 src=${1:?final.mp4}
 slug=${2:?slug}
@@ -33,6 +35,15 @@ fi
 ffmpeg -v error -y -ss "$at" -i "$src" -frames:v 1 -vf "$vf" -q:v 4 "$base.jpg"
 ffmpeg -v error -y -ss "$at" -i "$src" -frames:v 1 -vf "$vf" -c:v libaom-av1 \
   -still-picture 1 -crf 38 -cpu-used 4 -pix_fmt yuv420p "$base.avif"
+ffmpeg -v error -y -ss "$at" -i "$src" -frames:v 1 -vf "$vf" -c:v libwebp \
+  -quality 78 "$base.webp"
+for w in 360 540; do
+  h=$((w * 16 / 9))
+  ffmpeg -v error -y -ss "$at" -i "$src" -frames:v 1 -vf "scale=$w:$h:flags=lanczos" \
+    -c:v libaom-av1 -still-picture 1 -crf 38 -cpu-used 4 -pix_fmt yuv420p "$base-$w.avif"
+  ffmpeg -v error -y -ss "$at" -i "$src" -frames:v 1 -vf "scale=$w:$h:flags=lanczos" \
+    -c:v libwebp -quality 78 "$base-$w.webp"
+done
 
-ls -l "$base".*
+ls -l "$base".* "$base"-*
 echo "$slug $hash"

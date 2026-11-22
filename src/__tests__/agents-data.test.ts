@@ -56,12 +56,18 @@ describe('demo reels', () => {
   it('has real, small web files for every reel', () => {
     expect(reels.length).toBeGreaterThanOrEqual(1);
     for (const reel of reels) {
-      for (const [kind, path] of Object.entries(reel.files)) {
-        if (typeof path !== 'string') continue;
-        const file = join(PUBLIC, path);
-        expect(existsSync(file), path).toBe(true);
-        const max = kind === 'mp4' || kind === 'webm' ? 1.5e6 : 60e3;
-        expect(statSync(file).size, path).toBeLessThan(max);
+      for (const [kind, value] of Object.entries(reel.files)) {
+        if (typeof value !== 'string') continue;
+        // A `srcset` value lists several posters: check each one.
+        const paths = kind.endsWith('SrcSet')
+          ? value.split(',').map((s) => s.trim().split(' ')[0]!)
+          : [value];
+        for (const path of paths) {
+          const file = join(PUBLIC, path);
+          expect(existsSync(file), path).toBe(true);
+          const max = kind === 'mp4' || kind === 'webm' ? 1.5e6 : 60e3;
+          expect(statSync(file).size, path).toBeLessThan(max);
+        }
       }
     }
   });

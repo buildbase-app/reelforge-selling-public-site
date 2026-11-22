@@ -18,6 +18,7 @@ import {
   toolCatalog,
 } from '@/lib/agents/catalog';
 import { AGENT_CLIENTS, KEY_SCOPES } from '@/lib/agents/snippets';
+import { FontPreload, GEIST_MONO_CORE_URL } from '@/lib/fonts';
 import { getFaqSection } from '@/lib/platform/faqs';
 import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
 import '@/components/product/product.css';
@@ -63,6 +64,8 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
 
   return (
     <div className="rf-product flex flex-1 flex-col items-center">
+      {/* The largest element is the terminal snippet, in Geist Mono. */}
+      <FontPreload href={GEIST_MONO_CORE_URL} />
       <FAQJsonLd
         items={faq.items.map((item) => ({
           question: item.question,
@@ -199,6 +202,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
                 <div className="dark rf-stage relative mx-auto aspect-[9/16] w-40 overflow-hidden rounded-xl md:mx-0">
                   <ReelVideo
                     sources={[reelSource(reel)]}
+                    sizes="160px"
                     className="rf-screen absolute inset-0"
                   />
                 </div>

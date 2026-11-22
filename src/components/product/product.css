@@ -163,7 +163,10 @@
   width: min(48vw, 208px);
   z-index: -1;
 }
-.rf-stack-back > img {
+.rf-stack-back > picture {
+  display: contents;
+}
+.rf-stack-back img {
   display: block;
   width: 100%;
   height: auto;
@@ -175,13 +178,13 @@
 .rf-stack-left {
   translate: -128% -46%;
 }
-.rf-stack-left > img {
+.rf-stack-left img {
   rotate: -6deg;
 }
 .rf-stack-right {
   translate: 28% -54%;
 }
-.rf-stack-right > img {
+.rf-stack-right img {
   rotate: 6deg;
 }
 @media (max-width: 639px) {
