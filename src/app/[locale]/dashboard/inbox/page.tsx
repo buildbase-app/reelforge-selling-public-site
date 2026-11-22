@@ -4,6 +4,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
 import { NotificationInbox } from '@buildbase/sdk/react';
 import { Card, CardContent } from '@/components/ui/card';
+import { notificationLinkTarget } from '@/lib/security/safe-link';
 import { Mail, MousePointerClick, Radio } from 'lucide-react';
 
 /**
@@ -33,9 +34,13 @@ export default function InboxPage() {
         description={null}
         live
         onSelect={(item) => {
-          if (!item.link) return;
-          if (item.link.startsWith('/')) router.push(item.link);
-          else window.location.assign(item.link);
+          // A path on this site or an allow-listed https URL only.
+          const target = notificationLinkTarget(
+            item.link,
+            window.location.origin
+          );
+          if (target?.kind === 'internal') router.push(target.path);
+          else if (target) window.location.assign(target.url);
         }}
       />
 

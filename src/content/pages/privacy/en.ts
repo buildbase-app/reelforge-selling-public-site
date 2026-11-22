@@ -37,7 +37,7 @@ These providers may process data outside your country. [Transfer safeguards to b
 
 ## Analytics and verification scripts
 
-- **Ship or Die verification script**: every page loads a script from ship-or-die.com, before any cookie choice, so the Ship or Die hackathon can verify this site's traffic. It sends page-view information to Ship or Die; see Ship or Die's own privacy information for what it collects. [To be reviewed.]
+- **Ship or Die verification script**: public pages load a script from ship-or-die.com (order and account pages do not), before any cookie choice, so the Ship or Die hackathon can verify this site's traffic. It sends page-view information to Ship or Die; see Ship or Die's own privacy information for what it collects. [To be reviewed.]
 - **Cloudflare Web Analytics**: Cloudflare adds its analytics script to pages on this domain. It counts page views and performance without cookies.
 - Other analytics or marketing tags load only if you accept them in the cookie banner. [None are configured at the time of writing; to be confirmed.]
 

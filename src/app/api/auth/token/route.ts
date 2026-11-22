@@ -1,14 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma, setAuditContext } from '@/lib/db';
-import { createAuthToken } from '@/lib/auth';
 import { SESSION_COOKIE_NAME } from '@/lib/buildbase';
 import { authCodeSchema } from '@/lib/validation/schemas';
 import { validateBody, isValidationError } from '@/lib/validation/api';
-import { environmentId } from '@buildbase/sdk';
+import { environmentId, refuseCrossSiteAuthPost } from '@buildbase/sdk';
 import { buildbaseEnvironment, env } from '@/env';
 import { logger } from '@/lib/logger';
+import { clientIp } from '@/lib/security/client-ip';
 
+/**
+ * Trades the hosted sign-in page's code for a session and keeps it in an
+ * httpOnly cookie.
+ *
+ * Login CSRF (private security review SEC-14): only a same-origin JSON POST
+ * gets this far (the SDK's `refuseCrossSiteAuthPost`, also applied by the
+ * proxy), so only this site's own page can send a code here, and the SDK on
+ * that page exchanges a code only when its `state` matches the one this
+ * browser's `signIn()` stored (`OAUTH_STATE_INVALID` otherwise). BuildBase's
+ * code exchange takes no PKCE verifier for an app client.
+ *
+ * The answer carries the session id because the SDK (1.8) calls BuildBase
+ * from the browser with it; nothing else (no user record, no app token).
+ */
 export async function POST(request: NextRequest) {
+  const refused = refuseCrossSiteAuthPost(request);
+  if (refused) return refused;
+
   // Validate request body with Zod
   const validationResult = await validateBody(request, authCodeSchema);
   if (isValidationError(validationResult)) {
@@ -54,10 +71,7 @@ export async function POST(request: NextRequest) {
     const userId = userData.id || userData._id;
     setAuditContext({
       userId,
-      ipAddress:
-        request.headers.get('x-forwarded-for') ||
-        request.headers.get('x-real-ip') ||
-        undefined,
+      ipAddress: clientIp(request.headers),
       userAgent: request.headers.get('user-agent') || undefined,
       source: 'api',
     });
@@ -96,20 +110,15 @@ export async function POST(request: NextRequest) {
         });
       });
 
-    const token = createAuthToken({
-      userId,
-      workspaceId: null,
-      userRole: userData.role || 'user',
-    });
-
     // Set httpOnly cookie so getSession() can restore the session on page refresh
-    const response = NextResponse.json({
-      success: true,
-      message: 'Token verified successfully',
-      sessionId: sessionId,
-      token,
-      user: userData,
-    });
+    const response = NextResponse.json(
+      {
+        success: true,
+        message: 'Token verified successfully',
+        sessionId,
+      },
+      { headers: { 'Cache-Control': 'no-store' } }
+    );
 
     response.cookies.set(SESSION_COOKIE_NAME, sessionId, {
       httpOnly: true,

@@ -1,17 +1,27 @@
 /**
- * Session endpoint — reads httpOnly cookie and returns sessionId.
+ * Session endpoint: reads the httpOnly cookie and returns the session id.
  * Called by the SDK's getSession callback on page refresh.
- * Same pattern as next-auth's /api/auth/session.
+ *
+ * The BuildBase SDK (1.8) calls the platform from the browser with this id,
+ * so the page needs it. Hardening (private security review SEC-13): only a
+ * same-origin request gets it, the answer is never cached, and the strict
+ * CSP (src/lib/security/csp.ts) limits where a page can send data.
  */
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { SESSION_COOKIE_NAME } from '@/lib/buildbase';
 
-export async function GET() {
-  // Dynamic import to avoid issues with cookies() in route handlers
-  const { cookies } = await import('next/headers');
-  const cookieStore = await cookies();
-  const sessionId = cookieStore.get(SESSION_COOKIE_NAME)?.value ?? null;
-
-  return NextResponse.json({ sessionId });
+export async function GET(request: NextRequest) {
+  const fetchSite = request.headers.get('sec-fetch-site');
+  if (fetchSite && fetchSite !== 'same-origin') {
+    return NextResponse.json(
+      { sessionId: null },
+      { status: 403, headers: { 'Cache-Control': 'no-store' } }
+    );
+  }
+  const sessionId = request.cookies.get(SESSION_COOKIE_NAME)?.value ?? null;
+  return NextResponse.json(
+    { sessionId },
+    { headers: { 'Cache-Control': 'no-store' } }
+  );
 }

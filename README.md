@@ -91,6 +91,7 @@ the server and sanitised with `rehype-sanitize` (`src/lib/platform/markdown.ts`)
 | `SYSTEM_SECRET`                      | At least 32 characters (`openssl rand -base64 32`). Signs tokens this app mints              |
 | `BUILDBASE_WEBHOOK_SECRET`           | Console, Settings, Webhooks: endpoint `<site>/api/webhooks/buildbase`. Optional until set up |
 | `BUILDBASE_API_TOKEN`                | Console, Settings, API keys. Optional: FAQs, content blocks and server-rendered prices       |
+| `BUILDBASE_PROVISION_SECRET`         | Own secret for `/api/buildbase/provision` (workflow header `x-provision-secret`). Optional   |
 | `NEXT_PUBLIC_SUPPORT_EMAIL`          | Public support address. Optional; unset, pages point to `/contact` and `/help` instead       |
 | `SITE_URL`, `NEXT_PUBLIC_SITE_URL`   | The public URL                                                                               |
 

@@ -3,6 +3,7 @@ import { Prisma } from '@/generated/prisma/client';
 import { prisma, setAuditContext } from '@/lib/db';
 import { getSessionUser } from '@/lib/session';
 import { logger } from '@/lib/logger';
+import { clientIp } from '@/lib/security/client-ip';
 
 /**
  * GDPR Data Deletion — Right to Erasure (Article 17)
@@ -28,10 +29,7 @@ export async function DELETE(request: NextRequest) {
 
   setAuditContext({
     userId,
-    ipAddress:
-      request.headers.get('x-forwarded-for') ||
-      request.headers.get('x-real-ip') ||
-      undefined,
+    ipAddress: clientIp(request.headers),
     userAgent: request.headers.get('user-agent') || undefined,
     source: 'api',
   });
@@ -73,10 +71,7 @@ export async function DELETE(request: NextRequest) {
         model: 'User',
         recordId: userId,
         userId: null,
-        ipAddress:
-          request.headers.get('x-forwarded-for') ||
-          request.headers.get('x-real-ip') ||
-          null,
+        ipAddress: clientIp(request.headers) ?? null,
         source: 'api',
       },
     });

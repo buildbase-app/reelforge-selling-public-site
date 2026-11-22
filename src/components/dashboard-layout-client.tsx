@@ -23,6 +23,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { WebMcpTools } from '@/components/agents/web-mcp-tools';
+import { notificationLinkTarget } from '@/lib/security/safe-link';
 
 export function DashboardLayoutClient({
   children,
@@ -75,9 +76,14 @@ export function DashboardLayoutClient({
                 live
                 inboxProps={{
                   onSelect: (item) => {
-                    if (!item.link) return;
-                    if (item.link.startsWith('/')) localeRouter.push(item.link);
-                    else window.location.assign(item.link);
+                    // A path on this site or an allow-listed https URL only.
+                    const target = notificationLinkTarget(
+                      item.link,
+                      window.location.origin
+                    );
+                    if (target?.kind === 'internal') {
+                      localeRouter.push(target.path);
+                    } else if (target) window.location.assign(target.url);
                   },
                 }}
               />

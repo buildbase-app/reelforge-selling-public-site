@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma, setAuditContext } from '@/lib/db';
 import { logger } from '@/lib/logger';
 import { getSessionContext, type SessionContext } from '@/lib/server-auth';
+import { clientIp } from '@/lib/security/client-ip';
 
 /**
  * Mirrors SDK lifecycle events into the local database.
@@ -163,10 +164,7 @@ export async function POST(request: NextRequest) {
   setAuditContext({
     userId: session.userId,
     workspaceId,
-    ipAddress:
-      request.headers.get('x-forwarded-for') ||
-      request.headers.get('x-real-ip') ||
-      undefined,
+    ipAddress: clientIp(request.headers),
     userAgent: request.headers.get('user-agent') || undefined,
     source: 'event',
   });

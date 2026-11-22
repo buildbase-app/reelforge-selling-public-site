@@ -1,6 +1,14 @@
 import createIntlMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
 import { routing } from './i18n/routing';
+import {
+  apiSecurityHeaders,
+  baseSecurityHeaders,
+  createNonce,
+  pageCsp,
+  pageScope,
+} from './lib/security/csp';
+import { refuseCrossSiteRequest } from './lib/security/request-guard';
 
 const intlMiddleware = createIntlMiddleware(routing);
 
@@ -11,96 +19,17 @@ const intlMiddleware = createIntlMiddleware(routing);
  */
 const CANONICAL_HOST = process.env.CANONICAL_HOST;
 
-/**
- * The BuildBase server the browser talks to, as CSP sources: its origin for
- * fetch, and the matching ws:/wss: origin for the notification inbox's live
- * connection. Derived from the same variable the SDK is configured with, so a
- * self-hosted or local server is allowed without editing this file.
- */
-function buildbaseConnectSources(): string[] {
-  const raw = process.env.NEXT_PUBLIC_BUILDBASE_SERVER_URL;
-  if (!raw) return [];
-  try {
-    const url = new URL(raw);
-    const socket = `${url.protocol === 'https:' ? 'wss' : 'ws'}://${url.host}`;
-    return [url.origin, socket];
-  } catch {
-    return [];
+function withHeaders<T extends Response>(
+  response: T,
+  headers: Record<string, string>
+): T {
+  for (const [name, value] of Object.entries(headers)) {
+    response.headers.set(name, value);
   }
-}
-
-/**
- * The gallery's media origin (posters, reels, manifests): the R2 custom domain
- * by default, `GALLERY_MEDIA_URL` when the media moves (a Worker route, or a
- * local static server for a preview). Only that one origin is added.
- */
-function galleryMediaSource(): string {
-  const raw = process.env.GALLERY_MEDIA_URL;
-  if (!raw) return 'https://media.reelforge.buildbase.app';
-  try {
-    return new URL(raw).origin;
-  } catch {
-    return 'https://media.reelforge.buildbase.app';
-  }
-}
-
-function addSecurityHeaders(response: NextResponse): NextResponse {
-  const media = galleryMediaSource();
-  const cspDirectives = [
-    "default-src 'self'",
-    // No 'unsafe-eval' in production: nothing evaluates code at runtime
-    // (Markdown is rendered to HTML on the server). `next dev` needs it for
-    // React's development tooling, so only development allows it.
-    // ship-or-die.com: the hackathon's traffic verification script.
-    // static.cloudflareinsights.com: Cloudflare Web Analytics, which the
-    // buildbase.app zone injects into every page.
-    [
-      "script-src 'self' 'unsafe-inline'",
-      ...(process.env.NODE_ENV === 'production' ? [] : ["'unsafe-eval'"]),
-      'https://www.ship-or-die.com https://static.cloudflareinsights.com',
-    ].join(' '),
-    "style-src 'self' 'unsafe-inline'",
-    `img-src 'self' data: https: blob: ${media}`,
-    "font-src 'self' data:",
-    // Reels and posters: the R2 bucket (media.reelforge.buildbase.app) or
-    // GALLERY_MEDIA_URL's origin.
-    `media-src 'self' ${media}`,
-    // Service workers (push-sw.js) and any worker the site starts: own
-    // origin only.
-    "worker-src 'self'",
-    ["connect-src 'self' https:", ...buildbaseConnectSources()].join(' '),
-    "frame-ancestors 'none'",
-    "base-uri 'self'",
-    "form-action 'self'",
-    // Only where the site is served over HTTPS: in development it would
-    // rewrite every http://localhost API call to https and break them.
-    ...(process.env.NODE_ENV === 'production'
-      ? ['upgrade-insecure-requests']
-      : []),
-  ];
-
-  response.headers.set('Content-Security-Policy', cspDirectives.join('; '));
-  response.headers.set('X-Frame-Options', 'DENY');
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  response.headers.set('X-XSS-Protection', '1; mode=block');
-  response.headers.set(
-    'Permissions-Policy',
-    'camera=(), microphone=(), geolocation=(), interest-cohort=()'
-  );
-  // Note: the live header is `max-age=0; includeSubDomains; preload`. That
-  // comes from the buildbase.app zone's HSTS setting at Cloudflare's edge,
-  // which replaces this value on every response (static assets the Worker
-  // never touches show it too). It is fixed in the zone, not here.
-  response.headers.set(
-    'Strict-Transport-Security',
-    'max-age=31536000; includeSubDomains; preload'
-  );
-
   return response;
 }
 
-export function proxy(request: NextRequest): NextResponse {
+export function proxy(request: NextRequest): Response {
   const { pathname } = request.nextUrl;
 
   // --- Canonical host redirect (www → apex) ---
@@ -129,7 +58,10 @@ export function proxy(request: NextRequest): NextResponse {
     const rest = (docsTwin ?? docsPage)![1];
     const url = request.nextUrl.clone();
     url.pathname = rest ? `/api/content/docs/${rest}` : '/api/content/docs';
-    return NextResponse.rewrite(url);
+    return withHeaders(
+      NextResponse.rewrite(url),
+      apiSecurityHeaders(url.pathname)
+    );
   }
 
   // --- Markdown content negotiation ---
@@ -144,29 +76,59 @@ export function proxy(request: NextRequest): NextResponse {
     if (blogMatch) {
       const url = request.nextUrl.clone();
       url.pathname = `/api/content/blog/${blogMatch[1]}`;
-      return NextResponse.rewrite(url);
+      return withHeaders(
+        NextResponse.rewrite(url),
+        apiSecurityHeaders(url.pathname)
+      );
     }
     if (changelogMatch) {
       const url = request.nextUrl.clone();
       url.pathname = `/api/content/changelog/${changelogMatch[1]}`;
-      return NextResponse.rewrite(url);
+      return withHeaders(
+        NextResponse.rewrite(url),
+        apiSecurityHeaders(url.pathname)
+      );
     }
   }
 
-  // --- X-Robots-Tag for API routes ---
-  // Belt-and-braces: robots.txt already disallows /api/, but this
-  // header prevents accidental indexing if a crawler ignores robots.txt.
+  // --- API routes ---
   if (pathname.startsWith('/api/')) {
+    // State-changing calls from the browser: same-origin JSON only.
+    const refused = refuseCrossSiteRequest(request);
+    if (refused) return withHeaders(refused, apiSecurityHeaders(pathname));
     const response = NextResponse.next();
+    // Belt-and-braces: robots.txt already disallows /api/, but this
+    // header prevents accidental indexing if a crawler ignores robots.txt.
     response.headers.set('X-Robots-Tag', 'noindex, nofollow');
-    return response;
+    return withHeaders(response, apiSecurityHeaders(pathname));
   }
 
   // --- Propagate request-id for observability ---
   const requestId = request.headers.get('x-request-id') ?? crypto.randomUUID();
 
-  // Run intl middleware first
-  const response = intlMiddleware(request);
+  // --- Content Security Policy with a per-request nonce ---
+  // Next.js reads the nonce from the request's CSP header while rendering
+  // and puts it on its scripts; layouts read `x-nonce` for their own, and
+  // `x-page-scope` to leave third-party scripts off private pages. Both are
+  // always overwritten here, so a client cannot set them.
+  const scope = pageScope(pathname);
+  const nonce = createNonce();
+  const csp = pageCsp({
+    nonce,
+    scope,
+    dev: process.env.NODE_ENV !== 'production',
+    buildbaseServerUrl: process.env.NEXT_PUBLIC_BUILDBASE_SERVER_URL,
+    galleryMediaUrl: process.env.GALLERY_MEDIA_URL,
+  });
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set('x-nonce', nonce);
+  requestHeaders.set('x-page-scope', scope);
+  requestHeaders.set('Content-Security-Policy', csp);
+
+  // The locale middleware forwards these request headers to the page.
+  const response = intlMiddleware(
+    new NextRequest(request, { headers: requestHeaders })
+  );
 
   // Set request-id header
   response.headers.set('x-request-id', requestId);
@@ -185,8 +147,8 @@ export function proxy(request: NextRequest): NextResponse {
     ].join(', ')
   );
 
-  // Add security headers to the response
-  return addSecurityHeaders(response);
+  response.headers.set('Content-Security-Policy', csp);
+  return withHeaders(response, baseSecurityHeaders(scope));
 }
 
 export const config = {

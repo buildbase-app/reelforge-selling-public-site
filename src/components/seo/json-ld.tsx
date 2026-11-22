@@ -1,27 +1,45 @@
 import {
-  BreadcrumbJsonLd as NextSeoBreadcrumbJsonLd,
-  FAQJsonLd as NextSeoFAQJsonLd,
-  JsonLdScript,
-  OrganizationJsonLd as NextSeoOrganizationJsonLd,
-} from 'next-seo';
-import {
   absoluteUrl,
   brandLogoUrl,
   LEGAL_ENTITY_PLACEHOLDER,
   seoConfig,
 } from '@/config/seo';
+import { serializeJsonLd } from '@/lib/seo/json-ld';
 import type { SchemaOffer } from '@/lib/store/offers';
 
 /**
  * JSON-LD Structured Data Components
  *
- * Thin wrappers over `next-seo`'s JSON-LD helpers. They pre-fill brand /
- * publisher / author defaults from `@/config/seo`, resolve relative paths
- * to absolute URLs, and keep a simple prop shape for callers.
+ * They pre-fill brand / publisher / author defaults from `@/config/seo`,
+ * resolve relative paths to absolute URLs, and keep a simple prop shape for
+ * callers. Every one renders through `JsonLdScript` below, which serialises
+ * with our own escaping (`serializeJsonLd`) rather than a library's.
  *
- * Prefer these wrappers over importing from `next-seo` directly so that
- * brand identity stays centralised.
+ * Prefer these wrappers so that brand identity stays centralised.
  */
+
+// =============================================================================
+// Script element
+// =============================================================================
+
+export interface JsonLdScriptProps {
+  data: unknown;
+  scriptKey: string;
+  id?: string;
+}
+
+/** A `<script type="application/ld+json">` with HTML-safe JSON. */
+export function JsonLdScript({ data, scriptKey, id }: JsonLdScriptProps) {
+  if (data === null || data === undefined) return null;
+  return (
+    <script
+      key={scriptKey}
+      type="application/ld+json"
+      id={id || scriptKey}
+      dangerouslySetInnerHTML={{ __html: serializeJsonLd(data) }}
+    />
+  );
+}
 
 // =============================================================================
 // Organization
@@ -51,27 +69,28 @@ export function OrganizationJsonLd({
   const mergedSameAs = [...seoConfig.social.sameAs, ...(sameAs ?? [])].filter(
     Boolean
   );
-  return (
-    <NextSeoOrganizationJsonLd
-      name={name}
-      legalName={
-        // Not emitted while the legal entity is still a placeholder.
-        seoConfig.brand.legalName === LEGAL_ENTITY_PLACEHOLDER
-          ? undefined
-          : seoConfig.brand.legalName
-      }
-      url={url}
-      logo={logo ? absoluteUrl(logo) : brandLogoUrl()}
-      description={description}
-      foundingDate={seoConfig.brand.foundingDate}
-      sameAs={mergedSameAs.length > 0 ? mergedSameAs : undefined}
-      contactPoint={
-        contactPoint
-          ? [{ '@type': 'ContactPoint' as const, ...contactPoint }]
-          : undefined
-      }
-    />
-  );
+  const legalName =
+    // Not emitted while the legal entity is still a placeholder.
+    seoConfig.brand.legalName === LEGAL_ENTITY_PLACEHOLDER
+      ? undefined
+      : seoConfig.brand.legalName;
+  const data: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    ...(name && { name }),
+    ...(url && { url }),
+    logo: logo ? absoluteUrl(logo) : brandLogoUrl(),
+    ...(description && { description }),
+    ...(mergedSameAs.length > 0 && { sameAs: mergedSameAs }),
+    ...(contactPoint && {
+      contactPoint: [{ '@type': 'ContactPoint', ...contactPoint }],
+    }),
+    ...(seoConfig.brand.foundingDate
+      ? { foundingDate: seoConfig.brand.foundingDate }
+      : {}),
+    ...(legalName ? { legalName } : {}),
+  };
+  return <JsonLdScript data={data} scriptKey="organization-jsonld" />;
 }
 
 // =============================================================================
@@ -170,11 +189,17 @@ export interface BreadcrumbJsonLdProps {
 }
 
 export function BreadcrumbJsonLd({ items }: BreadcrumbJsonLdProps) {
-  return (
-    <NextSeoBreadcrumbJsonLd
-      items={items.map((i) => ({ name: i.name, item: absoluteUrl(i.url) }))}
-    />
-  );
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((i, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      ...(i.name && { name: i.name }),
+      item: absoluteUrl(i.url),
+    })),
+  };
+  return <JsonLdScript data={data} scriptKey="breadcrumb-jsonld" />;
 }
 
 // =============================================================================
@@ -192,14 +217,16 @@ export interface FAQJsonLdProps {
 
 export function FAQJsonLd({ items }: FAQJsonLdProps) {
   if (items.length === 0) return null;
-  return (
-    <NextSeoFAQJsonLd
-      questions={items.map((i) => ({
-        question: i.question,
-        answer: i.answer,
-      }))}
-    />
-  );
+  const data = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((i) => ({
+      '@type': 'Question',
+      name: i.question,
+      acceptedAnswer: { '@type': 'Answer', text: i.answer },
+    })),
+  };
+  return <JsonLdScript data={data} scriptKey="faq-jsonld" />;
 }
 
 // =============================================================================

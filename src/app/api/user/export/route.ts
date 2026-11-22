@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma, setAuditContext } from '@/lib/db';
 import { getSessionContext } from '@/lib/server-auth';
 import { logger } from '@/lib/logger';
+import { clientIp } from '@/lib/security/client-ip';
 
 /**
  * GDPR Data Export — Right of Access (Article 15)
@@ -22,10 +23,7 @@ export async function GET(request: NextRequest) {
 
   setAuditContext({
     userId,
-    ipAddress:
-      request.headers.get('x-forwarded-for') ||
-      request.headers.get('x-real-ip') ||
-      undefined,
+    ipAddress: clientIp(request.headers),
     userAgent: request.headers.get('user-agent') || undefined,
     source: 'api',
   });

@@ -1,8 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { JsonLdScript } from 'next-seo';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
+import { BreadcrumbJsonLd, JsonLdScript } from '@/components/seo/json-ld';
 import { PostList } from '@/components/marketing/post-list';
 import type { Locale } from '@/i18n/config';
 import { authorPersonJsonLd, authorSameAs, initials } from '@/lib/blog/authors';
