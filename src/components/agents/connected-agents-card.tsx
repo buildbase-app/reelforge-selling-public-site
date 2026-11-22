@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { useTranslations } from 'next-intl';
 import { Bot } from 'lucide-react';
 import { ConnectedAgents, ConnectMcpGuide } from '@buildbase/sdk/react';

@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSaaSAuth } from '@buildbase/sdk/react';

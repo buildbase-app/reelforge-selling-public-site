@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { KeyRound, Loader2 } from 'lucide-react';
 import { useHoldings } from '@buildbase/sdk/react';
 import type { HoldingView } from '@buildbase/sdk';

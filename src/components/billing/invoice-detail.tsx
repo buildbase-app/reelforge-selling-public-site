@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { useTranslations } from 'next-intl';
 import { useInvoice } from '@buildbase/sdk/react';
 import { ExternalLink, FileText } from 'lucide-react';

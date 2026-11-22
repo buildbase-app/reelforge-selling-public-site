@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { CheckCircle2, Clock, Loader2, XCircle } from 'lucide-react';

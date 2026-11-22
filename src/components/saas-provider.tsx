@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { ApiVersion, type EventType, type EventData } from '@buildbase/sdk';
 import React from 'react';
 import { buildbaseEnvironment, env } from '@/env';

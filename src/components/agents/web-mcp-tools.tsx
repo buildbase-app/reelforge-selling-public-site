@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { useEffect } from 'react';
 import { provideWebMcpTools } from '@buildbase/sdk';
 import { useSaaSWorkspaces } from '@buildbase/sdk/react';

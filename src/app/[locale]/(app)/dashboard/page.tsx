@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { useTranslations } from 'next-intl';
 import { KeyRound, Receipt, ShoppingBag } from 'lucide-react';
 import { useHoldings, useMyOrders, useSaaSAuth } from '@buildbase/sdk/react';

@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { useEffect } from 'react';
 import { CookieBanner, openCookieBanner } from '@buildbase/sdk/react';
 

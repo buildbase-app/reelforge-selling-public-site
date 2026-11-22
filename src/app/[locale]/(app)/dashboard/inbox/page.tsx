@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
 import { NotificationInbox } from '@buildbase/sdk/react';

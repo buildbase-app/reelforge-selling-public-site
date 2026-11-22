@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useRouter as useLocaleRouter } from '@/i18n/routing';
