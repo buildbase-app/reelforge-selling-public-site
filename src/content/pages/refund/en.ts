@@ -1,14 +1,18 @@
----
-heroEyebrow: Legal
-heroTitle: Refund policy
-heroDescription: When you can get your money back for a ReelForge Commercial licence. Draft, pending review.
-seoTitle: Refund policy
-seoDescription: The refund policy for ReelForge, the self-hosted short-form video studio. Draft pending review.
-lastUpdated: 2026-11-21
-pendingReview: true
----
+import type { LegalPageContent } from '../page-loader';
 
-This policy applies to paid purchases from this store, such as a ReelForge Commercial licence, sold by **[Legal entity to be confirmed]**. Placeholders in square brackets are not decided yet.
+/** The refund page, English. The body is Markdown, rendered on the server. */
+const page: LegalPageContent = {
+  locale: 'en',
+  heroEyebrow: 'Legal',
+  heroTitle: 'Refund policy',
+  heroDescription:
+    'When you can get your money back for a ReelForge Commercial licence. Draft, pending review.',
+  seoTitle: 'Refund policy',
+  seoDescription:
+    'The refund policy for ReelForge, the self-hosted short-form video studio. Draft pending review.',
+  lastUpdated: '2026-11-21',
+  pendingReview: true,
+  body: `This policy applies to paid purchases from this store, such as a ReelForge Commercial licence, sold by **[Legal entity to be confirmed]**. Placeholders in square brackets are not decided yet.
 
 ## Free Personal licence keys
 
@@ -36,3 +40,7 @@ The money goes back to the payment method you used. Your Commercial licence ends
 ## Your legal rights
 
 This policy does not limit any rights you have by law, for example as a consumer in your country.
+`,
+};
+
+export default page;

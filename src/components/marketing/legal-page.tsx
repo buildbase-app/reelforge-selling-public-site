@@ -1,22 +1,16 @@
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { MdxRenderer } from '@/components/marketing/mdx/mdx-renderer';
+import { ArticleHtml } from '@/components/content/article-html';
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
-import type { PageContentLoader } from '@/content/pages/page-loader';
+import type {
+  LegalPageContent,
+  PageContentLoader,
+} from '@/content/pages/page-loader';
 import type { Locale } from '@/i18n/config';
+import { renderMarkdown } from '@/lib/platform/markdown';
 
-interface LegalDoc {
-  heroEyebrow: string;
-  heroTitle: string;
-  heroDescription: string;
-  lastUpdated: string;
-  pendingReview?: boolean;
-  body: { code: string };
-  bodyHtml: string;
-}
-
-/** A legal page from MDX: header, draft note when pending review, body. */
-export async function LegalPage<T extends LegalDoc>({
+/** A legal page: header, draft note when pending review, Markdown body. */
+export async function LegalPage<T extends LegalPageContent>({
   locale,
   path,
   loader,
@@ -54,9 +48,7 @@ export async function LegalPage<T extends LegalDoc>({
         </p>
       </header>
 
-      <div>
-        <MdxRenderer code={content.body.code} html={content.bodyHtml} />
-      </div>
+      <ArticleHtml html={renderMarkdown(content.body).html} />
     </div>
   );
 }

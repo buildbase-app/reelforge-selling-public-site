@@ -47,11 +47,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# contentlayer
-.contentlayer
-
-# pagefind (generated at build time)
-public/pagefind
 .yalc/@buildbase/sdk/*
 
 # next-sitemap output (postbuild)

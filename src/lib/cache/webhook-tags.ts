@@ -11,9 +11,9 @@ import { STORE_ITEMS_TAG } from '@/lib/store/item-tags';
  * - `item.*` (an item published, updated, unlisted, archived, ...): the
  *   store's items read (`getStoreItems`), so `/` and `/pricing` rebuild
  *   with the new prices and Offer JSON-LD;
- * - content events (`faq.updated`, `rich_content.updated`, `doc.*`, ...):
- *   the SDK's `buildbase:*` tags the content reads carry, so `/help` and
- *   the FAQ and block sections rebuild.
+ * - content events (`faq.updated`, `rich_content.updated`, `doc.*`,
+ *   `blog.*`, ...): the SDK's `buildbase:*` tags the content reads carry, so
+ *   `/help`, the FAQ and block sections, the blog and the changelog rebuild.
  *
  * Everything else (orders, users, ...) changes no cached page.
  */
@@ -39,6 +39,7 @@ export function pathsForWebhookEvent(
   event: string,
   data?: Record<string, unknown>
 ): string[] {
+  if (event.startsWith('blog.')) return blogPathsForWebhookEvent(data);
   const pages = event.startsWith('item.')
     ? ['/', '/pricing']
     : isContentWebhookEvent(event)
@@ -54,4 +55,27 @@ export function pathsForWebhookEvent(
     pages.map((page) => `/${locale}${page === '/' ? '' : page}`)
   );
   return event.startsWith('doc.') ? [...localized, '/sitemap.xml'] : localized;
+}
+
+/**
+ * A `blog.*` event (a post published, edited, unpublished or deleted in the
+ * console): the blog and changelog lists, their feeds, the post's own page
+ * when the event names its slug, and the sitemap. Tag and author pages are
+ * only rendered at runtime, so the `buildbase:blog` tag reaches them.
+ */
+function blogPathsForWebhookEvent(data?: Record<string, unknown>): string[] {
+  const slug = typeof data?.slug === 'string' ? data.slug : '';
+  const pages = [
+    '/blog',
+    '/blog/feed.xml',
+    '/changelog',
+    '/changelog/feed.xml',
+    ...(/^[a-z0-9-]+$/.test(slug)
+      ? [`/blog/${slug}`, `/changelog/${slug}`]
+      : []),
+  ];
+  return [
+    ...locales.flatMap((locale) => pages.map((page) => `/${locale}${page}`)),
+    '/sitemap.xml',
+  ];
 }

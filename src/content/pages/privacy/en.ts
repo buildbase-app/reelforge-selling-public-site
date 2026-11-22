@@ -1,12 +1,15 @@
----
-heroEyebrow: Legal
-heroTitle: Privacy Policy
-heroDescription: What personal data this store collects, why, who processes it, and your rights. Draft, pending review.
-lastUpdated: 2026-11-21
-pendingReview: true
----
+import type { LegalPageContent } from '../page-loader';
 
-This policy covers the ReelForge store at this website. ReelForge itself runs on your own computer or server and does not send us your videos or projects. Placeholders in square brackets are not decided yet.
+/** The privacy page, English. The body is Markdown, rendered on the server. */
+const page: LegalPageContent = {
+  locale: 'en',
+  heroEyebrow: 'Legal',
+  heroTitle: 'Privacy Policy',
+  heroDescription:
+    'What personal data this store collects, why, who processes it, and your rights. Draft, pending review.',
+  lastUpdated: '2026-11-21',
+  pendingReview: true,
+  body: `This policy covers the ReelForge store at this website. ReelForge itself runs on your own computer or server and does not send us your videos or projects. Placeholders in square brackets are not decided yet.
 
 ## Who is responsible
 
@@ -40,10 +43,10 @@ These providers may process data outside your country. [Transfer safeguards to b
 
 ## Cookies
 
-- `bb_consent`: remembers your choice in the cookie banner.
-- `NEXT_LOCALE`: remembers your language choice.
-- `bb-session-id`: keeps you signed in (httpOnly; set when you sign in, removed when you sign out).
-- `sidebar_state`: remembers whether the account sidebar is open.
+- \`bb_consent\`: remembers your choice in the cookie banner.
+- \`NEXT_LOCALE\`: remembers your language choice.
+- \`bb-session-id\`: keeps you signed in (httpOnly; set when you sign in, removed when you sign out).
+- \`sidebar_state\`: remembers whether the account sidebar is open.
 
 The sign-in pages run by BuildBase may set their own cookies on their own domain.
 
@@ -58,3 +61,7 @@ Depending on where you live, you can ask for a copy of your data, correct it, de
 ## Contact
 
 Questions about this policy or your data: see the [contact page](/contact).
+`,
+};
+
+export default page;

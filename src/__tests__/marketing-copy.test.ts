@@ -19,6 +19,7 @@ const SCAN = [
   'src/content',
   'src/lib/agent',
   'src/lib/agents',
+  'src/lib/blog',
   'src/lib/platform',
   'src/lib/seo',
   'src/lib/store',
@@ -50,7 +51,7 @@ function hits(pattern: RegExp): string[] {
 describe('marketing copy', () => {
   it('scans the marketing sources', () => {
     expect(sources.length).toBeGreaterThan(50);
-    expect(sources.some((s) => s.file.endsWith('licence/en.mdx'))).toBe(true);
+    expect(sources.some((s) => s.file.endsWith('licence/en.ts'))).toBe(true);
   });
 
   it('never says "open source"', () => {

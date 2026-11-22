@@ -1,4 +1,4 @@
-import { allLicencePages } from 'contentlayer/generated';
+import en from './en';
 import { createPageLoader } from '../page-loader';
 
-export const licence = createPageLoader(allLicencePages);
+export const licence = createPageLoader([en]);
