@@ -4,3 +4,7 @@
 # Demo reels and posters: names carry a content hash (scripts/reels).
 /reels/*
   Cache-Control: public,max-age=31536000,immutable
+
+# Walkthrough videos for the docs: names carry a content hash (studio scripts/capture).
+/walkthroughs/*
+  Cache-Control: public,max-age=31536000,immutable
