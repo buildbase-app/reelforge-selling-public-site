@@ -121,6 +121,10 @@ typed by hand:
   larger media belongs on R2 (`media.reelforge.buildbase.app`, allowed by the CSP).
 - `src/data/mcp-tools.json`: the studio's MCP tools from a live `tools/list`,
   grouped by job: `REELFORGE_KEY=rf_... node scripts/agents/refresh-mcp-tools.mjs`.
+- `public/walkthroughs/*`: the walkthrough videos the studio docs link to
+  (`<slug>.<hash>.mp4|webm|jpg`), made and copied here by the studio's
+  `pnpm capture --only flows,videos --store-dir <this repo>` (its
+  `docs/CAPTURE.md`). They move to R2 once it is enabled.
 
 `node scripts/perf/first-load-js.mjs <url> / /agents` reports a page's
 first-load JavaScript (gzip) against a running build.
