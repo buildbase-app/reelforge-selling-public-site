@@ -14,6 +14,22 @@ import { useEffect, useRef, useState } from 'react';
  * - Every clip pauses while the tab is hidden.
  */
 
+/**
+ * The scroll-motion fallback (`@/lib/motion-fallback`), asked for from the
+ * reel players because pages with reels are the pages that move, so no page
+ * pays first-load JavaScript for it. It loads only where CSS scroll-driven
+ * animations are missing (the module then checks reduced motion and
+ * IntersectionObserver) and restarts on the current DOM on each call.
+ */
+let stopMotion: (() => void) | undefined;
+function requestMotionFallback() {
+  if (!window.CSS?.supports?.('animation-timeline: view()'))
+    import('@/lib/motion-fallback').then((m) => {
+      stopMotion?.();
+      stopMotion = m.startMotionFallback();
+    });
+}
+
 let current: HTMLVideoElement | null = null;
 
 function claim(v: HTMLVideoElement) {
@@ -43,6 +59,10 @@ export function GalleryCardVideo({
 }) {
   const ref = useRef<HTMLVideoElement>(null);
   const [shown, setShown] = useState(false);
+
+  // The grid's rise-and-tilt fallback where CSS scroll-driven animations are
+  // missing (src/lib/motion-fallback.ts).
+  useEffect(requestMotionFallback, []);
 
   useEffect(() => {
     const v = ref.current;

@@ -143,7 +143,7 @@ function OfferCard({
         </div>
         <CardTitle className="mt-2 text-lg">{title}</CardTitle>
         <div className="mt-2 flex items-baseline gap-2">
-          <span className="text-3xl font-bold tracking-tight">
+          <span className="text-3xl font-medium tracking-tight tabular-nums">
             {priceLabel(price)}
           </span>
           {was && (
@@ -193,7 +193,7 @@ function OfferCard({
 export function NotOnSale({ unreachable }: { unreachable: boolean }) {
   return (
     <div className="bg-muted/40 mx-auto max-w-2xl rounded-2xl border px-6 py-12 text-center">
-      <h2 className="text-2xl font-semibold tracking-tight">
+      <h2 className="text-2xl font-medium tracking-tight">
         {copy.notOnSaleTitle}
       </h2>
       <p className="text-muted-foreground mx-auto mt-3 max-w-xl">

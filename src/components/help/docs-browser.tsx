@@ -61,7 +61,7 @@ export function DocsBrowser({
               key={folder._id}
               style={{ paddingInlineStart: folder.depth * 12 }}
             >
-              <p className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+              <p className="text-muted-foreground text-sm font-medium">
                 {folder.name}
               </p>
               <ul className="mt-1 space-y-0.5">

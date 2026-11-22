@@ -57,7 +57,7 @@ export default async function ChangelogPage({ params }: ChangelogPageProps) {
       />
       <header className="mb-12 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div className="max-w-prose">
-          <h1 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
+          <h1 className="text-foreground text-3xl font-medium tracking-tight md:text-4xl">
             {t('heading')}
           </h1>
           <p className="text-muted-foreground mt-3 text-base leading-relaxed md:text-lg">

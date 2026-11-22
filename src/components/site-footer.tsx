@@ -44,14 +44,14 @@ export async function SiteFooter({ title }: SiteFooterProps) {
   ];
 
   return (
-    <footer className="border-border/50 bg-background w-full border-t">
+    <footer className="bg-background w-full border-t">
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid gap-10 md:grid-cols-4">
           {/* Brand column */}
           <div className="col-span-1 flex flex-col gap-4">
             <Link
               href="/"
-              className="text-foreground text-xl font-bold tracking-tight"
+              className="text-foreground text-lg font-semibold tracking-tight"
             >
               {title}
             </Link>
@@ -63,9 +63,7 @@ export async function SiteFooter({ title }: SiteFooterProps) {
           {/* Link columns */}
           {footerLinks.map(({ section, links }) => (
             <div key={section} className="flex flex-col gap-3">
-              <h3 className="text-foreground text-sm font-semibold">
-                {section}
-              </h3>
+              <h2 className="text-foreground text-sm font-medium">{section}</h2>
               <ul className="flex flex-col gap-2">
                 {links.map((link) => (
                   <li key={link.href}>
@@ -94,7 +92,7 @@ export async function SiteFooter({ title }: SiteFooterProps) {
         </div>
 
         {/* Bottom bar */}
-        <div className="border-border/50 mt-10 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row">
+        <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row">
           <p className="text-muted-foreground text-xs">
             © {year} {title}. {t('footer.rights')}.
           </p>

@@ -100,7 +100,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
           </span>
         )}
         <div className="flex flex-col gap-2">
-          <h1 className="text-foreground text-3xl font-semibold tracking-tight md:text-4xl">
+          <h1 className="text-foreground text-3xl font-medium tracking-tight md:text-4xl">
             {author.name}
           </h1>
           {links.length > 0 ? (

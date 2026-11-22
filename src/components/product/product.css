@@ -1,83 +1,105 @@
 /*
  * Product pages (/ and /agents). Scoped under .rf-product so nothing here
- * reaches other pages. Motion uses only transform and opacity, runs only with
- * `prefers-reduced-motion: no-preference`, and only where the browser has
- * scroll-driven animations; everywhere else the final state shows at once
- * (no JavaScript polyfill). Dark "stage" bands keep the studio's own colours
- * in both themes, so the reels and the page read as one product.
+ * reaches other pages. Colours come from the tokens in globals.css: tinted
+ * neutrals, one accent (the brand pink) and the stage, the dark band behind
+ * the reels that stays dark in both themes so the reels and the page read as
+ * one product. The reels are the bright element; the chrome stays quiet.
+ *
+ * Motion follows the scroll (AGENTS.md "Design and UI/UX rules"): CSS
+ * scroll-driven animations where the browser has them, the small
+ * IntersectionObserver fallback in src/lib/motion-fallback.ts where it does
+ * not (it adds `.rf-io` to <html>). Only transform and opacity move, nothing
+ * shifts the layout, and all of it is off under prefers-reduced-motion.
  */
 
 .rf-product {
-  --rf-stage: #0b0b14;
-  --rf-stage-2: #14141f;
-  --rf-stage-line: rgb(255 255 255 / 0.1);
-  --rf-stage-text: #f5f5f7;
-  --rf-stage-muted: #c9c9d6;
-  --rf-pink: #ff3d71;
-  --rf-teal: #00d1b2;
-  --rf-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --rf-ease: var(--ease-out);
 }
 
 /* Bands that stay dark in both themes. */
 .rf-stage {
-  background: var(--rf-stage);
-  color: var(--rf-stage-text);
+  background: var(--stage);
+  color: var(--stage-text);
   color-scheme: dark;
 }
 .rf-stage .rf-muted {
-  color: var(--rf-stage-muted);
+  color: var(--stage-muted);
 }
 
-/* Large, tight display type (SITE_PLAN B.1). */
+/* Display type: size and tracking carry the hierarchy, not weight. */
 .rf-display {
-  font-size: clamp(2.6rem, 7vw, 5.75rem);
-  font-weight: 700;
+  font-size: clamp(2.5rem, 6.2vw, 5.25rem);
+  font-weight: 500;
   letter-spacing: -0.035em;
   line-height: 1.02;
   text-wrap: balance;
 }
 .rf-headline {
-  font-size: clamp(2rem, 5vw, 3.75rem);
-  font-weight: 600;
+  font-size: clamp(2rem, 4.4vw, 3.25rem);
+  font-weight: 500;
   letter-spacing: -0.03em;
-  line-height: 1.05;
+  line-height: 1.08;
   text-wrap: balance;
 }
+/* The second sentence of a display line: a quieter step of the same ink. */
+.rf-quiet {
+  color: var(--muted-foreground);
+}
+.rf-stage .rf-quiet {
+  color: var(--stage-muted);
+}
+/* The line above a section title: quiet text, sentence case, no accent. */
 .rf-eyebrow {
   font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  /* Darker pink on light backgrounds: #ff3d71 on white is only 3.4:1. */
-  color: #c8174d;
+  font-weight: 500;
+  color: var(--muted-foreground);
 }
-.dark .rf-eyebrow,
 .rf-stage .rf-eyebrow {
-  color: var(--rf-pink);
-}
-.rf-accent {
-  color: var(--rf-pink);
+  color: var(--stage-muted);
 }
 
-/* Primary pill: pink with dark text (white on #ff3d71 fails AA). */
+/*
+ * The signature: a reel's render receipt in mono, the way the studio's own
+ * render manifest reads (engines, seconds, render time). Used under every
+ * reel, and for step numbers.
+ */
+.rf-receipt {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+.rf-stage .rf-receipt {
+  color: var(--stage-muted);
+}
+
+/* The one accent button: pink with dark text (white on pink fails AA). */
 .rf-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.5rem;
   height: 2.75rem;
-  padding: 0 1.4rem;
-  border-radius: 999px;
-  background: var(--rf-pink);
-  color: #0b0b14;
-  font-weight: 600;
-  font-size: 0.95rem;
-  transition: transform 200ms var(--rf-ease-out);
+  padding: 0 1.25rem;
+  border-radius: 10px;
+  background: var(--brand);
+  color: var(--brand-foreground);
+  font-weight: 500;
+  font-size: 0.9375rem;
+  transition:
+    background-color var(--dur-fast) var(--rf-ease),
+    transform var(--dur-fast) var(--rf-ease);
 }
 .rf-pill:hover {
-  transform: translateY(-1px);
+  background: color-mix(in oklab, var(--brand) 88%, black);
+}
+.rf-pill:active {
+  transform: scale(0.98);
 }
 .rf-pill-sm {
   height: 2rem;
-  padding: 0 0.9rem;
+  padding: 0 0.75rem;
+  border-radius: 8px;
   font-size: 0.8125rem;
 }
 .rf-link {
@@ -88,7 +110,7 @@
   text-decoration: underline;
 }
 .rf-product :is(a, button, summary, [tabindex]):focus-visible {
-  outline: 2px solid var(--rf-pink);
+  outline: 2px solid var(--ring);
   outline-offset: 2px;
   border-radius: 6px;
 }
@@ -96,21 +118,23 @@
 /* Phone frame: a generic rounded rectangle, no device details. */
 .rf-phone {
   position: relative;
-  width: min(78vw, 300px);
+  width: min(72vw, 300px);
   aspect-ratio: 9 / 16;
-  border-radius: 2.4rem;
+  border-radius: 40px;
   padding: 10px;
-  background: var(--rf-stage-2);
-  border: 1px solid var(--rf-stage-line);
-  box-shadow: 0 40px 120px -40px rgb(255 61 113 / 0.35);
+  background: var(--stage-raised);
+  border: 1px solid var(--stage-line);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.08),
+    var(--shadow-float);
 }
 .rf-phone > .rf-screen {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border-radius: 1.9rem;
-  background: #05060f;
+  border-radius: 30px;
+  background: var(--stage);
 }
 .rf-screen video,
 .rf-screen img {
@@ -121,17 +145,66 @@
   object-fit: cover;
 }
 
-/* Desktop "window" for code and transcripts: no fake traffic lights. */
-.rf-window {
-  border: 1px solid var(--rf-stage-line);
-  border-radius: 12px;
-  background: var(--rf-stage-2);
-  color: var(--rf-stage-text);
+/*
+ * The hero visual: the phone with two more real renders from the gallery
+ * standing behind it. Three depths, so the scroll can move them at three
+ * speeds. The box is fixed by the phone, so nothing here can shift layout.
+ */
+.rf-stack {
+  position: relative;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+.rf-stack-back {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(48vw, 208px);
+  z-index: -1;
+}
+.rf-stack-back > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  border-radius: 24px;
+  border: 1px solid var(--stage-line);
+  opacity: 0.72;
+}
+.rf-stack-left {
+  translate: -128% -46%;
+}
+.rf-stack-left > img {
+  rotate: -6deg;
+}
+.rf-stack-right {
+  translate: 28% -54%;
+}
+.rf-stack-right > img {
+  rotate: 6deg;
+}
+@media (max-width: 639px) {
+  .rf-stack-left {
+    translate: -100% -46%;
+  }
+  .rf-stack-right {
+    translate: 0% -54%;
+  }
 }
 
-/* Local (product) nav: becomes solid as the page scrolls. */
+/* Desktop "window" for code and transcripts: no fake traffic lights. */
+.rf-window {
+  border: 1px solid var(--stage-line);
+  border-radius: 12px;
+  background: var(--stage-raised);
+  color: var(--stage-text);
+  color-scheme: dark;
+}
+
+/* Local (product) nav. */
 .rf-local-nav {
-  background: color-mix(in oklch, var(--background) 82%, transparent);
+  background: color-mix(in oklab, var(--background) 88%, transparent);
   backdrop-filter: blur(12px);
 }
 
@@ -140,7 +213,7 @@
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: min(78%, 300px);
-  gap: 1rem;
+  gap: 16px;
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   overscroll-behavior-x: contain;
@@ -153,29 +226,76 @@
   .rf-rail {
     grid-auto-flow: row;
     grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
     overflow: visible;
   }
 }
 
-/* Load-in for the hero text: CSS only. */
+/*
+ * "How it works": the step list in the sticky column doubles as a progress
+ * rail. It is a list of links to the steps; with motion, the bar fills and
+ * the current step lights up as the steps scroll past.
+ */
+.rf-how-rail {
+  position: relative;
+  padding-left: 20px;
+}
+.rf-how-track,
+.rf-how-fill {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: 2px;
+  border-radius: 1px;
+}
+.rf-how-track {
+  background: var(--border);
+}
+.rf-how-fill {
+  background: var(--brand-ink);
+  transform-origin: 50% 0;
+  transform: scaleY(0);
+}
+.rf-how-label {
+  display: flex;
+  height: 40px;
+  align-items: center;
+}
+.rf-how-on {
+  color: var(--foreground);
+  opacity: 0;
+}
+
+/* Load-in for the hero text: one short fade and rise. */
 @media (prefers-reduced-motion: no-preference) {
   .rf-fade-up {
-    animation: rf-rise 700ms var(--rf-ease-out) both;
+    animation: rf-rise 500ms var(--rf-ease) both;
   }
   .rf-fade-up-2 {
-    animation: rf-rise 700ms 120ms var(--rf-ease-out) both;
+    animation: rf-rise 500ms 60ms var(--rf-ease) both;
+  }
+
+  @supports (animation-timeline: scroll()) {
+    /* Hero parallax over the first screen of scroll: the far reels move
+       least on screen, the phone a little more, the text with the page. */
+    .rf-par-far {
+      animation: rf-par-far linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
+    .rf-par-near {
+      animation: rf-par-near linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
   }
 
   @supports (animation-timeline: view()) {
     .rf-reveal {
       animation: rf-rise linear both;
       animation-timeline: view();
-      animation-range: entry 0% cover 25%;
-    }
-    .rf-phone-in {
-      animation: rf-phone-in linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 40%;
+      animation-range: entry 0% entry calc(60% + var(--i, 0) * 8%);
     }
     /* Transcript lines appear one after another as the panel scrolls in. */
     .rf-step {
@@ -184,11 +304,70 @@
       animation-range: entry calc(10% + var(--i, 0) * 4%) cover
         calc(25% + var(--i, 0) * 4%);
     }
-    .rf-local-nav {
-      animation: rf-nav-solid linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 120px;
+  }
+
+  @supports (timeline-scope: none) and (animation-timeline: view()) {
+    .rf-how {
+      timeline-scope: --rf-how, --rf-how-1, --rf-how-2, --rf-how-3;
     }
+    .rf-how-steps {
+      view-timeline-name: --rf-how;
+    }
+    .rf-how-steps > :nth-child(1) {
+      view-timeline-name: --rf-how-1;
+    }
+    .rf-how-steps > :nth-child(2) {
+      view-timeline-name: --rf-how-2;
+    }
+    .rf-how-steps > :nth-child(3) {
+      view-timeline-name: --rf-how-3;
+    }
+    .rf-how-fill {
+      animation: rf-fill linear both;
+      animation-timeline: --rf-how;
+      animation-range: cover 50vh cover calc(100% - 50vh);
+    }
+    .rf-how-label .rf-how-on {
+      animation: rf-on linear both;
+      animation-range: cover 0% cover 100%;
+    }
+    .rf-how-label:nth-child(1) .rf-how-on {
+      animation-timeline: --rf-how-1;
+    }
+    .rf-how-label:nth-child(2) .rf-how-on {
+      animation-timeline: --rf-how-2;
+    }
+    .rf-how-label:nth-child(3) .rf-how-on {
+      animation-timeline: --rf-how-3;
+    }
+  }
+
+  /* The IntersectionObserver fallback (src/lib/motion-fallback.ts). */
+  .rf-io .rf-reveal,
+  .rf-io .rf-step {
+    transition:
+      opacity var(--dur-enter) var(--rf-ease),
+      transform var(--dur-enter) var(--rf-ease);
+  }
+  .rf-io :is(.rf-reveal, .rf-step):not([data-in]) {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  .rf-io .rf-par-far {
+    transform: translate3d(0, calc(var(--rf-p, 0) * 120px), 0);
+  }
+  .rf-io .rf-par-near {
+    transform: translate3d(0, calc(var(--rf-p, 0) * 40px), 0);
+  }
+  .rf-io .rf-how-fill {
+    transform: scaleY(var(--rf-how-p, 0));
+    transition: transform var(--dur-enter) var(--rf-ease);
+  }
+  .rf-io .rf-how-on {
+    transition: opacity var(--dur-enter) var(--rf-ease);
+  }
+  .rf-io .rf-how-label[data-on] .rf-how-on {
+    opacity: 1;
   }
 }
 
@@ -198,16 +377,31 @@
     transform: translateY(16px);
   }
 }
-@keyframes rf-phone-in {
-  from {
-    transform: translateY(40px) scale(0.92);
+@keyframes rf-par-far {
+  to {
+    transform: translate3d(0, 120px, 0);
   }
 }
-@keyframes rf-nav-solid {
+@keyframes rf-par-near {
+  to {
+    transform: translate3d(0, 40px, 0);
+  }
+}
+@keyframes rf-fill {
   from {
-    background: color-mix(in oklch, var(--background) 60%, transparent);
+    transform: scaleY(0);
   }
   to {
-    background: color-mix(in oklch, var(--background) 92%, transparent);
+    transform: scaleY(1);
+  }
+}
+@keyframes rf-on {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  35%,
+  65% {
+    opacity: 1;
   }
 }

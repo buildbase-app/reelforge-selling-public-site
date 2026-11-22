@@ -2,7 +2,7 @@
  * /gallery and /gallery/[slug]. Quiet chrome (the site's neutral tokens, one
  * accent for the selected filter), the reels are the bright element. Motion:
  * cards rise into place as they scroll in (CSS scroll-driven animation, an
- * IntersectionObserver fallback in gallery-reveal.tsx), the featured row has a
+ * IntersectionObserver fallback in src/lib/motion-fallback.ts), the featured row has a
  * small parallax on its posters; transform and opacity only, all of it off
  * under prefers-reduced-motion. Design rules: AGENTS.md "Design and UI/UX
  * rules" (unslop by Damir Sokolovsky, CC BY 4.0).
@@ -74,7 +74,7 @@
 }
 
 .gl-receipt {
-  font-family: var(--font-mono, ui-monospace, monospace);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
 }
 
@@ -116,13 +116,21 @@
   white-space: pre-wrap;
 }
 
-/* Scroll-driven reveal: the final state shows wherever this does not run. */
+/*
+ * Scroll-driven depth: each card rises and tilts back to flat as it scrolls
+ * in, from a perspective a little below it. The final state shows wherever
+ * this does not run; the IntersectionObserver fallback
+ * (src/lib/motion-fallback.ts, `.rf-io` on <html>) plays the same move once.
+ */
+.gl-card {
+  transform-origin: 50% 100%;
+}
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     .gl-card {
       animation: gl-rise linear both;
       animation-timeline: view();
-      animation-range: entry 0% entry 70%;
+      animation-range: entry 0% entry 80%;
     }
     .gl-featured .gl-parallax {
       animation: gl-drift linear both;
@@ -130,22 +138,20 @@
       animation-range: cover 0% cover 100%;
     }
   }
-  @supports not (animation-timeline: view()) {
-    .gl-io .gl-card {
-      transition:
-        opacity 500ms var(--gl-ease),
-        transform 500ms var(--gl-ease);
-    }
-    .gl-io .gl-card:not([data-in]) {
-      opacity: 0;
-      transform: translateY(24px);
-    }
+  .rf-io .gl-card {
+    transition:
+      opacity 500ms var(--gl-ease),
+      transform 500ms var(--gl-ease);
+  }
+  .rf-io .gl-card:not([data-in]) {
+    opacity: 0;
+    transform: perspective(1000px) translateY(32px) rotateX(12deg) scale(0.96);
   }
 }
 @keyframes gl-rise {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: perspective(1000px) translateY(32px) rotateX(12deg) scale(0.96);
   }
 }
 @keyframes gl-drift {

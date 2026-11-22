@@ -64,7 +64,7 @@ export default async function PricingPageRoute({ params }: PricingPageProps) {
     : [];
 
   return (
-    <div className="flex-1 px-6 py-12 md:py-16">
+    <div className="flex-1 px-4 py-16 md:px-6 md:py-24">
       <BreadcrumbJsonLd items={[{ name: t('title'), url: '/pricing' }]} />
       <SoftwareApplicationJsonLd offers={offers} />
       <FAQJsonLd
@@ -74,8 +74,10 @@ export default async function PricingPageRoute({ params }: PricingPageProps) {
         }))}
       />
       <div className="mx-auto max-w-6xl">
-        <div className="mb-10 text-center">
-          <h1 className="text-4xl font-bold tracking-tight">{t('title')}</h1>
+        <div className="mb-12 text-center">
+          <h1 className="text-4xl font-medium tracking-tight text-balance md:text-5xl">
+            {t('title')}
+          </h1>
           <p className="text-muted-foreground mx-auto mt-3 max-w-2xl text-lg">
             {t('subtitle')}
           </p>
@@ -105,7 +107,7 @@ export default async function PricingPageRoute({ params }: PricingPageProps) {
         >
           <h2
             id="pricing-faq-title"
-            className="text-center text-2xl font-bold tracking-tight"
+            className="text-center text-2xl font-medium tracking-tight"
           >
             Pricing questions
           </h2>

@@ -42,7 +42,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-16 md:py-24">
       <BreadcrumbJsonLd items={[{ name: TITLE, url: '/contact' }]} />
-      <h1 className="text-foreground text-3xl font-bold tracking-tight md:text-5xl">
+      <h1 className="text-foreground text-3xl font-medium tracking-tight md:text-5xl">
         {TITLE}
       </h1>
       <p className="text-muted-foreground mt-4 text-base md:text-lg">

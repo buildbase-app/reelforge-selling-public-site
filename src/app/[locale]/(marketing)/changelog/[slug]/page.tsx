@@ -93,7 +93,7 @@ export default async function ChangelogEntryPage({
           latest={entries[0]?.slug === entry.slug}
         />
 
-        <h1 className="text-foreground mt-4 text-3xl font-semibold tracking-tight text-balance md:text-4xl">
+        <h1 className="text-foreground mt-4 text-3xl font-medium tracking-tight text-balance md:text-4xl">
           {entry.title}
         </h1>
         {entry.description ? (
