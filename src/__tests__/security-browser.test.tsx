@@ -48,7 +48,8 @@ describe('JSON-LD components', () => {
     expect(html.match(/<script/gi)).toHaveLength(1);
     expect(html).not.toContain('<!--');
     expect(html).not.toContain('<img');
-    const json = html.replace(/^<script[^>]*>/, '').replace(/<\/script>$/, '');
+    // The element's text: after the opening tag, before the one closing tag.
+    const json = html.slice(html.indexOf('>') + 1, html.lastIndexOf('</'));
     const data = JSON.parse(json);
     expect(data['@type']).toBe('FAQPage');
     expect(data.mainEntity[0].name).toBe(HOSTILE[0]);
