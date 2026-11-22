@@ -1,10 +1,15 @@
 'use client';
 
-import { useLocale, useTranslations } from 'next-intl';
-import { usePathname, useRouter } from '@/i18n/routing';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { Globe } from 'lucide-react';
-import { locales, localeNames, type Locale } from '@/i18n/config';
+import {
+  defaultLocale,
+  locales,
+  localeNames,
+  type Locale,
+} from '@/i18n/config';
 import { setLocaleCookie } from '@/i18n/locale-cookie';
+import { localizePath, stripLocale } from '@/i18n/paths';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -13,26 +18,31 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-/** The language menu (Radix), loaded by `LanguageSwitcher` only when more than one language is served. */
-export default function LanguageSwitcherMenu() {
-  const locale = useLocale() as Locale;
-  const pathname = usePathname();
+/**
+ * The language menu (Radix), loaded by `LanguageSwitcher` only when more
+ * than one language is served. It reads the locale from the `[locale]`
+ * segment and builds paths with `@/i18n/paths`, so it works on the public
+ * pages, which have no intl provider (studio issue #79).
+ */
+export default function LanguageSwitcherMenu({ label }: { label: string }) {
+  const params = useParams<{ locale?: string }>();
+  const locale = (params?.locale ?? defaultLocale) as Locale;
+  const pathname = stripLocale(usePathname() ?? '/', locale);
   const router = useRouter();
-  const t = useTranslations('common.language');
 
   const switchLocale = (newLocale: Locale) => {
     // Persist preference in cookie (1 year expiry)
     setLocaleCookie(newLocale);
     // Navigate to same page in new locale
-    router.replace(pathname, { locale: newLocale });
+    router.replace(localizePath(pathname, newLocale));
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" title={t('select')}>
+        <Button variant="ghost" size="icon" title={label}>
           <Globe className="h-[1.2rem] w-[1.2rem]" />
-          <span className="sr-only">{t('select')}</span>
+          <span className="sr-only">{label}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">

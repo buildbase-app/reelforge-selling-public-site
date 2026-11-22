@@ -1,5 +1,5 @@
 import { getLocale } from 'next-intl/server';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import { PostMeta } from '@/components/marketing/post-meta';
 import type { BlogPost } from '@/lib/blog/posts';
 

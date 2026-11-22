@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Check, Copy } from 'lucide-react';
+import { Check, Copy } from '@/components/icons/lite';
 
 /**
  * Copies `text` and says "Copied" for two seconds (announced politely).
@@ -53,9 +53,9 @@ export function CopyButton({
       className={`inline-flex h-8 items-center gap-1.5 rounded-lg border border-current/20 px-3 text-xs font-medium transition-colors hover:bg-current/10 ${className ?? ''}`}
     >
       {copied ? (
-        <Check className="h-3.5 w-3.5" aria-hidden />
+        <Check className="h-3.5 w-3.5" />
       ) : (
-        <Copy className="h-3.5 w-3.5" aria-hidden />
+        <Copy className="h-3.5 w-3.5" />
       )}
       <span aria-live="polite">{copied ? 'Copied' : label}</span>
     </button>

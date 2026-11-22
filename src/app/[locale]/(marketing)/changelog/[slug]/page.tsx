@@ -6,7 +6,7 @@ import { PostMeta } from '@/components/marketing/post-meta';
 import { ArticleJsonLd, BreadcrumbJsonLd } from '@/components/seo/json-ld';
 import { type Locale } from '@/i18n/config';
 import { siteUrl } from '@/env';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import { postAuthorJsonLd } from '@/lib/blog/authors';
 import { getPost, getPosts } from '@/lib/blog/source';
 import { localePath, localeUrl } from '@/lib/i18n-url';

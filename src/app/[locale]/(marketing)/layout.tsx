@@ -8,6 +8,12 @@ import { MarketingShell } from '@/components/marketing/marketing-shell';
  * may import `@buildbase/sdk/react` statically: load it on demand instead
  * (see `@/components/auth/auth-island`). Pages that need the provider live in
  * `(store)`. The route group adds no path segment.
+ *
+ * There is no intl provider here either: translate on the server and pass
+ * the words to client components as props, link with `@/i18n/link`, and do
+ * not call next-intl's client hooks (`useTranslations`, `useLocale`, its
+ * `Link`, `useRouter`) in client code these pages load: they need the
+ * provider, whose message formatter alone is about 12 KB gzip.
  */
 export default function MarketingLayout({
   children,

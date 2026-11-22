@@ -10,7 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import {
   compareAtLabel,
   currentPrice,

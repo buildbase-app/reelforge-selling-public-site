@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import type { BlogPost } from '@/lib/blog/posts';
 
 interface RelatedPostsProps {

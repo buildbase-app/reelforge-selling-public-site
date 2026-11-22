@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Pause, Play } from 'lucide-react';
+import { Pause, Play } from '@/components/icons/lite';
 
 /**
  * A silent, looping product reel. One IntersectionObserver (shared by every
@@ -167,11 +167,7 @@ export function ReelVideo({
         aria-label={playing ? 'Pause reel' : 'Play reel'}
         className="rf-reel-toggle"
       >
-        {playing ? (
-          <Pause className="h-4 w-4" aria-hidden />
-        ) : (
-          <Play className="h-4 w-4" aria-hidden />
-        )}
+        {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
       </button>
     </div>
   );

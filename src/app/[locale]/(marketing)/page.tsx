@@ -22,7 +22,7 @@ import {
   Privacy,
   ReelGallery,
 } from '@/components/product/home-sections';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import { absoluteUrl } from '@/config/seo';
 import type { Locale } from '@/i18n/config';
 import { AGENT_CLIENTS } from '@/lib/agents/snippets';

@@ -10,7 +10,7 @@ import { ArticleJsonLd, BreadcrumbJsonLd } from '@/components/seo/json-ld';
 import type { Locale } from '@/i18n/config';
 import { siteUrl } from '@/env';
 import { seoConfig } from '@/config/seo';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import { initials, postAuthorJsonLd } from '@/lib/blog/authors';
 import { relatedPosts } from '@/lib/blog/posts';
 import { getPost, getPosts } from '@/lib/blog/source';
@@ -156,7 +156,18 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </div>
 
         <div className="border-border mt-12 border-t pt-6">
-          <ShareButtons url={fullUrl} title={post.title} />
+          <ShareButtons
+            url={fullUrl}
+            title={post.title}
+            labels={{
+              share: t('share'),
+              x: t('shareAriaX'),
+              linkedin: t('shareAriaLinkedin'),
+              facebook: t('shareAriaFacebook'),
+              copy: t('shareAriaCopy'),
+              copied: t('shareAriaCopied'),
+            }}
+          />
         </div>
 
         <RelatedPosts posts={relatedPosts(post, all)} />

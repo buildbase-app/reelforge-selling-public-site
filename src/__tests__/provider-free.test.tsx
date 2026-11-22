@@ -28,7 +28,7 @@ vi.mock('@/components/auth/auth-island', () => ({
   preloadAuth: vi.fn(),
 }));
 
-vi.mock('@/i18n/routing', () => ({
+vi.mock('@/i18n/link', () => ({
   Link: ({ href, children }: { href: string; children: React.ReactNode }) => (
     <a href={href}>{children}</a>
   ),

@@ -1,4 +1,4 @@
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import { cn } from '@/lib/utils';
 import type { DocsNav, NavPage, NavSection } from '@/lib/docs/nav';
 import styles from './docs-prose.module.css';

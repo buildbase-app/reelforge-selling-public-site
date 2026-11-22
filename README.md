@@ -29,16 +29,16 @@ OpenNext. See `DEPLOY_CLOUDFLARE.md`.
 
 ## What is in here
 
-| Area                                                                                  | Where                                                                                                           |
-| ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Marketing: home, pricing, blog, changelog, help, legal                                | `src/app/[locale]/...`; blog and changelog from BuildBase Blogs (`src/lib/blog/`)                               |
-| Sign-in and session (BuildBase hosted pages, httpOnly cookie)                         | `src/components/saas-provider.tsx`, `src/app/api/auth/*`, `src/lib/server-auth.ts`                              |
-| Customer dashboard: team, invoices, profile, security, settings, notifications, inbox | `src/app/[locale]/dashboard/*`                                                                                  |
-| Buying: pricing from published items, BuyButton, `/order`, `/dashboard/licences`      | `src/components/store/*`, `src/app/[locale]/(marketing)/{pricing,order}`, `src/app/[locale]/dashboard/licences` |
-| Legal drafts (licence, refund, privacy, terms) and contact                            | `src/content/pages/*/en.ts` (Markdown), `src/app/[locale]/(marketing)/contact`                                  |
-| Mirroring BuildBase into the database (SDK events, signed webhooks)                   | `src/app/api/events`, `src/app/api/webhooks/buildbase`                                                          |
-| Agents: MCP server at `/api/mcp`, OAuth discovery, `llms.txt`, `openapi.json`         | `src/lib/agent/`                                                                                                |
-| Database (Prisma)                                                                     | `prisma/schema.prisma`, `src/lib/db.ts`                                                                         |
+| Area                                                                                  | Where                                                                                                                   |
+| ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Marketing: home, pricing, blog, changelog, help, legal                                | `src/app/[locale]/...`; blog and changelog from BuildBase Blogs (`src/lib/blog/`)                                       |
+| Sign-in and session (BuildBase hosted pages, httpOnly cookie)                         | `src/components/saas-provider.tsx`, `src/app/api/auth/*`, `src/lib/server-auth.ts`                                      |
+| Customer dashboard: team, invoices, profile, security, settings, notifications, inbox | `src/app/[locale]/(app)/dashboard/*`                                                                                    |
+| Buying: pricing from published items, BuyButton, `/order`, `/dashboard/licences`      | `src/components/store/*`, `src/app/[locale]/(app)/(store)/{pricing,order}`, `src/app/[locale]/(app)/dashboard/licences` |
+| Legal drafts (licence, refund, privacy, terms) and contact                            | `src/content/pages/*/en.ts` (Markdown), `src/app/[locale]/(marketing)/contact`                                          |
+| Mirroring BuildBase into the database (SDK events, signed webhooks)                   | `src/app/api/events`, `src/app/api/webhooks/buildbase`                                                                  |
+| Agents: MCP server at `/api/mcp`, OAuth discovery, `llms.txt`, `openapi.json`         | `src/lib/agent/`                                                                                                        |
+| Database (Prisma)                                                                     | `prisma/schema.prisma`, `src/lib/db.ts`                                                                                 |
 
 ## Selling
 

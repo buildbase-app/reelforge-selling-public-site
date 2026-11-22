@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Link } from '@/i18n/routing';
+import { Loader2 } from '@/components/icons/lite';
+import { buttonClass } from '@/components/ui/button-classes';
+import { Link } from '@/i18n/link';
 import { preloadAuth, requestSignIn } from './auth-island';
 import { useHasSession } from './session-hint';
 
@@ -11,7 +11,9 @@ import { useHasSession } from './session-hint';
  * The header's "Sign in" / "Dashboard" button on pages without the
  * BuildBase provider (studio issue #79). The session hint comes from the
  * server, so the right button shows at once; the SDK loads only on hover,
- * focus or press, and then starts the hosted sign-in.
+ * focus or press, and then starts the hosted sign-in. It loads with every
+ * public page, so it draws `Button`'s markup with `buttonClass` instead of
+ * importing `Button` and its class tooling.
  */
 export function LiteAuthButton({
   labels,
@@ -23,9 +25,15 @@ export function LiteAuthButton({
 
   if (hasSession) {
     return (
-      <Button asChild>
-        <Link href="/dashboard">{labels.dashboard}</Link>
-      </Button>
+      <Link
+        href="/dashboard"
+        data-slot="button"
+        data-variant="default"
+        data-size="default"
+        className={buttonClass()}
+      >
+        {labels.dashboard}
+      </Link>
     );
   }
   return (
@@ -52,14 +60,24 @@ export function SignInButton({
 
   if (pending) {
     return (
-      <Button variant="outline" disabled>
+      <button
+        data-slot="button"
+        data-variant="outline"
+        data-size="default"
+        className={buttonClass('outline')}
+        disabled
+      >
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         {loadingLabel}
-      </Button>
+      </button>
     );
   }
   return (
-    <Button
+    <button
+      data-slot="button"
+      data-variant="default"
+      data-size="default"
+      className={buttonClass()}
       onPointerEnter={preloadAuth}
       onFocus={preloadAuth}
       onClick={() => {
@@ -70,6 +88,6 @@ export function SignInButton({
       }}
     >
       {children}
-    </Button>
+    </button>
   );
 }

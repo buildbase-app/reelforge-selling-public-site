@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { siteConfig } from '@/config/site';
@@ -117,8 +117,15 @@ export async function SiteFooter({ title }: SiteFooterProps) {
                 decoding="async"
               />
             </a>
-            <LanguageSwitcher />
-            <ThemeToggle label={t('theme.toggle')} />
+            <LanguageSwitcher label={t('language.select')} />
+            <ThemeToggle
+              labels={{
+                toggle: t('theme.toggle'),
+                light: t('theme.light'),
+                dark: t('theme.dark'),
+                system: t('theme.system'),
+              }}
+            />
           </div>
         </div>
       </div>

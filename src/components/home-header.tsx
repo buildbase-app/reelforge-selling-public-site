@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 
 const NAV_HREFS = [
   '/gallery',
@@ -61,8 +61,15 @@ export async function HomeHeader({ title, auth }: HomeHeaderProps) {
         </nav>
       </div>
       <div className="flex items-center gap-2">
-        <LanguageSwitcher />
-        <ThemeToggle label={t('theme.toggle')} />
+        <LanguageSwitcher label={t('language.select')} />
+        <ThemeToggle
+          labels={{
+            toggle: t('theme.toggle'),
+            light: t('theme.light'),
+            dark: t('theme.dark'),
+            system: t('theme.system'),
+          }}
+        />
         {auth}
       </div>
     </header>

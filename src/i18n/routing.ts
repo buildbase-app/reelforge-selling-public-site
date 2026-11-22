@@ -1,14 +1,9 @@
-import { defineRouting } from 'next-intl/routing';
 import { createNavigation } from 'next-intl/navigation';
-import { locales, defaultLocale } from './config';
+import { routing } from './routing-config';
 
-export const routing = defineRouting({
-  locales,
-  defaultLocale,
-  localePrefix: 'as-needed', // Only show locale prefix for non-default locales
-  localeDetection: false, // Locale is URL-only; no cookie/Accept-Language auto-redirect
-});
+export { routing };
 
-// Export navigation helpers for use in components
+// Export navigation helpers for use in components. They need the intl
+// provider in client code; the public pages link with `@/i18n/link`.
 export const { Link, redirect, usePathname, useRouter, getPathname } =
   createNavigation(routing);

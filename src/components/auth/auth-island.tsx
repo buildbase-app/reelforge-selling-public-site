@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useSyncExternalStore } from 'react';
-import dynamic from 'next/dynamic';
+import { clientOnly } from '@/components/client-only';
 import { isAuthCallback } from '@/lib/auth-callback';
 import type { AuthRequest } from './auth-island-sdk';
 
@@ -37,7 +37,7 @@ const loadIsland = () =>
     ? new Promise<never>(() => {})
     : import('./auth-island-sdk');
 
-const AuthIslandSdk = dynamic(loadIsland, { ssr: false });
+const AuthIslandSdk = clientOnly(loadIsland);
 
 function subscribe(listener: () => void) {
   listeners.add(listener);

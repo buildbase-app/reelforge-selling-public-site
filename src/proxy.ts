@@ -1,6 +1,6 @@
 import createIntlMiddleware from 'next-intl/middleware';
 import { NextRequest, NextResponse } from 'next/server';
-import { routing } from './i18n/routing';
+import { routing } from './i18n/routing-config';
 import {
   apiSecurityHeaders,
   baseSecurityHeaders,

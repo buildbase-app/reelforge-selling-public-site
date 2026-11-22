@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Link } from '@/i18n/routing';
+import { Link } from '@/i18n/link';
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
 import { PostList } from '@/components/marketing/post-list';
 import type { Locale } from '@/i18n/config';
