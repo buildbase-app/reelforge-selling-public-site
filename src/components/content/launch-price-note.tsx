@@ -1,14 +1,14 @@
 import { cn } from '@/lib/utils';
-import { getBlock } from '@/lib/platform/blocks';
+import { getLaunchPriceNote } from '@/lib/platform/blocks';
 import { MarkdownHtml } from '@/components/content/markdown-html';
 
 /**
- * A note beside the prices (for example how long a launch price lasts),
- * from the console content block `launch-price-note`. Shows nothing until
- * that block exists, so no launch claim is ever made from this repo.
+ * How long the launch price lasts, beside the prices: the console content
+ * block `launch-price-note`, or the built-in note with the end date when the
+ * block can't be used (src/lib/store/launch.ts). Nothing after the end date.
  */
 export async function LaunchPriceNote({ className }: { className?: string }) {
-  const block = await getBlock('launchPriceNote');
+  const block = await getLaunchPriceNote();
   if (!block) return null;
   return (
     <div
