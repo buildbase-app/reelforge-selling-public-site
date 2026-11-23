@@ -18,6 +18,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { ExternalLink, FileText, CreditCard, RefreshCw } from 'lucide-react';
 import { InvoiceDetail } from '@/components/billing/invoice-detail';
+import { OrderList } from '@/components/store/order-list';
 
 const STATUS_COLORS: Record<string, string> = {
   paid: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
@@ -35,6 +36,11 @@ function formatCurrency(amount: number, currency: string) {
   }).format(amount / 100);
 }
 
+/**
+ * Dashboard > Orders and receipts (the route keeps its old name): the
+ * buyer's one-time orders with a link to each receipt (studio issue #258),
+ * then any subscription invoices.
+ */
 export default function InvoicesPage() {
   const t = useTranslations('invoices');
   const ta = useTranslations('account.invoice');
@@ -66,16 +72,22 @@ export default function InvoicesPage() {
             />
             {t('refresh')}
           </Button>
-          <Button
-            size="sm"
-            onClick={() => openBillingPortal(window.location.href)}
-            disabled={portalLoading}
-          >
-            <CreditCard className="mr-1.5 h-4 w-4" />
-            {portalLoading ? t('billingPortalOpening') : t('billingPortal')}
-          </Button>
+          {/* Stripe's billing portal manages subscriptions; a one-time
+              buyer has nothing there, so it shows only with invoices. */}
+          {invoices.length > 0 && (
+            <Button
+              size="sm"
+              onClick={() => openBillingPortal(window.location.href)}
+              disabled={portalLoading}
+            >
+              <CreditCard className="mr-1.5 h-4 w-4" />
+              {portalLoading ? t('billingPortalOpening') : t('billingPortal')}
+            </Button>
+          )}
         </div>
       </div>
+
+      <OrderList />
 
       {error && (
         <Card className="border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-950">

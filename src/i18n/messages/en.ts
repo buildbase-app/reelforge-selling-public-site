@@ -16,7 +16,7 @@ const messages: Messages = {
       generalSettings: 'General Settings',
       userManagement: 'User Management',
       billingPayments: 'Billing & Payments',
-      invoices: 'Invoices',
+      invoices: 'Orders and receipts',
       workspace: 'Workspace',
       inbox: 'Inbox',
       licences: 'Licences',
@@ -373,17 +373,36 @@ const messages: Messages = {
     },
   },
   invoices: {
-    title: 'Invoices',
-    description: 'Billing history',
+    title: 'Orders and receipts',
+    description: 'Your ReelForge licences, what you paid and their receipts',
     refresh: 'Refresh',
     billingPortal: 'Billing portal',
     billingPortalOpening: 'Opening…',
     error: 'Failed to load invoices.',
+    orders: {
+      title: 'Orders',
+      description:
+        'One-time purchases and free licences. Each order page is its receipt and shows your licence key.',
+      loading: 'Loading your orders…',
+      error: 'Your orders could not be loaded. Reload the page to try again.',
+      empty:
+        'No orders yet. When you buy or claim a ReelForge licence, it appears here with its receipt.',
+      pricing: 'See pricing',
+      view: 'View receipt',
+      loadMore: 'Load more',
+      table: {
+        date: 'Date',
+        item: 'Licence',
+        total: 'Total',
+        status: 'Status',
+        receipt: 'Receipt',
+      },
+    },
     card: {
-      title: 'Invoice history',
+      title: 'Invoices',
       found: '{count} invoice(s) found',
       empty:
-        'No invoices yet. Invoices appear here after you subscribe to a paid plan.',
+        'No invoices. ReelForge licences are one-time purchases: their receipts are the orders above.',
     },
     table: {
       date: 'Date',

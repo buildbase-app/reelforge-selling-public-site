@@ -334,6 +334,23 @@ export interface InvoicesMessages {
   billingPortal: string;
   billingPortalOpening: string;
   error: string;
+  orders: {
+    title: string;
+    description: string;
+    loading: string;
+    error: string;
+    empty: string;
+    pricing: string;
+    view: string;
+    loadMore: string;
+    table: {
+      date: string;
+      item: string;
+      total: string;
+      status: string;
+      receipt: string;
+    };
+  };
   card: {
     title: string;
     found: string;
