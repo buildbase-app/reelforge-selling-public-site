@@ -18,7 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   #c2410c, which is also the focus ring there. It replaces the pink. The
   status colours (olive, steel blue, ochre, crimson) carry meaning only. The
   dark bands and the light card inside them are fixed to the dark and light
-  palettes. Every text role passes WCAG AA in both themes (checked with axe).
+  palettes. Error text on light uses a deepened crimson, #b3433b (5.6:1 on
+  white), the same rule as the accent's text shade. Every text role passes
+  WCAG AA in both themes (checked with axe).
 - Soft washes (`--wash-canvas`, `--wash-accent`, `.rf-wash`), tinted from the
   canvas and the accent, sit behind the dark bands only.
 - The hero is demo-first: a replay of a recorded Claude Code session that
@@ -36,6 +38,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   with its source.
 - Removed: the hero's phone and the two posters behind it
   (`public/reels/stack/`).
+
+### Fixed (studio issue #266)
+
+- The launch-price note shows only when a paid Commercial variant is on
+  sale. With no published items ("Not on sale yet") `/` and `/pricing` show
+  no note. When the server can't read the store, the note still shows,
+  because the browser may then show launch prices. #27's guarantees stand:
+  a shown launch price always has its end date, and there is no note after
+  that date. `paidCommercialOnSale` is in `src/lib/store/launch.ts`.
 
 ### Fixed (studio issue #251)
 

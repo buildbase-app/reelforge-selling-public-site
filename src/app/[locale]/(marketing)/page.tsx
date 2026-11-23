@@ -5,6 +5,7 @@ import { getStoreCtaLabels, StoreCtas } from '@/components/store/store-ctas';
 import { RemotionNotice } from '@/components/remotion-notice';
 import { AnnouncementBar } from '@/components/content/announcement-bar';
 import { LaunchPriceNote } from '@/components/content/launch-price-note';
+import { paidCommercialOnSale } from '@/lib/store/launch';
 import { FaqSection } from '@/components/help/faq-section';
 import { FAQJsonLd, SoftwareApplicationJsonLd } from '@/components/seo/json-ld';
 import { AgentTabs } from '@/components/product/agent-tabs';
@@ -122,7 +123,10 @@ export default async function HomePage({ params }: HomePageProps) {
           </p>
         </div>
         <LitePricingCatalog serverItems={serverItems} />
-        <LaunchPriceNote className="mt-6" />
+        <LaunchPriceNote
+          className="mt-6"
+          onSale={paidCommercialOnSale(store)}
+        />
         <RemotionNotice className="mx-auto mt-10 max-w-3xl" />
         <p className="mt-8 text-center text-sm">
           <Link href="/pricing" className="rf-link underline">
