@@ -18,5 +18,5 @@ export default function SdkCookieBanner({
   useEffect(() => {
     openCookieBanner();
   }, []);
-  return <CookieBanner privacyHref={privacyHref} />;
+  return <CookieBanner privacyHref={privacyHref} className="rf-consent" />;
 }

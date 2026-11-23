@@ -20,9 +20,15 @@ import {
  *
  * If the SDK's banner copy or markup changes in an upgrade, update this
  * file to match (the "Choose" view is always the SDK's).
+ *
+ * Both banners carry `rf-consent` (globals.css), which gives the SDK's
+ * classes our tokens and our button shape (studio #284). Reject all and
+ * Accept all look the same (the SDK's default, `buttons="equal"`): neither
+ * answer is made the easier one (no dark pattern; EDPB guidance on equal
+ * prominence). Choose is an outline button of the same shape.
  */
 const BUTTON =
-  'inline-flex items-center justify-center rounded-full font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none aria-disabled:opacity-50 aria-disabled:pointer-events-none ring-offset-background h-9 sm:h-8 px-3 text-xs';
+  'inline-flex items-center justify-center rounded-full font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none aria-disabled:opacity-50 aria-disabled:pointer-events-none h-9 sm:h-8 px-3 text-xs';
 const PRIMARY = `${BUTTON} bg-primary text-primary-foreground hover:bg-primary/90`;
 const OUTLINE = `${BUTTON} border border-input hover:bg-accent hover:text-accent-foreground`;
 
@@ -61,7 +67,7 @@ export function LiteCookieBanner({ privacyHref }: { privacyHref: string }) {
         aria-label="Cookie consent"
         tabIndex={-1}
         dir="ltr"
-        className="border-border bg-background text-foreground fixed inset-x-0 bottom-0 z-[2147483000] flex flex-col gap-3 border-t px-4 py-3 text-sm shadow-lg focus:outline-none sm:flex-row sm:items-end sm:justify-between"
+        className="rf-consent border-border bg-background text-foreground fixed inset-x-0 bottom-0 z-[2147483000] flex flex-col gap-3 border-t px-4 py-3 text-sm shadow-lg outline-none sm:flex-row sm:items-end sm:justify-between"
       >
         <div className="min-w-0 space-y-1 sm:max-w-2xl">
           <p className="font-medium">Cookies on this site</p>

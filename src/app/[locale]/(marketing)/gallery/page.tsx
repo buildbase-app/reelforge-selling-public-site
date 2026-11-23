@@ -108,7 +108,7 @@ export default async function GalleryPage({
         </header>
 
         {all.length === 0 ? (
-          <p className="text-muted-foreground mt-16 max-w-[60ch]">
+          <p className="text-muted-foreground max-w-measure mt-16">
             The gallery is being rendered. Meanwhile the{' '}
             <Link href="/#reels" className="text-foreground underline">
               reels on the home page

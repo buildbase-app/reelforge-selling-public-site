@@ -22,7 +22,7 @@ export async function PostList({
         <li key={post.slug}>
           <Link
             href={`/blog/${post.slug}`}
-            className="group focus-visible:ring-ring -mx-4 flex flex-col gap-2 rounded-lg px-4 py-8 transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            className="group -mx-4 flex flex-col gap-2 rounded-lg px-4 py-8 transition-colors"
           >
             <PostMeta post={post} locale={locale} />
             <Heading className="text-foreground decoration-foreground/30 text-xl font-medium tracking-tight underline-offset-4 group-hover:underline md:text-2xl">
