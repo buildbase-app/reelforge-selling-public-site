@@ -93,7 +93,7 @@
   --brand: #ff4f00; /* fills and large marks only, with ink text (5.6:1) */
   --brand-foreground: #141413;
   --brand-ink: #c2410c; /* the accent as text or a link on light (4.7:1) */
-  --destructive: #c4554d; /* crimson */
+  --destructive: #b3433b; /* crimson, deepened for text on light: 5.6:1 on white, 5.0:1 on canvas; white on it 5.6:1 */
   --destructive-foreground: #ffffff;
   --success: #788c5d; /* olive */
   --success-foreground: #141413;
