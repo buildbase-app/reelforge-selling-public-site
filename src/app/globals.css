@@ -201,8 +201,10 @@
 }
 
 @layer base {
+  /* Outlines are always the ring's colour, so a control's transition-colors
+     has nothing to fade: the focus ring shows at once (studio #284). */
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring;
   }
   html,
   body {
@@ -293,14 +295,24 @@
   color: var(--brand-ink);
 }
 /* While the banner is up, a control reached with Tab scrolls clear of it
-   instead of landing under it (it is about 160px tall on a phone, 100px
+   instead of landing under it, the footer's last link too: the page gets
+   room below its end, after the body's content, since the body itself is a
+   fixed screen tall (the banner is about 160px tall on a phone, 100px
    from 640px up). */
 html:has(.rf-consent) {
   scroll-padding-bottom: 11rem;
 }
+html:has(.rf-consent) body::after {
+  content: '';
+  display: block;
+  height: 11rem;
+}
 @media (width >= 40rem) {
   html:has(.rf-consent) {
     scroll-padding-bottom: 8rem;
+  }
+  html:has(.rf-consent) body::after {
+    height: 8rem;
   }
 }
 /* Here --ring is a triplet, so the site-wide ring is drawn from it. */
