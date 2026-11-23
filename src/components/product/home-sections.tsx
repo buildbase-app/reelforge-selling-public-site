@@ -263,7 +263,7 @@ export function ReelMarquee() {
             <h2 id="made-title" className="rf-headline">
               Every poster here is a real render
             </h2>
-            <p className="rf-muted mx-auto mt-4 max-w-[56ch] text-lg text-pretty">
+            <p className="rf-muted max-w-measure mx-auto mt-4 text-lg text-pretty">
               Frames from reels in the gallery. A script sent each manifest to
               ReelForge Studio over MCP, the way your agent would, and the
               studio rendered it.
@@ -326,7 +326,7 @@ export function AgentTranscript() {
           <h2 id="agent-title" className="rf-headline mt-3">
             One prompt in. A checked MP4 out
           </h2>
-          <p className="rf-muted mx-auto mt-5 max-w-[60ch] text-lg text-pretty">
+          <p className="rf-muted max-w-measure mx-auto mt-5 text-lg text-pretty">
             The agent reads what the studio can do, writes the scenes, checks
             them and renders. These are the real calls that made the reel on the
             right.
@@ -372,7 +372,7 @@ export function AgentTranscript() {
             </figcaption>
           </figure>
         </div>
-        <p className="rf-muted mx-auto mt-10 max-w-[70ch] text-center text-xs leading-relaxed">
+        <p className="rf-muted max-w-measure mx-auto mt-10 text-center text-xs leading-relaxed">
           We sent these calls from a short script that follows the studio&apos;s
           own workflow guide, so you can rerun them. In the studio&apos;s Docker
           test, headless Claude Code made a reel with the same tools
@@ -421,7 +421,7 @@ export function HowItWorks() {
           <h2 id="how-title" className="rf-headline mt-3">
             Three steps to your first reel
           </h2>
-          <p className="text-muted-foreground mt-5 max-w-[46ch] text-lg text-pretty">
+          <p className="text-muted-foreground max-w-measure mt-5 text-lg text-pretty">
             Everything after the first key happens from your agent: projects,
             renders, more keys, settings.
           </p>
@@ -464,7 +464,7 @@ export function HowItWorks() {
                 {step.title}
                 {'fn' in step ? <Fn n={step.fn} /> : null}
               </h3>
-              <p className="text-muted-foreground mt-3 max-w-[52ch] text-pretty">
+              <p className="text-muted-foreground max-w-measure mt-3 text-pretty">
                 {step.body}
               </p>
               <div className="rf-window mt-5 min-w-0">
@@ -505,7 +505,7 @@ export function ConnectAgent({ tabs }: { tabs: React.ReactNode }) {
           <h2 id="connect-title" className="rf-headline mt-3">
             Paste one line. Ask for a reel
           </h2>
-          <p className="rf-muted mx-auto mt-5 max-w-[60ch] text-lg text-pretty">
+          <p className="rf-muted max-w-measure mx-auto mt-5 text-lg text-pretty">
             Your instance, your keys. Keys carry scopes (read, write, render,
             admin) and are stored hashed.
           </p>
@@ -566,7 +566,7 @@ export function Engines() {
           <h2 id="engines-title" className="rf-headline mt-3">
             Four engines. One MP4
           </h2>
-          <p className="text-muted-foreground mx-auto mt-5 max-w-[60ch] text-lg text-pretty">
+          <p className="text-muted-foreground max-w-measure mx-auto mt-5 text-lg text-pretty">
             Each scene names its engine. ReelForge renders the clips and joins
             them with exact frame counts, so the timing your agent wrote is the
             timing you get.
@@ -609,7 +609,7 @@ export function ReelGallery() {
           <h2 id="reels-title" className="rf-headline mt-3">
             Real renders. Nothing mocked up
           </h2>
-          <p className="text-muted-foreground mx-auto mt-5 max-w-[60ch] text-lg text-pretty">
+          <p className="text-muted-foreground max-w-measure mx-auto mt-5 text-lg text-pretty">
             Every clip here was rendered by the studio over MCP. The prompt
             under it asks for the same reel: copy one and give it to your agent.
           </p>
@@ -737,7 +737,7 @@ export function Privacy() {
           <h2 id="private-title" className="rf-headline mt-3">
             Your server. Your files. Your keys
           </h2>
-          <p className="text-muted-foreground mx-auto mt-5 max-w-[60ch] text-lg text-pretty">
+          <p className="text-muted-foreground max-w-measure mx-auto mt-5 text-lg text-pretty">
             Own the studio instead of renting one: renders run on hardware you
             control, and nothing leaves it unless you set it up.
           </p>
@@ -889,7 +889,7 @@ export function FinalCta({ ctas }: { ctas: React.ReactNode }) {
         <h2 id="final-title" className="rf-display">
           Give your agent a studio
         </h2>
-        <p className="rf-muted mx-auto mt-6 max-w-[48ch] text-lg text-pretty">
+        <p className="rf-muted max-w-measure mx-auto mt-6 text-lg text-pretty">
           Start with the free Personal licence. Upgrade to Commercial when it
           starts earning.
         </p>
@@ -951,7 +951,7 @@ export function Footnotes() {
         <h2 id="footnotes-title" className="text-sm font-medium">
           Notes
         </h2>
-        <ol className="text-muted-foreground mt-4 list-decimal space-y-2 pl-5 text-xs leading-relaxed">
+        <ol className="text-muted-foreground max-w-measure mt-4 list-decimal space-y-2 pl-5 text-xs leading-relaxed">
           {notes.map((note, i) => (
             <li
               key={i}

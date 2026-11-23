@@ -6,18 +6,20 @@
  * variants and sizes it accepts, the base and the variant and size never set
  * the same property, so the plain join equals
  * `cn(buttonVariants({ variant, size }))`; a test checks every combination.
- * `destructive` changes the focus ring colour and `sm` and `lg` repeat
- * `rounded-md` (`sm` also the gap), which needs tailwind-merge: use `Button`
- * for those.
+ * `sm` and `lg` repeat `rounded-md` (`sm` also the gap), which needs
+ * tailwind-merge: use `Button` for those, and for `destructive`.
+ *
+ * No focus classes: every control gets the site's one `:focus-visible`
+ * ring from globals.css (2px accent, 2px offset; studio #284).
  */
 export const BUTTON_BASE =
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive";
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive";
 
 export const BUTTON_VARIANTS = {
   // The primary action: the accent with ink text (founder palette, #247).
   default: 'bg-brand text-brand-foreground hover:bg-brand/90',
   destructive:
-    'bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
+    'bg-destructive text-destructive-foreground hover:bg-destructive/90 dark:bg-destructive/60',
   outline:
     'border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50',
   secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',

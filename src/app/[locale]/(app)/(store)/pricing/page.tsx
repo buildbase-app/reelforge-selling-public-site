@@ -79,7 +79,7 @@ export default async function PricingPageRoute({ params }: PricingPageProps) {
           <h1 className="text-4xl font-medium tracking-tight text-balance md:text-5xl">
             {t('title')}
           </h1>
-          <p className="text-muted-foreground mx-auto mt-3 max-w-2xl text-lg">
+          <p className="text-muted-foreground max-w-measure mx-auto mt-3 text-lg">
             {t('subtitle')}
           </p>
         </div>
@@ -90,7 +90,7 @@ export default async function PricingPageRoute({ params }: PricingPageProps) {
         />
         <LicenceGuide className="mx-auto mt-10 max-w-4xl" />
         <RemotionNotice className="mx-auto mt-10 max-w-3xl" />
-        <p className="text-muted-foreground mx-auto mt-6 max-w-3xl text-center text-sm">
+        <p className="text-muted-foreground max-w-measure mx-auto mt-6 text-center text-sm">
           {t.rich('legal', {
             licence: (chunks) => (
               <Link href="/licence" className="underline underline-offset-2">

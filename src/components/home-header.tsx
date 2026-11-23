@@ -67,7 +67,7 @@ export async function HomeHeader({ title, auth, action }: HomeHeaderProps) {
       <div className="flex items-center gap-8">
         <Link
           href="/"
-          className="text-foreground text-base font-semibold tracking-tight sm:text-lg"
+          className="text-foreground rounded-sm text-base font-semibold tracking-tight sm:text-lg"
         >
           {title}
         </Link>

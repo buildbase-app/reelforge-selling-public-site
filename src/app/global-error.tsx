@@ -8,7 +8,7 @@ import { captureErrorSync } from '@/lib/sentry';
 // with the pages and should pull in nothing (studio issue #79). A test
 // keeps them equal to the originals.
 const GLOBAL_ERROR_BUTTON_CLASS =
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-brand text-brand-foreground hover:bg-brand/90 h-9 px-4 py-2 has-[>svg]:px-3";
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive bg-brand text-brand-foreground hover:bg-brand/90 h-9 px-4 py-2 has-[>svg]:px-3";
 
 const SVG = {
   xmlns: 'http://www.w3.org/2000/svg',

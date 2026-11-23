@@ -258,6 +258,9 @@ h1.rf-display {
   border-radius: 24px;
   background: var(--paper);
   color: var(--paper-text);
+  /* Light paper inside a dark band: the focus ring takes the light form of
+     the accent (#ff4f00 is under 3:1 on paper). */
+  --ring: var(--paper-ink);
   color-scheme: light;
 }
 .rf-paper .rf-muted {

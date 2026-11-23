@@ -83,7 +83,7 @@ export function HeaderCta({
       data-bb-goal="primary_cta"
       data-bb-goal-section="header"
       data-bb-goal-target={cta.target}
-      className="bg-brand text-brand-foreground focus-visible:ring-ring/50 inline-flex h-9 shrink-0 items-center rounded-md px-4 text-sm font-medium whitespace-nowrap transition-colors outline-none hover:bg-[color-mix(in_oklab,var(--brand)_88%,black)] focus-visible:ring-[3px] max-sm:px-3 max-sm:text-[13px]"
+      className="bg-brand text-brand-foreground inline-flex h-9 shrink-0 items-center rounded-md px-4 text-sm font-medium whitespace-nowrap transition-colors hover:bg-[color-mix(in_oklab,var(--brand)_88%,black)] max-sm:px-3 max-sm:text-[13px]"
     >
       {cta.label}
     </Link>

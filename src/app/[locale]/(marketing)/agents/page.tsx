@@ -89,7 +89,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
           <h1 id="agents-title" className="rf-display rf-fade-up mt-4">
             Your agent drives. Over MCP or REST
           </h1>
-          <p className="rf-muted rf-fade-up-2 mx-auto mt-6 max-w-[56ch] text-lg text-pretty md:text-xl">
+          <p className="rf-muted rf-fade-up-2 max-w-measure mx-auto mt-6 text-lg text-pretty md:text-xl">
             ReelForge Studio serves an MCP server at <code>/mcp</code> and a
             REST API at <code>/v1</code> on your own machine. Add it to your
             agent with a key, then ask for a reel.
@@ -116,7 +116,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
         <h2 id="keys-title" className="rf-headline mt-3">
           One key per agent, with only the scopes it needs
         </h2>
-        <p className="text-muted-foreground mt-5 max-w-[60ch] text-lg text-pretty">
+        <p className="text-muted-foreground max-w-measure mt-5 text-lg text-pretty">
           Keys are created on your studio, shown once and stored hashed. Give
           day-to-day agents a key without <code>admin</code>.
         </p>
@@ -190,7 +190,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
             <h2 id="cookbook-title" className="rf-headline mt-3">
               A prompt, the tools it calls, the reel it makes
             </h2>
-            <p className="text-muted-foreground mt-5 max-w-[62ch] text-lg text-pretty">
+            <p className="text-muted-foreground max-w-measure mt-5 text-lg text-pretty">
               Each recipe is a real render. No other docs needed: the server
               explains its own workflow to agents (the{' '}
               <code>reelforge://guide/workflow</code> resource and the{' '}
@@ -264,7 +264,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
           <h2 id="tools-title" className="rf-headline mt-3">
             {toolCatalog.count} MCP tools, grouped by job
           </h2>
-          <p className="text-muted-foreground mt-5 max-w-[62ch] text-lg text-pretty">
+          <p className="text-muted-foreground max-w-measure mt-5 text-lg text-pretty">
             Every REST route has a tool with the same scope, so an agent can do
             everything the API can
             <Fn n={2} />. Tool names are experimental until v1.0.
@@ -329,7 +329,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
           <h2 id="agents-notes" className="text-sm font-medium">
             Notes
           </h2>
-          <ol className="text-muted-foreground mt-4 list-decimal space-y-2 pl-5 text-xs leading-relaxed">
+          <ol className="text-muted-foreground max-w-measure mt-4 list-decimal space-y-2 pl-5 text-xs leading-relaxed">
             <li id="fn-1" className="scroll-mt-32">
               Wall-clock time from each render&apos;s render-manifest.json, one
               run each on {ref.renderedAt.slice(0, 10)}: ReelForge Studio{' '}

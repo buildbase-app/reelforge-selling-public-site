@@ -99,7 +99,8 @@ export function DashboardLayoutClient({
             </header>
             <div
               id="main-content"
-              className="min-h-0 flex-1 overflow-y-auto p-6"
+              tabIndex={-1}
+              className="min-h-0 flex-1 overflow-y-auto p-6 outline-none"
             >
               {/* An invited person sees what is waiting on every page, not
                   only on the empty workspace state. */}

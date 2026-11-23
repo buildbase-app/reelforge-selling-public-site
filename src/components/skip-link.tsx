@@ -7,8 +7,10 @@ import { getTranslations } from 'next-intl/server';
  * Allows users to skip navigation and jump directly to main content.
  *
  * - Hidden by default (sr-only)
- * - Becomes visible when focused via keyboard (Tab)
- * - Links to #main-content anchor
+ * - Becomes visible when focused via keyboard (Tab), fixed above the
+ *   sticky header (`z-60` over its `z-50`, studio #284), with the site's
+ *   focus ring
+ * - Links to #main-content, which takes focus (`tabIndex={-1}`)
  */
 export async function SkipLink() {
   const t = await getTranslations('common');
@@ -16,7 +18,7 @@ export async function SkipLink() {
   return (
     <a
       href="#main-content"
-      className="focus-visible:bg-background focus-visible:text-foreground focus-visible:ring-ring sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:top-4 focus-visible:left-4 focus-visible:z-50 focus-visible:rounded-md focus-visible:px-4 focus-visible:py-2 focus-visible:ring-2 focus-visible:outline-none"
+      className="focus:bg-background focus:text-foreground sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-60 focus:rounded-md focus:border focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:shadow-sm"
     >
       {t('accessibility.skipToContent')}
     </a>

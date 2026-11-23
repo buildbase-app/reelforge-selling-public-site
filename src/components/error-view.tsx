@@ -82,7 +82,11 @@ export function ErrorView({
 
   return (
     <div className="bg-background flex min-h-screen flex-col items-center justify-center p-6">
-      <main id="main-content" className="text-center">
+      <main
+        id="main-content"
+        tabIndex={-1}
+        className="text-center outline-none"
+      >
         <div className="mb-6 flex justify-center">
           <div className="bg-destructive/10 rounded-full p-4">
             <AlertCircle className="text-destructive h-12 w-12" />
