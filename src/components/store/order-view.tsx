@@ -3,7 +3,7 @@
 import '@/lib/zod-jitless';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { CheckCircle2, Clock, Loader2, XCircle } from 'lucide-react';
+import { CheckCircle2, Clock, Loader2, Printer, XCircle } from 'lucide-react';
 import {
   useHoldings,
   useMyOrder,
@@ -16,55 +16,13 @@ import {
   orderDisplayStatus,
   type BuyerOrderView,
   type HoldingView,
-  type OrderDisplayStatus,
 } from '@buildbase/sdk';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/routing';
 import { SupportContact } from '@/components/support-contact';
 import { OrderHoldings } from './order-holdings';
 import { recallOrder } from './last-order';
-
-// English only for now (src/i18n/config.ts); kept together for translation.
-const STATUS: Record<
-  OrderDisplayStatus,
-  { label: string; hint: string; tone: 'ok' | 'wait' | 'bad' }
-> = {
-  paid: {
-    label: 'Paid',
-    hint: 'Thank you. Your downloads and licence keys are below.',
-    tone: 'ok',
-  },
-  partly_paid: {
-    label: 'Partly paid',
-    hint: 'The first payment went through; the rest follows the plan you chose.',
-    tone: 'ok',
-  },
-  checkout_open: {
-    label: 'Waiting for payment',
-    hint: 'This page updates by itself when the payment arrives. A bank debit can take a few business days.',
-    tone: 'wait',
-  },
-  not_completed: {
-    label: 'Not completed',
-    hint: 'The checkout ended without a payment. Nothing was charged.',
-    tone: 'bad',
-  },
-  refunded: {
-    label: 'Refunded',
-    hint: 'This order was refunded; its downloads and keys no longer work.',
-    tone: 'bad',
-  },
-  partially_refunded: {
-    label: 'Partly refunded',
-    hint: 'Part of this order was refunded.',
-    tone: 'ok',
-  },
-  disputed: {
-    label: 'Disputed',
-    hint: 'The payment is disputed with the card issuer.',
-    tone: 'bad',
-  },
-};
+import { ORDER_STATUS as STATUS } from './order-status';
 
 /**
  * The page Stripe sends a buyer back to. A guest arrives with `?order=` and
@@ -240,6 +198,20 @@ function OrderLayout({
           )}
           <dt className="text-muted-foreground">Total</dt>
           <dd>{formatMinorAmountIntl(order.total, order.currency, 'en')}</dd>
+          {buyerLabel(order) && (
+            <>
+              <dt className="text-muted-foreground">Bought by</dt>
+              <dd>{buyerLabel(order)}</dd>
+            </>
+          )}
+          {order.refunded > 0 && (
+            <>
+              <dt className="text-muted-foreground">Refunded</dt>
+              <dd>
+                {formatMinorAmountIntl(order.refunded, order.currency, 'en')}
+              </dd>
+            </>
+          )}
         </dl>
         <ul className="mt-4 divide-y border-t text-sm">
           {order.lines.map((line) => (
@@ -255,6 +227,7 @@ function OrderLayout({
             </li>
           ))}
         </ul>
+        {order.paidAt && <Receipt signedIn={!guestOrder} />}
       </section>
 
       {holdings.length > 0 && (
@@ -283,6 +256,49 @@ function OrderLayout({
           .
         </p>
       </section>
+    </div>
+  );
+}
+
+/** "Ada Lovelace (ada@example.com)", or whichever of the two the order has. */
+function buyerLabel(order: BuyerOrderView): string | null {
+  const { name, email } = order.buyer;
+  if (name && email) return `${name} (${email})`;
+  return name || email || null;
+}
+
+/**
+ * BuildBase gives a buyer no Stripe receipt link for a one-time order (the
+ * order read has none; asked upstream, studio issue #100), so this page is
+ * the receipt: it prints, and the receipt email links back to it (studio
+ * issue #258).
+ */
+function Receipt({ signedIn }: { signedIn: boolean }) {
+  return (
+    <div className="mt-4 flex flex-col gap-3 border-t pt-4 text-sm sm:flex-row sm:items-center sm:justify-between">
+      <p className="text-muted-foreground">
+        This page is your receipt. Keep its link: the receipt email links back
+        here.
+        {signedIn && (
+          <>
+            {' '}
+            All your orders are under{' '}
+            <Link href="/dashboard/invoices" className="underline">
+              Orders and receipts
+            </Link>
+            .
+          </>
+        )}
+      </p>
+      <Button
+        variant="outline"
+        size="sm"
+        className="shrink-0 print:hidden"
+        onClick={() => window.print()}
+      >
+        <Printer className="h-4 w-4" aria-hidden />
+        Print receipt
+      </Button>
     </div>
   );
 }
