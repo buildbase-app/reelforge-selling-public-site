@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (studio issue #215)
+
+- The home page has one header. The sticky "ReelForge product" sub-nav is
+  gone; "Connect your agent" (to `/#connect`, from 1280 px wide) and the
+  page's one primary action ("Join the waitlist", or "Buy ReelForge" once
+  the store is on sale, decided like the hero's buttons) sit in the site
+  header, which gets them from the `@headerAction` parallel route on `/`
+  only. "Sign In" is now a ghost button, so the header has one filled
+  button at most.
+- The header is solid (`--background`) and 64 px tall (`--header-h`), not
+  translucent, so it no longer turns grey over the dark bands. Anchors on
+  `/` use `--header-h` as their `scroll-margin-top`.
+- Below 1024 px the header has a menu (a native popover) with the site
+  links, and on `/` "Connect your agent". It closes when a link is followed.
+- On `/pricing`, `/order` and `/waitlist` the header's sign-in button keeps
+  its width while the SDK loads, so it no longer shifts the theme toggle.
+- New `e2e/header.spec.ts`: one sticky element at the top of `/` and
+  `/pricing` at 390 and 1440 px, and `/#how` lands below the header.
+
 ### Fixed (studio issue #193)
 
 - `/pricing`, `/order` and the dashboard no longer log a `script-src 'eval'`

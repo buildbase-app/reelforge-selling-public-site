@@ -13,7 +13,8 @@ import { useHasSession } from './session-hint';
  * server, so the right button shows at once; the SDK loads only on hover,
  * focus or press, and then starts the hosted sign-in. It loads with every
  * public page, so it draws `Button`'s markup with `buttonClass` instead of
- * importing `Button` and its class tooling.
+ * importing `Button` and its class tooling. Ghost: the header's one filled
+ * button is the page's primary action, when it has one (studio issue #215).
  */
 export function LiteAuthButton({
   labels,
@@ -28,16 +29,18 @@ export function LiteAuthButton({
       <Link
         href="/dashboard"
         data-slot="button"
-        data-variant="default"
+        data-variant="ghost"
         data-size="default"
-        className={buttonClass()}
+        className={buttonClass('ghost')}
       >
         {labels.dashboard}
       </Link>
     );
   }
   return (
-    <SignInButton loadingLabel={labels.loading}>{labels.signIn}</SignInButton>
+    <SignInButton loadingLabel={labels.loading} variant="ghost">
+      {labels.signIn}
+    </SignInButton>
   );
 }
 
@@ -51,20 +54,27 @@ export function SignInButton({
   children,
   returnTo,
   loadingLabel = 'Loading...',
+  variant = 'default',
 }: {
   children: React.ReactNode;
   returnTo?: string;
   loadingLabel?: string;
+  /**
+   * `ghost` in the site header, where the page's one primary action (if
+   * any) is the filled button (studio issue #215).
+   */
+  variant?: 'default' | 'ghost';
 }) {
   const [pending, setPending] = useState(false);
 
   if (pending) {
+    const pendingVariant = variant === 'ghost' ? 'ghost' : 'outline';
     return (
       <button
         data-slot="button"
-        data-variant="outline"
+        data-variant={pendingVariant}
         data-size="default"
-        className={buttonClass('outline')}
+        className={buttonClass(pendingVariant)}
         disabled
       >
         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -75,9 +85,9 @@ export function SignInButton({
   return (
     <button
       data-slot="button"
-      data-variant="default"
+      data-variant={variant}
       data-size="default"
-      className={buttonClass()}
+      className={buttonClass(variant)}
       onPointerEnter={preloadAuth}
       onFocus={preloadAuth}
       onClick={() => {

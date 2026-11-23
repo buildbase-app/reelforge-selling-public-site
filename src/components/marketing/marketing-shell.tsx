@@ -19,9 +19,12 @@ import { SESSION_COOKIE_NAME } from '@/lib/buildbase';
 export async function MarketingShell({
   children,
   auth,
+  headerAction,
 }: {
   children: React.ReactNode;
   auth?: React.ReactNode;
+  /** The page's primary action in the header (home only: `HeaderCta`). */
+  headerAction?: React.ReactNode;
 }) {
   const [t, tc, jar] = await Promise.all([
     getTranslations('home'),
@@ -34,6 +37,7 @@ export async function MarketingShell({
       <div className="bg-background flex min-h-screen flex-col">
         <HomeHeader
           title={t('title')}
+          action={headerAction}
           auth={
             auth ?? (
               <LiteAuthButton

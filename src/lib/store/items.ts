@@ -121,3 +121,12 @@ function toItems(body: unknown): PublicItemView[] {
 export function hasOffers(items: PublicItemView[]): boolean {
   return items.some((item) => item.variants.some((v) => v.prices.length > 0));
 }
+
+/**
+ * Whether the store is on sale, from a read: undefined when the read failed
+ * (`unavailable`, so "unknown"). The home page's buttons and the header's
+ * primary action (`HeaderCta`) both decide from this.
+ */
+export function onSaleFrom(store: StoreItems): boolean | undefined {
+  return store.source === 'server' ? hasOffers(store.items) : undefined;
+}

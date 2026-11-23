@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { LitePricingCatalog } from '@/components/store/pricing-catalog-lite';
-import { StoreCtas } from '@/components/store/store-ctas';
+import { getStoreCtaLabels, StoreCtas } from '@/components/store/store-ctas';
 import { RemotionNotice } from '@/components/remotion-notice';
 import { AnnouncementBar } from '@/components/content/announcement-bar';
 import { LaunchPriceNote } from '@/components/content/launch-price-note';
@@ -17,7 +17,6 @@ import {
   Footnotes,
   Hero,
   HowItWorks,
-  LocalNav,
   NumbersBand,
   Privacy,
   ReelGallery,
@@ -28,7 +27,7 @@ import type { Locale } from '@/i18n/config';
 import { AGENT_CLIENTS } from '@/lib/agents/snippets';
 import { getFaqSection } from '@/lib/platform/faqs';
 import { buildOffers } from '@/lib/store/offers';
-import { getStoreItems, hasOffers } from '@/lib/store/items';
+import { getStoreItems, onSaleFrom } from '@/lib/store/items';
 import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
 
 interface HomePageProps {
@@ -65,11 +64,12 @@ export async function generateMetadata({
 export default async function HomePage({ params }: HomePageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [t, tPricing, store, faq] = await Promise.all([
+  const [t, tPricing, store, faq, ctaLabels] = await Promise.all([
     getTranslations({ locale, namespace: 'home' }),
     getTranslations({ locale, namespace: 'pricing' }),
     getStoreItems(),
     getFaqSection('home'),
+    getStoreCtaLabels(locale),
   ]);
   // null = the server could not read the store; the browser reads it then
   // (LitePricingCatalog loads the provider-backed catalog for that).
@@ -77,14 +77,7 @@ export default async function HomePage({ params }: HomePageProps) {
   const offers = serverItems
     ? buildOffers(serverItems, absoluteUrl('/pricing'))
     : [];
-  const onSale = serverItems ? hasOffers(serverItems) : undefined;
-
-  const ctaLabels = {
-    waitlist: t('hero.waitlist'),
-    pricing: t('hero.pricing'),
-    buy: t('hero.buy'),
-    faq: t('hero.faq'),
-  };
+  const onSale = onSaleFrom(store);
 
   return (
     <div className="rf-product flex flex-1 flex-col items-center">
@@ -96,7 +89,6 @@ export default async function HomePage({ params }: HomePageProps) {
         }))}
       />
       <AnnouncementBar />
-      <LocalNav onSale={onSale} />
       <Hero
         heading={t.rich('hero.heading', {
           highlight: (chunks) => <span className="rf-quiet">{chunks}</span>,
@@ -116,7 +108,7 @@ export default async function HomePage({ params }: HomePageProps) {
       <section
         id="pricing"
         aria-labelledby="pricing-title"
-        className="w-full max-w-6xl scroll-mt-28 px-4 py-24 md:px-6 md:py-32"
+        className="w-full max-w-6xl scroll-mt-(--header-h) px-4 py-24 md:px-6 md:py-32"
       >
         <div className="mb-12 text-center">
           <p className="rf-eyebrow">Pricing</p>
@@ -138,7 +130,7 @@ export default async function HomePage({ params }: HomePageProps) {
       </section>
       <section
         id="faq"
-        className="w-full max-w-3xl scroll-mt-28 px-4 pb-24 md:px-6"
+        className="w-full max-w-3xl scroll-mt-(--header-h) px-4 pb-24 md:px-6"
         aria-labelledby="home-faq-title"
       >
         <h2 id="home-faq-title" className="rf-headline text-center">

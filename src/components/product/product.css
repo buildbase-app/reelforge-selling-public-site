@@ -205,12 +205,6 @@
   color-scheme: dark;
 }
 
-/* Local (product) nav. */
-.rf-local-nav {
-  background: color-mix(in oklab, var(--background) 88%, transparent);
-  backdrop-filter: blur(12px);
-}
-
 /* Horizontal rails scroll-snap; the page itself never scrolls sideways. */
 .rf-rail {
   display: grid;
