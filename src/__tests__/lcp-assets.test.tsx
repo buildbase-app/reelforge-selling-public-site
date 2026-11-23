@@ -4,7 +4,11 @@ import { render } from '@testing-library/react';
 import { renderToString } from 'react-dom/server';
 import { describe, expect, it, vi } from 'vitest';
 import { ReelVideo } from '@/components/product/reel-video';
-import { reelSource } from '@/components/product/home-sections';
+import {
+  Hero,
+  ReelMarquee,
+  reelSource,
+} from '@/components/product/home-sections';
 import { reels } from '@/lib/agents/catalog';
 import { FontPreload, GEIST_CORE_URL, GEIST_MONO_CORE_URL } from '@/lib/fonts';
 
@@ -50,13 +54,21 @@ describe('reel posters', () => {
       ])
         expect(inPublic(url), url).toBe(true);
     }
-    for (const name of ['album-release-countdown', 'beat-drop-visualizer'])
-      for (const file of [
-        `${name}.avif`,
-        `${name}-240.avif`,
-        `${name}-240.webp`,
-      ])
-        expect(inPublic(`/reels/stack/${file}`), file).toBe(true);
+  });
+
+  it('the marquee posters exist, are small and load lazily', () => {
+    const { container } = render(<ReelMarquee />);
+    const imgs = [...container.querySelectorAll('img')];
+    expect(imgs.length).toBe(16);
+    let bytes = 0;
+    for (const img of imgs) {
+      const url = img.getAttribute('src')!;
+      expect(inPublic(url), url).toBe(true);
+      expect(img.getAttribute('loading')).toBe('lazy');
+      bytes += fs.statSync(path.join(root, 'public', url)).size;
+    }
+    // The 16 files stay well under the 600 KB the issue allows.
+    expect(bytes).toBeLessThan(150e3);
   });
 
   it('the hero poster is preloaded at high priority, eager and sized', () => {
@@ -79,6 +91,22 @@ describe('reel posters', () => {
     expect(link.getAttribute('fetchpriority')).toBe('high');
     expect(link.getAttribute('type')).toBe('image/avif');
     expect(link.getAttribute('imagesrcset')).toBe(reels[0]!.files.avifSrcSet);
+  });
+
+  it('the hero demo poster is small, exists and is preloaded at high priority', () => {
+    render(<Hero heading="Your agent directs." ctas={null} />);
+    const link = [
+      ...document.head.querySelectorAll('link[rel="preload"][as="image"]'),
+    ].find((l) => l.getAttribute('imagesrcset')?.includes('/walkthroughs/'))!;
+    expect(link.getAttribute('fetchpriority')).toBe('high');
+    expect(link.getAttribute('type')).toBe('image/avif');
+    for (const url of srcSetUrls(link.getAttribute('imagesrcset')!)) {
+      expect(inPublic(url), url).toBe(true);
+      // A thumbnail until the video plays: a few kilobytes.
+      expect(fs.statSync(path.join(root, 'public', url)).size).toBeLessThan(
+        20e3
+      );
+    }
   });
 
   it('other posters stay lazy', () => {

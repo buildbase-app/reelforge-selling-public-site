@@ -91,7 +91,7 @@ const messages: Messages = {
     hero: {
       badge: 'Early access · source-available · self-hosted',
       heading:
-        'Your agent directs. <highlight>Your server renders.</highlight>',
+        'Your agent directs. <highlight>Your server</highlight> renders.',
       description:
         'A source-available, agent-driven short-form video studio. Free for personal use; one-time commercial licence. Self-host it on your own machine or a cloud server you run. Your AI agent drives it over REST and MCP (any MCP client; tested with Claude Code): it plans every scene and its timing, and ReelForge renders them with Remotion, Motion Canvas, HTML and HyperFrames into one vertical MP4.',
       waitlist: 'Join the waitlist',

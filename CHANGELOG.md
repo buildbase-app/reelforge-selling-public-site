@@ -7,6 +7,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (studio issue #247)
+
+- Colour pass with the founder's palette (2026-11-23): "Analog Cinema" by day
+  (canvas #f4f3ef, cards #ffffff, ink #141413, muted #6b6b6b, borders
+  #e2e0d8) and "Late Night Edit" by night (canvas #191b1f, surface #24272d,
+  ink #f1f2f4, muted #a1a3a8, borders #3a3d44). The one accent in both themes
+  is signal orange #ff4f00. Primary buttons are filled with it and carry ink
+  text; as text it appears only on dark. On light, accent text and links use
+  #c2410c, which is also the focus ring there. It replaces the pink. The
+  status colours (olive, steel blue, ochre, crimson) carry meaning only. The
+  dark bands and the light card inside them are fixed to the dark and light
+  palettes. Every text role passes WCAG AA in both themes (checked with axe).
+- Soft washes (`--wash-canvas`, `--wash-accent`, `.rf-wash`), tinted from the
+  canvas and the accent, sit behind the dark bands only.
+- The hero is demo-first: a replay of a recorded Claude Code session that
+  makes a four-engine reel over MCP (`public/walkthroughs/`), shown in a
+  window, with the prompt as an inline code chip. It plays in the site's own
+  reel player, so it adds no JavaScript. Its 6 to 10 KB poster is preloaded,
+  and the video starts in view, not under reduced motion. The headline's key
+  words carry the accent with a thin underline. The H1 is set at weight 600.
+- A light card with two rows of real gallery reel posters
+  (`public/reels/marquee/`, 16 WebP, 70 KB) drifts in CSS only. It pauses on
+  hover and with its pause control, and doesn't move under reduced motion. It
+  includes "Not this → this" chips.
+- "Ready for the server room" is now six feature cards with capability chips
+  taken from the studio README. The numbers band is now proof tiles, each
+  with its source.
+- Removed: the hero's phone and the two posters behind it
+  (`public/reels/stack/`).
+
 ### Fixed (studio issue #251)
 
 - The MCP tool count on `/`, `/agents` and `/agents.md` is 61, not 53: the

@@ -19,7 +19,7 @@ export default async function BlogNotFound() {
       <div className="mt-8 flex gap-4">
         <Link
           href="/blog"
-          className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-5 py-2.5 text-sm font-medium transition-colors"
+          className="bg-brand text-brand-foreground hover:bg-brand/90 rounded-md px-5 py-2.5 text-sm font-medium transition-colors"
         >
           {t('blogNotFound.browseAll')}
         </Link>

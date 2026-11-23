@@ -51,6 +51,9 @@
   --color-stage-raised: var(--stage-raised);
   --color-stage-text: var(--stage-text);
   --color-stage-muted: var(--stage-muted);
+  --color-paper: var(--paper);
+  --color-paper-text: var(--paper-text);
+  --color-paper-muted: var(--paper-muted);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -63,66 +66,80 @@
 :root {
   /*
    * Design tokens, the one place for colour, type, radius, depth and motion
-   * (studio issue #81; AGENTS.md "Design and UI/UX rules", unslop by Damir
-   * Sokolovsky, CC BY 4.0). Neutrals are tinted a little toward the studio's
-   * ink (hue 285, chroma under 0.02), so the chrome stays quiet and the real
-   * reels are the one bright element. One accent: the brand pink, as ink on
-   * light surfaces (#c8174d, 5.7:1 on white) and as itself on dark (#ff3d71,
-   * 5.7:1 on the page). Every text role passes WCAG AA on every surface.
+   * (studio issues #81 and #247; AGENTS.md "Design and UI/UX rules", unslop
+   * by Damir Sokolovsky, CC BY 4.0). Founder palette, 2026-11-23: "Analog
+   * Cinema" by day, "Late Night Edit" by night, and one accent in both,
+   * signal orange #ff4f00 (a camera tally light). It fills primary buttons
+   * with dark ink (5.6:1; white on it fails), is text only on dark (5.2:1),
+   * and on light its text form is deep orange #c2410c (4.7:1). Four status
+   * colours carry meaning only (badges, states, ticks). The real reels stay
+   * the bright, colourful element. Every text role passes WCAG AA.
    */
   --radius: 0.625rem;
-  --background: #f6f6f8;
-  --foreground: #14141b;
+  --background: #f4f3ef; /* canvas */
+  --foreground: #141413; /* ink, 16.6:1 */
   --card: #ffffff;
-  --card-foreground: #14141b;
+  --card-foreground: #141413;
   --popover: #ffffff;
-  --popover-foreground: #14141b;
-  --primary: #14141b;
-  --primary-foreground: #f6f6f8;
-  --secondary: #ececf0;
-  --secondary-foreground: #14141b;
-  --muted: #ececf0;
-  --muted-foreground: #5a5a69; /* 6.3:1 on the page, 5.7:1 on muted */
-  --accent: #ececf0;
-  --accent-foreground: #14141b;
-  --brand: #ff3d71; /* fills only, with dark text (5.7:1) */
-  --brand-foreground: #0b0b12;
-  --brand-ink: #c8174d; /* the accent as text or a line on light */
-  --destructive: #c42b2b;
+  --popover-foreground: #141413;
+  --primary: #141413;
+  --primary-foreground: #f4f3ef;
+  --secondary: #f0efea;
+  --secondary-foreground: #141413;
+  --muted: #f0efea;
+  --muted-foreground: #6b6b6b; /* 4.8:1 on canvas, 4.6:1 on muted */
+  --accent: #f0efea;
+  --accent-foreground: #141413;
+  --brand: #ff4f00; /* fills and large marks only, with ink text (5.6:1) */
+  --brand-foreground: #141413;
+  --brand-ink: #c2410c; /* the accent as text or a link on light (4.7:1) */
+  --destructive: #c4554d; /* crimson */
   --destructive-foreground: #ffffff;
-  --success: #17803d;
-  --success-foreground: #ffffff;
-  --warning: #9a5b00;
-  --warning-foreground: #ffffff;
-  --info: #3456b8;
-  --info-foreground: #ffffff;
-  --border: rgb(20 20 27 / 0.1);
-  --input: rgb(20 20 27 / 0.16);
-  --ring: #c8174d;
-  --chart-1: #c8174d;
-  --chart-2: #5a5a69;
-  --chart-3: #8c8c9c;
-  --chart-4: #b4b4c2;
-  --chart-5: #d6d6de;
-  --sidebar: #efeff3;
-  --sidebar-foreground: #14141b;
-  --sidebar-primary: #14141b;
-  --sidebar-primary-foreground: #f6f6f8;
-  --sidebar-accent: #e4e4ea;
-  --sidebar-accent-foreground: #14141b;
-  --sidebar-border: rgb(20 20 27 / 0.1);
-  --sidebar-ring: #c8174d;
+  --success: #788c5d; /* olive */
+  --success-foreground: #141413;
+  --warning: #d4955a; /* ochre */
+  --warning-foreground: #141413;
+  --info: #6a9bcc; /* steel blue */
+  --info-foreground: #141413;
+  --border: #e2e0d8;
+  --input: #d6d3c9;
+  --ring: #c2410c; /* the accent; #ff4f00 is under 3:1 on the canvas */
+  --chart-1: #c2410c;
+  --chart-2: #6b6b6b;
+  --chart-3: #94938e;
+  --chart-4: #bcbab3;
+  --chart-5: #e2e0d8;
+  --sidebar: #efeee9;
+  --sidebar-foreground: #141413;
+  --sidebar-primary: #141413;
+  --sidebar-primary-foreground: #f4f3ef;
+  --sidebar-accent: #e8e6df;
+  --sidebar-accent-foreground: #141413;
+  --sidebar-border: #e2e0d8;
+  --sidebar-ring: #c2410c;
 
-  /* The stage: the dark band behind reels, the same in both themes. */
-  --stage: #0b0b12;
-  --stage-raised: #15151e;
-  --stage-line: rgb(237 237 242 / 0.1);
-  --stage-text: #ededf2;
-  --stage-muted: #a3a3b4; /* 7.9:1 on the stage */
+  /* The stage: the dark band behind reels, "Late Night Edit" in both themes. */
+  --stage: #191b1f;
+  --stage-raised: #24272d;
+  --stage-line: #3a3d44;
+  --stage-text: #f1f2f4;
+  --stage-muted: #a1a3a8; /* 6.8:1 on the stage */
+
+  /* Paper: the light card inside a dark band, "Analog Cinema" in both themes. */
+  --paper: #f4f3ef;
+  --paper-text: #141413;
+  --paper-muted: #6b6b6b; /* 4.8:1 on paper */
+  --paper-ink: #c2410c; /* 4.7:1 on paper */
+  --paper-line: #e2e0d8;
+
+  /* Soft washes behind dark bands only, tinted from the canvas and the
+     accent. Never on a button, card or other UI element. */
+  --wash-canvas: rgb(241 242 244 / 0.05);
+  --wash-accent: rgb(255 79 0 / 0.1);
 
   /* Depth: neutral and small on light, surface steps on dark. */
-  --shadow-sm: 0 1px 2px rgb(20 20 27 / 0.06);
-  --shadow-float: 0 24px 48px -24px rgb(11 11 18 / 0.45);
+  --shadow-sm: 0 1px 2px rgb(20 20 19 / 0.06);
+  --shadow-float: 0 24px 48px -24px rgb(0 0 0 / 0.5);
 
   /* The site header's height (HomeHeader), which in-page anchors use as
      their scroll-margin-top so a heading lands just below it. */
@@ -136,45 +153,45 @@
 }
 
 .dark {
-  --background: #0c0c12;
-  --foreground: #ededf2;
-  --card: #14141c;
-  --card-foreground: #ededf2;
-  --popover: #14141c;
-  --popover-foreground: #ededf2;
-  --primary: #ededf2;
-  --primary-foreground: #14141b;
-  --secondary: #1d1d27;
-  --secondary-foreground: #ededf2;
-  --muted: #1d1d27;
-  --muted-foreground: #a3a3b4; /* 7.8:1 on the page, 6.7:1 on muted */
-  --accent: #1d1d27;
-  --accent-foreground: #ededf2;
-  --brand-ink: #ff3d71;
-  --destructive: #f0646a;
-  --destructive-foreground: #0c0c12;
-  --success: #4cc38a;
-  --success-foreground: #0c0c12;
-  --warning: #e2a336;
-  --warning-foreground: #0c0c12;
-  --info: #8aa8f0;
-  --info-foreground: #0c0c12;
-  --border: rgb(237 237 242 / 0.1);
-  --input: rgb(237 237 242 / 0.16);
-  --ring: #ff3d71;
-  --chart-1: #ff3d71;
-  --chart-2: #a3a3b4;
-  --chart-3: #7a7a8c;
-  --chart-4: #55556a;
-  --chart-5: #3a3a4a;
-  --sidebar: #101017;
-  --sidebar-foreground: #ededf2;
-  --sidebar-primary: #ededf2;
-  --sidebar-primary-foreground: #14141b;
-  --sidebar-accent: #1d1d27;
-  --sidebar-accent-foreground: #ededf2;
-  --sidebar-border: rgb(237 237 242 / 0.1);
-  --sidebar-ring: #ff3d71;
+  --background: #191b1f; /* canvas */
+  --foreground: #f1f2f4; /* ink, 15.4:1 */
+  --card: #24272d;
+  --card-foreground: #f1f2f4;
+  --popover: #24272d;
+  --popover-foreground: #f1f2f4;
+  --primary: #f1f2f4;
+  --primary-foreground: #141413;
+  --secondary: #2c2f36; /* a step above the surface, so badges show on cards */
+  --secondary-foreground: #f1f2f4;
+  --muted: #2a2d33;
+  --muted-foreground: #a1a3a8; /* 6.8:1 on the canvas, 5.5:1 on muted */
+  --accent: #2c2f36;
+  --accent-foreground: #f1f2f4;
+  --brand-ink: #ff4f00; /* text on dark: 5.2:1 on canvas, 4.5:1 on surface */
+  --destructive: #d9766f;
+  --destructive-foreground: #141413;
+  --success: #8aa67c;
+  --success-foreground: #141413;
+  --warning: #e1b279;
+  --warning-foreground: #141413;
+  --info: #84b4e3;
+  --info-foreground: #141413;
+  --border: #3a3d44;
+  --input: #464a52;
+  --ring: #ff4f00;
+  --chart-1: #ff4f00;
+  --chart-2: #a1a3a8;
+  --chart-3: #7b7e85;
+  --chart-4: #55585f;
+  --chart-5: #3a3d44;
+  --sidebar: #1e2025;
+  --sidebar-foreground: #f1f2f4;
+  --sidebar-primary: #f1f2f4;
+  --sidebar-primary-foreground: #141413;
+  --sidebar-accent: #24272d;
+  --sidebar-accent-foreground: #f1f2f4;
+  --sidebar-border: #3a3d44;
+  --sidebar-ring: #ff4f00;
   --shadow-sm: none;
 }
 
@@ -219,8 +236,8 @@
   height: 36px;
   place-items: center;
   border-radius: 18px;
-  background: rgb(11 11 18 / 0.6);
-  color: #ededf2;
+  background: rgb(25 27 31 / 0.6);
+  color: #f1f2f4;
   backdrop-filter: blur(8px);
 }
 

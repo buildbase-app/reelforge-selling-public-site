@@ -59,12 +59,12 @@ export default async function RootLayout({
         )}
         <meta
           name="theme-color"
-          content="#ffffff"
+          content="#f4f3ef"
           media="(prefers-color-scheme: light)"
         />
         <meta
           name="theme-color"
-          content="#09090b"
+          content="#191b1f"
           media="(prefers-color-scheme: dark)"
         />
         {/* JSON-LD Structured Data */}

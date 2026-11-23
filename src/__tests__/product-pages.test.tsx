@@ -56,6 +56,7 @@ import {
   NumbersBand,
   Privacy,
   ReelGallery,
+  ReelMarquee,
 } from '@/components/product/home-sections';
 import AgentsPage from '@/app/[locale]/(marketing)/agents/page';
 
@@ -74,6 +75,7 @@ function Home() {
   return (
     <div>
       <Hero heading="Your agent directs." ctas={<button>Join</button>} />
+      <ReelMarquee />
       <AgentTranscript />
       <HowItWorks />
       <ConnectAgent tabs={<div />} />
@@ -122,14 +124,34 @@ describe('homepage sections', () => {
 
   it('plays reels muted, inline, with a pause control and a text alternative', () => {
     const { container } = render(<Home />);
-    for (const video of container.querySelectorAll('video')) {
+    const players = container.querySelectorAll('video');
+    for (const video of players) {
       expect(video.muted).toBe(true);
       expect(video).toHaveAttribute('playsinline');
-      expect(video.getAttribute('aria-label')).toMatch(/On screen: /);
+      expect(video.getAttribute('aria-label')).toMatch(
+        /On screen: |recorded session/
+      );
     }
     expect(
       screen.getAllByRole('button', { name: /Play reel|Pause reel/ })
-    ).toHaveLength(container.querySelectorAll('video').length);
+    ).toHaveLength(players.length);
+  });
+
+  it('shows a real agent session in the hero, with the prompt as a chip', () => {
+    const { container } = render(
+      <Hero heading="Your agent directs." ctas={<button>Join</button>} />
+    );
+    const video = container.querySelector('video')!;
+    expect(video).not.toHaveAttribute('autoplay');
+    expect(video.getAttribute('aria-label')).toMatch(/recorded session/);
+    for (const source of video.querySelectorAll('source'))
+      expect(source.getAttribute('src')).toMatch(/^\/walkthroughs\//);
+    const poster = container.querySelector('picture img')!;
+    expect(poster).toHaveAttribute('fetchpriority', 'high');
+    expect(poster).toHaveAttribute('loading', 'eager');
+    expect(container.querySelector('code')).toHaveTextContent(
+      'make a 9-second reel that mixes all four engines'
+    );
   });
 
   it('lists the MCP calls that made the hero reel, in order', () => {
