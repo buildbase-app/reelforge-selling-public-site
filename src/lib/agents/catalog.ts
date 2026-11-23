@@ -4,7 +4,8 @@ import reelsData from '@/data/reels.json';
 /**
  * Typed access to the two generated data files behind / and /agents:
  * - `src/data/mcp-tools.json`: the studio's MCP tools, grouped by job
- *   (`scripts/agents/refresh-mcp-tools.mjs`, from a live `tools/list`);
+ *   (`scripts/agents/refresh-mcp-tools.mjs`, from the studio's generated
+ *   tool reference or a live `tools/list`);
  * - `src/data/reels.json`: the demo reels, with the numbers copied from the
  *   studio's own render manifests (`scripts/reels/build-index.mjs`).
  * Pages read numbers from here, never from copy.
@@ -27,7 +28,11 @@ export interface McpToolCatalog {
   source: {
     server: string;
     version: string;
-    method: string;
+    /** `reference`: the studio's generated docs/public/mcp/tools.md. */
+    method: 'reference' | 'tools/list';
+    reference?: string;
+    /** The studio commit the reference was read at. */
+    commit?: string;
     fetchedOn: string;
   };
   count: number;
@@ -82,6 +87,19 @@ export interface Reel {
 }
 
 export const toolCatalog = mcpTools as McpToolCatalog;
+
+/**
+ * Where the tool count comes from, for footnotes: "the studio's generated
+ * tool reference (docs/public/mcp/tools.md, ReelForge Studio 0.1.0, commit
+ * f79f5c6, read 2026-11-23)".
+ */
+export function toolCatalogSource(): string {
+  const s = toolCatalog.source;
+  if (s.method === 'tools/list')
+    return `the studio's own MCP tools/list (ReelForge Studio ${s.version}, ${s.fetchedOn})`;
+  const commit = s.commit ? `, commit ${s.commit.slice(0, 7)}` : '';
+  return `the studio's generated tool reference (${s.reference}, ReelForge Studio ${s.version}${commit}, read ${s.fetchedOn}), which is built from the server's tool registry`;
+}
 export const reels = (reelsData as { reels: Reel[] }).reels;
 
 export function getReel(slug: string): Reel {

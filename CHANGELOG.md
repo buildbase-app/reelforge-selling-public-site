@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (studio issue #251)
+
+- The MCP tool count on `/`, `/agents` and `/agents.md` is 61, not 53: the
+  catalog now includes the eight webhook tools. `refresh-mcp-tools.mjs`
+  reads the studio's generated reference (`docs/public/mcp/tools.md`) by
+  default, records the studio commit, and `--check`
+  (`npm run check:mcp-tools`) fails when the catalog and the studio differ.
+  A unit test fails if any page writes a tool count in its copy.
+- `/gallery` no longer says an agent planned the reels. The heading is
+  "Reels rendered by ReelForge over MCP", and the intro and each reel's
+  "How it was made" say what happened: we wrote the manifest, the gallery
+  script sent it to the studio over MCP with the same tool calls an agent
+  makes, and the studio rendered it. "The prompt the agent was given" is now
+  "A prompt for your agent". The engine count under the heading is counted
+  from the reels, not written down.
+
 ### Fixed (studio issue #215)
 
 - The home page has one header. The sticky "ReelForge product" sub-nav is

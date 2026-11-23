@@ -7,6 +7,7 @@ import {
   hardwareLabel,
   reels,
   toolCatalog,
+  toolCatalogSource,
   type Reel,
 } from '@/lib/agents/catalog';
 import { CopyButton } from './copy-button';
@@ -484,8 +485,8 @@ export function ReelGallery() {
             Real renders. Nothing mocked up
           </h2>
           <p className="text-muted-foreground mx-auto mt-5 max-w-[60ch] text-lg text-pretty">
-            Every clip here came out of the studio from the prompt under it.
-            Copy one and give it to your agent.
+            Every clip here was rendered by the studio over MCP. The prompt
+            under it asks for the same reel: copy one and give it to your agent.
           </p>
           <Link
             href="/gallery"
@@ -752,9 +753,8 @@ export function Footnotes() {
       it. Not a benchmark.
     </>,
     <>
-      Counted from the studio&apos;s own MCP <code>tools/list</code> (ReelForge
-      Studio {toolCatalog.source.version}, {toolCatalog.source.fetchedOn}). The
-      studio&apos;s parity test fails if a REST route has no MCP tool.
+      Counted from {toolCatalogSource()}. The studio&apos;s parity test fails if
+      a REST route has no MCP tool.
     </>,
     <>
       S3-compatible storage is tested with MinIO; Azure Blob and Google Cloud

@@ -120,8 +120,12 @@ typed by hand:
   `srcset`, content-hashed names) and
   `node scripts/reels/build-index.mjs <dir>`. Small files live in `public/`;
   larger media belongs on R2 (`media.reelforge.buildbase.app`, allowed by the CSP).
-- `src/data/mcp-tools.json`: the studio's MCP tools from a live `tools/list`,
-  grouped by job: `REELFORGE_KEY=rf_... node scripts/agents/refresh-mcp-tools.mjs`.
+- `src/data/mcp-tools.json`: the studio's MCP tools, grouped by job, read from
+  the studio's generated reference (`docs/public/mcp/tools.md`):
+  `node scripts/agents/refresh-mcp-tools.mjs` (`--live` with `REELFORGE_KEY`
+  reads a running studio's `tools/list` instead). Pages take the tool count
+  from this file only; `npm run check:mcp-tools` fails when it no longer
+  matches the studio.
 - `public/walkthroughs/*`: the walkthrough videos the studio docs link to
   (`<slug>.<hash>.mp4|webm|jpg`), made and copied here by the studio's
   `pnpm capture --only flows,videos --store-dir <this repo>` (its

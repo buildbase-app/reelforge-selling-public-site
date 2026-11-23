@@ -1,5 +1,11 @@
 import { siteConfig } from '@/config/site';
-import { collapsedCalls, enginesOf, reels, toolCatalog } from './catalog';
+import {
+  collapsedCalls,
+  enginesOf,
+  reels,
+  toolCatalog,
+  toolCatalogSource,
+} from './catalog';
 import { AGENT_CLIENTS, KEY_SCOPES } from './snippets';
 
 /**
@@ -67,7 +73,7 @@ Real renders. The calls were sent by a script that follows the studio's workflow
 
 ${cookbook}
 
-## Tools (${toolCatalog.count}, from the studio's tools/list, ReelForge Studio ${toolCatalog.source.version}, ${toolCatalog.source.fetchedOn})
+## Tools (${toolCatalog.count}, from ${toolCatalogSource()})
 
 Every REST route has a tool with the same scope. Tool names are experimental until v1.0.
 

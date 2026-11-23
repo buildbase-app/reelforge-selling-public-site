@@ -2,10 +2,12 @@
   "source": {
     "server": "reelforge-studio",
     "version": "0.1.0",
-    "method": "MCP tools/list",
-    "fetchedOn": "2026-11-21"
+    "method": "reference",
+    "reference": "docs/public/mcp/tools.md",
+    "commit": "f79f5c650dce945318f06607fdf2227b6aec1735",
+    "fetchedOn": "2026-11-23"
   },
-  "count": 53,
+  "count": 61,
   "groups": [
     {
       "id": "discover",
@@ -62,7 +64,7 @@
         {
           "name": "list_projects",
           "title": "List projects",
-          "summary": "Lists projects on this server with title, version, scene count and duration.",
+          "summary": "Lists projects on this server with title, version, scene count and duration (no manifests; get_project has the manifest).",
           "readOnly": true
         },
         {
@@ -170,7 +172,7 @@
         {
           "name": "list_assets",
           "title": "List assets",
-          "summary": "Lists assets: those of a project (manifest entries) with projectId, otherwise everything in the server asset store.",
+          "summary": "Lists assets: with projectId, all of that project's manifest entries (one page, nextCursor null); otherwise the server asset store.",
           "readOnly": true
         },
         {
@@ -218,7 +220,7 @@
         {
           "name": "list_jobs",
           "title": "List jobs",
-          "summary": "Lists render and preview jobs (newest first), optionally only those of one project.",
+          "summary": "Lists render and preview jobs, optionally only those of one project (projectId) and/or the units and the join of one fanned-out render (parentId: the render job's id; each unit...",
           "readOnly": true
         },
         {
@@ -352,6 +354,60 @@
           "title": "Read the audit log (admin)",
           "summary": "The audit trail, newest first: who (API key id and name), action (e.g. \"key.rotate\", \"project.create\", \"config.update\"), target, result (success, failure, denied), client IP, us...",
           "readOnly": true
+        }
+      ]
+    },
+    {
+      "id": "webhooks",
+      "title": "Webhooks and notifications (admin keys)",
+      "tools": [
+        {
+          "name": "list_webhooks",
+          "title": "List webhooks and notification channels (admin)",
+          "summary": "Lists outbound event endpoints: signed webhooks (Standard Webhooks), Slack, Discord and Microsoft Teams incoming webhooks, and email channels (SMTP, Resend, Postmark, Amazon SES...",
+          "readOnly": true
+        },
+        {
+          "name": "get_webhook",
+          "title": "Get a webhook (admin)",
+          "summary": "One endpoint as list_webhooks shows it, with its delivery counts (pending, delivering, succeeded, dead).",
+          "readOnly": true
+        },
+        {
+          "name": "create_webhook",
+          "title": "Create a webhook or notification channel (admin)",
+          "summary": "Sends server events to an endpoint so automations (n8n, Zapier, Make, your backend) or people react without polling. type \"webhook\" (default): an HTTPS POST of {id, type, timest...",
+          "readOnly": false
+        },
+        {
+          "name": "update_webhook",
+          "title": "Change a webhook (admin)",
+          "summary": "Changes an endpoint's name, description, url, email recipients, events or enabled flag (enabling clears a \"disabled by the server\" reason, e.g. after a 410 Gone). rotateSecret:...",
+          "readOnly": false
+        },
+        {
+          "name": "delete_webhook",
+          "title": "Delete a webhook (admin)",
+          "summary": "Deletes an endpoint; its pending deliveries are abandoned (kept in the delivery log as dead).",
+          "readOnly": false
+        },
+        {
+          "name": "test_webhook",
+          "title": "Send a test event (admin)",
+          "summary": "Sends a \"webhook.test\" event to one endpoint through the normal outbox (signed, retried).",
+          "readOnly": false
+        },
+        {
+          "name": "list_webhook_deliveries",
+          "title": "Read the delivery log (admin)",
+          "summary": "Deliveries of one endpoint, newest first: event type, webhook-id (messageId), status (pending, delivering, succeeded, dead), attempts, next attempt, last HTTP status and error,...",
+          "readOnly": true
+        },
+        {
+          "name": "replay_webhook_delivery",
+          "title": "Send a delivery again (admin)",
+          "summary": "Sends a finished delivery (dead or succeeded) again: a new outbox entry with the same payload and the same webhook-id, so receivers that already processed it can ignore it.",
+          "readOnly": false
         }
       ]
     }
