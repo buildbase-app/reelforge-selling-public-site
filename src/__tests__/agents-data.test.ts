@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { existsSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 vi.mock('@/env', () => ({
@@ -9,7 +9,7 @@ vi.mock('@/env', () => ({
   buildbaseEnvironment: undefined,
 }));
 
-import { reels, toolCatalog } from '@/lib/agents/catalog';
+import { reels, toolCatalog, toolCatalogSource } from '@/lib/agents/catalog';
 import { AGENT_CLIENTS } from '@/lib/agents/snippets';
 import { buildAgentsMarkdown } from '@/lib/agents/markdown';
 
@@ -29,7 +29,41 @@ describe('MCP tool catalog', () => {
     expect(toolCatalog.count).toBe(names.length);
     expect(new Set(names).size).toBe(names.length);
     expect(toolCatalog.groups.map((g) => g.id)).not.toContain('other');
-    expect(toolCatalog.source.method).toBe('MCP tools/list');
+    expect(['reference', 'tools/list']).toContain(toolCatalog.source.method);
+  });
+
+  it('says where the count comes from', () => {
+    const { source } = toolCatalog;
+    if (source.method === 'reference') {
+      expect(source.reference).toBe('docs/public/mcp/tools.md');
+      expect(source.commit).toMatch(/^[0-9a-f]{40}$/);
+    }
+    expect(source.version).toMatch(/^\d+\.\d+\.\d+$/);
+    expect(source.fetchedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(toolCatalogSource()).toContain(source.fetchedOn);
+  });
+
+  // The count drifts when copy states it (studio issue #251: the site kept an
+  // old count after the studio added the webhook tools). Pages read
+  // toolCatalog.count; `npm run check:mcp-tools` compares the catalog with
+  // the studio's generated reference.
+  it('is the only place a tool count is written down', () => {
+    const SRC = join(__dirname, '..');
+    const hits: string[] = [];
+    const walk = (dir: string) => {
+      for (const name of readdirSync(dir, { withFileTypes: true })) {
+        const path = join(dir, name.name);
+        if (name.isDirectory()) {
+          if (name.name !== '__tests__' && name.name !== 'data') walk(path);
+        } else if (/\.(tsx?|mdx?)$/.test(name.name)) {
+          const text = readFileSync(path, 'utf8');
+          for (const m of text.matchAll(/\b\d{2,3}\+? (?:MCP )?tools\b/g))
+            hits.push(`${path}: ${m[0]}`);
+        }
+      }
+    };
+    walk(SRC);
+    expect(hits).toEqual([]);
   });
 
   it('gives every tool a summary', () => {

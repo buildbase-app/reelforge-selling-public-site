@@ -11,7 +11,7 @@ test.describe('Gallery', () => {
     await page.getByRole('link', { name: 'Gallery' }).first().click();
     await expect(page).toHaveURL(/\/gallery$/);
     await expect(page.getByRole('heading', { level: 1 })).toContainText(
-      'Reels an agent planned'
+      'Reels rendered by ReelForge over MCP'
     );
   });
 
@@ -30,7 +30,7 @@ test.describe('Gallery', () => {
     await cards.first().click();
     await expect(page).toHaveURL(/\/gallery\/[a-z0-9-]+$/);
     await expect(
-      page.getByRole('heading', { name: 'The prompt the agent was given' })
+      page.getByRole('heading', { name: 'How it was made' })
     ).toBeVisible();
     const ld = await page
       .locator('script[type="application/ld+json"]')

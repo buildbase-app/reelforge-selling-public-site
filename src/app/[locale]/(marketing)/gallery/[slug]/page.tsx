@@ -73,8 +73,9 @@ function Fact({
 }
 
 /**
- * One reel's watch page: the video, the prompt the agent was given, how it
- * was made (engines, the MCP tools it called, render time with the hardware,
+ * One reel's watch page: the video, a prompt for your agent, how it was made
+ * (a hand-written manifest rendered over MCP by the studio's gallery script:
+ * engines, the MCP tools it called, render time with the hardware,
  * studio version and date, all from the studio's own render manifest) and a
  * snippet to make it again with your agent. VideoObject JSON-LD; the poster is
  * the OG image.
@@ -141,8 +142,12 @@ export default async function ReelPage({ params }: ReelPageProps) {
 
             <section aria-labelledby="prompt-title" className="mt-10">
               <h2 id="prompt-title" className="text-lg font-medium">
-                The prompt the agent was given
+                A prompt for your agent
               </h2>
+              <p className="text-muted-foreground mt-2 text-sm text-pretty">
+                The request this reel answers, written with its manifest. Give
+                it to your agent to make one like it.
+              </p>
               <blockquote className="gl-prompt bg-muted/50 mt-3 rounded-xl border p-5 text-[15px] leading-relaxed text-pretty">
                 {reel.prompt}
               </blockquote>
@@ -160,7 +165,28 @@ export default async function ReelPage({ params }: ReelPageProps) {
               <h2 id="how-title" className="text-lg font-medium">
                 How it was made
               </h2>
-              <dl className="mt-3 border-b">
+              <p className="text-muted-foreground mt-2 text-sm text-pretty">
+                We wrote the manifest (its scenes, templates and timing) for
+                this gallery. The gallery script sent it to ReelForge Studio
+                over MCP with the same tool calls an agent makes, and the studio
+                rendered it. No AI agent planned it. The facts below come from
+                the studio&apos;s render manifest
+                {reel.manifestUrl ? (
+                  <>
+                    ; the{' '}
+                    <a
+                      href={reel.manifestUrl}
+                      download={`${reel.slug}.json`}
+                      className="text-foreground underline"
+                    >
+                      project manifest
+                    </a>{' '}
+                    lists every scene with its engine and template
+                  </>
+                ) : null}
+                .
+              </p>
+              <dl className="mt-4 border-b">
                 <Fact label="Engines">
                   {reel.engines.map((e) => ENGINE_LABELS[e] ?? e).join(', ')}
                 </Fact>

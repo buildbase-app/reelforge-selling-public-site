@@ -23,7 +23,7 @@ interface GalleryPageProps {
 
 const TITLE = 'Gallery: reels rendered by ReelForge Studio';
 const DESCRIPTION =
-  'Short vertical videos an AI agent planned and ReelForge Studio rendered, each with the prompt, the engines, the MCP tools it called and how long the render took.';
+  'Short vertical videos rendered by ReelForge Studio over MCP, each with its manifest, the engines, the MCP tools called and how long the render took.';
 
 export async function generateMetadata({
   params,
@@ -90,15 +90,18 @@ export default async function GalleryPage({
       <div className="mx-auto w-full max-w-[1240px] px-4 pt-12 pb-24 md:px-6 md:pt-20">
         <header className="max-w-[720px]">
           <h1 className="text-4xl font-medium tracking-tight text-balance md:text-5xl">
-            Reels an agent planned and ReelForge rendered
+            Reels rendered by ReelForge over MCP
           </h1>
           <p className="text-muted-foreground mt-4 text-lg text-pretty">
-            Each clip came out of ReelForge Studio from the prompt on its page,
-            over MCP. Open one to copy the prompt and the manifest.
+            We wrote a manifest for each reel. A script sent it to ReelForge
+            Studio over MCP, calling the same tools your agent would, and the
+            studio rendered it. Open one to see how it was made, copy the
+            manifest or give a matching prompt to your own agent.
           </p>
           {all.length > 0 && (
             <p className="gl-receipt text-muted-foreground mt-4 text-sm">
-              {all.length} reels · 4 engines
+              {all.length} reels · {engineCounts.length}{' '}
+              {engineCounts.length === 1 ? 'engine' : 'engines'}
               {hardware ? ` · rendered on ${hardware}` : ''}
             </p>
           )}

@@ -16,6 +16,7 @@ import {
   hardwareLabel,
   reels,
   toolCatalog,
+  toolCatalogSource,
 } from '@/lib/agents/catalog';
 import { AGENT_CLIENTS, KEY_SCOPES } from '@/lib/agents/snippets';
 import { FontPreload, GEIST_MONO_CORE_URL } from '@/lib/fonts';
@@ -336,10 +337,8 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
               in this site&apos;s repository).
             </li>
             <li id="fn-2" className="scroll-mt-32">
-              From the studio&apos;s own MCP <code>tools/list</code> (ReelForge
-              Studio {toolCatalog.source.version},{' '}
-              {toolCatalog.source.fetchedOn}); its parity test fails if a REST
-              route has no tool. This list is regenerated with{' '}
+              Counted from {toolCatalogSource()}. The studio&apos;s parity test
+              fails if a REST route has no tool. This list is regenerated with{' '}
               <code>scripts/agents/refresh-mcp-tools.mjs</code>.
             </li>
           </ol>
