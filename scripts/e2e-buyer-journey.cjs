@@ -22,11 +22,17 @@ if (!/reelforge-dev\./.test(SITE) && !process.env.ALLOW_NON_TEST_SITE) {
 const crypto = require('crypto');
 const EMAIL = `e2e-${Date.now().toString(36)}+test@reelforge.dev`;
 const PW = crypto.randomBytes(12).toString('base64url') + 'A1!';
-const out = (s) => console.log(s);
-const clean = (t) =>
-  t
-    .replace(/\s+/g, ' ')
-    .replace(/[A-Z0-9]{5}(-[A-Z0-9]{5}){4}/g, 'XXXXX-…(key)');
+const {
+  MASKED_KEY,
+  maskText,
+  screenshotMasked,
+  assertNoKeysInDir,
+} = require('./lib/licence-keys.cjs');
+const SHOTS = process.env.SHOTS || '/tmp';
+// Every log line and every screenshot masks licence keys to their first
+// group (studio issue #261); the run fails if a whole key was saved.
+const out = (s) => console.log(maskText(s));
+const clean = (t) => maskText(t.replace(/\s+/g, ' '));
 (async () => {
   const browser = await chromium.launch({
     ...(process.env.CHROMIUM_PATH
@@ -78,7 +84,7 @@ const clean = (t) =>
     await page.waitForTimeout(8000);
     out('2. entered test code 424242 → ' + new URL(page.url()).host);
   } else out('2. no code step shown');
-  await page.screenshot({ path: (process.env.SHOTS || '/tmp') + '/b-2.png' });
+  await screenshotMasked(page, { path: SHOTS + '/b-2.png' });
   for (let i = 0; i < 5 && /auth\.buildbase\.app/.test(page.url()); i++) {
     const heading = (
       await page
@@ -129,7 +135,7 @@ const clean = (t) =>
       break;
     }
   if (!f) {
-    await page.screenshot({ path: (process.env.SHOTS || '/tmp') + '/b-4.png' });
+    await screenshotMasked(page, { path: SHOTS + '/b-4.png' });
     throw new Error('card frame not found');
   }
   await f.fill('#payment-numberInput', '4242424242424242');
@@ -149,8 +155,8 @@ const clean = (t) =>
     '4a. Link opt-in now checked=' +
       (opt ? await opt.isChecked().catch(() => 'n/a') : 'none')
   );
-  await page.screenshot({
-    path: (process.env.SHOTS || '/tmp') + '/b-4-filled.png',
+  await screenshotMasked(page, {
+    path: SHOTS + '/b-4-filled.png',
   });
   const btn = page
     .locator(
@@ -192,7 +198,7 @@ const clean = (t) =>
       ' studio=' +
       /Studio/.test(ot) +
       ' key=' +
-      /XXXXX-…\(key\)/.test(ot) +
+      MASKED_KEY.test(ot) +
       ' commercialLabel=' +
       /Commercial licence/.test(ot) +
       ' | ' +
@@ -204,8 +210,8 @@ const clean = (t) =>
     /noncommercial use only/i.test(ot)
   )
     throw new Error('order page does not label the key Commercial');
-  await page.screenshot({
-    path: (process.env.SHOTS || '/tmp') + '/b-6-order.png',
+  await screenshotMasked(page, {
+    path: SHOTS + '/b-6-order.png',
     fullPage: true,
   });
   await page.goto(SITE + '/dashboard/licences', { waitUntil: 'load' });
@@ -213,17 +219,18 @@ const clean = (t) =>
   const lt = clean(await page.innerText('main').catch(() => ''));
   out(
     '7. dashboard licences: key=' +
-      /XXXXX-…\(key\)/.test(lt) +
+      MASKED_KEY.test(lt) +
       ' | ' +
       lt.slice(0, 200)
   );
-  await page.screenshot({
-    path: (process.env.SHOTS || '/tmp') + '/b-7-licences.png',
+  await screenshotMasked(page, {
+    path: SHOTS + '/b-7-licences.png',
     fullPage: true,
   });
+  if (process.env.SHOTS) assertNoKeysInDir(SHOTS);
   out('PASSED: buyer journey (' + EMAIL + ')');
   await browser.close();
 })().catch((e) => {
-  console.error('FAILED:', e.message.split('\n')[0]);
+  console.error('FAILED:', maskText(e.message.split('\n')[0]));
   process.exit(1);
 });

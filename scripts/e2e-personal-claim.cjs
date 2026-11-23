@@ -23,13 +23,17 @@ if (!/reelforge-dev\./.test(SITE) && !process.env.ALLOW_NON_TEST_SITE) {
 const crypto = require('crypto');
 const EMAIL = `e2e-free-${Date.now().toString(36)}+test@reelforge.dev`;
 const PW = crypto.randomBytes(12).toString('base64url') + 'A1!';
+const {
+  MASKED_KEY: KEY,
+  maskText,
+  screenshotMasked,
+  assertNoKeysInDir,
+} = require('./lib/licence-keys.cjs');
 const SHOTS = process.env.SHOTS || '/tmp';
-const out = (s) => console.log(s);
-const clean = (t) =>
-  t
-    .replace(/\s+/g, ' ')
-    .replace(/[A-Z0-9]{5}(-[A-Z0-9]{5}){4}/g, 'XXXXX-…(key)');
-const KEY = /XXXXX-…\(key\)/;
+// Every log line and every screenshot masks licence keys to their first
+// group (studio issue #261); the run fails if a whole key was saved.
+const out = (s) => console.log(maskText(s));
+const clean = (t) => maskText(t.replace(/\s+/g, ' '));
 const REMINDER = /noncommercial use only/i;
 function expect(ok, what) {
   if (!ok) throw new Error(what);
@@ -148,7 +152,10 @@ function expect(ok, what) {
       ' | ' +
       ot.slice(0, 260)
   );
-  await page.screenshot({ path: SHOTS + '/p-6-order.png', fullPage: true });
+  await screenshotMasked(page, {
+    path: SHOTS + '/p-6-order.png',
+    fullPage: true,
+  });
   expect(/Personal licence/.test(ot), 'order page: no "Personal licence"');
   expect(REMINDER.test(ot), 'order page: no noncommercial reminder');
   expect(KEY.test(ot), 'order page: no licence key');
@@ -177,14 +184,18 @@ function expect(ok, what) {
       ' | ' +
       lt.slice(0, 200)
   );
-  await page.screenshot({ path: SHOTS + '/p-7-licences.png', fullPage: true });
+  await screenshotMasked(page, {
+    path: SHOTS + '/p-7-licences.png',
+    fullPage: true,
+  });
   expect(
     /Personal licence/.test(lt) && REMINDER.test(lt) && KEY.test(lt),
     'Dashboard > Licences does not show the Personal key with its reminder'
   );
+  if (process.env.SHOTS) assertNoKeysInDir(SHOTS);
   out('PASSED: free Personal claim (' + EMAIL + ')');
   await browser.close();
 })().catch((e) => {
-  console.error('FAILED:', e.message.split('\n')[0]);
+  console.error('FAILED:', maskText(e.message.split('\n')[0]));
   process.exit(1);
 });
