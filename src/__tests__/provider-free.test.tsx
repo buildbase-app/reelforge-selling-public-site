@@ -134,6 +134,26 @@ describe('LitePricingCatalog (home page, no provider)', () => {
     );
   });
 
+  it('signed out: a paid card\'s "Buy now" opens its guest checkout on /pricing, without the SDK here', () => {
+    render(
+      <SessionHintProvider hasSession={false}>
+        <LitePricingCatalog serverItems={items()} />
+      </SessionHintProvider>
+    );
+    const commercial = screen
+      .getByText('Commercial: solo')
+      .closest('[data-edition]')!;
+    const buyNow = screen.getByRole('link', { name: 'Buy now' });
+    expect(commercial).toContainElement(buyNow);
+    expect(buyNow).toHaveAttribute('href', '/pricing?buy=commercial%3Asolo');
+    // The free Personal licence has no guest path: it needs an account.
+    const personal = screen
+      .getByText('Personal: noncommercial')
+      .closest('[data-edition]')!;
+    expect(personal.querySelector('a')).toBeNull();
+    expect(requestSignIn).not.toHaveBeenCalled();
+  });
+
   it('signed in: each card links to /pricing, where checkout is', () => {
     render(
       <SessionHintProvider hasSession>

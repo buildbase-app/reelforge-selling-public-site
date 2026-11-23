@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { useStoreItems } from './use-store-items';
 import { rememberOrder } from './last-order';
 import { copy, OfferGrid, type OfferActionProps } from './offer-grid';
+import { GuestCheckout } from './guest-checkout';
 
 /**
  * What can be bought, with checkout: the offer cards (`OfferGrid`) with a
@@ -51,7 +52,11 @@ function LiveCatalog() {
   return <OfferGrid items={items} unreachable={!!error} Action={BuyAction} />;
 }
 
-/** Signed in: the SDK's checkout. Signed out: sign in first, then buy here. */
+/**
+ * Signed in: the SDK's checkout. Signed out: a paid offer can be bought as
+ * a guest ("Buy now", studio issue #257) or after signing in; the free
+ * Personal licence needs an account, so it signs in first.
+ */
 function BuyAction({ item, variant, price, free, label }: OfferActionProps) {
   const { signIn } = useSaaSAuth();
   const origin = useOrigin();
@@ -87,10 +92,23 @@ function BuyAction({ item, variant, price, free, label }: OfferActionProps) {
         )}
       </WhenAuthenticated>
       <WhenUnauthenticated>
-        {/* Signed out: sign in first, then claim or buy on this page. */}
-        <Button onClick={() => signIn()}>
-          {free ? copy.getFree : copy.signInToBuy}
-        </Button>
+        {free ? (
+          <Button onClick={() => signIn()}>{copy.getFree}</Button>
+        ) : (
+          <>
+            {origin && (
+              <GuestCheckout
+                item={item}
+                variant={variant}
+                price={price}
+                origin={origin}
+              />
+            )}
+            <Button variant="outline" onClick={() => signIn()}>
+              {copy.signInToBuy}
+            </Button>
+          </>
+        )}
       </WhenUnauthenticated>
     </>
   );

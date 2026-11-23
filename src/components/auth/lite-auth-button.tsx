@@ -61,9 +61,10 @@ export function SignInButton({
   loadingLabel?: string;
   /**
    * `ghost` in the site header, where the page's one primary action (if
-   * any) is the filled button (studio issue #215).
+   * any) is the filled button (studio issue #215). `outline` under a
+   * card's "Buy now" (studio issue #257).
    */
-  variant?: 'default' | 'ghost';
+  variant?: 'default' | 'ghost' | 'outline';
 }) {
   const [pending, setPending] = useState(false);
 

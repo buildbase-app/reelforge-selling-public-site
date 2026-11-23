@@ -1,5 +1,5 @@
-import { render, screen, within } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { PublicItemView } from '@buildbase/sdk';
 
 /**
@@ -17,13 +17,21 @@ const state: {
 let browserReads = 0;
 let signedIn = true;
 const buyProps: Record<string, unknown>[] = [];
+const signIn = vi.fn();
+const guest = {
+  checkout: vi.fn(),
+  starting: false,
+  error: null as string | null,
+  reset: vi.fn(),
+};
 
 vi.mock('@buildbase/sdk/react', () => ({
   usePublishedItems: () => {
     browserReads += 1;
     return { ...state, hasNextPage: false, refetch: vi.fn() };
   },
-  useSaaSAuth: () => ({ signIn: vi.fn() }),
+  useSaaSAuth: () => ({ signIn }),
+  useGuestCheckout: () => ({ ...guest, problems: [] }),
   WhenAuthenticated: ({ children }: { children: React.ReactNode }) =>
     signedIn ? <>{children}</> : null,
   WhenUnauthenticated: ({ children }: { children: React.ReactNode }) =>
@@ -70,6 +78,17 @@ beforeEach(() => {
   buyProps.length = 0;
   browserReads = 0;
   signedIn = true;
+  signIn.mockReset();
+  guest.checkout.mockReset();
+  guest.reset.mockReset();
+  guest.error = null;
+  window.history.replaceState(null, '', '/pricing');
+  // jsdom has no layout: the guest form scrolls itself into view.
+  Element.prototype.scrollIntoView = vi.fn();
+});
+
+afterEach(() => {
+  vi.restoreAllMocks();
 });
 
 /** The two store items as the dev environment has them (test prices). */
@@ -236,18 +255,37 @@ describe('PricingCatalog: Personal first, then Commercial', () => {
     ]);
   });
 
-  it('signed out: "Get it free" and "Sign in to buy" both sign in first', () => {
+  it('signed out: "Get it free" signs in; each paid tier offers "Buy now" and "Sign in to buy"', () => {
     signedIn = false;
     state.items = [commercialItem(), personalItem()];
     render(<PricingCatalog />);
     expect(buyProps).toHaveLength(0);
-    const buttons = screen.getAllByRole('button').map((b) => b.textContent);
-    expect(buttons).toEqual([
-      'Get it free',
-      'Sign in to buy',
-      'Sign in to buy',
-      'Sign in to buy',
-    ]);
+    const personal = document.querySelector<HTMLElement>(
+      '[data-edition="personal"]'
+    )!;
+    expect(
+      within(personal)
+        .getAllByRole('button')
+        .map((b) => b.textContent)
+    ).toEqual(['Get it free']);
+    const commercial = [
+      ...document.querySelectorAll<HTMLElement>('[data-edition="commercial"]'),
+    ];
+    for (const card of commercial) {
+      const buttons = within(card).getAllByRole('button');
+      expect(buttons.map((b) => b.textContent)).toEqual([
+        'Buy now',
+        'Sign in to buy',
+      ]);
+      // "Buy now" is the card's primary action.
+      expect(buttons[0]).toHaveAttribute('data-variant', 'default');
+      expect(buttons[1]).toHaveAttribute('data-variant', 'outline');
+    }
+    fireEvent.click(within(personal).getByRole('button'));
+    fireEvent.click(
+      within(commercial[0]).getByRole('button', { name: 'Sign in to buy' })
+    );
+    expect(signIn).toHaveBeenCalledTimes(2);
   });
 
   it('orders by the item edition from metadata, not by price or title', () => {
@@ -278,6 +316,98 @@ describe('PricingCatalog: Personal first, then Commercial', () => {
     const text = document.body.textContent ?? '';
     expect(text).not.toMatch(/open[\s-]?source/i);
     expect(text).not.toMatch(/locked\s+(docker\s+)?image/i);
+  });
+});
+
+describe('PricingCatalog: guest checkout (studio issue #257)', () => {
+  function studioCard() {
+    return [
+      ...document.querySelectorAll<HTMLElement>('[data-edition="commercial"]'),
+    ].find((c) => c.textContent?.includes('Studio'))!;
+  }
+
+  it('"Buy now" asks for a name and email, then opens Stripe with a return to /order', async () => {
+    signedIn = false;
+    state.items = [commercialItem(), personalItem()];
+    const assign = vi.fn();
+    vi.spyOn(window, 'location', 'get').mockReturnValue({
+      ...window.location,
+      origin: window.location.origin,
+      search: '',
+      assign,
+    } as Location);
+    guest.checkout.mockResolvedValue({
+      url: 'https://checkout.stripe.com/c/pay/cs_test_1',
+      token: 'tok',
+      order: { _id: 'order_1' },
+    });
+    render(<PricingCatalog />);
+    const card = studioCard();
+    fireEvent.click(within(card).getByRole('button', { name: 'Buy now' }));
+    fireEvent.change(within(card).getByLabelText('Name'), {
+      target: { value: ' Ada Lovelace ' },
+    });
+    fireEvent.change(within(card).getByLabelText('Email'), {
+      target: { value: 'ada@example.com' },
+    });
+    await act(async () => {
+      fireEvent.click(
+        within(card).getByRole('button', { name: 'Continue to payment' })
+      );
+    });
+    expect(guest.checkout).toHaveBeenCalledWith('commercial', {
+      variantId: 'studio',
+      priceId: 'studio-usd',
+      amount: undefined,
+      name: 'Ada Lovelace',
+      email: 'ada@example.com',
+      successUrl: `${window.location.origin}/order`,
+      cancelUrl: `${window.location.origin}/pricing`,
+    });
+    expect(assign).toHaveBeenCalledWith(
+      'https://checkout.stripe.com/c/pay/cs_test_1'
+    );
+  });
+
+  it('shows why a guest checkout was refused, and stays on the page', async () => {
+    signedIn = false;
+    state.items = [commercialItem()];
+    guest.error = 'Guests cannot buy here yet.';
+    render(<PricingCatalog />);
+    const card = studioCard();
+    fireEvent.click(within(card).getByRole('button', { name: 'Buy now' }));
+    expect(within(card).getByRole('alert')).toHaveTextContent(
+      'Guests cannot buy here yet.'
+    );
+    fireEvent.click(within(card).getByRole('button', { name: 'Cancel' }));
+    expect(guest.reset).toHaveBeenCalled();
+    expect(within(card).getByRole('button', { name: 'Buy now' })).toBeVisible();
+  });
+
+  it('opens the card named by ?buy= (the home page\'s "Buy now")', () => {
+    signedIn = false;
+    window.history.replaceState(null, '', '/pricing?buy=commercial%3Astudio');
+    state.items = [commercialItem(), personalItem()];
+    render(<PricingCatalog />);
+    expect(within(studioCard()).getByLabelText('Email')).toBeVisible();
+    expect(document.activeElement).toBe(
+      within(studioCard()).getByLabelText('Name')
+    );
+    expect(Element.prototype.scrollIntoView).toHaveBeenCalled();
+    const others = [
+      ...document.querySelectorAll<HTMLElement>('[data-edition="commercial"]'),
+    ].filter((c) => c !== studioCard());
+    for (const card of others) {
+      expect(within(card).queryByLabelText('Email')).toBeNull();
+    }
+  });
+
+  it("signed in: no guest checkout, the SDK's Buy button", () => {
+    state.items = [commercialItem()];
+    render(<PricingCatalog />);
+    expect(screen.queryByRole('button', { name: 'Buy now' })).toBeNull();
+    expect(guest.checkout).not.toHaveBeenCalled();
+    expect(buyProps).toHaveLength(3);
   });
 });
 
