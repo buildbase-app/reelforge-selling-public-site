@@ -80,7 +80,10 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
         ]}
       />
 
-      <section aria-labelledby="agents-title" className="dark rf-stage w-full">
+      <section
+        aria-labelledby="agents-title"
+        className="dark rf-stage rf-wash w-full"
+      >
         <div className="mx-auto max-w-[980px] px-4 pt-16 pb-20 text-center md:px-6 md:pt-24">
           <p className="rf-eyebrow rf-fade-up">Connect your agent</p>
           <h1 id="agents-title" className="rf-display rf-fade-up mt-4">

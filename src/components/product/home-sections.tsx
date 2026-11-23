@@ -80,33 +80,36 @@ function Phone({
 }
 
 /**
- * Two more real renders for the hero's back layer: posters of gallery reels
- * the studio rendered (public/reels/stack: 400×711 AVIF and WebP, and 240 px
- * wide copies for phones).
+ * The hero's demo: a replay of a recorded Claude Code session that makes a
+ * four-engine reel over MCP (store #18, `public/walkthroughs/`; recorded on
+ * 2026-11-21, waits shortened). It plays in the site's own reel player, so
+ * it adds no JavaScript: the poster (AVIF or WebP, 480 or 640 px) is the
+ * only thing fetched with the page and is preloaded at high priority; the
+ * silent video starts once the window is on screen, pauses when it leaves,
+ * never plays on its own under reduced motion, and has a pause button.
  */
-const STACK = [
-  {
-    src: '/reels/stack/album-release-countdown.webp',
-    alt: 'Poster of the Afterglow album countdown reel, rendered by ReelForge',
-    side: 'rf-stack-left',
-  },
-  {
-    src: '/reels/stack/beat-drop-visualizer.webp',
-    alt: 'Poster of the Drop beat visualiser reel, rendered by ReelForge',
-    side: 'rf-stack-right',
-  },
-] as const;
+const DEMO = {
+  base: '/walkthroughs/agent-session.4cc6d476',
+  seconds: 35,
+  prompt: 'make a 9-second reel that mixes all four engines',
+};
+/** The demo window's width: the hero's right column, or the screen. */
+const DEMO_SIZES =
+  '(min-width: 1248px) 500px, (min-width: 1024px) 40vw, calc(100vw - 32px)';
+const demoSet = (ext: 'avif' | 'webp') =>
+  `${DEMO.base}-480.${ext} 480w, ${DEMO.base}-640.${ext} 640w`;
+const DEMO_SOURCE: ReelSource = {
+  webm: `${DEMO.base}.webm`,
+  mp4: `${DEMO.base}.mp4`,
+  avif: `${DEMO.base}-640.avif`,
+  jpg: `${DEMO.base}.jpg`,
+  avifSrcSet: demoSet('avif'),
+  webpSrcSet: demoSet('webp'),
+  webmType: 'video/webm; codecs="vp9"',
+  label: `Silent ${DEMO.seconds}-second replay of a recorded session: Claude Code is asked to ${DEMO.prompt}, calls the ReelForge MCP tools to create, check and render the project, and the finished reel plays on the right.`,
+};
 
-/** A back poster's width (`.rf-stack-back`). */
-const STACK_SIZES = 'min(48vw, 208px)';
-
-/** `/reels/stack/x.webp` as a 240w/400w `srcset` in `ext`. */
-function stackSrcSet(src: string, ext: 'avif' | 'webp') {
-  const base = src.replace(/\.webp$/, '');
-  return `${base}-240.${ext} 240w, ${base}.${ext} 400w`;
-}
-
-/** Hero: the promise, the buttons, and the three real reels in a phone. */
+/** Hero: the promise, the buttons, and a real agent session in a window. */
 export function Hero({
   heading,
   ctas,
@@ -114,14 +117,15 @@ export function Hero({
   heading: React.ReactNode;
   ctas: React.ReactNode;
 }) {
+  const duration = `0:${String(DEMO.seconds).padStart(2, '0')}`;
   return (
     <section
       id="overview"
       aria-labelledby="hero-title"
-      className="dark rf-stage w-full scroll-mt-(--header-h) overflow-hidden"
+      className="dark rf-stage rf-wash w-full scroll-mt-(--header-h) overflow-hidden"
       data-parallax=""
     >
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-16 px-4 pt-16 pb-24 md:px-6 md:pt-24 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12 lg:pb-32">
+      <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-12 px-4 pt-16 pb-24 md:px-6 md:pt-24 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-12 lg:pb-32">
         <div className="text-center lg:text-left">
           <p className="rf-eyebrow rf-fade-up">
             Source-available · Self-hosted · Driven over MCP
@@ -130,9 +134,17 @@ export function Hero({
             {heading}
           </h1>
           <p className="rf-muted rf-fade-up-2 mx-auto mt-6 max-w-[34rem] text-lg leading-relaxed text-pretty md:text-xl lg:mx-0">
-            Ask your AI agent for a reel. It plans every scene and its timing
-            over MCP or REST; ReelForge renders it on your own machine into one
-            vertical MP4.
+            Ask your AI agent for a reel. It plans every scene over MCP or REST;
+            ReelForge renders it on your own machine into one vertical MP4.
+          </p>
+          {/* Its own line, so the subhead above (the LCP text on phones)
+              never waits for the mono face. */}
+          <p className="rf-fade-up-2 mt-4 text-[15px] leading-loose">
+            <span className="rf-muted">Like this: </span>
+            <code className="rf-chip">
+              make a <span className="whitespace-nowrap">9-second</span> reel
+              that mixes all four engines
+            </code>
           </p>
           <div className="rf-fade-up-2 mt-8 lg:[&>div]:justify-start">
             {ctas}
@@ -143,43 +155,156 @@ export function Hero({
             <Fn n={1} />
           </p>
         </div>
-        <figure className="flex flex-col items-center">
-          <div className="rf-stack">
-            {STACK.map((poster) => (
-              <div
-                key={poster.src}
-                className={`rf-stack-back rf-par-far ${poster.side}`}
-              >
-                <picture>
-                  <source
-                    srcSet={stackSrcSet(poster.src, 'avif')}
-                    sizes={STACK_SIZES}
-                    type="image/avif"
-                  />
-                  <img
-                    src={poster.src}
-                    srcSet={stackSrcSet(poster.src, 'webp')}
-                    sizes={STACK_SIZES}
-                    alt={poster.alt}
-                    width={400}
-                    height={711}
-                    decoding="async"
-                    loading="lazy"
-                    fetchPriority="low"
-                  />
-                </picture>
-              </div>
-            ))}
-            <div className="rf-par-near">
-              <Phone sources={reels.map(reelSource)} priority />
+        <figure className="rf-par-near min-w-0">
+          <div className="rf-window rf-demo">
+            <div className="rf-demo-bar border-b border-white/10">
+              <span className="rf-receipt truncate">
+                claude-code → reelforge · agent-session.mp4
+              </span>
+              <span className="rf-receipt shrink-0">{duration}</span>
+            </div>
+            <div className="rf-demo-screen">
+              <ReelVideo
+                sources={[DEMO_SOURCE]}
+                priority
+                sizes={DEMO_SIZES}
+                className="absolute inset-0"
+              />
+            </div>
+            <div className="rf-demo-bar border-t border-white/10">
+              <span className="rf-receipt">
+                prompt → MCP calls → checked MP4
+              </span>
+              <span className="rf-receipt shrink-0">silent</span>
             </div>
           </div>
-          <figcaption className="rf-receipt mt-8 max-w-[320px] text-center">
-            In the phone: three reels made with ReelForge Studio{' '}
-            {reels[0].versions.studio} from the prompts further down
-            <Fn n={2} />. Behind it: two renders from the gallery.
+          <figcaption className="rf-receipt mt-4 text-center lg:text-left">
+            A replay of a recorded session on 2026-11-21: the real prompt, tool
+            calls, results and reel, with the waits shortened.
           </figcaption>
         </figure>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Frames from 16 gallery reels the studio rendered (`public/reels/marquee`,
+ * 288×512 WebP, about 4 KB each), in two rows that drift in opposite
+ * directions.
+ */
+const MARQUEE = [
+  [
+    'city-cycling-growth',
+    'colour-palette-tour',
+    'air-squat-form-tip',
+    'lumen-desk-lamp-launch',
+    'election-turnout-explainer',
+    'city-weekend-guide',
+    'podcast-founder-stories',
+    'sheet-pan-tacos',
+  ],
+  [
+    'generative-brand-loop',
+    'habitloop-app-promo',
+    'charity-run-event',
+    'packing-light-checklist',
+    'remote-work-data-story',
+    'pay-yourself-first',
+    'studio-apartment-rent',
+    'small-steps-daily',
+  ],
+];
+
+function MarqueeRow({
+  slugs,
+  reverse,
+}: {
+  slugs: string[];
+  reverse?: boolean;
+}) {
+  // One copy that drifts to its end and back, so no poster is sent twice.
+  return (
+    <div className={`rf-marquee ${reverse ? 'rf-marquee-rev' : ''}`}>
+      <ul>
+        {slugs.map((slug) => (
+          <li key={slug}>
+            {/* A fixed 288 px poster from public/: nothing for next/image to do. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`/reels/marquee/${slug}.webp`}
+              alt=""
+              width={288}
+              height={512}
+              loading="lazy"
+              decoding="async"
+              fetchPriority="low"
+            />
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** The light card: real reel posters drifting past, and what ReelForge is. */
+export function ReelMarquee() {
+  return (
+    <section
+      aria-labelledby="made-title"
+      className="dark rf-stage rf-wash rf-marquee-band w-full"
+    >
+      <div className="mx-auto max-w-[1200px] px-4 pb-24 md:px-6 md:pb-32">
+        <div className="rf-paper overflow-hidden py-6 md:py-8">
+          <div aria-hidden="true">
+            <MarqueeRow slugs={MARQUEE[0]} />
+          </div>
+          <div className="mx-auto max-w-[760px] px-6 py-10 text-center md:py-14">
+            <h2 id="made-title" className="rf-headline">
+              Every poster here is a real render
+            </h2>
+            <p className="rf-muted mx-auto mt-4 max-w-[56ch] text-lg text-pretty">
+              Frames from reels in the gallery. A script sent each manifest to
+              ReelForge Studio over MCP, the way your agent would, and the
+              studio rendered it.
+            </p>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+              <ul aria-label="Not this" className="contents">
+                {['Prompt packs', 'Per-video credits', 'A hosted editor'].map(
+                  (item) => (
+                    <li key={item} className="rf-not">
+                      {item}
+                    </li>
+                  )
+                )}
+              </ul>
+              <span aria-hidden="true" className="rf-muted px-1">
+                →
+              </span>
+              <p className="rf-is">
+                <span className="sr-only">But this: </span>
+                <Check className="h-4 w-4" aria-hidden />A studio on your own
+                server
+              </p>
+            </div>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
+              <Link
+                href="/gallery"
+                className="rf-link inline-flex items-center"
+              >
+                See every reel in the gallery
+                <ChevronRight className="h-4 w-4" aria-hidden />
+              </Link>
+              <label className="rf-pause">
+                <input type="checkbox" />
+                Pause the posters
+              </label>
+            </div>
+          </div>
+          <div aria-hidden="true">
+            <MarqueeRow slugs={MARQUEE[1]} reverse />
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -193,7 +318,7 @@ export function AgentTranscript() {
     <section
       id="agent"
       aria-labelledby="agent-title"
-      className="dark rf-stage w-full scroll-mt-(--header-h) border-t border-white/10"
+      className="dark rf-stage rf-wash w-full scroll-mt-(--header-h) border-t border-white/10"
     >
       <div className="mx-auto max-w-[1200px] px-4 py-24 md:px-6 md:py-36">
         <div className="rf-reveal mx-auto max-w-[980px] text-center">
@@ -372,7 +497,7 @@ export function ConnectAgent({ tabs }: { tabs: React.ReactNode }) {
     <section
       id="connect"
       aria-labelledby="connect-title"
-      className="dark rf-stage w-full scroll-mt-(--header-h)"
+      className="dark rf-stage rf-wash w-full scroll-mt-(--header-h)"
     >
       <div className="mx-auto max-w-[980px] px-4 py-24 md:px-6 md:py-32">
         <div className="rf-reveal text-center">
@@ -534,37 +659,50 @@ export function ReelGallery() {
   );
 }
 
-/** Four facts, each with its footnote. No count-up animation. */
+/**
+ * Proof tiles: four real numbers, each with where it comes from. No
+ * count-up animation, no social numbers.
+ */
 export function NumbersBand() {
   const tips = getReel('hook-tips');
+  const commit = toolCatalog.source.commit?.slice(0, 7);
   const facts = [
-    { value: '4', label: 'engines in one reel', fn: undefined },
+    {
+      value: '4',
+      label: 'engines in one reel',
+      source: 'the agent-directs reel above, one scene per engine',
+      fn: undefined,
+    },
     {
       value: String(toolCatalog.count),
       label: 'MCP tools. Every REST route has one.',
+      source: `studio ${toolCatalog.source.reference ?? 'tools/list'}${commit ? ` @ ${commit}` : ''}`,
       fn: 3,
     },
     {
       value: `${tips.output.width}×${tips.output.height}`,
       label: `${tips.output.fps} fps, H.264 + AAC, checked with ffprobe and a full decode`,
+      source: 'render-manifest.json of the tips reel',
       fn: undefined,
     },
     {
       value: `${tips.renderSeconds} s`,
       label: `to render the ${tips.output.durationSeconds}-second tips reel above`,
+      source: 'render-manifest.json, wall clock',
       fn: 2,
     },
   ];
   return (
     <section aria-label="ReelForge in numbers" className="w-full">
-      <dl className="mx-auto grid max-w-[1200px] gap-10 px-4 py-20 sm:grid-cols-2 md:px-6 lg:grid-cols-[1fr_1fr_1.5fr_1fr] lg:gap-8">
+      <dl className="mx-auto grid max-w-[1200px] gap-4 px-4 py-20 sm:grid-cols-2 md:px-6 lg:grid-cols-[1fr_1fr_1.4fr_1fr]">
         {facts.map((f) => (
-          <div key={f.label} className="rf-reveal flex flex-col">
-            <dt className="text-muted-foreground order-2 mt-3 text-sm text-pretty">
+          <div key={f.label} className="rf-reveal rf-card flex flex-col">
+            <dt className="order-2 mt-3 text-sm text-pretty">
               {f.label}
               {f.fn ? <Fn n={f.fn} /> : null}
+              <span className="rf-receipt mt-3 block">Source: {f.source}</span>
             </dt>
-            <dd className="order-1 text-[clamp(2.5rem,3.6vw,3.25rem)] leading-none font-medium tracking-tight tabular-nums">
+            <dd className="order-1 text-[clamp(2.25rem,3.2vw,3rem)] leading-none font-medium tracking-tight tabular-nums">
               {f.value}
             </dd>
           </div>
@@ -606,8 +744,12 @@ export function Privacy() {
         </div>
         <div className="mt-14 grid gap-4 md:grid-cols-2">
           {[
-            { title: 'Stays on your machine', items: STAYS },
-            { title: 'Leaves only when you set it up', items: LEAVES },
+            { title: 'Stays on your machine', items: STAYS, stays: true },
+            {
+              title: 'Leaves only when you set it up',
+              items: LEAVES,
+              stays: false,
+            },
           ].map((col) => (
             <div
               key={col.title}
@@ -619,10 +761,17 @@ export function Privacy() {
               <ul className="text-muted-foreground mt-4 space-y-3">
                 {col.items.map((item) => (
                   <li key={item} className="flex gap-3">
-                    <Check
-                      className="text-foreground mt-1 h-4 w-4 shrink-0"
-                      aria-hidden
-                    />
+                    {col.stays ? (
+                      <Check
+                        className="text-success mt-1 h-4 w-4 shrink-0"
+                        aria-hidden
+                      />
+                    ) : (
+                      <span
+                        className="bg-muted-foreground mx-1 mt-2 h-2 w-2 shrink-0 rounded-full"
+                        aria-hidden
+                      />
+                    )}
                     <span className="text-pretty">{item}</span>
                   </li>
                 ))}
@@ -647,61 +796,83 @@ export function Privacy() {
   );
 }
 
-const ENTERPRISE = [
+/**
+ * What the studio does for the people who run it, as feature cards with the
+ * concrete capabilities (studio README "What works today", 2026-11-23). The
+ * green tick means "works today"; planned work is listed apart. Short on
+ * purpose: every word here is sent twice (HTML and RSC payload).
+ */
+const ENTERPRISE: { title: string; tags: string[]; fn?: number }[] = [
   {
-    title: 'Databases',
-    body: 'SQLite by default. PostgreSQL or MySQL/MariaDB with one URL.',
+    title: 'A job queue in your database',
+    tags: [
+      'api and worker roles',
+      'job priorities',
+      'fan-out over workers',
+      'KEDA autoscaling',
+    ],
   },
   {
-    title: 'Storage',
-    body: 'Local disk, S3-compatible, Azure Blob or Google Cloud Storage, with retention.',
+    title: 'Your database, your storage',
+    tags: ['SQLite', 'PostgreSQL', 'MySQL', 'S3-compatible', 'Azure', 'GCS'],
     fn: 4,
   },
   {
-    title: 'Observability',
-    body: 'JSON logs, Prometheus /metrics, OpenTelemetry traces, logs and metrics.',
+    title: 'Keys you can hand to an agent',
+    tags: ['scopes', 'expiry', 'rotation', 'IP allowlists', 'quotas'],
   },
   {
-    title: 'Audit log',
-    body: 'Every write and admin call over REST, MCP and the CLI. Export as JSONL or CSV.',
+    title: 'An audit log and webhooks',
+    tags: ['every write call', 'signed webhooks', 'Slack', 'email', 'replay'],
   },
   {
-    title: 'API keys',
-    body: 'Scopes, expiry, rotation with a grace window, IP allowlists, rate limits and render quotas.',
+    title: 'Logs, metrics and traces',
+    tags: ['JSON logs', 'Prometheus', 'OpenTelemetry'],
   },
   {
-    title: 'Hardened image',
-    body: 'Non-root, read-only root filesystem, no Linux capabilities, a seccomp profile and an SBOM.',
+    title: 'A hardened image',
+    tags: ['non-root', 'read-only root', 'seccomp', 'SBOM', 'arm64'],
   },
 ];
 
 export function EnterpriseStrip() {
   return (
     <section aria-labelledby="ops-title" className="w-full border-y">
-      <div className="mx-auto max-w-[1200px] px-4 py-20 md:px-6">
+      <div className="mx-auto max-w-[1200px] px-4 py-20 md:px-6 md:py-28">
         <h2
           id="ops-title"
           className="rf-reveal text-2xl font-medium tracking-tight md:text-3xl"
         >
           Ready for the server room
         </h2>
-        <ul className="mt-10 grid gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {ENTERPRISE.map((item) => (
-            <li key={item.title} className="rf-reveal">
-              <h3 className="font-medium">
+            <li key={item.title} className="rf-reveal rf-card">
+              <h3 className="flex items-center gap-2 font-medium">
+                <Check className="text-success h-4 w-4" aria-hidden />
                 {item.title}
                 {item.fn ? <Fn n={item.fn} /> : null}
               </h3>
-              <p className="text-muted-foreground mt-1 text-sm text-pretty">
-                {item.body}
-              </p>
+              <ul className="mt-4 flex flex-wrap gap-1.5">
+                {item.tags.map((tag) => (
+                  <li key={tag} className="rf-tag">
+                    {tag}
+                  </li>
+                ))}
+              </ul>
             </li>
           ))}
         </ul>
-        <p className="text-muted-foreground mt-10 text-xs">
-          Planned, not shipped: signed images (the signing step runs once
-          release publishing starts) and rendering on your own AWS account with
-          Remotion Lambda.
+        <p className="text-muted-foreground mt-8 flex items-start gap-2 text-sm">
+          <span
+            className="bg-warning mt-1.5 h-2 w-2 shrink-0 rounded-full"
+            aria-hidden
+          />
+          <span>
+            Planned, not shipped: signed images (the signing step runs once
+            release publishing starts) and rendering on your own AWS account
+            with Remotion Lambda.
+          </span>
         </p>
       </div>
     </section>
@@ -710,7 +881,10 @@ export function EnterpriseStrip() {
 
 export function FinalCta({ ctas }: { ctas: React.ReactNode }) {
   return (
-    <section aria-labelledby="final-title" className="dark rf-stage w-full">
+    <section
+      aria-labelledby="final-title"
+      className="dark rf-stage rf-wash w-full"
+    >
       <div className="rf-reveal mx-auto max-w-[980px] px-4 py-28 text-center md:px-6 md:py-40">
         <h2 id="final-title" className="rf-display">
           Give your agent a studio

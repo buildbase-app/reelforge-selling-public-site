@@ -21,6 +21,7 @@ import {
   NumbersBand,
   Privacy,
   ReelGallery,
+  ReelMarquee,
 } from '@/components/product/home-sections';
 import { Link } from '@/i18n/link';
 import { absoluteUrl } from '@/config/seo';
@@ -92,12 +93,13 @@ export default async function HomePage({ params }: HomePageProps) {
       <AnnouncementBar />
       <Hero
         heading={t.rich('hero.heading', {
-          highlight: (chunks) => <span className="rf-quiet">{chunks}</span>,
+          highlight: (chunks) => <span className="rf-accent">{chunks}</span>,
         })}
         ctas={
           <StoreCtas labels={ctaLabels} onSale={onSale} goalSection="hero" />
         }
       />
+      <ReelMarquee />
       <AgentTranscript />
       <HowItWorks />
       <ConnectAgent tabs={<AgentTabs clients={AGENT_CLIENTS} />} />

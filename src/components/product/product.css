@@ -25,6 +25,13 @@
 .rf-stage .rf-muted {
   color: var(--stage-muted);
 }
+/* Two soft washes behind a dark band (a canvas tint and an accent tint),
+   from the tokens. Static, so nothing to turn off under reduced motion. */
+.rf-wash {
+  background-image:
+    radial-gradient(56% 48% at 0% 0%, var(--wash-canvas), transparent 72%),
+    radial-gradient(56% 48% at 100% 100%, var(--wash-accent), transparent 72%);
+}
 
 /* Display type: size and tracking carry the hierarchy, not weight. */
 .rf-display {
@@ -34,12 +41,64 @@
   line-height: 1.02;
   text-wrap: balance;
 }
+/* The page's one H1 gets a step more weight and tighter tracking (studio
+   issue #247; Geist is variable, so this costs no bytes). */
+h1.rf-display {
+  font-size: clamp(2.5rem, 5.4vw, 4.5rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
 .rf-headline {
   font-size: clamp(2rem, 4.4vw, 3.25rem);
   font-weight: 500;
   letter-spacing: -0.03em;
   line-height: 1.08;
   text-wrap: balance;
+}
+/* The key words of a headline: the accent, with a short underline drawn
+   under them. Solid colour, never a gradient on the text. */
+.rf-accent {
+  color: var(--brand-ink);
+  white-space: nowrap;
+  text-decoration: underline;
+  text-decoration-thickness: 0.04em;
+  text-underline-offset: 0.12em;
+  text-decoration-color: color-mix(in oklab, currentColor 50%, transparent);
+}
+.rf-stage .rf-accent {
+  color: var(--brand);
+}
+/* A command in running text: mono, on a raised step, accent for the part
+   you change. */
+.rf-chip {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.875em;
+  padding: 0.125em 0.5em;
+  border: 1px solid var(--stage-line);
+  border-radius: 6px;
+  background: var(--stage-raised);
+  color: var(--stage-text);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+/* A raised card on the page (feature cards, proof tiles). */
+.rf-card {
+  padding: 24px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+}
+/* A capability, as an outline tag. */
+.rf-tag {
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  font-size: 0.8125rem;
+  color: var(--foreground);
 }
 /* The second sentence of a display line: a quieter step of the same ink. */
 .rf-quiet {
@@ -145,57 +204,6 @@
   object-fit: cover;
 }
 
-/*
- * The hero visual: the phone with two more real renders from the gallery
- * standing behind it. Three depths, so the scroll can move them at three
- * speeds. The box is fixed by the phone, so nothing here can shift layout.
- */
-.rf-stack {
-  position: relative;
-  display: grid;
-  place-items: center;
-  isolation: isolate;
-}
-.rf-stack-back {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: min(48vw, 208px);
-  z-index: -1;
-}
-.rf-stack-back > picture {
-  display: contents;
-}
-.rf-stack-back img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 9 / 16;
-  border-radius: 24px;
-  border: 1px solid var(--stage-line);
-  opacity: 0.72;
-}
-.rf-stack-left {
-  translate: -128% -46%;
-}
-.rf-stack-left img {
-  rotate: -6deg;
-}
-.rf-stack-right {
-  translate: 28% -54%;
-}
-.rf-stack-right img {
-  rotate: 6deg;
-}
-@media (max-width: 639px) {
-  .rf-stack-left {
-    translate: -100% -46%;
-  }
-  .rf-stack-right {
-    translate: 0% -54%;
-  }
-}
-
 /* Desktop "window" for code and transcripts: no fake traffic lights. */
 .rf-window {
   border: 1px solid var(--stage-line);
@@ -203,6 +211,140 @@
   background: var(--stage-raised);
   color: var(--stage-text);
   color-scheme: dark;
+}
+/* The hero's demo: a recorded session in a window with a title bar. */
+.rf-demo {
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.06),
+    var(--shadow-float);
+}
+.rf-demo-bar {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 16px;
+}
+.rf-demo-screen {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: var(--stage);
+}
+.rf-demo-screen :is(img, video) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * Paper: the light card in a dark band, with two rows of real reel posters
+ * drifting past. CSS only: the rows pause on hover, with the pause control
+ * (a checkbox, so it needs no script), and do not move at all under reduced
+ * motion. Only transform moves.
+ */
+/* Until the band is near the screen it is not rendered at all: its posters
+   do not load and the rows do not move, so neither competes with the hero.
+   The reserved height matches the card, so nothing shifts. */
+.rf-marquee-band {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 960px;
+}
+.rf-paper {
+  border-radius: 24px;
+  background: var(--paper);
+  color: var(--paper-text);
+  color-scheme: light;
+}
+.rf-paper .rf-muted {
+  color: var(--paper-muted);
+}
+.rf-paper .rf-link {
+  color: var(--paper-ink);
+}
+.rf-marquee {
+  position: relative;
+  overflow: hidden;
+  container-type: inline-size;
+}
+/* The rows fade into the card at both ends: two paper-coloured edges over
+   the row, so the moving row itself stays on its own compositor layer. */
+.rf-marquee::before,
+.rf-marquee::after {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  z-index: 1;
+  width: 48px;
+  pointer-events: none;
+}
+.rf-marquee::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--paper), transparent);
+}
+.rf-marquee::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--paper), transparent);
+}
+.rf-marquee > ul {
+  display: flex;
+  width: max-content;
+  gap: 12px;
+}
+.rf-marquee img {
+  display: block;
+  width: 112px;
+  height: auto;
+  aspect-ratio: 9 / 16;
+  border-radius: 12px;
+  border: 1px solid var(--paper-line);
+}
+@media (min-width: 768px) {
+  .rf-marquee img {
+    width: 160px;
+  }
+}
+.rf-pause {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8125rem;
+  color: var(--paper-muted);
+  cursor: pointer;
+}
+.rf-pause input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--paper-ink);
+}
+/* "Not this → this": what ReelForge is not, struck through, then what it is. */
+.rf-not {
+  display: inline-flex;
+  height: 32px;
+  align-items: center;
+  padding: 0 12px;
+  border: 1px solid var(--paper-line);
+  border-radius: 16px;
+  font-size: 0.875rem;
+  color: var(--paper-muted);
+  text-decoration: line-through;
+}
+.rf-is {
+  display: inline-flex;
+  height: 32px;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  border: 1px solid var(--brand);
+  border-radius: 16px;
+  background: #ffffff; /* deep orange text on white: 5.2:1 */
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--paper-ink);
 }
 
 /* Horizontal rails scroll-snap; the page itself never scrolls sideways. */
@@ -278,13 +420,8 @@
   }
 
   @supports (animation-timeline: scroll()) {
-    /* Hero parallax over the first screen of scroll: the far reels move
-       least on screen, the phone a little more, the text with the page. */
-    .rf-par-far {
-      animation: rf-par-far linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 100vh;
-    }
+    /* Hero parallax over the first screen of scroll: the demo window moves
+       a little slower than the page, the text with the page. */
     .rf-par-near {
       animation: rf-par-near linear both;
       animation-timeline: scroll(root);
@@ -354,9 +491,6 @@
     opacity: 0;
     transform: translateY(16px);
   }
-  .rf-io .rf-par-far {
-    transform: translate3d(0, calc(var(--rf-p, 0) * 120px), 0);
-  }
   .rf-io .rf-par-near {
     transform: translate3d(0, calc(var(--rf-p, 0) * 40px), 0);
   }
@@ -372,6 +506,31 @@
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .rf-marquee > ul {
+    animation: rf-marquee 40s linear infinite alternate;
+    will-change: transform;
+  }
+  .rf-marquee-rev > ul {
+    animation-direction: reverse;
+  }
+  .rf-marquee:hover > ul,
+  .rf-paper:has(.rf-pause :checked) .rf-marquee > ul {
+    animation-play-state: paused;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rf-pause {
+    display: none;
+  }
+}
+/* From the row's start to its end: the row's width less the card's. */
+@keyframes rf-marquee {
+  to {
+    transform: translateX(min(0px, calc(100cqw - 100%)));
+  }
+}
+
 @keyframes rf-rise {
   from {
     opacity: 0;
@@ -382,11 +541,6 @@
   from {
     opacity: 0.3;
     transform: translateY(16px);
-  }
-}
-@keyframes rf-par-far {
-  to {
-    transform: translate3d(0, 120px, 0);
   }
 }
 @keyframes rf-par-near {
