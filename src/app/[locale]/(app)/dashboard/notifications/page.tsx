@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { useTranslations } from 'next-intl';
 import { useSaaSWorkspaces, usePushNotifications } from '@buildbase/sdk/react';
 import { toast } from 'sonner';

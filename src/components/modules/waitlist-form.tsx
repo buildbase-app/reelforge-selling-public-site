@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { useState } from 'react';
 import { BetaForm } from '@buildbase/sdk/react';
 import { Card, CardContent } from '@/components/ui/card';

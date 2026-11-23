@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { HoldingFiles, HoldingKeys } from '@buildbase/sdk/react';
 import type { HoldingView } from '@buildbase/sdk';
 import { Badge } from '@/components/ui/badge';

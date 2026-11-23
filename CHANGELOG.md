@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (studio issue #193)
+
+- `/pricing`, `/order` and the dashboard no longer log a `script-src 'eval'`
+  CSP violation. zod v4 tested whether it could compile code with
+  `new Function("")`, which the nonce CSP blocks. zod is now set to
+  `jitless` (`src/lib/zod-jitless.ts`) before the BuildBase SDK builds its
+  schemas, so it never tries. The CSP is unchanged.
+- `e2e/home.spec.ts` finds the sign-in button and the theme toggle inside
+  the header. The old locators also matched "Sign in to buy" and the
+  footer's toggle. New `e2e/csp.spec.ts` checks for 0 CSP violations.
+
 ### Fixed (studio issue #189)
 
 - Body text is set in Geist, as the design pass intended. It was in the

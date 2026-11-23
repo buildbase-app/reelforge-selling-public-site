@@ -8,13 +8,19 @@ test.describe('Home page', () => {
 
   test('should have sign in button', async ({ page }) => {
     await page.goto('/');
-    const signInButton = page.getByRole('button', { name: /sign in/i });
+    // The header's button: the pricing cards on / have "Sign in to buy" too.
+    const signInButton = page
+      .getByRole('banner')
+      .getByRole('button', { name: /^sign in$/i });
     await expect(signInButton).toBeVisible();
   });
 
   test('should have theme toggle', async ({ page }) => {
     await page.goto('/');
-    const themeToggle = page.getByRole('button', { name: /toggle theme/i });
+    // The footer has a second theme toggle; this checks the header's.
+    const themeToggle = page
+      .getByRole('banner')
+      .getByRole('button', { name: /toggle theme/i });
     await expect(themeToggle).toBeVisible();
   });
 });

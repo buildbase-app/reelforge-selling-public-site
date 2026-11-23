@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import { usePublishedItems } from '@buildbase/sdk/react';
 
 /**

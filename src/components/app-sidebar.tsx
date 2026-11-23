@@ -1,5 +1,6 @@
 'use client';
 
+import '@/lib/zod-jitless';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
