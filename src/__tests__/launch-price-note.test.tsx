@@ -25,7 +25,9 @@ import {
   LAUNCH_PRICE_ENDS_AT,
   LAUNCH_PRICE_ENDS_LABEL,
   isLaunchPriceActive,
+  paidCommercialOnSale,
 } from '@/lib/store/launch';
+import type { PublicItemView } from '@buildbase/sdk';
 
 /**
  * A launch price is never shown without its end date (studio issue #260):
@@ -150,5 +152,98 @@ describe('<LaunchPriceNote>', () => {
     vi.setSystemTime(AFTER_END);
     getRichContent.mockResolvedValue(founderBlock);
     expect(await LaunchPriceNote({})).toBeNull();
+  });
+});
+
+/**
+ * The note is about prices: with nothing to pay for ("Not on sale yet", as on
+ * production before the items are published) there is no note (studio issue
+ * #266). When the server could not read the store it still shows, because
+ * the browser may then show launch prices.
+ */
+type Price = { mode: 'fixed' | 'free' | 'pwyw'; retired?: boolean };
+function item(
+  edition: 'personal' | 'commercial',
+  prices: Price[][]
+): PublicItemView {
+  return {
+    _id: `item-${edition}-${prices.length}`,
+    slug: `x-${edition}`,
+    data: { edition },
+    variants: prices.map((p, i) => ({ id: `v${i}`, prices: p })),
+  } as unknown as PublicItemView;
+}
+const personal = item('personal', [[{ mode: 'free' }]]);
+const commercial = item('commercial', [
+  [{ mode: 'fixed' }],
+  [{ mode: 'fixed' }],
+]);
+
+describe('paidCommercialOnSale', () => {
+  it('is false with no published items', () => {
+    expect(paidCommercialOnSale({ source: 'server', items: [] })).toBe(false);
+  });
+
+  it('is false when only the free Personal licence is published', () => {
+    expect(paidCommercialOnSale({ source: 'server', items: [personal] })).toBe(
+      false
+    );
+  });
+
+  it('is false when every Commercial price is retired', () => {
+    const retired = item('commercial', [[{ mode: 'fixed', retired: true }]]);
+    expect(
+      paidCommercialOnSale({ source: 'server', items: [personal, retired] })
+    ).toBe(false);
+  });
+
+  it('is true when a paid Commercial variant is on sale', () => {
+    expect(
+      paidCommercialOnSale({ source: 'server', items: [personal, commercial] })
+    ).toBe(true);
+  });
+
+  it('is unknown (undefined) when the server could not read the store', () => {
+    expect(
+      paidCommercialOnSale({ source: 'unavailable', items: [] })
+    ).toBeUndefined();
+  });
+});
+
+describe('<LaunchPriceNote> and what is on sale', () => {
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(BEFORE_END);
+  });
+
+  it('renders nothing when no items are published, even with the block', async () => {
+    getRichContent.mockResolvedValue(founderBlock);
+    const onSale = paidCommercialOnSale({ source: 'server', items: [] });
+    expect(await LaunchPriceNote({ onSale })).toBeNull();
+    // Not a fault: no "block unusable" error is logged for it.
+    expect(logError).not.toHaveBeenCalled();
+  });
+
+  it('renders the note with the end date when a paid Commercial variant is on sale', async () => {
+    getRichContent.mockResolvedValue(null);
+    const onSale = paidCommercialOnSale({
+      source: 'server',
+      items: [personal, commercial],
+    });
+    render(await LaunchPriceNote({ onSale }));
+    expect(screen.getByRole('note')).toHaveTextContent(LAUNCH_PRICE_ENDS_LABEL);
+  });
+
+  it('renders the note when the server could not tell what is on sale', async () => {
+    getRichContent.mockResolvedValue(null);
+    const onSale = paidCommercialOnSale({ source: 'unavailable', items: [] });
+    render(await LaunchPriceNote({ onSale }));
+    expect(screen.getByRole('note')).toHaveTextContent(LAUNCH_PRICE_ENDS_LABEL);
+  });
+
+  it('still renders nothing after the end date while on sale', async () => {
+    vi.setSystemTime(AFTER_END);
+    getRichContent.mockResolvedValue(founderBlock);
+    expect(await LaunchPriceNote({ onSale: true })).toBeNull();
   });
 });
