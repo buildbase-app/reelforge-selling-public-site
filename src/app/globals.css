@@ -124,6 +124,10 @@
   --shadow-sm: 0 1px 2px rgb(20 20 27 / 0.06);
   --shadow-float: 0 24px 48px -24px rgb(11 11 18 / 0.45);
 
+  /* The site header's height (HomeHeader), which in-page anchors use as
+     their scroll-margin-top so a heading lands just below it. */
+  --header-h: 4rem;
+
   /* Motion: one curve, three durations. */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --dur-fast: 150ms;

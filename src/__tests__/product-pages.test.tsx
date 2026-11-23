@@ -53,7 +53,6 @@ import {
   Footnotes,
   Hero,
   HowItWorks,
-  LocalNav,
   NumbersBand,
   Privacy,
   ReelGallery,
@@ -74,7 +73,6 @@ import { reels, toolCatalog } from '@/lib/agents/catalog';
 function Home() {
   return (
     <div>
-      <LocalNav onSale={false} />
       <Hero heading="Your agent directs." ctas={<button>Join</button>} />
       <AgentTranscript />
       <HowItWorks />

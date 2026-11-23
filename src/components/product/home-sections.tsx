@@ -78,70 +78,6 @@ function Phone({
   );
 }
 
-const SECTIONS = [
-  { id: 'agent', label: 'The agent' },
-  { id: 'how', label: 'How it works' },
-  { id: 'engines', label: 'Engines' },
-  { id: 'reels', label: 'Reels' },
-  { id: 'private', label: 'Self-hosted' },
-  { id: 'pricing', label: 'Pricing' },
-  { id: 'faq', label: 'FAQ' },
-] as const;
-
-/** Where the page's main button goes, from the server's read of the store. */
-function primaryCta(onSale: boolean | undefined) {
-  if (onSale === true) return { href: '/pricing', label: 'Get ReelForge' };
-  if (onSale === false)
-    return { href: '/waitlist', label: 'Join the waitlist' };
-  return { href: '/pricing', label: 'See pricing' };
-}
-
-/** Sticky product sub-nav under the site header. */
-export function LocalNav({ onSale }: { onSale?: boolean }) {
-  const cta = primaryCta(onSale);
-  return (
-    <nav
-      aria-label="ReelForge product"
-      className="rf-local-nav sticky top-[69px] z-40 w-full border-b"
-    >
-      <div className="mx-auto flex h-12 max-w-[1200px] items-center justify-between gap-4 px-4 md:px-6">
-        <a href="#overview" className="text-sm font-medium">
-          ReelForge Studio
-        </a>
-        <ul className="hidden items-center gap-5 text-xs lg:flex">
-          {SECTIONS.map((s) => (
-            <li key={s.id}>
-              <a
-                href={`#${s.id}`}
-                className="text-muted-foreground hover:text-foreground"
-              >
-                {s.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/agents"
-            className="rf-link hidden text-xs sm:inline-flex sm:items-center"
-          >
-            Connect your agent
-            <ChevronRight className="h-3.5 w-3.5" aria-hidden />
-          </Link>
-          <Link
-            href={cta.href}
-            className="rf-pill rf-pill-sm"
-            data-bb-goal="primary_cta"
-            data-bb-goal-section="local-nav"
-          >
-            {cta.label}
-          </Link>
-        </div>
-      </div>
-    </nav>
-  );
-}
-
 /**
  * Two more real renders for the hero's back layer: posters of gallery reels
  * the studio rendered (public/reels/stack: 400×711 AVIF and WebP, and 240 px
@@ -181,7 +117,7 @@ export function Hero({
     <section
       id="overview"
       aria-labelledby="hero-title"
-      className="dark rf-stage w-full scroll-mt-28 overflow-hidden"
+      className="dark rf-stage w-full scroll-mt-(--header-h) overflow-hidden"
       data-parallax=""
     >
       <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-16 px-4 pt-16 pb-24 md:px-6 md:pt-24 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)] lg:gap-12 lg:pb-32">
@@ -256,7 +192,7 @@ export function AgentTranscript() {
     <section
       id="agent"
       aria-labelledby="agent-title"
-      className="dark rf-stage w-full scroll-mt-28 border-t border-white/10"
+      className="dark rf-stage w-full scroll-mt-(--header-h) border-t border-white/10"
     >
       <div className="mx-auto max-w-[1200px] px-4 py-24 md:px-6 md:py-36">
         <div className="rf-reveal mx-auto max-w-[980px] text-center">
@@ -351,10 +287,10 @@ export function HowItWorks() {
     <section
       id="how"
       aria-labelledby="how-title"
-      className="rf-how w-full scroll-mt-28"
+      className="rf-how w-full scroll-mt-(--header-h)"
     >
       <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-12 px-4 py-24 md:px-6 md:py-32 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)] lg:gap-16">
-        <div className="lg:sticky lg:top-40 lg:self-start">
+        <div className="lg:sticky lg:top-[calc(var(--header-h)+3rem)] lg:self-start">
           <p className="rf-eyebrow">How it works</p>
           <h2 id="how-title" className="rf-headline mt-3">
             Three steps to your first reel
@@ -395,7 +331,7 @@ export function HowItWorks() {
             <li
               key={step.title}
               id={`how-step-${i + 1}`}
-              className="rf-reveal scroll-mt-40"
+              className="rf-reveal scroll-mt-[calc(var(--header-h)+1rem)]"
             >
               <p className="rf-receipt">Step 0{i + 1}</p>
               <h3 className="mt-2 text-2xl font-medium tracking-tight md:text-3xl">
@@ -435,7 +371,7 @@ export function ConnectAgent({ tabs }: { tabs: React.ReactNode }) {
     <section
       id="connect"
       aria-labelledby="connect-title"
-      className="dark rf-stage w-full scroll-mt-28"
+      className="dark rf-stage w-full scroll-mt-(--header-h)"
     >
       <div className="mx-auto max-w-[980px] px-4 py-24 md:px-6 md:py-32">
         <div className="rf-reveal text-center">
@@ -496,7 +432,7 @@ export function Engines() {
     <section
       id="engines"
       aria-labelledby="engines-title"
-      className="w-full scroll-mt-28"
+      className="w-full scroll-mt-(--header-h)"
     >
       <div className="mx-auto max-w-[1200px] px-4 py-24 md:px-6 md:py-36">
         <div className="rf-reveal mx-auto max-w-[980px] text-center">
@@ -539,7 +475,7 @@ export function ReelGallery() {
     <section
       id="reels"
       aria-labelledby="reels-title"
-      className="bg-muted/40 w-full scroll-mt-28"
+      className="bg-muted/40 w-full scroll-mt-(--header-h)"
     >
       <div className="mx-auto max-w-[1200px] px-4 py-24 md:px-6 md:py-36">
         <div className="rf-reveal mx-auto max-w-[980px] text-center">
@@ -654,7 +590,7 @@ export function Privacy() {
     <section
       id="private"
       aria-labelledby="private-title"
-      className="w-full scroll-mt-28"
+      className="w-full scroll-mt-(--header-h)"
     >
       <div className="mx-auto max-w-[1200px] px-4 py-24 md:px-6 md:py-36">
         <div className="rf-reveal mx-auto max-w-[980px] text-center">
@@ -843,7 +779,11 @@ export function Footnotes() {
         </h2>
         <ol className="text-muted-foreground mt-4 list-decimal space-y-2 pl-5 text-xs leading-relaxed">
           {notes.map((note, i) => (
-            <li key={i} id={`fn-${i + 1}`} className="scroll-mt-32">
+            <li
+              key={i}
+              id={`fn-${i + 1}`}
+              className="scroll-mt-[calc(var(--header-h)+1rem)]"
+            >
               {note}
             </li>
           ))}

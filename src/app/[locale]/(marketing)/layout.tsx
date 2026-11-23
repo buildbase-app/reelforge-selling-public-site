@@ -14,11 +14,19 @@ import { MarketingShell } from '@/components/marketing/marketing-shell';
  * not call next-intl's client hooks (`useTranslations`, `useLocale`, its
  * `Link`, `useRouter`) in client code these pages load: they need the
  * provider, whose message formatter alone is about 12 KB gzip.
+ *
+ * `headerAction` is the `@headerAction` parallel route: the home page's
+ * primary action for the site header (studio issue #215), and nothing on
+ * every other page.
  */
 export default function MarketingLayout({
   children,
+  headerAction,
 }: {
   children: React.ReactNode;
+  headerAction: React.ReactNode;
 }) {
-  return <MarketingShell>{children}</MarketingShell>;
+  return (
+    <MarketingShell headerAction={headerAction}>{children}</MarketingShell>
+  );
 }
