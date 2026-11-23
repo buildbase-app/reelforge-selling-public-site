@@ -22,9 +22,10 @@ import {
  * file to match (the "Choose" view is always the SDK's).
  *
  * Both banners carry `rf-consent` (globals.css), which gives the SDK's
- * classes our tokens and our button shape (studio #284). Its buttons are
- * the SDK's `buttons="accept-primary"`: Accept all is the one filled
- * button, Reject all and Choose are outline buttons of the same size.
+ * classes our tokens and our button shape (studio #284). Reject all and
+ * Accept all look the same (the SDK's default, `buttons="equal"`): neither
+ * answer is made the easier one (no dark pattern; EDPB guidance on equal
+ * prominence). Choose is an outline button of the same shape.
  */
 const BUTTON =
   'inline-flex items-center justify-center rounded-full font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none aria-disabled:opacity-50 aria-disabled:pointer-events-none h-9 sm:h-8 px-3 text-xs';
@@ -84,7 +85,7 @@ export function LiteCookieBanner({ privacyHref }: { privacyHref: string }) {
         <div className="flex flex-wrap gap-2 sm:shrink-0 sm:justify-end">
           <button
             type="button"
-            className={OUTLINE}
+            className={PRIMARY}
             onClick={() => answer({ analytics: false, marketing: false })}
           >
             Reject all

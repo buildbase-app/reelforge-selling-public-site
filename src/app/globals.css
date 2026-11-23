@@ -255,8 +255,9 @@
  * `CookieBanner` both carry `rf-consent`. The SDK styles its UI from the
  * variables in its THEMING.md (HSL triplets, read inside `.saas-os-ui`), so
  * the banner gets our tokens through them: canvas, ink, our borders, and
- * the accent as the one filled button (Accept all, `buttons="accept-primary"`)
- * with ink text. Values are the hex tokens above, as triplets.
+ * the accent with ink text as the fill of both Reject all and Accept all,
+ * which stay equal (the SDK's default `buttons="equal"`; no dark pattern,
+ * EDPB guidance). Values are the hex tokens above, as triplets.
  */
 .rf-consent {
   --background: 48 18.5% 94.7%; /* --background #f4f3ef */

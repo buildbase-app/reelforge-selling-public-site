@@ -23,11 +23,5 @@ export function CookieConsent({
   /** Path to the privacy policy page. Defaults to "/privacy". */
   privacyPolicyUrl?: string;
 }) {
-  return (
-    <CookieBanner
-      privacyHref={privacyPolicyUrl}
-      buttons="accept-primary"
-      className="rf-consent"
-    />
-  );
+  return <CookieBanner privacyHref={privacyPolicyUrl} className="rf-consent" />;
 }

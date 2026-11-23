@@ -14,8 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   skip link now shows above the sticky header and moves focus to the page's
   main content. The phone menu button reports `aria-expanded` and names its
   menu with `aria-controls`.
-- The cookie banner's buttons use the site's tokens and button shape: Accept
-  all is the one accent button, Reject all and Choose are outline buttons.
+- The cookie banner's buttons use the site's tokens and button shape. Reject
+  all and Accept all look the same (accent fill, ink text), so neither answer
+  is the easier one; Choose is an outline button.
 - Prose keeps to about 68 characters a line (`max-w-measure`), headings
   balance their lines and body text avoids a one-word last line.
 
