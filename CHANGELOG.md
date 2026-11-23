@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed (studio issue #266)
+
+- The launch-price note shows only when a paid Commercial variant is on
+  sale. With no published items ("Not on sale yet") `/` and `/pricing` show
+  no note. When the server can't read the store, the note still shows,
+  because the browser may then show launch prices. #27's guarantees stand:
+  a shown launch price always has its end date, and there is no note after
+  that date. `paidCommercialOnSale` is in `src/lib/store/launch.ts`.
+
 ### Fixed (studio issue #251)
 
 - The MCP tool count on `/`, `/agents` and `/agents.md` is 61, not 53: the
