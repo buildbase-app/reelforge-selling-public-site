@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security (studio issue #279)
+
+- Production dependencies: `npm audit --omit=dev` goes from 14 findings
+  (4 high, 10 moderate) to 0. Non-breaking updates for `browserslist`,
+  `baseline-browser-mapping` and `@opentelemetry/*`; `overrides` lift
+  `effect` to ^3.22.5 (under the Prisma CLI), `glob` to ^14.0.6 and
+  `minimatch` to ^11.0.9 (under OpenNext and Sentry's build plugins). No
+  downgrades. Most of these run only at build time.
+
 ### Changed (studio issue #247)
 
 - Colour pass with the founder's palette (2026-11-23): "Analog Cinema" by day

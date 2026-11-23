@@ -109,11 +109,13 @@
     "wrangler": "^4.166.0"
   },
   "overrides": {
-    "minimatch": "^10.0.0",
+    "minimatch": "^11.0.9",
     "eslint-plugin-react-hooks": "7.0.1",
     "@opennextjs/aws": {
       "cookie": "0.7.2"
-    }
+    },
+    "glob": "^14.0.6",
+    "effect": "^3.22.5"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
