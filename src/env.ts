@@ -151,8 +151,8 @@ export const siteUrl =
   process.env.SITE_URL || env.NEXT_PUBLIC_SITE_URL || 'https://example.com';
 
 /** The test copy of the store: never indexed (see next.config.ts). */
-export const isNoindexSite = (process.env.NEXT_PUBLIC_SITE_URL ?? '').includes(
-  'reelforge-dev'
+export const isNoindexSite = /reelforge-dev|\/\/dev\.renderweld\.com/.test(
+  process.env.NEXT_PUBLIC_SITE_URL ?? ''
 );
 
 /**

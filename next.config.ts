@@ -11,12 +11,13 @@ const withBundleAnalyzer = bundleAnalyzer({
 });
 
 /**
- * The test copy (https://reelforge-dev.buildbase.app) must not be indexed.
+ * The test copy (https://dev.renderweld.com, formerly
+ * https://reelforge-dev.buildbase.app) must not be indexed.
  * NEXT_PUBLIC_SITE_URL is the dev URL in that build (`npm run deploy:dev`)
  * and the production URL otherwise (.env.production).
  */
-const isNoindexSite = (process.env.NEXT_PUBLIC_SITE_URL ?? '').includes(
-  'reelforge-dev'
+const isNoindexSite = /reelforge-dev|\/\/dev\.renderweld\.com/.test(
+  process.env.NEXT_PUBLIC_SITE_URL ?? ''
 );
 
 const nextConfig: NextConfig = {

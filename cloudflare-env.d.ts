@@ -3,9 +3,9 @@
 interface __BaseEnv_CloudflareEnv {
 	DB: D1Database;
 	ASSETS: Fetcher;
-	SITE_URL?: "https://reelforge-dev.buildbase.app";
-	NEXT_PUBLIC_SITE_URL?: "https://reelforge-dev.buildbase.app";
-	NEXT_PUBLIC_BUILDBASE_REDIRECT_URL?: "https://reelforge-dev.buildbase.app";
+	SITE_URL?: "https://dev.renderweld.com";
+	NEXT_PUBLIC_SITE_URL?: "https://dev.renderweld.com";
+	NEXT_PUBLIC_BUILDBASE_REDIRECT_URL?: "https://dev.renderweld.com";
 	NEXT_PUBLIC_BUILDBASE_ENVIRONMENT?: "fsyqdskf";
 	NEXTJS_ENV: string;
 	SYSTEM_SECRET: string;
@@ -19,9 +19,9 @@ declare namespace Cloudflare {
 	interface DevEnv {
 		DB: D1Database;
 		ASSETS: Fetcher;
-		SITE_URL: "https://reelforge-dev.buildbase.app";
-		NEXT_PUBLIC_SITE_URL: "https://reelforge-dev.buildbase.app";
-		NEXT_PUBLIC_BUILDBASE_REDIRECT_URL: "https://reelforge-dev.buildbase.app";
+		SITE_URL: "https://dev.renderweld.com";
+		NEXT_PUBLIC_SITE_URL: "https://dev.renderweld.com";
+		NEXT_PUBLIC_BUILDBASE_REDIRECT_URL: "https://dev.renderweld.com";
 		NEXT_PUBLIC_BUILDBASE_ENVIRONMENT: "fsyqdskf";
 		NEXTJS_ENV: string;
 		SYSTEM_SECRET: string;

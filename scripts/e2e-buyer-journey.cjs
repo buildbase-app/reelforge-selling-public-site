@@ -6,16 +6,20 @@
 // then check the order page and Dashboard > Licences show the licence key,
 // labelled Commercial. (scripts/e2e-personal-claim.cjs claims the free one.)
 //
-//   node scripts/e2e-buyer-journey.cjs            # against https://reelforge-dev.buildbase.app
-//   SITE=https://reelforge-dev.buildbase.app node scripts/e2e-buyer-journey.cjs
+//   node scripts/e2e-buyer-journey.cjs            # against https://dev.renderweld.com
+//   SITE=https://dev.renderweld.com node scripts/e2e-buyer-journey.cjs
 //
 // Needs Playwright's Chromium (or CHROMIUM_PATH). Behind an HTTPS proxy it uses HTTPS_PROXY.
 // Never point it at production: it relies on test mode and Stripe test keys.
 const { chromium } = require('playwright');
-const SITE = (
-  process.env.SITE || 'https://reelforge-dev.buildbase.app'
-).replace(/\/$/, '');
-if (!/reelforge-dev\./.test(SITE) && !process.env.ALLOW_NON_TEST_SITE) {
+const SITE = (process.env.SITE || 'https://dev.renderweld.com').replace(
+  /\/$/,
+  ''
+);
+if (
+  !/reelforge-dev\.|\/\/dev\.renderweld\.com/.test(SITE) &&
+  !process.env.ALLOW_NON_TEST_SITE
+) {
   console.error('Refusing: SITE must be the test site');
   process.exit(2);
 }
@@ -101,7 +105,7 @@ const clean = (t) => maskText(t.replace(/\s+/g, ' '));
     await page.waitForTimeout(5000);
     out('2b. prompt "' + heading + '" → dismissed');
   }
-  await page.waitForURL(/reelforge-dev\.buildbase\.app/, { timeout: 45000 });
+  await page.waitForURL(/dev\.renderweld\.com/, { timeout: 45000 });
   await page.waitForTimeout(6000);
   if (!/\/pricing/.test(page.url())) {
     await page.goto(SITE + '/pricing', { waitUntil: 'load' });
@@ -188,7 +192,7 @@ const clean = (t) => maskText(t.replace(/\s+/g, ' '));
     if (!b2) throw new Error('Pay button not found');
     await page.mouse.click(b2.x + b2.width / 2, b2.y + b2.height / 2);
   }
-  await page.waitForURL(/reelforge-dev\.buildbase\.app/, { timeout: 120000 });
+  await page.waitForURL(/dev\.renderweld\.com/, { timeout: 120000 });
   out('5. paid → back on ' + new URL(page.url()).pathname);
   await page.waitForTimeout(15000);
   const ot = clean(await page.innerText('main'));
