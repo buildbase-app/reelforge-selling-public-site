@@ -9,7 +9,12 @@
   // (reelforge.buildbase.app, reelforge-dev.buildbase.app) answer with a 301
   // to the new ones from a Redirect Rule in the old account.
   "account_id": "f12121a39fc6f6eb348d486bc2e282b4",
-  "routes": [{ "pattern": "renderweld.com", "custom_domain": true }],
+  // www serves the store too (BuildBase's webhook and old links may use it); a
+  // Redirect Rule sends www pages, but not /api/, to the apex.
+  "routes": [
+    { "pattern": "renderweld.com", "custom_domain": true },
+    { "pattern": "www.renderweld.com", "custom_domain": true },
+  ],
   "workers_dev": false,
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-01",
