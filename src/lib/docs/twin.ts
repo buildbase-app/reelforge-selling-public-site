@@ -65,9 +65,9 @@ function line(p: NavPage, base: string): string {
 /** The docs index as Markdown: every section and page. */
 export function docsIndexTwin(nav: DocsNav, base: string): string {
   const out = [
-    '# ReelForge docs',
+    '# RenderWeld docs',
     '',
-    '> Install ReelForge Studio, connect your AI agent over MCP or REST, and make reels. Published from the ReelForge Studio repository to BuildBase Docs.',
+    '> Install RenderWeld, connect your AI agent over MCP or REST, and make reels. Published from the studio repository to BuildBase Docs.',
     '',
     `URL: ${abs(base, '/docs')}`,
     '',

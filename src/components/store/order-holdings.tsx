@@ -67,7 +67,7 @@ export function LicenceEdition({ edition }: { edition: Edition }) {
           role="note"
           className="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-900 dark:text-amber-200"
         >
-          Noncommercial use only — upgrade for commercial use.{' '}
+          Noncommercial use only: upgrade for commercial use.{' '}
           <Link href="/pricing" className="font-medium underline">
             See Commercial licences
           </Link>

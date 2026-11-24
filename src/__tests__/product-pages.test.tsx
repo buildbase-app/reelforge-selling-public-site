@@ -10,7 +10,7 @@ import { describe, expect, it, vi } from 'vitest';
 vi.mock('server-only', () => ({}));
 vi.mock('@/env', () => ({
   env: {},
-  siteUrl: 'https://reelforge.buildbase.app',
+  siteUrl: 'https://renderweld.com',
   isNoindexSite: false,
   buildbaseEnvironment: undefined,
 }));
@@ -51,6 +51,7 @@ import {
   EnterpriseStrip,
   FinalCta,
   Footnotes,
+  Formats,
   Hero,
   HowItWorks,
   NumbersBand,
@@ -76,6 +77,7 @@ function Home() {
     <div>
       <Hero heading="Your agent directs." ctas={<button>Join</button>} />
       <ReelMarquee />
+      <Formats />
       <AgentTranscript />
       <HowItWorks />
       <ConnectAgent tabs={<div />} />
@@ -152,6 +154,37 @@ describe('homepage sections', () => {
     expect(container.querySelector('code')).toHaveTextContent(
       'make a 9-second reel that mixes all four engines'
     );
+  });
+
+  it('draws the formats guide sizes to scale, welded at every joint', () => {
+    const { container } = render(<Formats />);
+    for (const size of [
+      '1080×1920',
+      '1080×1350',
+      '1080×1080',
+      '1920×1080',
+      '2560×1080',
+    ])
+      expect(container.textContent).toContain(size);
+    // One row of five on wide screens, rows of three and two on phones:
+    // a weld at each of the 4 + 2 + 1 joints.
+    expect(container.querySelectorAll('.rf-frame-weld')).toHaveLength(7);
+    for (const format of ['ProRes', 'WebM', 'GIF', 'PNG sequence', 'WAV'])
+      expect(container.textContent).toContain(format);
+  });
+
+  it('says what the product was called, once, with its source', () => {
+    const { container } = render(<Home />);
+    expect(container.textContent).toContain('Formerly ReelForge');
+    expect(
+      container.querySelector('a[href$="renamed-from-reelforge.md"]')
+    ).not.toBeNull();
+  });
+
+  it('gives every measured number its conditions', () => {
+    const { container } = render(<NumbersBand />);
+    expect(container.textContent).toMatch(/Lower bounds from a shared/);
+    expect(container.textContent).toMatch(/Not measured yet/);
   });
 
   it('lists the MCP calls that made the hero reel, in order', () => {

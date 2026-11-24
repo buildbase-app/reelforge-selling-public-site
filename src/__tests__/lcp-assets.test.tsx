@@ -21,7 +21,7 @@ import { FontPreload, GEIST_CORE_URL, GEIST_MONO_CORE_URL } from '@/lib/fonts';
 
 vi.mock('@/env', () => ({
   env: {},
-  siteUrl: 'https://reelforge.buildbase.app',
+  siteUrl: 'https://renderweld.com',
   isNoindexSite: false,
   buildbaseEnvironment: undefined,
 }));

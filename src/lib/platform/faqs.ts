@@ -53,25 +53,25 @@ const contactAnswer = siteConfig.contact.support
 const Q = {
   what: {
     id: 'what',
-    question: 'What is ReelForge?',
+    question: 'What is RenderWeld?',
     answer:
-      'ReelForge is a source-available, agent-driven studio for short vertical videos. You self-host it (in Docker, on a computer or cloud server you control), and your AI agent drives it over REST and MCP: the agent plans every scene and its timing, and ReelForge renders the scenes with four engines (Remotion, Motion Canvas, HTML and HyperFrames) into one MP4. It is free for personal use; commercial use needs a one-time Commercial licence.',
+      'RenderWeld is a source-available video renderer that your AI agent drives over MCP and REST. You self-host it (in Docker, on a computer or cloud server you control). The agent writes the manifest: every scene, its timing and its engine. RenderWeld renders it with four engines (Remotion, Motion Canvas, HTML and HyperFrames) at the size and frame rate you ask for, into MP4, ProRes MOV, WebM, GIF, a PNG sequence or audio only. It is free for personal use; commercial use needs a one-time Commercial licence.',
   },
   buy: {
     id: 'buy',
     question: 'Can I buy it now?',
     answer:
-      'ReelForge is in early access. The [pricing page](/pricing) shows the free Personal licence and the Commercial licences, straight from the store; while it says "Not on sale yet", [join the waitlist](/waitlist) to hear first.',
+      'RenderWeld is in early access. The [pricing page](/pricing) shows the free Personal licence and the Commercial licences, straight from the store; while it says "Not on sale yet", [join the waitlist](/waitlist) to hear first.',
   },
   delivery: {
     id: 'delivery',
     question: 'What do I get, and how?',
-    answer: `A licence key, from your order page and your account: a free Personal key for noncommercial use, or a paid Commercial key, bought once. Every released ReelForge Docker image activates with a key from BuildBase. The source and install documentation are public on [GitHub](${siteConfig.repo.url}). You run it yourself: there is no render service run by us. The [licences](/licence) say what you may do with it.`,
+    answer: `A licence key, from your order page and your account: a free Personal key for noncommercial use, or a paid Commercial key, bought once. Every released RenderWeld Docker image activates with a key from BuildBase. The source and install documentation are public on [GitHub](${siteConfig.repo.url}). You run it yourself: there is no render service run by us. The [licences](/licence) say what you may do with it.`,
   },
   sourceCode: {
     id: 'source-code',
     question: 'Can I read the source code?',
-    answer: `Yes. ReelForge is source-available: every line is public on [GitHub](${siteConfig.repo.url}). You may use it for noncommercial purposes under the PolyForm Noncommercial License 1.0.0; any commercial use needs a Commercial licence. You may not resell, redistribute or rebrand it, or offer it as a hosted service, and forks must be renamed. See [LICENSING.md](${siteConfig.repo.licensing}).`,
+    answer: `Yes. RenderWeld is source-available: every line is public on [GitHub](${siteConfig.repo.url}). You may use it for noncommercial purposes under the PolyForm Noncommercial License 1.0.0; any commercial use needs a Commercial licence. You may not resell, redistribute or rebrand it, or offer it as a hosted service, and forks must be renamed. See [LICENSING.md](${siteConfig.repo.licensing}).`,
   },
   commercialUse: {
     id: 'commercial-use',
@@ -83,25 +83,30 @@ const Q = {
     id: 'personal-free',
     question: 'Is the Personal licence really free?',
     answer:
-      'Yes. Sign in with a BuildBase account and press "Get it free" on the [pricing page](/pricing): there is no payment page. You get a Personal licence key for one server, for noncommercial use only. If you start using ReelForge to earn money, upgrade to a Commercial licence.',
+      'Yes. Sign in with a BuildBase account and press "Get it free" on the [pricing page](/pricing): there is no payment page. You get a Personal licence key for one server, for noncommercial use only. If you start using RenderWeld to earn money, upgrade to a Commercial licence.',
   },
   ai: {
     id: 'ai',
     question: 'Do I need an AI subscription or API key?',
     answer:
-      'ReelForge does not include an AI model. The agent you connect (for example Claude Code) runs under your own account, and any other AI service you connect is optional and uses your own key.',
+      'RenderWeld does not include an AI model. The agent you connect (for example Claude Code) runs under your own account, and any other AI service you connect is optional and uses your own key.',
   },
   remotion: {
     id: 'remotion',
     question: 'Do I need a Remotion licence?',
     answer:
-      'ReelForge includes Remotion-based templates. Remotion is free for individuals and companies of up to 3 people; larger companies need their own Remotion licence ([remotion.dev/license](https://www.remotion.dev/license)). ReelForge also includes Motion Canvas, HTML and HyperFrames engines.',
+      'RenderWeld includes Remotion-based templates. Remotion is free for individuals and companies of up to 3 people; larger companies need their own Remotion licence ([remotion.dev/license](https://www.remotion.dev/license)). RenderWeld also includes Motion Canvas, HTML and HyperFrames engines.',
   },
   refund: {
     id: 'refund',
     question: 'Can I get a refund?',
     answer:
-      'For a Commercial licence, yes, if ReelForge does not run on a supported system and our support cannot fix it. Personal keys are free, so there is nothing to refund. See the [refund policy](/refund) (draft, pending review).',
+      'For a Commercial licence, yes, if RenderWeld does not run on a supported system and our support cannot fix it. Personal keys are free, so there is nothing to refund. See the [refund policy](/refund) (draft, pending review).',
+  },
+  renamed: {
+    id: 'renamed',
+    question: 'Is RenderWeld the same as ReelForge?',
+    answer: `Yes. ReelForge was renamed RenderWeld in November 2026. Nothing you already set up breaks: the old environment variables, commands and MCP resource URIs keep working for at least 90 days after the rename ships, and the [rename guide](${siteConfig.repo.url}/blob/main/docs/public/install/renamed-from-reelforge.md) lists every old name next to its new one.`,
   },
   contact: {
     id: 'contact',
@@ -112,23 +117,23 @@ const Q = {
     id: 'agent',
     question: 'How does my AI agent use it?',
     answer:
-      'ReelForge serves a REST API and an MCP server on your machine. Your agent creates a project, adds scenes, checks the project and renders it, then fetches the MP4. In our own test, headless Claude Code made an 18-second reel that used all four engines, over MCP only.',
+      'RenderWeld serves a REST API and an MCP server on your machine. Your agent creates a project, adds scenes, checks the project and renders it, then fetches the file. In our own test, headless Claude Code made an 18-second reel that used all four engines, over MCP only.',
   },
   whereRuns: {
     id: 'where',
     question: 'Where does it run?',
     answer:
-      'On a computer or cloud server you control, in Docker. ReelForge itself runs no render service for you. Rendering on serverless cloud services (for example AWS Lambda) is not supported yet.',
+      'On a computer or cloud server you control, in Docker. RenderWeld itself runs no render service for you. Rendering on serverless cloud services (for example AWS Lambda) is not supported yet.',
   },
   subscription: {
     id: 'subscription',
     question: 'Is it a subscription?',
     answer:
-      'No. Personal use is free, and a Commercial licence is paid once. There are no per-video fees to ReelForge. Remotion (for companies over 3 people) and any voice provider you use bill you directly.',
+      'No. Personal use is free, and a Commercial licence is paid once. There are no per-video fees to RenderWeld. Remotion (for companies over 3 people) and any voice provider you use bill you directly.',
   },
   whichAgents: {
     id: 'which-agents',
-    question: 'Which AI agents can drive ReelForge?',
+    question: 'Which AI agents can drive RenderWeld?',
     answer:
       'Any MCP client, or anything that can call a REST API, can connect. The one we have tested is Claude Code over MCP. Codex and Cursor are not tested yet; they will be listed here once they are.',
   },
@@ -136,31 +141,31 @@ const Q = {
     id: 'connect',
     question: 'How does an agent connect?',
     answer:
-      'Add the ReelForge MCP server running on your machine to your agent, with an API key you create in ReelForge, then ask for a reel. Agents that prefer plain HTTP can use the REST API instead.',
+      'Add the RenderWeld MCP server running on your machine to your agent, with an API key you create in RenderWeld, then ask for a reel. Agents that prefer plain HTTP can use the REST API instead.',
   },
   agentDecides: {
     id: 'decides',
-    question: 'What does the agent decide, and what does ReelForge do?',
+    question: 'What does the agent decide, and what does RenderWeld do?',
     answer:
-      'The agent decides every scene, its timing and which engine renders it. ReelForge checks the project, renders each scene and assembles one MP4.',
+      'The agent decides every scene, its timing and which engine renders it. RenderWeld checks the project, renders each scene, joins them into one file and checks the result.',
   },
   notYet: {
     id: 'not-yet',
     question: 'What is not ready yet?',
     answer:
-      'Rendering on your own AWS account (Remotion Lambda), burned-in captions and live ElevenLabs voice-over are not verified yet, and Codex and Cursor are not tested. We will only list them as features once they are.',
+      'Rendering on serverless functions (Remotion Lambda) is not built. ElevenLabs voice-over is tested against a mock, not live. AI image and video providers plug into the same interface as voice, but none ships yet. Codex and Cursor are not tested. We will only list them as features once they are.',
   },
   whatIncluded: {
     id: 'included',
     question: 'What does a licence include?',
     answer:
-      'A licence key that activates the released ReelForge Docker image. The Personal key is free and for noncommercial use on one server; Commercial tiers differ by how many servers their key allows, and what each adds is listed on its card, straight from the store. Every tier runs the same code.',
+      'A licence key that activates the released RenderWeld Docker image. The Personal key is free and for noncommercial use on one server; Commercial tiers differ by how many servers their key allows, and what each adds is listed on its card, straight from the store. Every tier runs the same code.',
   },
   otherCosts: {
     id: 'other-costs',
     question: 'What else might I pay for?',
     answer:
-      'There are no per-video fees to ReelForge. You may still pay for a Remotion licence (companies over 3 people), your AI agent’s own account, any voice provider you use, and the computer or server it runs on.',
+      'There are no per-video fees to RenderWeld. You may still pay for a Remotion licence (companies over 3 people), your AI agent’s own account, any voice provider you use, and the computer or server it runs on.',
   },
 } satisfies Record<string, FaqEntry>;
 
@@ -184,6 +189,7 @@ export const DEFAULT_FAQS: Record<FaqCollectionKey, FaqEntry[]> = {
     Q.sourceCode,
     Q.commercialUse,
     Q.buy,
+    Q.renamed,
   ],
   pricing: [
     Q.personalFree,

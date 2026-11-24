@@ -3,6 +3,7 @@ import { Link } from '@/i18n/link';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { siteConfig } from '@/config/site';
+import { BrandLogo } from '@/components/brand-logo';
 
 interface SiteFooterProps {
   title: string;
@@ -51,9 +52,10 @@ export async function SiteFooter({ title }: SiteFooterProps) {
           <div className="col-span-1 flex flex-col gap-4">
             <Link
               href="/"
-              className="text-foreground text-lg font-semibold tracking-tight"
+              className="text-foreground inline-flex min-h-11 items-center self-start text-lg"
+              aria-label={title}
             >
-              {title}
+              <BrandLogo />
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed">
               {t('footer.tagline')}

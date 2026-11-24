@@ -4,7 +4,7 @@ import { join } from 'node:path';
 import { describe, expect, it, vi } from 'vitest';
 vi.mock('@/env', () => ({
   env: {},
-  siteUrl: 'https://reelforge.buildbase.app',
+  siteUrl: 'https://renderweld.com',
   isNoindexSite: false,
   buildbaseEnvironment: undefined,
 }));

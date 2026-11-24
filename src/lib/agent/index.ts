@@ -45,7 +45,7 @@ export const agent = createAgentStack({
     tools: [...storeTools],
     handler: {
       instructions:
-        "This is the ReelForge store. Built-in tools read the signed-in customer's account (workspaces, invoices, profile). There are no write tools; purchases happen on the website. Ask for a workspaceId when the user has several workspaces.",
+        "This is the RenderWeld store. Built-in tools read the signed-in customer's account (workspaces, invoices, profile). There are no write tools; purchases happen on the website. Ask for a workspaceId when the user has several workspaces.",
       builtinResources: true,
       resources: storeResources,
       prompts: storePrompts,
@@ -79,7 +79,7 @@ export const agent = createAgentStack({
       {
         name: 'reelforge-store',
         description:
-          "Read a ReelForge customer's account over MCP (read-only).",
+          "Read a RenderWeld customer's account over MCP (read-only).",
         content: buildSkillMarkdown(),
       },
     ],

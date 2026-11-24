@@ -95,6 +95,12 @@ export function buildMarketingMetadata({
   }
 
   const resolvedImage = resolveImage(image);
+  // The brand kit's share images (studio docs/brand) carry the tagline, so
+  // their alt text says that; a page's own image is described by its title.
+  const imageAlt = image
+    ? `${seoConfig.brand.name}: ${title}`
+    : BRAND_IMAGE_ALT;
+  const twitterImage = image ? resolvedImage : `${siteUrl}/twitter-card.png`;
 
   return {
     title: titleAbsolute ? { absolute: title } : title,
@@ -122,7 +128,7 @@ export function buildMarketingMetadata({
           url: resolvedImage,
           width: 1200,
           height: 630,
-          alt: `${seoConfig.brand.name}: ${title}`,
+          alt: imageAlt,
           type: 'image/png',
         },
       ],
@@ -131,7 +137,7 @@ export function buildMarketingMetadata({
       card: seoConfig.defaults.twitterCard,
       title,
       description,
-      images: [resolvedImage],
+      images: [{ url: twitterImage, alt: imageAlt }],
       ...(seoConfig.social.twitter && {
         site: seoConfig.social.twitter,
         creator: seoConfig.social.twitter,
@@ -139,6 +145,9 @@ export function buildMarketingMetadata({
     },
   };
 }
+
+/** What the default share images show: the logo and the tagline. */
+const BRAND_IMAGE_ALT = `${seoConfig.brand.name}: ${seoConfig.brand.tagline}`;
 
 function resolveImage(pathOrUrl: string | undefined): string {
   if (!pathOrUrl) return `${siteUrl}/og.png`;

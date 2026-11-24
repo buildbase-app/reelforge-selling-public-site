@@ -47,7 +47,7 @@ export async function generateMetadata({
 /**
  * What can be bought, from the store's published BuildBase items (prices
  * are never written here), read on the server so they are in the HTML.
- * Before anything is published it says ReelForge is not on sale yet and
+ * Before anything is published it says RenderWeld is not on sale yet and
  * links to the waitlist, and emits no Offer JSON-LD.
  */
 export default async function PricingPageRoute({ params }: PricingPageProps) {

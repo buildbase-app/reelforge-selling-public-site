@@ -311,7 +311,7 @@ export function agentSnippet(reel: GalleryReel): string {
   if (reel.manifestUrl) {
     lines.push(
       '',
-      `Reference manifest (ReelForge v0.2, rendered as "${reel.title}"): ${reel.manifestUrl}`,
+      `Reference manifest (RenderWeld manifest v0.2, rendered as "${reel.title}"): ${reel.manifestUrl}`,
       'Create the project with create_project, check it with validate_project, render it with render_project and wait with get_job, then give me the download link from get_render_output.'
     );
   }

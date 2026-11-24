@@ -29,7 +29,7 @@ const TONE: Record<'ok' | 'wait' | 'bad', string> = {
   bad: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
 };
 
-/** What an order bought, in one line: "ReelForge Commercial: Studio". */
+/** What an order bought, in one line: "RenderWeld Commercial: Studio". */
 export function orderItems(order: BuyerOrderView): string {
   return order.lines
     .map(

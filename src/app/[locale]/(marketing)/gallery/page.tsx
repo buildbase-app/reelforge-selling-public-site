@@ -21,9 +21,9 @@ interface GalleryPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-const TITLE = 'Gallery: reels rendered by ReelForge Studio';
+const TITLE = 'Gallery: reels rendered by RenderWeld';
 const DESCRIPTION =
-  'Short vertical videos rendered by ReelForge Studio over MCP, each with its manifest, the engines, the MCP tools called and how long the render took.';
+  'Short vertical videos rendered by RenderWeld over MCP, each with its manifest, the engines, the MCP tools called and how long the render took.';
 
 export async function generateMetadata({
   params,
@@ -78,7 +78,7 @@ export default async function GalleryPage({
         ]}
       />
       <ItemListJsonLd
-        name="ReelForge gallery"
+        name="RenderWeld gallery"
         url="/gallery"
         items={shown.map((r) => ({
           name: r.title,
@@ -90,10 +90,10 @@ export default async function GalleryPage({
       <div className="mx-auto w-full max-w-[1240px] px-4 pt-12 pb-24 md:px-6 md:pt-20">
         <header className="max-w-[720px]">
           <h1 className="text-4xl font-medium tracking-tight text-balance md:text-5xl">
-            Reels rendered by ReelForge over MCP
+            Reels rendered by RenderWeld over MCP
           </h1>
           <p className="text-muted-foreground mt-4 text-lg text-pretty">
-            We wrote a manifest for each reel. A script sent it to ReelForge
+            We wrote a manifest for each reel. A script sent it to RenderWeld
             Studio over MCP, calling the same tools your agent would, and the
             studio rendered it. Open one to see how it was made, copy the
             manifest or give a matching prompt to your own agent.

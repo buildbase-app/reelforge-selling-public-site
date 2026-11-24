@@ -97,7 +97,7 @@ export function AgentTabs({
               </figcaption>
               <pre
                 tabIndex={0}
-                className="text-stage-text overflow-x-auto rounded-lg bg-black/40 p-4 font-mono text-[13px] leading-relaxed"
+                className="text-stage-text bg-stage overflow-x-auto rounded-lg p-4 font-mono text-[13px] leading-relaxed"
               >
                 <code>{snippet.code}</code>
               </pre>

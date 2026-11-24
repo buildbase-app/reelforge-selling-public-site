@@ -24,7 +24,7 @@ export const copy = {
   loading: 'Loading what is on sale…',
   notOnSaleTitle: 'Not on sale yet',
   notOnSaleBody:
-    'ReelForge is in early access and cannot be bought yet. Prices and what each option includes will appear here as soon as they are published. Join the waitlist to hear first.',
+    'RenderWeld is in early access and cannot be bought yet. Prices and what each option includes will appear here as soon as they are published. Join the waitlist to hear first.',
   joinWaitlist: 'Join the waitlist',
   storeUnreachable: 'The store could not be reached just now.',
   includes: 'What is included',

@@ -52,7 +52,7 @@ export async function HelpCenter({
 
       {agentsFaq.items.length > 0 && (
         <section id="agents" className="scroll-mt-20">
-          <SectionHeading icon={Bot} title="Using ReelForge with your agent" />
+          <SectionHeading icon={Bot} title="Using RenderWeld with your agent" />
           <FaqSection items={agentsFaq.items} />
         </section>
       )}

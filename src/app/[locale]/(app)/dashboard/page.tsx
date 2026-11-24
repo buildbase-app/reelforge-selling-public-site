@@ -51,7 +51,7 @@ export default function DashboardPage() {
           {t('welcome', { name: user?.name || '' })}
         </h1>
         <p className="text-muted-foreground">
-          Your ReelForge purchases, downloads and licence keys.
+          Your RenderWeld purchases, downloads and licence keys.
         </p>
       </div>
 

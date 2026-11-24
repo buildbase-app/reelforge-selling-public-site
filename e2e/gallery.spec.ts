@@ -11,7 +11,7 @@ test.describe('Gallery', () => {
     await page.getByRole('link', { name: 'Gallery' }).first().click();
     await expect(page).toHaveURL(/\/gallery$/);
     await expect(page.getByRole('heading', { level: 1 })).toContainText(
-      'Reels rendered by ReelForge over MCP'
+      'Reels rendered by RenderWeld over MCP'
     );
   });
 

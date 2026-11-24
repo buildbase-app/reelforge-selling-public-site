@@ -14,6 +14,7 @@ import {
   type Locale,
 } from '@/i18n/config';
 import { isNoindexSite, siteUrl } from '@/env';
+import { siteConfig } from '@/config/site';
 import '@buildbase/sdk/css';
 
 const baseUrl = siteUrl;
@@ -40,11 +41,12 @@ export async function generateMetadata({
   const title = t('meta.title');
   const description = t('meta.description');
 
-  // Generate dynamic OG image URL with localized text
-  const ogImageUrl = new URL('/api/og', baseUrl);
-  ogImageUrl.searchParams.set('title', title);
-  ogImageUrl.searchParams.set('description', description);
-  ogImageUrl.searchParams.set('locale', locale);
+  // The share images from the RenderWeld brand kit (studio docs/brand):
+  // Open Graph 1200x630 and the X card 1200x675.
+  const ogImageUrl = `${baseUrl}/og.png`;
+  const twitterImageUrl = `${baseUrl}/twitter-card.png`;
+  const imageAlt =
+    'RenderWeld: Agents write the manifest. RenderWeld renders the video.';
 
   // hreflang alternates only for the languages the site serves, and only
   // when there is more than one (English only today: none).
@@ -69,13 +71,13 @@ export async function generateMetadata({
       locale: getOgLocale(locale as Locale),
       alternateLocale: getAlternateOgLocales(locale as Locale),
       url: canonicalUrl,
-      siteName: title,
+      siteName: siteConfig.name,
       images: [
         {
-          url: ogImageUrl.toString(),
+          url: ogImageUrl,
           width: 1200,
           height: 630,
-          alt: title,
+          alt: imageAlt,
         },
       ],
     },
@@ -83,7 +85,7 @@ export async function generateMetadata({
       card: 'summary_large_image',
       title,
       description,
-      images: [ogImageUrl.toString()],
+      images: [{ url: twitterImageUrl, alt: imageAlt }],
     },
     robots: {
       index: !isNoindexSite,

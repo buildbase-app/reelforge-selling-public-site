@@ -4,10 +4,10 @@
     "version": "0.1.0",
     "method": "reference",
     "reference": "docs/public/mcp/tools.md",
-    "commit": "f79f5c650dce945318f06607fdf2227b6aec1735",
-    "fetchedOn": "2026-11-23"
+    "commit": "9c5ba4a0a471106ef67da1aebf02340649417da3",
+    "fetchedOn": "2026-11-24"
   },
-  "count": 61,
+  "count": 76,
   "groups": [
     {
       "id": "discover",
@@ -17,6 +17,12 @@
           "name": "get_capabilities",
           "title": "Get server capabilities",
           "summary": "Start here. Returns what this ReelForge server can do right now: installed engines (and whether each can render on this machine), templates, themes, media providers (configured...",
+          "readOnly": true
+        },
+        {
+          "name": "get_me",
+          "title": "Get the calling API key",
+          "summary": "Returns the API key this call uses: id, name, scopes (read, write, render, admin), expiry, limits and its render usage today and this month.",
           "readOnly": true
         },
         {
@@ -118,7 +124,7 @@
         {
           "name": "validate_project",
           "title": "Validate a project",
-          "summary": "Full validation report: errors (block rendering) and warnings (e.g. missing licence, rounding of durationSeconds, captions not rendered yet), plus a summary (scenes, total frame...",
+          "summary": "Full validation report: errors (block rendering) and warnings (e.g. missing licence, rounding of durationSeconds, caption quality rules), plus a summary (scenes, total frames, d...",
           "readOnly": true
         }
       ]
@@ -166,7 +172,7 @@
         {
           "name": "upload_asset",
           "title": "Upload an asset (base64)",
-          "summary": "Uploads a small file you already have (image, audio, video, font) as base64, for example generated audio.",
+          "summary": "Uploads a small file you already have (image incl.",
           "readOnly": false
         },
         {
@@ -196,13 +202,43 @@
       ]
     },
     {
+      "id": "captions",
+      "title": "Captions",
+      "tools": [
+        {
+          "name": "import_captions",
+          "title": "Import captions (SRT or WebVTT)",
+          "summary": "Parses an SRT or WebVTT file (content as text; format detected from the WEBVTT header unless given) into caption cues and stores them as the project's captions.cues, replacing any.",
+          "readOnly": false
+        },
+        {
+          "name": "get_captions",
+          "title": "Get captions for review",
+          "summary": "Returns the captions of a project (projectId) or of a finished render (renderId): for every language (BCP 47; the primary one first) the caption cues ({ start, end, text } in se...",
+          "readOnly": true
+        },
+        {
+          "name": "update_captions",
+          "title": "Edit or approve captions",
+          "summary": "Edits the captions of a project with an optimistic-concurrency check: pass the etag from get_captions (refused with captions_conflict if anything changed since; read again and s...",
+          "readOnly": false
+        },
+        {
+          "name": "transcribe_captions",
+          "title": "Transcribe the voice-over (speech-to-text)",
+          "summary": "Runs the server's local speech-to-text (faster-whisper, when installed: get_capabilities captions.stt.available) on the project's voice track and stores the word timings on it;...",
+          "readOnly": false
+        }
+      ]
+    },
+    {
       "id": "render",
       "title": "Render and deliver",
       "tools": [
         {
           "name": "preview_scene",
           "title": "Render a quick preview",
-          "summary": "Starts a low-resolution preview render (default 1/3 size) of one scene, or of the whole project when sceneId is omitted.",
+          "summary": "Starts a low-resolution preview render (default 1/3 size) of one scene, or of the whole project when sceneId is omitted; with variant, at that output variant's size and platform...",
           "readOnly": false
         },
         {
@@ -244,13 +280,19 @@
         {
           "name": "get_render_output",
           "title": "Get a render output",
-          "summary": "Returns the output of a finished render: downloadUrl (a signed link to the MP4 that works WITHOUT a key until downloadUrlExpiresAt, about 1 hour; give this to the user or to cur...",
+          "summary": "Returns the output of a finished render: format, codec, alpha, file and contentType (final.mp4 by default; final.mov, final.webm, final.gif, frames.zip, final.m4a or final.wav f...",
           "readOnly": true
         },
         {
           "name": "list_renders",
           "title": "List renders of a project",
           "summary": "Lists finished renders and previews of a project, newest first, with output URLs, size, fps, frames and duration.",
+          "readOnly": true
+        },
+        {
+          "name": "get_analytics_summary",
+          "title": "Get render analytics",
+          "summary": "Aggregates for a time range (default: the last 30 days by UTC day; at most 90 days, or 7 days with bucket \"hour\"): render and preview jobs per bucket by status (succeeded, faile...",
           "readOnly": true
         }
       ]
@@ -261,19 +303,19 @@
       "tools": [
         {
           "name": "configure_provider",
-          "title": "Configure a media provider (admin)",
+          "title": "Configure a media provider (owner)",
           "summary": "Sets or clears a provider setting such as ELEVENLABS_API_KEY (see list_providers for each provider's setting names).",
           "readOnly": false
         },
         {
           "name": "get_config",
-          "title": "Get the server configuration (admin)",
+          "title": "Get the server configuration (owner)",
           "summary": "Returns every server setting with its effective value and where it comes from: source \"default\", \"file\" (REELFORGE_CONFIG), \"env\" (origin names the variable) or \"runtime\" (set w...",
           "readOnly": true
         },
         {
           "name": "update_config",
-          "title": "Change runtime settings (admin)",
+          "title": "Change runtime settings (owner)",
           "summary": "Changes runtime settings at once and stores them in the database (they survive restarts and override the config file and environment). settings maps dotted keys from get_config...",
           "readOnly": false
         },
@@ -285,25 +327,25 @@
         },
         {
           "name": "activate_licence",
-          "title": "Set and activate the licence key (admin)",
+          "title": "Set and activate the licence key (owner)",
           "summary": "Stores the licence key (encrypted; needs REELFORGE_SECRET_KEY on the server) and activates it for this server with the licence server, then returns the status (see get_licence).",
           "readOnly": false
         },
         {
           "name": "deactivate_licence",
-          "title": "Give the licence activation back (admin)",
+          "title": "Give the licence activation back (owner)",
           "summary": "Frees this server's activation of the licence key at the licence server, so the key can be activated on another server.",
           "readOnly": false
         },
         {
           "name": "get_storage",
-          "title": "Get storage driver, usage and health (admin)",
+          "title": "Get storage driver, usage and health (owner)",
           "summary": "Returns where asset and render files are stored: driver (\"local\", \"s3\", \"azure\", \"gcs\"), location (bucket/container, endpoint, prefix, credential source; never secrets), how dow...",
           "readOnly": true
         },
         {
           "name": "run_storage_cleanup",
-          "title": "Apply the storage retention policy now (admin)",
+          "title": "Apply the storage retention policy now (owner)",
           "summary": "Deletes renders the retention policy no longer keeps (older than storage.retention.renderDays; the newest keepLastRendersPerProject of each project and renders of running jobs a...",
           "readOnly": false
         },
@@ -322,7 +364,7 @@
         {
           "name": "create_key",
           "title": "Create an API key (admin)",
-          "summary": "Creates an API key with the given scopes (read, write, render, admin) and optional expiry, per-key rate limit, render quotas (per UTC day / month) and IP allowlist (CIDR).",
+          "summary": "Creates an API key in this key's workspace with the given scopes (read, write, render, admin; owner only from an owner key) and optional expiry, per-key rate limit, render quota...",
           "readOnly": false
         },
         {
@@ -354,6 +396,48 @@
           "title": "Read the audit log (admin)",
           "summary": "The audit trail, newest first: who (API key id and name), action (e.g. \"key.rotate\", \"project.create\", \"config.update\"), target, result (success, failure, denied), client IP, us...",
           "readOnly": true
+        }
+      ]
+    },
+    {
+      "id": "workspaces",
+      "title": "Workspaces (owner keys)",
+      "tools": [
+        {
+          "name": "get_workspace",
+          "title": "Get this key's workspace",
+          "summary": "The workspace this API key belongs to (#304): id, name, status, the limits in force (renders per day/month, requests per minute, storage bytes; absent: unlimited) and its usage...",
+          "readOnly": true
+        },
+        {
+          "name": "list_workspaces",
+          "title": "List workspaces (owner)",
+          "summary": "Every workspace of this install with its status (active, suspended, deleted with purgeAfter), its own limits and the limits in force.",
+          "readOnly": true
+        },
+        {
+          "name": "create_workspace",
+          "title": "Create a workspace (owner)",
+          "summary": "Creates a workspace for a team or customer: its projects, assets, themes, jobs, renders, keys, webhooks and audit log are invisible to every other workspace. id: 1-40 lowercase...",
+          "readOnly": false
+        },
+        {
+          "name": "update_workspace",
+          "title": "Rename, limit, suspend or resume a workspace (owner)",
+          "summary": "Changes a workspace's name or limits (null clears them: the workspaces.* defaults apply), or suspends it (suspended: true: its keys are refused with workspace_suspended and its...",
+          "readOnly": false
+        },
+        {
+          "name": "delete_workspace",
+          "title": "Delete a workspace (owner)",
+          "summary": "Deletes a workspace: its keys stop working and its jobs are no longer run at once; its projects, renders, assets, keys, webhooks and audit log are purged for good after workspac...",
+          "readOnly": false
+        },
+        {
+          "name": "restore_workspace",
+          "title": "Restore a deleted workspace (owner)",
+          "summary": "Brings back a deleted workspace before its purge (see list_workspaces: purgeAfter): its keys work again and its jobs run.",
+          "readOnly": false
         }
       ]
     },
@@ -408,6 +492,24 @@
           "title": "Send a delivery again (admin)",
           "summary": "Sends a finished delivery (dead or succeeded) again: a new outbox entry with the same payload and the same webhook-id, so receivers that already processed it can ignore it.",
           "readOnly": false
+        },
+        {
+          "name": "resend_webhook",
+          "title": "Send an event to a webhook again (admin)",
+          "summary": "Sends one event to an endpoint again, named by exactly one of: deliveryId (from get_webhook_log), eventId, or dedupeKey (\"render:<jobId>\": the terminal outcome of a render job).",
+          "readOnly": false
+        },
+        {
+          "name": "rotate_webhook_secret",
+          "title": "Rotate a webhook signing secret (admin)",
+          "summary": "Gives a webhook a new signing secret (returned once; or bring your own with secret: \"whsec_...\").",
+          "readOnly": false
+        },
+        {
+          "name": "get_webhook_log",
+          "title": "Read a webhook delivery log",
+          "summary": "The delivery log of one endpoint, newest first, without payloads or the target URL: per delivery its event type, webhook-id, dedupeKey, status (pending, delivering, succeeded, d...",
+          "readOnly": true
         }
       ]
     }

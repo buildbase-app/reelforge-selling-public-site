@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 /**
  * "Which licence do I need?": the table from LICENSING.md in the product
  * repository, in plain words, with links to the source and the licensing
- * documents. ReelForge is source-available (PolyForm Noncommercial 1.0.0
+ * documents. RenderWeld is source-available (PolyForm Noncommercial 1.0.0
  * for noncommercial use, a paid Commercial licence for anything else).
  * English only for now (src/i18n/config.ts); kept together for translation.
  */
@@ -24,11 +24,11 @@ const ROWS: { want: string; need: string }[] = [
     need: 'Free under PolyForm Noncommercial (its "Noncommercial Organizations" section).',
   },
   {
-    want: 'Resell, rebrand, redistribute, or offer ReelForge (or a modified copy) as a product or hosted service to others',
+    want: 'Resell, rebrand, redistribute, or offer RenderWeld (or a modified copy) as a product or hosted service to others',
     need: 'Not permitted under either licence. Ask us about a partner agreement.',
   },
   {
-    want: 'Use the name "ReelForge" or its logo for your own fork or product',
+    want: 'Use the name "RenderWeld" or its logo for your own fork or product',
     need: 'Not permitted. Forks must be renamed (trademark policy).',
   },
 ];
@@ -46,7 +46,7 @@ export function LicenceGuide({ className }: { className?: string }) {
         Which licence do I need?
       </h2>
       <p className="text-muted-foreground mt-2 text-sm">
-        ReelForge is source-available: you can read every line of it on GitHub.
+        RenderWeld is source-available: you can read every line of it on GitHub.
         What you may do with it depends on how you use it. Every released Docker
         image activates with a licence key from BuildBase.
       </p>

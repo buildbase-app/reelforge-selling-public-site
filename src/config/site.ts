@@ -16,10 +16,10 @@ const supportEmail: string | null =
 const REPO = 'https://github.com/buildbase-app/reelforge-studio';
 
 export const siteConfig = {
-  name: 'ReelForge',
-  shortName: 'ReelForge',
+  name: 'RenderWeld',
+  shortName: 'RenderWeld',
   description:
-    'ReelForge: a source-available, agent-driven short-form video studio. Free for personal use; one-time commercial licence. Self-host it on your own machine or a cloud server you run, and drive it from your AI agent over REST and MCP (any MCP client; tested with Claude Code). Renders vertical MP4s with Remotion, Motion Canvas, HTML and HyperFrames.',
+    'RenderWeld: a source-available video renderer that your AI agent drives over REST and MCP (any MCP client; tested with Claude Code). Self-host it on your own machine or a cloud server you run. The agent writes the manifest; RenderWeld renders it with Remotion, Motion Canvas, HTML and HyperFrames at any size and frame rate, to MP4, ProRes MOV, WebM, GIF, PNG sequences or audio. Free for personal use; one-time Commercial licence.',
   url: siteUrl,
   /**
    * The product's public source repository (source-available under the

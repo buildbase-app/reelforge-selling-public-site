@@ -46,7 +46,7 @@ export function DocsJsonLd({
     },
     about: {
       '@type': 'SoftwareApplication',
-      name: 'ReelForge Studio',
+      name: 'RenderWeld',
       applicationCategory: 'MultimediaApplication',
       operatingSystem: 'Linux (Docker)',
     },

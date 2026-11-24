@@ -32,7 +32,7 @@ What we checked: ${c.checked}`
 - Tools called: ${collapsedCalls(r)
         .map((c) => (c.times > 1 ? `${c.tool} x${c.times}` : c.tool))
         .join(' -> ')}
-- Result: ${r.output.width}x${r.output.height}, ${r.output.durationSeconds} s, ${enginesOf(r).join(' + ')}, rendered in ${r.renderSeconds} s (ReelForge Studio ${r.versions.studio}, ${r.renderedAt.slice(0, 10)}; times vary)
+- Result: ${r.output.width}x${r.output.height}, ${r.output.durationSeconds} s, ${enginesOf(r).join(' + ')}, rendered in ${r.renderSeconds} s (RenderWeld ${r.versions.studio}, ${r.renderedAt.slice(0, 10)}; times vary)
 - Video: ${base}${r.files.mp4}`
     )
     .join('\n\n');
@@ -49,9 +49,9 @@ What we checked: ${c.checked}`
     )
     .join('\n\n');
 
-  return `# Connect your agent to ReelForge
+  return `# Connect your agent to RenderWeld
 
-> ReelForge Studio serves an MCP server at \`/mcp\` (Streamable HTTP) and a REST API at \`/v1\` on your own machine (default \`http://127.0.0.1:4321\`). Add it to your agent with an API key, then ask for a reel. Page: ${base}/agents
+> RenderWeld serves an MCP server at \`/mcp\` (Streamable HTTP) and a REST API at \`/v1\` on your own machine (default \`http://127.0.0.1:4321\`). Add it to your agent with an API key, then ask for a reel. Page: ${base}/agents
 
 ## Clients
 

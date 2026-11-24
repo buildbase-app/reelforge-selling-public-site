@@ -90,15 +90,15 @@ export const toolCatalog = mcpTools as McpToolCatalog;
 
 /**
  * Where the tool count comes from, for footnotes: "the studio's generated
- * tool reference (docs/public/mcp/tools.md, ReelForge Studio 0.1.0, commit
+ * tool reference (docs/public/mcp/tools.md, RenderWeld 0.1.0, commit
  * f79f5c6, read 2026-11-23)".
  */
 export function toolCatalogSource(): string {
   const s = toolCatalog.source;
   if (s.method === 'tools/list')
-    return `the studio's own MCP tools/list (ReelForge Studio ${s.version}, ${s.fetchedOn})`;
+    return `the studio's own MCP tools/list (RenderWeld ${s.version}, ${s.fetchedOn})`;
   const commit = s.commit ? `, commit ${s.commit.slice(0, 7)}` : '';
-  return `the studio's generated tool reference (${s.reference}, ReelForge Studio ${s.version}${commit}, read ${s.fetchedOn}), which is built from the server's tool registry`;
+  return `the studio's generated tool reference (${s.reference}, RenderWeld ${s.version}${commit}, read ${s.fetchedOn}), which is built from the server's tool registry`;
 }
 export const reels = (reelsData as { reels: Reel[] }).reels;
 

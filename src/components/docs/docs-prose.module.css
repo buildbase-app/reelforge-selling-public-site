@@ -35,6 +35,12 @@
   overflow-wrap: break-word;
 }
 
+/* Reading measure: running text keeps to about 70 characters a line (the
+   same 32em as `max-w-measure`); code blocks and tables use the column. */
+.prose > :global(:is(p, ul, ol, blockquote, h2, h3, h4)) {
+  max-width: 32em;
+}
+
 .prose :global(h2) {
   margin: 2.5rem 0 0.75rem;
   font-size: 1.5rem;

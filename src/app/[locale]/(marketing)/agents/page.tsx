@@ -30,8 +30,8 @@ interface AgentsPageProps {
 
 export const revalidate = 3600;
 
-const TITLE = 'Connect your agent to ReelForge: Claude Code, Codex, MCP, REST';
-const DESCRIPTION = `Connect Claude Code, Codex or any MCP client to your self-hosted ReelForge Studio. Copyable configs, a prompt cookbook and all ${toolCatalog.count} MCP tools, grouped by job.`;
+const TITLE = 'Connect your agent to RenderWeld: Claude Code, Codex, MCP, REST';
+const DESCRIPTION = `Connect Claude Code, Codex or any MCP client to your self-hosted RenderWeld server. Copyable configs, a prompt cookbook and all ${toolCatalog.count} MCP tools, grouped by job.`;
 
 export async function generateMetadata({
   params,
@@ -80,19 +80,15 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
         ]}
       />
 
-      <section
-        aria-labelledby="agents-title"
-        className="dark rf-stage rf-wash w-full"
-      >
+      <section aria-labelledby="agents-title" className="dark rf-stage w-full">
         <div className="mx-auto max-w-[980px] px-4 pt-16 pb-20 text-center md:px-6 md:pt-24">
-          <p className="rf-eyebrow rf-fade-up">Connect your agent</p>
-          <h1 id="agents-title" className="rf-display rf-fade-up mt-4">
+          <h1 id="agents-title" className="rf-display rf-fade-up">
             Your agent drives. Over MCP or REST
           </h1>
           <p className="rf-muted rf-fade-up-2 max-w-measure mx-auto mt-6 text-lg text-pretty md:text-xl">
-            ReelForge Studio serves an MCP server at <code>/mcp</code> and a
-            REST API at <code>/v1</code> on your own machine. Add it to your
-            agent with a key, then ask for a reel.
+            RenderWeld serves an MCP server at <code>/mcp</code> and a REST API
+            at <code>/v1</code> on your own machine. Add it to your agent with a
+            key, then ask for a reel.
           </p>
           <div className="mt-12">
             <AgentTabs clients={AGENT_CLIENTS} showChecked />
@@ -112,12 +108,11 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
         aria-labelledby="keys-title"
         className="mx-auto w-full max-w-[980px] px-4 py-20 md:px-6 md:py-28"
       >
-        <p className="rf-eyebrow">Keys</p>
-        <h2 id="keys-title" className="rf-headline mt-3">
+        <h2 id="keys-title" className="rf-headline">
           One key per agent, with only the scopes it needs
         </h2>
         <p className="text-muted-foreground max-w-measure mt-5 text-lg text-pretty">
-          Keys are created on your studio, shown once and stored hashed. Give
+          Keys are created on your server, shown once and stored hashed. Give
           day-to-day agents a key without <code>admin</code>.
         </p>
         <div className="dark rf-window mt-8 min-w-0">
@@ -186,14 +181,13 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
       <section aria-labelledby="cookbook-title" className="bg-muted/40 w-full">
         <div className="mx-auto max-w-[1200px] px-4 py-20 md:px-6 md:py-28">
           <div className="mx-auto max-w-[980px]">
-            <p className="rf-eyebrow">Prompt cookbook</p>
-            <h2 id="cookbook-title" className="rf-headline mt-3">
+            <h2 id="cookbook-title" className="rf-headline">
               A prompt, the tools it calls, the reel it makes
             </h2>
             <p className="text-muted-foreground max-w-measure mt-5 text-lg text-pretty">
               Each recipe is a real render. No other docs needed: the server
               explains its own workflow to agents (the{' '}
-              <code>reelforge://guide/workflow</code> resource and the{' '}
+              <code>renderweld://guide/workflow</code> resource and the{' '}
               <code>make_reel</code> prompt).
             </p>
           </div>
@@ -201,7 +195,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
             {reels.map((reel) => (
               <li
                 key={reel.slug}
-                className="rf-reveal bg-card grid gap-6 rounded-2xl border p-5 shadow-[var(--shadow-sm)] md:grid-cols-[160px_1fr] md:p-8"
+                className="rf-reveal bg-card grid gap-6 rounded-2xl border p-5 md:grid-cols-[160px_1fr] md:p-8"
               >
                 <div className="dark rf-stage relative mx-auto aspect-[9/16] w-40 overflow-hidden rounded-xl md:mx-0">
                   <ReelVideo
@@ -260,8 +254,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
         className="mx-auto w-full max-w-[1200px] scroll-mt-28 px-4 py-20 md:px-6 md:py-28"
       >
         <div className="mx-auto max-w-[980px]">
-          <p className="rf-eyebrow">Tools</p>
-          <h2 id="tools-title" className="rf-headline mt-3">
+          <h2 id="tools-title" className="rf-headline">
             {toolCatalog.count} MCP tools, grouped by job
           </h2>
           <p className="text-muted-foreground max-w-measure mt-5 text-lg text-pretty">
@@ -332,7 +325,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
           <ol className="text-muted-foreground max-w-measure mt-4 list-decimal space-y-2 pl-5 text-xs leading-relaxed">
             <li id="fn-1" className="scroll-mt-32">
               Wall-clock time from each render&apos;s render-manifest.json, one
-              run each on {ref.renderedAt.slice(0, 10)}: ReelForge Studio{' '}
+              run each on {ref.renderedAt.slice(0, 10)}: RenderWeld{' '}
               {ref.versions.studio} (development build, licence check off),{' '}
               {hardwareLabel(ref)}. Times vary from run to run; not a benchmark.
               The calls were sent by a script that follows the studio&apos;s

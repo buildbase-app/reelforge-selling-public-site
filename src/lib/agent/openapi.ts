@@ -22,7 +22,7 @@ export function buildOpenApiSpec() {
       title: `${siteConfig.name} API`,
       version: '0.1.0',
       description:
-        'Routes exposed by the ReelForge store. Authenticate with the httpOnly session cookie (browser) or a bearer token minted by /api/auth/oauth2-token (agents and integrations). The MCP server at /api/mcp is read-only.',
+        'Routes exposed by the RenderWeld store. Authenticate with the httpOnly session cookie (browser) or a bearer token minted by /api/auth/oauth2-token (agents and integrations). The MCP server at /api/mcp is read-only.',
       contact: siteConfig.contact.support
         ? { email: siteConfig.contact.support }
         : { url: siteConfig.contact.page },

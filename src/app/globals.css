@@ -71,14 +71,16 @@
 :root {
   /*
    * Design tokens, the one place for colour, type, radius, depth and motion
-   * (studio issues #81 and #247; AGENTS.md "Design and UI/UX rules", unslop
-   * by Damir Sokolovsky, CC BY 4.0). Founder palette, 2026-11-23: "Analog
-   * Cinema" by day, "Late Night Edit" by night, and one accent in both,
-   * signal orange #ff4f00 (a camera tally light). It fills primary buttons
-   * with dark ink (5.6:1; white on it fails), is text only on dark (5.2:1),
-   * and on light its text form is deep orange #c2410c (4.7:1). Four status
-   * colours carry meaning only (badges, states, ticks). The real reels stay
-   * the bright, colourful element. Every text role passes WCAG AA.
+   * (studio issues #81, #247 and #457; AGENTS.md "Design and UI/UX rules",
+   * unslop by Damir Sokolovsky, CC BY 4.0). The RenderWeld brand kit
+   * (studio docs/brand/BRAND.md §4): ink #141413 on light #f4f3ef, #f1f2f4
+   * on dark #191b1f, muted #6b6a64 / #9a9ea6, and one accent in both,
+   * signal orange #ff4f00 (the weld dot, a camera tally light). It fills
+   * primary buttons with ink text (5.6:1; white on it fails) and is text only
+   * on dark (5.2:1). On light, orange is never text, an icon or a thin line:
+   * links, focus rings and rails there use the ink. Four status colours carry
+   * meaning only (badges, states, ticks). The real reels stay the bright,
+   * colourful element. Every text role passes WCAG AA.
    */
   --radius: 0.625rem;
   --background: #f4f3ef; /* canvas */
@@ -92,12 +94,12 @@
   --secondary: #f0efea;
   --secondary-foreground: #141413;
   --muted: #f0efea;
-  --muted-foreground: #6b6b6b; /* 4.8:1 on canvas, 4.6:1 on muted */
+  --muted-foreground: #6b6a64; /* 4.9:1 on canvas, 4.7:1 on muted */
   --accent: #f0efea;
   --accent-foreground: #141413;
   --brand: #ff4f00; /* fills and large marks only, with ink text (5.6:1) */
   --brand-foreground: #141413;
-  --brand-ink: #c2410c; /* the accent as text or a link on light (4.7:1) */
+  --brand-ink: #141413; /* on light the accent's text role is the ink (BRAND.md §4) */
   --destructive: #b3433b; /* crimson, deepened for text on light: 5.6:1 on white, 5.0:1 on canvas; white on it 5.6:1 */
   --destructive-foreground: #ffffff;
   --success: #788c5d; /* olive */
@@ -108,7 +110,7 @@
   --info-foreground: #141413;
   --border: #e2e0d8;
   --input: #d6d3c9;
-  --ring: #c2410c; /* the accent; #ff4f00 is under 3:1 on the canvas */
+  --ring: #141413; /* the ink; #ff4f00 is under 3:1 on the canvas */
   --chart-1: #c2410c;
   --chart-2: #6b6b6b;
   --chart-3: #94938e;
@@ -121,37 +123,33 @@
   --sidebar-accent: #e8e6df;
   --sidebar-accent-foreground: #141413;
   --sidebar-border: #e2e0d8;
-  --sidebar-ring: #c2410c;
+  --sidebar-ring: #141413;
 
   /* The stage: the dark band behind reels, "Late Night Edit" in both themes. */
   --stage: #191b1f;
   --stage-raised: #24272d;
   --stage-line: #3a3d44;
   --stage-text: #f1f2f4;
-  --stage-muted: #a1a3a8; /* 6.8:1 on the stage */
+  --stage-muted: #9a9ea6; /* 6.4:1 on the stage */
 
   /* Paper: the light card inside a dark band, "Analog Cinema" in both themes. */
   --paper: #f4f3ef;
   --paper-text: #141413;
-  --paper-muted: #6b6b6b; /* 4.8:1 on paper */
-  --paper-ink: #c2410c; /* 4.7:1 on paper */
+  --paper-muted: #6b6a64; /* 4.9:1 on paper */
+  --paper-ink: #141413; /* links and focus on paper: the ink */
   --paper-line: #e2e0d8;
-
-  /* Soft washes behind dark bands only, tinted from the canvas and the
-     accent. Never on a button, card or other UI element. */
-  --wash-canvas: rgb(241 242 244 / 0.05);
-  --wash-accent: rgb(255 79 0 / 0.1);
 
   /* Depth: neutral and small on light, surface steps on dark. */
   --shadow-sm: 0 1px 2px rgb(20 20 19 / 0.06);
-  --shadow-float: 0 24px 48px -24px rgb(0 0 0 / 0.5);
 
   /* The site header's height (HomeHeader), which in-page anchors use as
      their scroll-margin-top so a heading lands just below it. */
   --header-h: 4rem;
 
-  /* Motion: one curve, three durations. */
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Motion: one curve (a strong ease-out; never ease-in for UI), four
+     durations. Exits are faster than entrances. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --dur-press: 120ms;
   --dur-fast: 150ms;
   --dur-menu: 200ms;
   --dur-enter: 400ms;
@@ -169,7 +167,7 @@
   --secondary: #2c2f36; /* a step above the surface, so badges show on cards */
   --secondary-foreground: #f1f2f4;
   --muted: #2a2d33;
-  --muted-foreground: #a1a3a8; /* 6.8:1 on the canvas, 5.5:1 on muted */
+  --muted-foreground: #9a9ea6; /* 6.4:1 on the canvas, 5.1:1 on muted */
   --accent: #2c2f36;
   --accent-foreground: #f1f2f4;
   --brand-ink: #ff4f00; /* text on dark: 5.2:1 on canvas, 4.5:1 on surface */
@@ -212,12 +210,34 @@
   }
   /* One focus ring for every control (studio #284): 2px in the accent,
      2px off the edge, for keyboard focus only (a mouse press shows none).
-     --ring is #c2410c on light and #ff4f00 on dark, 3:1 or more on every
+     --ring is the ink on light and #ff4f00 on dark, 3:1 or more on every
      ground it meets (.rf-paper sets its own). Utilities that remove an
      outline are kept off interactive elements so this always shows. */
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;
+  }
+  /* Taps act at once: no double-tap zoom delay on controls. */
+  :is(a, button, summary, label, [role='button'], [role='tab']) {
+    touch-action: manipulation;
+  }
+  /* Touch screens: every control is at least 44 by 44 px (a press with a
+     finger, not a cursor). Text links inside sentences keep their size. */
+  @media (pointer: coarse) {
+    :is(
+      button,
+      [role='button'],
+      [role='tab'],
+      summary,
+      [data-header-cta],
+      a.inline-flex,
+      a.rf-pill
+    ) {
+      min-height: 44px;
+    }
+    :is(button, [role='button'], [role='tab']) {
+      min-width: 44px;
+    }
   }
   /* No one-word last lines (studio #284): balanced headings, and body text
      that avoids a short last line. A utility on the element still wins. */
@@ -262,20 +282,20 @@
 .rf-consent {
   --background: 48 18.5% 94.7%; /* --background #f4f3ef */
   --foreground: 60 2.6% 7.6%; /* --foreground #141413 */
-  --muted-foreground: 0 0% 42%; /* #6b6b6b */
+  --muted-foreground: 51.4 3.4% 40.6%; /* #6b6a64 */
   --border: 48 14.7% 86.7%; /* #e2e0d8 */
   --input: 46.2 13.7% 81.4%; /* #d6d3c9 */
   --accent: 50 16.7% 92.9%; /* #f0efea */
   --accent-foreground: 60 2.6% 7.6%;
   --primary: 18.6 100% 50%; /* --brand #ff4f00 */
   --primary-foreground: 60 2.6% 7.6%; /* --brand-foreground #141413 */
-  --ring: 17.5 88.3% 40.4%; /* --ring #c2410c */
+  --ring: 60 2.6% 7.6%; /* --ring #141413 */
   --radius: 0.625rem;
 }
 .dark .rf-consent {
   --background: 220 10.7% 11%; /* #191b1f */
   --foreground: 220 12% 95.1%; /* #f1f2f4 */
-  --muted-foreground: 222.9 3.9% 64.5%; /* #a1a3a8 */
+  --muted-foreground: 220 6.3% 62.7%; /* #9a9ea6 */
   --border: 222 7.9% 24.7%; /* #3a3d44 */
   --input: 220 7.9% 29.8%; /* #464a52 */
   --accent: 222 10.2% 19.2%; /* #2c2f36 */

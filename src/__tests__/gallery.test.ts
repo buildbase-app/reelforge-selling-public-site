@@ -157,7 +157,7 @@ describe('gallery media and SEO helpers', () => {
     expect(isoDuration(75.5)).toBe('PT1M15.5S');
     expect(isoDuration(120)).toBe('PT2M');
     const reel = toReel(record('a').data)!;
-    const v = videoObject(reel, 'https://reelforge.buildbase.app/gallery/a');
+    const v = videoObject(reel, 'https://renderweld.com/gallery/a');
     expect(v).toMatchObject({
       '@type': 'VideoObject',
       name: 'Reel a',

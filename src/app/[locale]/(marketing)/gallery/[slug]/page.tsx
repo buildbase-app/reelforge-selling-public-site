@@ -40,10 +40,10 @@ export async function generateMetadata({
   const base = buildMarketingMetadata({
     path: `/gallery/${reel.slug}`,
     locale: locale as Locale,
-    title: `${reel.title}: made with ReelForge`,
+    title: `${reel.title}: made with RenderWeld`,
     description:
       reel.description ||
-      `A ${formatSeconds(reel.durationSeconds)}-second reel rendered by ReelForge Studio.`,
+      `A ${formatSeconds(reel.durationSeconds)}-second reel rendered by RenderWeld.`,
     image: reel.poster.jpg,
   });
   return {
@@ -167,10 +167,10 @@ export default async function ReelPage({ params }: ReelPageProps) {
               </h2>
               <p className="text-muted-foreground mt-2 text-sm text-pretty">
                 We wrote the manifest (its scenes, templates and timing) for
-                this gallery. The gallery script sent it to ReelForge Studio
-                over MCP with the same tool calls an agent makes, and the studio
-                rendered it. No AI agent planned it. The facts below come from
-                the studio&apos;s render manifest
+                this gallery. The gallery script sent it to RenderWeld over MCP
+                with the same tool calls an agent makes, and the studio rendered
+                it. No AI agent planned it. The facts below come from the
+                studio&apos;s render manifest
                 {reel.manifestUrl ? (
                   <>
                     ; the{' '}
@@ -208,7 +208,7 @@ export default async function ReelPage({ params }: ReelPageProps) {
                 )}
                 {reel.studioVersion && (
                   <Fact label="Studio">
-                    ReelForge Studio {reel.studioVersion}
+                    RenderWeld {reel.studioVersion}
                     {reel.engineVersions && (
                       <span className="text-muted-foreground block text-xs">
                         {reel.engineVersions}

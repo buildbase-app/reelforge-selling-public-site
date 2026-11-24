@@ -58,6 +58,19 @@ describe('marketing copy', () => {
     expect(hits(/open[\s_-]*source/i)).toEqual([]);
   });
 
+  it('calls the product RenderWeld; ReelForge only as its old name', () => {
+    // Allowed: saying it was renamed, and the licence document's own title.
+    // The legal pages (src/content/pages) keep their text until reviewed.
+    const old = hits(/ReelForge/).filter(
+      (hit) =>
+        !hit.startsWith('src/content/pages/') &&
+        !/Formerly ReelForge|formerly ReelForge|same as ReelForge|ReelForge was renamed|ReelForge Commercial License/.test(
+          hit
+        )
+    );
+    expect(old).toEqual([]);
+  });
+
   it('never describes a locked image or hidden source', () => {
     expect(
       hits(
