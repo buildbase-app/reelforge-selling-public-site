@@ -3,7 +3,7 @@ import { getStoreItems, onSaleFrom } from '@/lib/store/items';
 
 /**
  * The home page's primary action in the site header (studio issue #215):
- * "Join the waitlist" until the store is on sale, then "Buy ReelForge",
+ * "Join the waitlist" until the store is on sale, then "Buy RenderWeld",
  * decided from the same store read as the page's own buttons (Next
  * deduplicates the fetch within the render).
  */

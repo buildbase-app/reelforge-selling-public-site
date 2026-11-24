@@ -67,7 +67,7 @@ export default async function HelpPage({ params }: HelpPageProps) {
       />
       <div className="mx-auto max-w-5xl">
         <h1 className="text-3xl font-medium tracking-tight">{t('title')}</h1>
-        <p className="text-muted-foreground mt-2 max-w-2xl">
+        <p className="text-muted-foreground max-w-measure mt-2">
           {t('description')}
         </p>
         <HelpCenter

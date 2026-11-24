@@ -20,7 +20,7 @@ import { buildLlmsFullTxt } from './content';
 export const SCOPES = [
   {
     name: 'account:read',
-    description: 'Read your ReelForge account, workspaces and purchases',
+    description: 'Read your RenderWeld account, workspaces and purchases',
   },
 ] as const;
 
@@ -59,7 +59,7 @@ export const storeResources = [
   defineMcpResource({
     uri: 'reelforge://guide',
     name: 'reelforge-guide',
-    title: 'ReelForge store - what this site is and how to use it',
+    title: 'RenderWeld store - what this site is and how to use it',
     description: 'The same content served at /llms-full.txt.',
     mimeType: 'text/markdown',
     read: () => buildLlmsFullTxt(),
@@ -94,7 +94,7 @@ export const storePrompts = [
         {
           role: 'user',
           content: mcpText(
-            `Write a short status summary of this ReelForge workspace for its owner: plan, seats and anything that needs action.\n\n\`\`\`json\n${JSON.stringify(facts, null, 2)}\n\`\`\``
+            `Write a short status summary of this RenderWeld workspace for its owner: plan, seats and anything that needs action.\n\n\`\`\`json\n${JSON.stringify(facts, null, 2)}\n\`\`\``
           ),
         },
       ];

@@ -93,7 +93,7 @@ function NewestOrder() {
   return (
     <Message title="No orders yet">
       <p>
-        When you buy ReelForge, your order, downloads and licence keys appear
+        When you buy RenderWeld, your order, downloads and licence keys appear
         here and under{' '}
         <Link href="/dashboard/licences" className="underline">
           Licences

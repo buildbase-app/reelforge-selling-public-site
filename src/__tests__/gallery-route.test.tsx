@@ -23,7 +23,7 @@ const log = vi.hoisted(() => ({
 vi.mock('server-only', () => ({}));
 vi.mock('@/env', () => ({
   env: {},
-  siteUrl: 'https://reelforge.buildbase.app',
+  siteUrl: 'https://renderweld.com',
   isNoindexSite: false,
   buildbaseEnvironment: undefined,
 }));

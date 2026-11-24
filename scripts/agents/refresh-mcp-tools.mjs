@@ -45,6 +45,7 @@ const GROUPS = [
     title: 'Discover what this server can do',
     tools: [
       'get_capabilities',
+      'get_me',
       'get_project_schema',
       'list_templates',
       'list_themes',
@@ -87,6 +88,16 @@ const GROUPS = [
     ],
   },
   {
+    id: 'captions',
+    title: 'Captions',
+    tools: [
+      'import_captions',
+      'get_captions',
+      'update_captions',
+      'transcribe_captions',
+    ],
+  },
+  {
     id: 'render',
     title: 'Render and deliver',
     tools: [
@@ -99,6 +110,7 @@ const GROUPS = [
       'get_job_logs',
       'get_render_output',
       'list_renders',
+      'get_analytics_summary',
     ],
   },
   {
@@ -124,6 +136,18 @@ const GROUPS = [
     ],
   },
   {
+    id: 'workspaces',
+    title: 'Workspaces (owner keys)',
+    tools: [
+      'get_workspace',
+      'list_workspaces',
+      'create_workspace',
+      'update_workspace',
+      'delete_workspace',
+      'restore_workspace',
+    ],
+  },
+  {
     id: 'webhooks',
     title: 'Webhooks and notifications (admin keys)',
     tools: [
@@ -135,6 +159,9 @@ const GROUPS = [
       'test_webhook',
       'list_webhook_deliveries',
       'replay_webhook_delivery',
+      'resend_webhook',
+      'rotate_webhook_secret',
+      'get_webhook_log',
     ],
   },
 ];

@@ -45,7 +45,7 @@ const messages: Messages = {
     footer: {
       rights: 'All rights reserved',
       tagline:
-        'A source-available, agent-driven short-form video studio you self-host. Free for personal use; one-time commercial licence. Early access.',
+        'Agents write the manifest. RenderWeld renders the video. Source-available and self-hosted; free for personal use, one-time Commercial licence.',
       sections: {
         product: 'Product',
         resources: 'Resources',
@@ -87,16 +87,16 @@ const messages: Messages = {
     redirecting: 'Redirecting...',
   },
   home: {
-    title: 'ReelForge',
+    title: 'RenderWeld',
     hero: {
       badge: 'Early access · source-available · self-hosted',
       heading:
-        'Your agent directs. <highlight>Your server</highlight> renders.',
+        'Agents write the manifest. <highlight>RenderWeld</highlight> renders the video.',
       description:
-        'A source-available, agent-driven short-form video studio. Free for personal use; one-time commercial licence. Self-host it on your own machine or a cloud server you run. Your AI agent drives it over REST and MCP (any MCP client; tested with Claude Code): it plans every scene and its timing, and ReelForge renders them with Remotion, Motion Canvas, HTML and HyperFrames into one vertical MP4.',
+        'A source-available video renderer you self-host. Free for personal use; one-time Commercial licence. Your AI agent drives it over REST and MCP (any MCP client; tested with Claude Code): it writes every scene and its timing, and RenderWeld renders them with Remotion, Motion Canvas, HTML and HyperFrames at the size and frame rate you ask for.',
       waitlist: 'Join the waitlist',
       pricing: 'See pricing',
-      buy: 'Buy ReelForge',
+      buy: 'Buy RenderWeld',
       faq: 'Read the FAQ',
       source: 'Read the source on GitHub',
       builtWith: 'Inside',
@@ -112,7 +112,7 @@ const messages: Messages = {
       },
       groups: {
         label: 'Output',
-        sublabel: '9:16 MP4 with audio',
+        sublabel: 'Any size: MP4, ProRes, WebM, GIF, PNG or audio',
       },
       authCode: {
         label: 'Hosted render service',
@@ -125,10 +125,10 @@ const messages: Messages = {
         'Get the free Personal licence, or join the waitlist to hear about releases. The source and setup guide are on GitHub, for your own computer or cloud server.',
     },
     meta: {
-      title: 'ReelForge: source-available video studio for AI agents',
+      title: 'RenderWeld: self-hosted video rendering your AI agent drives',
       description:
-        'Source-available, agent-driven short-form video studio. Free for personal use; one-time commercial licence. Self-host it; your AI agent drives it over REST and MCP.',
-      tagline: 'Your agent directs. Your server renders.',
+        'Agents write the manifest. RenderWeld renders the video on your own server: four engines, any size and frame rate, MP4 to ProRes, over MCP and REST. Source-available; free for personal use.',
+      tagline: 'Agents write the manifest. RenderWeld renders the video.',
     },
   },
   dashboard: {
@@ -374,7 +374,7 @@ const messages: Messages = {
   },
   invoices: {
     title: 'Orders and receipts',
-    description: 'Your ReelForge licences, what you paid and their receipts',
+    description: 'Your RenderWeld licences, what you paid and their receipts',
     refresh: 'Refresh',
     billingPortal: 'Billing portal',
     billingPortalOpening: 'Opening…',
@@ -386,7 +386,7 @@ const messages: Messages = {
       loading: 'Loading your orders…',
       error: 'Your orders could not be loaded. Reload the page to try again.',
       empty:
-        'No orders yet. When you buy or claim a ReelForge licence, it appears here with its receipt.',
+        'No orders yet. When you buy or claim a RenderWeld licence, it appears here with its receipt.',
       pricing: 'See pricing',
       view: 'View receipt',
       loadMore: 'Load more',
@@ -402,7 +402,7 @@ const messages: Messages = {
       title: 'Invoices',
       found: '{count} invoice(s) found',
       empty:
-        'No invoices. ReelForge licences are one-time purchases: their receipts are the orders above.',
+        'No invoices. RenderWeld licences are one-time purchases: their receipts are the orders above.',
     },
     table: {
       date: 'Date',
@@ -561,7 +561,7 @@ const messages: Messages = {
     meta: {
       title: 'Pricing',
       description:
-        'ReelForge is free for personal use (PolyForm Noncommercial). Commercial use needs a one-time Commercial licence: what each tier costs and includes.',
+        'RenderWeld is free for personal use (PolyForm Noncommercial). Commercial use needs a one-time Commercial licence: what each tier costs and includes.',
     },
   },
   errors: {
@@ -589,7 +589,7 @@ const messages: Messages = {
     label: 'Blog',
     heading: 'Blog',
     description:
-      'What we ship in ReelForge and how to run it. We only write about what exists.',
+      'What we ship in RenderWeld and how to run it. We only write about what exists.',
     noPosts: 'No posts yet.',
     noPostsTag: 'No posts with this tag yet.',
     noPostsCategory: 'No posts in this category yet.',
@@ -624,22 +624,22 @@ const messages: Messages = {
       title: 'Blog',
       titlePage: 'Blog, page {page}',
       description:
-        'Announcements and guides from the people building ReelForge, a self-hosted studio your AI agent drives.',
+        'Announcements and guides from the people building RenderWeld, a self-hosted studio your AI agent drives.',
       tagTitle: 'Posts tagged "{tag}"',
       tagDescription: 'All blog posts tagged with "{tag}".',
-      categoryTitle: '{category} — Blog',
+      categoryTitle: '{category}: Blog',
       categoryDescription: 'Blog posts in the "{category}" category.',
     },
   },
   changelog: {
     label: 'Changelog',
     heading: 'Changelog',
-    description: 'Release notes for the ReelForge store and the product.',
+    description: 'Release notes for the RenderWeld store and the product.',
     rssLabel: 'RSS',
     permalink: 'Permalink',
     meta: {
       title: 'Changelog',
-      description: 'Release notes for the ReelForge store and the product.',
+      description: 'Release notes for the RenderWeld store and the product.',
     },
   },
   inbox: {
@@ -656,13 +656,13 @@ const messages: Messages = {
   help: {
     title: 'Help',
     description:
-      'Answers to common questions about ReelForge and this store. Installation guides will be published here when ReelForge is released.',
+      'Answers to common questions about RenderWeld and this store. Installation guides will be published here when RenderWeld is released.',
     notConfigured: {
       title: 'Guides are on the way',
       token:
-        'Installation and setup guides will appear here when ReelForge is released.',
+        'Installation and setup guides will appear here when RenderWeld is released.',
       empty:
-        'Installation and setup guides will appear here when ReelForge is released.',
+        'Installation and setup guides will appear here when RenderWeld is released.',
     },
     from: {
       richContent: 'rich content',
@@ -682,12 +682,12 @@ const messages: Messages = {
     },
   },
   waitlist: {
-    title: 'Join the ReelForge waitlist',
+    title: 'Join the RenderWeld waitlist',
     description:
-      'ReelForge is not on sale yet. Leave your name and email and we will tell you when it is, with what it costs and what you get.',
+      'RenderWeld is not on sale yet. Leave your name and email and we will tell you when it is, with what it costs and what you get.',
     success:
-      'You are on the list. We will email you when ReelForge can be bought.',
-    note: 'We use your email only to tell you about ReelForge availability. See the privacy policy.',
+      'You are on the list. We will email you when RenderWeld can be bought.',
+    note: 'We use your email only to tell you about RenderWeld availability. See the privacy policy.',
   },
   account: {
     exports: {

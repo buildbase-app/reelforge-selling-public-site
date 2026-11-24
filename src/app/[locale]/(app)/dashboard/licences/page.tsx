@@ -11,7 +11,7 @@ import { SupportContact } from '@/components/support-contact';
 
 /**
  * Everything the signed-in person holds from what they bought: downloads
- * (releases of ReelForge) and licence keys, grouped by order. English only
+ * (releases of RenderWeld) and licence keys, grouped by order. English only
  * for now (src/i18n/config.ts).
  */
 export default function LicencesPage() {
@@ -31,7 +31,7 @@ export default function LicencesPage() {
           <KeyRound className="h-7 w-7" aria-hidden /> Licences
         </h1>
         <p className="text-muted-foreground">
-          Your ReelForge downloads and licence keys.
+          Your RenderWeld downloads and licence keys.
         </p>
       </div>
 
@@ -45,7 +45,7 @@ export default function LicencesPage() {
         <div className="bg-muted/40 rounded-xl border p-6">
           <p className="font-medium">No licences yet</p>
           <p className="text-muted-foreground mt-1 text-sm">
-            When you buy ReelForge, its downloads and keys appear here.
+            When you buy RenderWeld, its downloads and keys appear here.
           </p>
           <Button className="mt-4" asChild>
             <Link href="/pricing">See pricing</Link>

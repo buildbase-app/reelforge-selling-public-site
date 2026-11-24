@@ -4,6 +4,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { SiteMenu } from '@/components/site-menu';
 import { Link } from '@/i18n/link';
+import { BrandLogo } from '@/components/brand-logo';
 
 const NAV_HREFS = [
   '/gallery',
@@ -67,9 +68,10 @@ export async function HomeHeader({ title, auth, action }: HomeHeaderProps) {
       <div className="flex items-center gap-8">
         <Link
           href="/"
-          className="text-foreground rounded-sm text-base font-semibold tracking-tight sm:text-lg"
+          className="text-foreground inline-flex min-h-11 items-center rounded-sm text-base sm:text-lg"
+          aria-label={title}
         >
-          {title}
+          <BrandLogo />
         </Link>
         <nav className="hidden items-center gap-1 lg:flex">
           {NAV_HREFS.map((href) => (

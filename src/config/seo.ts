@@ -29,13 +29,13 @@ export const seoConfig = {
     /** Product / company name used everywhere (JSON-LD, OG, Twitter). */
     name: siteConfig.name,
     /**
-     * PLACEHOLDER: the legal entity that sells ReelForge is not confirmed
+     * PLACEHOLDER: the legal entity that sells RenderWeld is not confirmed
      * yet (founder decision). Replace this string once it is; the legal
      * pages show the same placeholder.
      */
     legalName: LEGAL_ENTITY_PLACEHOLDER,
     description: siteConfig.description,
-    tagline: 'Your agent directs. Your server renders.',
+    tagline: 'Agents write the manifest. RenderWeld renders the video.',
     /** The product's public, source-available repository. */
     repository: siteConfig.repo.url,
     /** Licensing overview (Personal: PolyForm Noncommercial; Commercial). */
@@ -46,7 +46,7 @@ export const seoConfig = {
     foundingDate: undefined as string | undefined,
   },
   author: {
-    name: 'ReelForge team',
+    name: 'RenderWeld team',
     url: siteUrl,
   },
   publisher: {

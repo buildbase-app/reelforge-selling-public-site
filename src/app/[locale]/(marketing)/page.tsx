@@ -16,6 +16,7 @@ import {
   EnterpriseStrip,
   FinalCta,
   Footnotes,
+  Formats,
   Hero,
   HowItWorks,
   NumbersBand,
@@ -59,7 +60,7 @@ export async function generateMetadata({
 
 /**
  * The product page (studio issue #44): an Apple-style story told in
- * sections, with real reels rendered by ReelForge. Prices stay server-read
+ * sections, with real reels rendered by RenderWeld. Prices stay server-read
  * (`getStoreItems`) so they and the `SoftwareApplication` offers are in the
  * HTML; the FAQ is the BuildBase `home-faq` collection (local fallback).
  */
@@ -100,6 +101,7 @@ export default async function HomePage({ params }: HomePageProps) {
         }
       />
       <ReelMarquee />
+      <Formats />
       <AgentTranscript />
       <HowItWorks />
       <ConnectAgent tabs={<AgentTabs clients={AGENT_CLIENTS} />} />
@@ -114,11 +116,10 @@ export default async function HomePage({ params }: HomePageProps) {
         className="w-full max-w-6xl scroll-mt-(--header-h) px-4 py-24 md:px-6 md:py-32"
       >
         <div className="mb-12 text-center">
-          <p className="rf-eyebrow">Pricing</p>
-          <h2 id="pricing-title" className="rf-headline mt-3">
+          <h2 id="pricing-title" className="rf-headline">
             {tPricing('title')}
           </h2>
-          <p className="text-muted-foreground mx-auto mt-4 max-w-2xl text-lg">
+          <p className="text-muted-foreground max-w-measure mx-auto mt-4 text-lg">
             {tPricing('subtitle')}
           </p>
         </div>

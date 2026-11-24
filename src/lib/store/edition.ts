@@ -1,7 +1,7 @@
 import type { PublicItemView } from '@buildbase/sdk';
 
 /**
- * Which ReelForge licence an item (and every key it grants) is: the free
+ * Which RenderWeld licence an item (and every key it grants) is: the free
  * Personal licence (PolyForm Noncommercial, noncommercial use only) or the
  * paid Commercial licence. Founder decision 2026-11-21.
  *
@@ -75,7 +75,7 @@ export function orderByEdition<T extends ItemLike>(items: T[]): T[] {
 /**
  * The edition of a key a buyer holds, by its item id: the published item it
  * came from when it is still listed, else a known id. Unknown items are
- * Commercial: every paid ReelForge item so far, the archived combined one
+ * Commercial: every paid RenderWeld item so far, the archived combined one
  * included, sold commercial licences.
  */
 export function editionOfHolding(

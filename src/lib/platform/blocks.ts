@@ -31,7 +31,7 @@ export const DEFAULT_BLOCKS: Record<BlockKey, string | null> = {
   // (src/lib/store/launch.ts) and stops at the launch price's end date.
   launchPriceNote: null,
   remotionNotice:
-    'ReelForge includes Remotion-based templates. Remotion is free for individuals and companies of up to 3 people; larger companies need their own Remotion licence ([remotion.dev/license](https://www.remotion.dev/license)). Remotion is not covered by either ReelForge licence. ReelForge also includes Motion Canvas, HTML and HyperFrames engines.',
+    'RenderWeld includes Remotion-based templates. Remotion is free for individuals and companies of up to 3 people; larger companies need their own Remotion licence ([remotion.dev/license](https://www.remotion.dev/license)). Remotion is not covered by either RenderWeld licence. RenderWeld also includes Motion Canvas, HTML and HyperFrames engines.',
 };
 
 /** A block from BuildBase, or its fallback, or null when there is neither. */

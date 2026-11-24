@@ -1,11 +1,11 @@
 /**
- * How each agent client connects to a ReelForge Studio, shown on / and
+ * How each agent client connects to a RenderWeld server, shown on / and
  * /agents (and in /agents.md). Only clients we can show a checked config for
  * are listed; `checked` says exactly what was checked and when. Placeholders
  * only: `rf_...` for the key, 127.0.0.1:4321 (the studio's default address)
  * for the host. Never put a real key here.
  *
- * Checked on 2026-11-21 against ReelForge Studio 0.1.0 running locally:
+ * Checked on 2026-11-21 against RenderWeld 0.1.0 running locally:
  * - Claude Code 2.1.330: `claude mcp add` as below, then `claude mcp list`
  *   reported "Connected". Separately, the studio's Docker test (#16) had
  *   headless Claude Code make a reel over MCP only.

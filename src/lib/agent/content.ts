@@ -18,7 +18,7 @@ export const PAGES: PageEntry[] = [
     title: 'Home',
     path: '/',
     summary:
-      'What ReelForge is: a source-available, agent-driven short-form video studio that an AI agent drives over REST and MCP, rendering with Remotion, Motion Canvas, HTML and HyperFrames. Free for personal use; one-time commercial licence.',
+      'What RenderWeld is: a source-available video renderer that an AI agent drives over REST and MCP, rendering with Remotion, Motion Canvas, HTML and HyperFrames at any size and frame rate. Free for personal use; one-time Commercial licence.',
   },
   {
     title: 'Pricing',
@@ -30,7 +30,7 @@ export const PAGES: PageEntry[] = [
     title: 'Connect your agent',
     path: '/agents',
     summary:
-      'How to connect Claude Code, Codex, any MCP client or plain REST to a self-hosted ReelForge Studio: checked configs, API key scopes, a prompt cookbook with real renders, and every MCP tool grouped by job. As Markdown: /agents.md.',
+      'How to connect Claude Code, Codex, any MCP client or plain REST to a self-hosted RenderWeld server: checked configs, API key scopes, a prompt cookbook with real renders, and every MCP tool grouped by job. As Markdown: /agents.md.',
   },
   {
     title: 'Order',
@@ -41,19 +41,19 @@ export const PAGES: PageEntry[] = [
   {
     title: 'Waitlist',
     path: '/waitlist',
-    summary: 'Leave a name and email to hear when ReelForge can be bought.',
+    summary: 'Leave a name and email to hear when RenderWeld can be bought.',
   },
   {
     title: 'Docs',
     path: '/docs',
     summary:
-      'ReelForge Studio documentation, published from the source repository to BuildBase Docs: quick start (Docker, first API key, connecting an agent over MCP), install and licence, the REST API, every MCP tool, providers, manifest v0.2, a prompt cookbook, privacy and network egress, troubleshooting. Every page also as Markdown (add .md to its URL; index at /docs.md).',
+      'RenderWeld documentation, published from the source repository to BuildBase Docs: quick start (Docker, first API key, connecting an agent over MCP), install and licence, the REST API, every MCP tool, providers, manifest v0.2, a prompt cookbook, privacy and network egress, troubleshooting. Every page also as Markdown (add .md to its URL; index at /docs.md).',
   },
   {
     title: 'Help',
     path: '/help',
     summary:
-      'Frequently asked questions: what you get, using ReelForge with an AI agent, what is not ready yet, Remotion licensing.',
+      'Frequently asked questions: what you get, using RenderWeld with an AI agent, what is not ready yet, Remotion licensing.',
   },
   {
     title: 'Account',
@@ -80,20 +80,26 @@ export const PAGES: PageEntry[] = [
 ];
 
 /**
- * What ReelForge is and what is verified, in plain lines. Keep it to facts
+ * What RenderWeld is and what is verified, in plain lines. Keep it to facts
  * true today (docs/research/DESIGN_BRIEF.md §7); say what is not verified
  * rather than leave it implied.
  */
 export const PRODUCT_FACTS = [
-  '- ReelForge is a source-available, agent-driven short-form video studio that the buyer self-hosts on their own machine or cloud server. The code is public to read; the licence limits how it may be used.',
+  '- RenderWeld (formerly ReelForge) is a source-available video renderer that the buyer self-hosts on their own machine or cloud server. The code is public to read; the licence limits how it may be used. Old ReelForge names (environment variables, CLI, MCP resource URIs) keep working for at least 90 days after the rename ships.',
   `- Source: ${siteConfig.repo.url} (licensing: ${siteConfig.repo.licensing}).`,
-  '- Personal use is free under the PolyForm Noncommercial License 1.0.0, with a free Personal licence key claimed with a BuildBase account. Any commercial use needs a paid ReelForge Commercial License (one-time; Solo, Studio and Agency tiers, prices read from the store).',
+  '- Personal use is free under the PolyForm Noncommercial License 1.0.0, with a free Personal licence key claimed with a BuildBase account. Any commercial use needs a paid ReelForge Commercial License (the licence document keeps its name; one-time; tiers and prices read from the store).',
   '- Every released Docker image activates with a licence key from BuildBase. No resale, redistribution, rebranding or competing hosted service under either licence; forks must be renamed.',
   "- The buyer's own AI agent drives it over a REST API and an MCP server running on the buyer's machine (any MCP client; tested with Claude Code). The agent plans every scene and its timing.",
-  '- Four rendering engines: Remotion, Motion Canvas, HTML and HyperFrames. The output is one vertical MP4.',
+  '- Four rendering engines: Remotion, Motion Canvas, HTML and HyperFrames, mixed per scene in one project.',
+  '- Output: any even width and height from 16 to 4096 px, frame rates 23.976 to 60 including exact NTSC rates; MP4, ProRes MOV (with alpha), WebM (VP9, AV1), GIF, PNG sequence, or audio only (M4A, WAV). One render call can produce several variants (sizes and formats) with one batch id. Layouts: split screen, picture-in-picture, lower thirds, grids.',
+  '- Captions: off, burned in, sidecar files (SRT, WebVTT, ASS) or both, per render.',
+  '- Workspaces: one install can host several teams; each key sees only its own workspace (scopes read, write, render, admin, owner).',
+  '- Storage: local disk, S3-compatible, Google Cloud Storage, Azure Blob. Database: SQLite, PostgreSQL, MySQL/MariaDB. Queue dispatch: poll, PostgreSQL notify, Redis, SQS. Deployment guides for AWS, Google Cloud, Azure and other platforms.',
+  '- Isolation: the only outside service an install needs is the BuildBase licence check; installs never talk to each other; no telemetry.',
+  '- Media providers today: ElevenLabs text-to-speech and faster-whisper speech-to-text. AI image and video providers are not shipped.',
   '- Verified: an end-to-end run in Docker, and headless Claude Code making an 18-second reel with all four engines over MCP only.',
-  "- Not verified yet, so not offered as features: rendering on the buyer's AWS (Remotion Lambda), burned-in captions, live ElevenLabs voice-over, Codex and Cursor as clients.",
-  '- No per-video fees to ReelForge. Remotion is not covered by either ReelForge licence and requires its own licence for companies over 3 people (https://www.remotion.dev/license).',
+  '- Not verified yet, so not offered as features: rendering on serverless functions (Remotion Lambda), live ElevenLabs voice-over (tested against a mock), hundreds of workers rendering at once on cloud machines (not measured), Codex and Cursor as clients.',
+  '- No per-video fees to RenderWeld. Remotion is not covered by either RenderWeld licence and requires its own licence for companies over 3 people (https://www.remotion.dev/license).',
 ].join('\n');
 
 const base = () => siteConfig.url.replace(/\/$/, '');
@@ -122,7 +128,7 @@ export function buildLlmsTxt(): string {
 
 > ${siteConfig.description}
 
-This is the ${siteConfig.name} store: where people learn about ReelForge, claim a free Personal licence key or buy a Commercial licence, and manage their keys. The source itself is on GitHub. ReelForge is early access; nothing here should be read as a promise of features that are not listed.
+This is the ${siteConfig.name} store: where people learn about RenderWeld, claim a free Personal licence key or buy a Commercial licence, and manage their keys. The source itself is on GitHub. RenderWeld is early access; nothing here should be read as a promise of features that are not listed.
 
 ## The product
 
@@ -139,7 +145,7 @@ ${licensingLinks(b)}
 - [Auth instructions](${b}/auth.md): how to register a client and get a token.
 - [OpenAPI](${b}/openapi.json): the REST routes this site exposes.
 - [Full guide](${b}/llms-full.txt): every page, route and tool.
-- [Connect your agent to ReelForge Studio](${b}/agents.md): client configs, prompt cookbook and the studio's MCP tools, as Markdown.
+- [Connect your agent to RenderWeld](${b}/agents.md): client configs, prompt cookbook and the studio's MCP tools, as Markdown.
 
 ## Pages
 
@@ -173,13 +179,13 @@ ${PRODUCT_FACTS}
 
 ## What this site is
 
-The ReelForge store. ReelForge itself runs on the buyer's own computer or cloud server; this site does not render video. Here people claim the free Personal licence key or buy a Commercial licence, then find their keys on the order page and under Dashboard, Licences. The store runs on BuildBase (${siteConfig.buildbase.url}) for sign-in, checkout and downloads. Prices and what each option includes are read from the store's items at runtime; while none are published, the pricing page says ReelForge is not on sale yet.
+The RenderWeld store. RenderWeld itself runs on the buyer's own computer or cloud server; this site does not render video. Here people claim the free Personal licence key or buy a Commercial licence, then find their keys on the order page and under Dashboard, Licences. The store runs on BuildBase (${siteConfig.buildbase.url}) for sign-in, checkout and downloads. Prices and what each option includes are read from the store's items at runtime; while none are published, the pricing page says RenderWeld is not on sale yet.
 
 ## Licensing
 
 ${licensingLinks(b)}
 
-Remotion note: ReelForge includes Remotion-based templates. Remotion is free for individuals and companies of up to 3 people; larger companies need their own Remotion licence (https://www.remotion.dev/license).
+Remotion note: RenderWeld includes Remotion-based templates. Remotion is free for individuals and companies of up to 3 people; larger companies need their own Remotion licence (https://www.remotion.dev/license).
 
 ## How an agent connects
 
@@ -229,13 +235,13 @@ export function buildSkillMarkdown(): string {
   const b = base();
   return `---
 name: reelforge-store
-description: Read a ReelForge customer's account over MCP (read-only).
+description: Read a RenderWeld customer's account over MCP (read-only).
 ---
 
-# ReelForge store skill
+# RenderWeld store skill
 
 ## When to use
-The user asks about their ReelForge account on ${b}: invoices, workspaces, profile.
+The user asks about their RenderWeld account on ${b}: invoices, workspaces, profile.
 
 ## Connect
 1. Add the MCP server \`${b}/api/mcp\` to your client (Streamable HTTP).

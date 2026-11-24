@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Home page', () => {
   test('should load and display heading', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/ReelForge/);
+    await expect(page).toHaveTitle(/RenderWeld/);
   });
 
   test('should have sign in button', async ({ page }) => {

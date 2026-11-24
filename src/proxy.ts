@@ -162,8 +162,9 @@ export const config = {
      * - agent discovery documents (llms.txt, auth.md, security.txt, ...):
      *   served by route handlers, so the locale middleware must not
      *   rewrite them to /en/... (that answered 404)
-     * - public folder assets (images, and the reels in public/reels)
+     * - the web app manifest (src/app/manifest.ts)
+     * - public folder assets (images, fonts, and the reels in public/reels)
      */
-    '/((?!_next/static|_next/image|favicon.ico|push-sw\\.js|sitemap\\.xml|sitemap-\\d+\\.xml|robots\\.txt|llms\\.txt|llms-full\\.txt|openapi\\.json|auth\\.md|agents\\.md|security\\.txt|\\.well-known/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|mp4|webm)$).*)',
+    '/((?!_next/static|_next/image|favicon.ico|push-sw\\.js|sitemap\\.xml|sitemap-\\d+\\.xml|robots\\.txt|llms\\.txt|llms-full\\.txt|openapi\\.json|auth\\.md|agents\\.md|security\\.txt|manifest\\.webmanifest|\\.well-known/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|avif|ico|mp4|webm|woff2)$).*)',
   ],
 };

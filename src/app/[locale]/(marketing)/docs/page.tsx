@@ -20,7 +20,7 @@ export const revalidate = 3600;
 
 const TITLE = 'Docs';
 const DESCRIPTION =
-  'Install ReelForge Studio with Docker, connect your AI agent over MCP or REST, and make vertical videos: quick start, API and MCP reference, manifest, cookbook, privacy and troubleshooting.';
+  'Install RenderWeld with Docker, connect your AI agent over MCP or REST, and render videos at any size: quick start, API and MCP reference, manifest, cookbook, privacy and troubleshooting.';
 
 export async function generateMetadata({
   params,
@@ -52,9 +52,9 @@ export default async function DocsIndex({ params }: DocsIndexProps) {
         </aside>
         <div className={`max-w-3xl min-w-0`}>
           <h1 className="text-3xl font-medium tracking-tight sm:text-4xl">
-            ReelForge docs
+            RenderWeld docs
           </h1>
-          <p className="text-muted-foreground mt-3 text-lg text-pretty">
+          <p className="text-muted-foreground max-w-measure mt-3 text-lg text-pretty">
             {DESCRIPTION}
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 text-sm">
@@ -95,7 +95,7 @@ export default async function DocsIndex({ params }: DocsIndexProps) {
                 href="https://github.com/buildbase-app/reelforge-studio/tree/main/docs"
                 className="underline underline-offset-2"
               >
-                ReelForge Studio repository
+                RenderWeld repository
               </a>
               .
             </p>

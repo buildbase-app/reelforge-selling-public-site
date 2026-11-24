@@ -14,7 +14,7 @@ interface ContactPageProps {
 
 const TITLE = 'Contact';
 const DESCRIPTION =
-  'How to reach the people behind ReelForge: support, orders, refunds and privacy questions.';
+  'How to reach the people behind RenderWeld: support, orders, refunds and privacy questions.';
 
 export async function generateMetadata({
   params,
@@ -83,10 +83,10 @@ export default async function ContactPage({ params }: ContactPageProps) {
                   Help
                 </Link>{' '}
                 page answers the common questions, and a direct support address
-                will be published here before ReelForge goes on sale.
+                will be published here before RenderWeld goes on sale.
               </p>
               <p>
-                To hear when ReelForge can be bought,{' '}
+                To hear when RenderWeld can be bought,{' '}
                 <Link
                   href="/waitlist"
                   className="text-foreground font-medium underline underline-offset-2"
@@ -134,7 +134,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
             Seller
           </h2>
           <p className="text-muted-foreground mt-2">
-            ReelForge is sold by {LEGAL_ENTITY_PLACEHOLDER}. [Address and
+            RenderWeld is sold by {LEGAL_ENTITY_PLACEHOLDER}. [Address and
             country to be confirmed.]
           </p>
         </section>

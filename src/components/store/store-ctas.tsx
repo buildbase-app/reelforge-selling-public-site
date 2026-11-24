@@ -25,7 +25,7 @@ export async function getStoreCtaLabels(
 
 /**
  * The two main buttons: "Join the waitlist" and "See pricing" until the
- * store has something on sale, then "Buy ReelForge" and "Read the FAQ".
+ * store has something on sale, then "Buy RenderWeld" and "Read the FAQ".
  * Decided from the published items the page read on the server, so it
  * changes without a deploy. When the server could not read them (`onSale`
  * undefined), it shows the first pair: both still lead to the prices.
@@ -53,7 +53,7 @@ export function StoreCtas({
 
 /**
  * The page's primary action: "Join the waitlist" until the store has
- * something on sale, then "Buy ReelForge". The hero, the final call to
+ * something on sale, then "Buy RenderWeld". The hero, the final call to
  * action and the header (`HeaderCta`) all decide it here.
  */
 export function primaryCta(labels: StoreCtaLabels, onSale: boolean) {
@@ -65,7 +65,7 @@ export function primaryCta(labels: StoreCtaLabels, onSale: boolean) {
 /**
  * The same primary action in the site header on the home page (studio
  * issue #215), from the `@headerAction` slot: the header's one filled
- * button, in the accent (pink with dark text, 5.7:1). `data-header-cta`
+ * button, in the accent (orange with ink text, 5.6:1). `data-header-cta`
  * tells the header it is there (see `HomeHeader`).
  */
 export function HeaderCta({

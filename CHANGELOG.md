@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (studio issues #411 and #457): RenderWeld, formerly ReelForge
+
+- The product is now called RenderWeld. Pages, metadata, JSON-LD, the agent
+  documents (llms.txt, agents.md) and the FAQ use the new name; "formerly
+  ReelForge" stays on one line of the home page, in one FAQ answer and here.
+  Legal pages (terms, privacy, licence, refund) keep their text until they
+  are reviewed with their new effective date.
+- Brand kit (studio `docs/brand/`): the mark and wordmark in the header and
+  footer, the favicon set, Apple touch icon, web app manifest
+  (`/manifest.webmanifest`) and the Open Graph and X share images. The
+  generated `/api/og` card and its placeholder generator are gone. Muted text
+  moves to the kit's #6b6a64 / #9a9ea6; on light, links, the focus ring and
+  rails use the ink, since orange is never text or a thin line there.
+- Home page copy checked against the studio's `main`: any size and frame
+  rate (NTSC exact), MP4, ProRes MOV, WebM, GIF, PNG sequences and audio,
+  variants from one call, layouts, captions, workspaces, the dashboard,
+  providers and cloud guides, isolation, and the measured load-test numbers
+  with their conditions. The install steps now set the required secret key.
+  The MCP tool count (76) comes from the studio's generated reference.
+- Design: no eyebrow above every heading, no step counters, no radial
+  washes or shadows; one scroll-driven moment (the formats drawing welds
+  together), a two-layer hero, hover styles only on devices that hover.
+
 ### Fixed (studio issue #284)
 
 - Keyboard focus: every control shows one ring, 2px in the accent (#c2410c

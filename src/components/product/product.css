@@ -1,9 +1,12 @@
 /*
  * Product pages (/ and /agents). Scoped under .rf-product so nothing here
- * reaches other pages. Colours come from the tokens in globals.css: tinted
- * neutrals, one accent (the brand pink) and the stage, the dark band behind
+ * reaches other pages. Colours come from the tokens in globals.css and the
+ * RenderWeld brand kit (studio docs/brand/BRAND.md): tinted neutrals, one
+ * accent (signal orange, the weld dot) and the stage, the dark band behind
  * the reels that stays dark in both themes so the reels and the page read as
- * one product. The reels are the bright element; the chrome stays quiet.
+ * one product. The reels are the bright element; the chrome stays quiet. No
+ * gradients, glows or shadows (BRAND.md §4): depth comes from surface steps,
+ * hairlines and the hero's two layers.
  *
  * Motion follows the scroll (AGENTS.md "Design and UI/UX rules"): CSS
  * scroll-driven animations where the browser has them, the small
@@ -25,33 +28,38 @@
 .rf-stage .rf-muted {
   color: var(--stage-muted);
 }
-/* Two soft washes behind a dark band (a canvas tint and an accent tint),
-   from the tokens. Static, so nothing to turn off under reduced motion. */
-.rf-wash {
-  background-image:
-    radial-gradient(56% 48% at 0% 0%, var(--wash-canvas), transparent 72%),
-    radial-gradient(56% 48% at 100% 100%, var(--wash-accent), transparent 72%);
+/* The hero fills the first screen (small-viewport units, so mobile browser
+   bars never hide its bottom) and centres its two columns in it. */
+.rf-hero {
+  display: grid;
+  align-items: center;
+  min-height: calc(100svh - var(--header-h));
+}
+/* The hero's subhead: a readable measure, not the column's full width. */
+.rf-lede {
+  max-width: 36rem;
 }
 
-/* Display type: size and tracking carry the hierarchy, not weight. */
+/* Display type: size and tracking carry the hierarchy, not weight. Tracking
+   stays at the brand's -0.02 to -0.03em (BRAND.md §5). */
 .rf-display {
   font-size: clamp(2.5rem, 6.2vw, 5.25rem);
   font-weight: 500;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.03em;
   line-height: 1.02;
   text-wrap: balance;
 }
 /* The page's one H1 gets a step more weight and tighter tracking (studio
    issue #247; Geist is variable, so this costs no bytes). */
 h1.rf-display {
-  font-size: clamp(2.5rem, 5.4vw, 4.5rem);
+  font-size: clamp(2.25rem, 4vw, 3.5rem);
   font-weight: 600;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.03em;
 }
 .rf-headline {
   font-size: clamp(2rem, 4.4vw, 3.25rem);
   font-weight: 500;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.025em;
   line-height: 1.08;
   text-wrap: balance;
 }
@@ -81,13 +89,12 @@ h1.rf-display {
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
-/* A raised card on the page (feature cards, proof tiles). */
+/* A raised card on the page: a surface step and a hairline, no shadow. */
 .rf-card {
   padding: 24px;
   border: 1px solid var(--border);
   border-radius: 16px;
   background: var(--card);
-  box-shadow: var(--shadow-sm);
 }
 /* A capability, as an outline tag. */
 .rf-tag {
@@ -107,14 +114,18 @@ h1.rf-display {
 .rf-stage .rf-quiet {
   color: var(--stage-muted);
 }
-/* The line above a section title: quiet text, sentence case, no accent. */
-.rf-eyebrow {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: var(--muted-foreground);
-}
-.rf-stage .rf-eyebrow {
-  color: var(--stage-muted);
+/*
+ * The weld: the brand's signal-orange dot, used only where two things join
+ * (the mark, the formats drawing, the hero's frames, "a renderer on your
+ * own server"). Solid, never a glow.
+ */
+.rf-weld {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--brand);
 }
 
 /*
@@ -133,7 +144,7 @@ h1.rf-display {
   color: var(--stage-muted);
 }
 
-/* The one accent button: pink with dark text (white on pink fails AA). */
+/* The one accent button: orange with ink text (white on orange fails AA). */
 .rf-pill {
   display: inline-flex;
   align-items: center;
@@ -145,15 +156,18 @@ h1.rf-display {
   color: var(--brand-foreground);
   font-weight: 500;
   font-size: 0.9375rem;
+  touch-action: manipulation;
   transition:
-    background-color var(--dur-fast) var(--rf-ease),
-    transform var(--dur-fast) var(--rf-ease);
+    background-color var(--dur-fast) ease,
+    transform var(--dur-press) var(--rf-ease);
 }
-.rf-pill:hover {
-  background: color-mix(in oklab, var(--brand) 88%, black);
+@media (hover: hover) and (pointer: fine) {
+  .rf-pill:hover {
+    background: color-mix(in oklab, var(--brand) 88%, black);
+  }
 }
 .rf-pill:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 .rf-pill-sm {
   height: 2rem;
@@ -165,8 +179,10 @@ h1.rf-display {
   font-weight: 500;
   text-underline-offset: 4px;
 }
-.rf-link:hover {
-  text-decoration: underline;
+@media (hover: hover) and (pointer: fine) {
+  .rf-link:hover {
+    text-decoration: underline;
+  }
 }
 .rf-product :is(a, button, summary, [tabindex]):focus-visible {
   outline: 2px solid var(--ring);
@@ -183,9 +199,6 @@ h1.rf-display {
   padding: 10px;
   background: var(--stage-raised);
   border: 1px solid var(--stage-line);
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.08),
-    var(--shadow-float);
 }
 .rf-phone > .rf-screen {
   position: relative;
@@ -216,9 +229,51 @@ h1.rf-display {
 .rf-demo {
   overflow: hidden;
   border-radius: 16px;
-  box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.06),
-    var(--shadow-float);
+}
+/*
+ * The hero's far layer: the mark's two frames (portrait and landscape,
+ * sharing a wall, welded at the dot), drawn in the stage's hairline colour
+ * behind the demo window. Offset up and right of it, so the page has depth
+ * before anything moves.
+ */
+.rf-hero-frames {
+  position: absolute;
+  top: -48px;
+  right: -40px;
+  width: 62%;
+  aspect-ratio: 30 / 20;
+  pointer-events: none;
+}
+.rf-hero-tall,
+.rf-hero-wide {
+  position: absolute;
+  bottom: 0;
+  border: 2px solid var(--stage-line);
+  border-radius: 16px;
+}
+.rf-hero-tall {
+  left: 0;
+  width: 34%;
+  height: 100%;
+}
+.rf-hero-wide {
+  left: calc(34% - 2px);
+  width: calc(66% + 2px);
+  height: 54%;
+}
+.rf-hero-weld {
+  position: absolute;
+  left: 34%;
+  bottom: 54%;
+  width: 14px;
+  height: 14px;
+  transform: translate(-50%, 50%);
+}
+@media (max-width: 1023px) {
+  .rf-hero-frames {
+    top: -24px;
+    right: -16px;
+  }
 }
 .rf-demo-bar {
   display: flex;
@@ -255,7 +310,7 @@ h1.rf-display {
   contain-intrinsic-size: auto 960px;
 }
 .rf-paper {
-  border-radius: 24px;
+  border-radius: 16px;
   background: var(--paper);
   color: var(--paper-text);
   /* Light paper inside a dark band: the focus ring takes the light form of
@@ -313,6 +368,7 @@ h1.rf-display {
 }
 .rf-pause {
   display: inline-flex;
+  min-height: 44px;
   align-items: center;
   gap: 8px;
   font-size: 0.8125rem;
@@ -324,7 +380,8 @@ h1.rf-display {
   height: 16px;
   accent-color: var(--paper-ink);
 }
-/* "Not this → this": what ReelForge is not, struck through, then what it is. */
+/* "Not this, but this": what RenderWeld is not, struck through, then what
+   it is, marked with the weld. */
 .rf-not {
   display: inline-flex;
   height: 32px;
@@ -340,14 +397,135 @@ h1.rf-display {
   display: inline-flex;
   height: 32px;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   padding: 0 12px;
-  border: 1px solid var(--brand);
+  border: 1px solid var(--paper-text);
   border-radius: 16px;
-  background: #ffffff; /* deep orange text on white: 5.2:1 */
   font-size: 0.875rem;
   font-weight: 500;
-  color: var(--paper-ink);
+  color: var(--paper-text);
+}
+
+/*
+ * Formats: what the server renders, as a definition list, and the sizes
+ * from the formats guide drawn to scale on one baseline, sharing walls,
+ * welded at the joints.
+ */
+.rf-facts {
+  border-top: 1px solid var(--border);
+}
+.rf-facts > div {
+  display: grid;
+  gap: 4px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+@media (min-width: 640px) {
+  .rf-facts > div {
+    grid-template-columns: 140px minmax(0, 1fr);
+    gap: 24px;
+  }
+}
+.rf-facts dt {
+  font-weight: 500;
+}
+.rf-facts dd {
+  color: var(--muted-foreground);
+  max-width: 32em;
+}
+/* The frames close in from beyond the drawing's edges: clip them there, so
+   the page never scrolls sideways (clip makes no scroll container). */
+.rf-weld-figure {
+  overflow-x: clip;
+  overflow-clip-margin: 16px;
+}
+.rf-frames {
+  position: relative;
+  width: 100%;
+  color: var(--foreground);
+}
+.rf-frame {
+  position: absolute;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: clamp(6px, 1.2vw, 14px);
+  border: 2px solid currentColor;
+  border-radius: clamp(6px, 1vw, 12px);
+  /* Neighbours share one wall: each frame starts on its left neighbour's
+     right border. */
+  margin-left: -1px;
+  background: var(--background);
+}
+.rf-frame-ratio {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: clamp(0.75rem, 1.3vw, 1rem);
+  font-weight: 500;
+  line-height: 1.2;
+}
+.rf-frame-size {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted-foreground);
+}
+.rf-frame-weld {
+  position: absolute;
+  z-index: 1;
+  width: clamp(10px, 1.4vw, 16px);
+  height: clamp(10px, 1.4vw, 16px);
+  transform: translate(-50%, 50%);
+}
+
+/* Measured: a plain table with hairline rows, the result in the ink. */
+.rf-measured {
+  border-collapse: collapse;
+  border-top: 1px solid var(--border);
+  text-align: left;
+}
+.rf-measured tr {
+  border-bottom: 1px solid var(--border);
+}
+.rf-measured :is(th, td) {
+  padding: 16px 24px 16px 0;
+  vertical-align: baseline;
+}
+.rf-measured th {
+  font-weight: 500;
+  width: 26%;
+}
+.rf-measured-result {
+  width: 22%;
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@media (max-width: 767px) {
+  .rf-measured,
+  .rf-measured tbody,
+  .rf-measured tr,
+  .rf-measured :is(th, td) {
+    display: block;
+    width: auto;
+  }
+  .rf-measured tr {
+    padding: 16px 0;
+  }
+  .rf-measured :is(th, td) {
+    padding: 0;
+  }
+  .rf-measured-result {
+    margin-top: 4px;
+    white-space: normal;
+  }
+  .rf-measured td:last-child {
+    margin-top: 4px;
+    font-size: 0.9375rem;
+  }
 }
 
 /* Horizontal rails scroll-snap; the page itself never scrolls sideways. */
@@ -395,7 +573,7 @@ h1.rf-display {
   background: var(--border);
 }
 .rf-how-fill {
-  background: var(--brand-ink);
+  background: var(--foreground);
   transform-origin: 50% 0;
   transform: scaleY(0);
 }
@@ -430,6 +608,13 @@ h1.rf-display {
       animation-timeline: scroll(root);
       animation-range: 0 100vh;
     }
+    /* The far layer moves slower and the other way, so the two read as
+       depth, not as one block sliding. */
+    .rf-par-far {
+      animation: rf-par-far linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 100vh;
+    }
   }
 
   @supports (animation-timeline: view()) {
@@ -437,6 +622,23 @@ h1.rf-display {
       animation: rf-rise linear both;
       animation-timeline: view();
       animation-range: entry 0% entry calc(60% + var(--i, 0) * 8%);
+    }
+    /*
+     * The page's one authored moment: the formats weld. The frames start
+     * spread apart (at full contrast, so their labels always read), and
+     * close into one welded row as
+     * the drawing crosses the middle of the screen; the welds appear last.
+     * Bound to the scroll, so it is linear and reverses with it.
+     */
+    .rf-weld-figure .rf-frame {
+      animation: rf-spread linear both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 50%;
+    }
+    .rf-weld-figure .rf-frame-weld {
+      animation: rf-weld-in linear both;
+      animation-timeline: view();
+      animation-range: cover 40% cover 52%;
     }
     /* Transcript lines appear one after another as the panel scrolls in. */
     .rf-step {
@@ -497,6 +699,9 @@ h1.rf-display {
   .rf-io .rf-par-near {
     transform: translate3d(0, calc(var(--rf-p, 0) * 40px), 0);
   }
+  .rf-io .rf-par-far {
+    transform: translate3d(0, calc(var(--rf-p, 0) * -24px), 0);
+  }
   .rf-io .rf-how-fill {
     transform: scaleY(var(--rf-how-p, 0));
     transition: transform var(--dur-enter) var(--rf-ease);
@@ -549,6 +754,24 @@ h1.rf-display {
 @keyframes rf-par-near {
   to {
     transform: translate3d(0, 40px, 0);
+  }
+}
+@keyframes rf-par-far {
+  to {
+    transform: translate3d(0, -24px, 0);
+  }
+}
+/* Each frame starts its own distance from the centre (--rf-spread: its
+   place in the row, centred on 0), so the row closes from both sides. */
+@keyframes rf-spread {
+  from {
+    transform: translateX(calc(var(--rf-spread, 0) * 24px));
+  }
+}
+@keyframes rf-weld-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 50%) scale(0.95);
   }
 }
 @keyframes rf-fill {
