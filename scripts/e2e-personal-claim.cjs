@@ -7,16 +7,20 @@
 // page and Dashboard > Licences show the key labelled Personal, with the
 // "noncommercial use only" reminder. Same pattern as e2e-buyer-journey.cjs.
 //
-//   node scripts/e2e-personal-claim.cjs            # against https://reelforge-dev.buildbase.app
-//   SITE=https://reelforge-dev.buildbase.app node scripts/e2e-personal-claim.cjs
+//   node scripts/e2e-personal-claim.cjs            # against https://dev.renderweld.com
+//   SITE=https://dev.renderweld.com node scripts/e2e-personal-claim.cjs
 //
 // Needs Playwright's Chromium (or CHROMIUM_PATH). Behind an HTTPS proxy it uses HTTPS_PROXY.
 // Never point it at production: it relies on test mode.
 const { chromium } = require('playwright');
-const SITE = (
-  process.env.SITE || 'https://reelforge-dev.buildbase.app'
-).replace(/\/$/, '');
-if (!/reelforge-dev\./.test(SITE) && !process.env.ALLOW_NON_TEST_SITE) {
+const SITE = (process.env.SITE || 'https://dev.renderweld.com').replace(
+  /\/$/,
+  ''
+);
+if (
+  !/reelforge-dev\.|\/\/dev\.renderweld\.com/.test(SITE) &&
+  !process.env.ALLOW_NON_TEST_SITE
+) {
   console.error('Refusing: SITE must be the test site');
   process.exit(2);
 }
@@ -118,7 +122,7 @@ function expect(ok, what) {
     await page.waitForTimeout(5000);
     out('3b. prompt "' + heading + '" → dismissed');
   }
-  await page.waitForURL(/reelforge-dev\.buildbase\.app/, { timeout: 45000 });
+  await page.waitForURL(/dev\.renderweld\.com/, { timeout: 45000 });
   await page.waitForTimeout(6000);
   if (!/\/pricing/.test(page.url())) {
     await page.goto(SITE + '/pricing', { waitUntil: 'load' });

@@ -5,14 +5,15 @@ The store runs on Cloudflare Workers through
 Cloudflare D1 as its database. Everything below fits the Workers **free**
 plan, with the caveats at the end.
 
-|               | Production                                                                                                 | Test ("dev")                                                                                      |
-| ------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| Worker        | `reelforge-store`                                                                                          | `reelforge-store-dev`                                                                             |
-| URL           | https://reelforge.buildbase.app                                                                            | https://reelforge-dev.buildbase.app                                                               |
-| D1 database   | `reelforge-store` (`db8c0262-90be-47d0-8bf3-84ce75365682`, account `0109f7bce7af42ac8a88104d324efe4d`)     | `reelforge-store-dev` (`319f3e96-5c82-488e-92bf-3f7fcc794dcf`, same account)                      |
-| BuildBase org | ReelForge (`6b01478bb42d2c444e99fcd8`), production environment (`NEXT_PUBLIC_BUILDBASE_ENVIRONMENT` empty) | ReelForge (`6b01478bb42d2c444e99fcd8`), **development** environment `fsyqdskf` (Stripe test keys) |
-| Config        | top level of `wrangler.jsonc`, `.env.production`                                                           | `env.dev` in `wrangler.jsonc` (runtime vars), `deploy:dev` script (build-time `NEXT_PUBLIC_*`)    |
-| Deployed by   | `deploy` job in `.github/workflows/deploy.yml`, after `deploy-test` succeeded                              | `deploy-test` job in `.github/workflows/deploy.yml`                                               |
+|               | Production                                                                                                                                        | Test ("dev")                                                                                      |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Worker        | `reelforge-store`                                                                                                                                 | `reelforge-store-dev`                                                                             |
+| URL           | https://renderweld.com                                                                                                                            | https://dev.renderweld.com                                                                        |
+| D1 database   | `reelforge-store` (`1a493bb6-eb14-444e-b1c1-53d40e447711`, account `f12121a39fc6f6eb348d486bc2e282b4` (RenderWeld, owns the renderweld.com zone)) | `reelforge-store-dev` (`331b81ea-32fb-4889-9e16-b46da3b87680`, same account)                      |
+| Old hosts     | `reelforge.buildbase.app` → 301 to https://renderweld.com (Redirect Rule, buildbase.app zone)                                                     | `reelforge-dev.buildbase.app` → 301 to https://dev.renderweld.com                                 |
+| BuildBase org | ReelForge (`6b01478bb42d2c444e99fcd8`), production environment (`NEXT_PUBLIC_BUILDBASE_ENVIRONMENT` empty)                                        | ReelForge (`6b01478bb42d2c444e99fcd8`), **development** environment `fsyqdskf` (Stripe test keys) |
+| Config        | top level of `wrangler.jsonc`, `.env.production`                                                                                                  | `env.dev` in `wrangler.jsonc` (runtime vars), `deploy:dev` script (build-time `NEXT_PUBLIC_*`)    |
+| Deployed by   | `deploy` job in `.github/workflows/deploy.yml`, after `deploy-test` succeeded                                                                     | `deploy-test` job in `.github/workflows/deploy.yml`                                               |
 
 ## Automatic deploys (GitHub Actions)
 
@@ -107,15 +108,15 @@ npm ci
 
 4. **BuildBase console** (ReelForge organization):
    - Auth: the OAuth client `XUlR38I2gOAZOCpxleNxgPURGpHlzsykAMwypHS8` must list
-     `https://reelforge.buildbase.app` as a redirect URL.
+     `https://renderweld.com` as a redirect URL.
    - Settings, Webhooks: endpoint
-     `https://reelforge.buildbase.app/api/webhooks/buildbase`;
+     `https://renderweld.com/api/webhooks/buildbase`;
      its signing secret is `BUILDBASE_WEBHOOK_SECRET`.
 
 5. **Check:**
 
    ```bash
-   curl -s "https://reelforge.buildbase.app/api/health?deep=true"
+   curl -s "https://renderweld.com/api/health?deep=true"
    ```
 
    `checks.database.status` should be `up`.
@@ -154,7 +155,7 @@ BuildBase HTTP API directly send `environmentId(orgId, environment)`
 (`<orgId>-fsyqdskf`). Until 2026-11-21 the test site used a separate
 "ReelForge Test" organization (`6b016b04b42d2c444e9a13b9`), kept as a
 fallback while the environment was unavailable. Its D1
-database is `reelforge-store-dev` (`319f3e96-5c82-488e-92bf-3f7fcc794dcf`).
+database is `reelforge-store-dev` (`331b81ea-32fb-4889-9e16-b46da3b87680`).
 
 Manual equivalent of what the workflow does:
 
@@ -174,9 +175,9 @@ in step when one changes.
 Secrets for the test Worker are set with `--env dev`, for example
 `npx wrangler secret put BUILDBASE_CLIENT_SECRET --env dev` (also
 `SYSTEM_SECRET` and `BUILDBASE_WEBHOOK_SECRET`). In the ReelForge Test
-organization, the OAuth client must list `https://reelforge-dev.buildbase.app`
+organization, the OAuth client must list `https://dev.renderweld.com`
 as a redirect URL, and its webhook endpoint is
-`https://reelforge-dev.buildbase.app/api/webhooks/buildbase`.
+`https://dev.renderweld.com/api/webhooks/buildbase`.
 
 ## Local development
 
@@ -215,8 +216,8 @@ ones.
 | Queue             | The memory queue: a stale page is re-rendered through `WORKER_SELF_REFERENCE`                                                                                                                                                                              |
 
 The cache databases are `reelforge-store-tag-cache`
-(`93907848-dcf0-493c-8e58-1304d582580f`, production) and
-`reelforge-store-dev-tag-cache` (`9ceb6a6f-d20c-46e8-9e38-750a1d73f39f`,
+(`6fad82f7-b6da-49d0-8b6a-91d0c34494d7`, production) and
+`reelforge-store-dev-tag-cache` (`46780042-a678-4608-b812-61c42422f4b2`,
 test), bound as `NEXT_TAG_CACHE_D1`. They are separate from the app's
 database so Prisma migrations never see their tables. Both tables are created
 on first use if missing. Cache keys include the build id, so each deploy

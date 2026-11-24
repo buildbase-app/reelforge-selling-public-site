@@ -27,9 +27,9 @@
     "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv --include-runtime=false cloudflare-env.d.ts",
     "db:migration": "node scripts/db-migration.mjs",
-    "db:migrate:local": "wrangler d1 migrations apply reelforge-store --local",
-    "db:migrate:remote": "wrangler d1 migrations apply reelforge-store --remote",
-    "deploy:dev": "NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION= NEXT_PUBLIC_BING_SITE_VERIFICATION= NEXT_PUBLIC_YANDEX_SITE_VERIFICATION= NEXT_PUBLIC_SITE_URL=https://reelforge-dev.buildbase.app SITE_URL=https://reelforge-dev.buildbase.app NEXT_PUBLIC_BUILDBASE_REDIRECT_URL=https://reelforge-dev.buildbase.app NEXT_PUBLIC_BUILDBASE_ORG_ID=6b01478bb42d2c444e99fcd8 NEXT_PUBLIC_BUILDBASE_CLIENT_ID=gqLbQtwsNKyzl2dKtx7v2u2GVAhP6AzPpAe1GvL7 NEXT_PUBLIC_BUILDBASE_ENVIRONMENT=fsyqdskf opennextjs-cloudflare build && opennextjs-cloudflare deploy --env dev",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local",
+    "db:migrate:remote": "wrangler d1 migrations apply DB --remote",
+    "deploy:dev": "NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION= NEXT_PUBLIC_BING_SITE_VERIFICATION= NEXT_PUBLIC_YANDEX_SITE_VERIFICATION= NEXT_PUBLIC_SITE_URL=https://dev.renderweld.com SITE_URL=https://dev.renderweld.com NEXT_PUBLIC_BUILDBASE_REDIRECT_URL=https://dev.renderweld.com NEXT_PUBLIC_BUILDBASE_ORG_ID=6b01478bb42d2c444e99fcd8 NEXT_PUBLIC_BUILDBASE_CLIENT_ID=gqLbQtwsNKyzl2dKtx7v2u2GVAhP6AzPpAe1GvL7 NEXT_PUBLIC_BUILDBASE_ENVIRONMENT=fsyqdskf opennextjs-cloudflare build && opennextjs-cloudflare deploy --env dev",
     "db:migrate:dev": "wrangler d1 migrations apply reelforge-store-dev --remote --env dev",
     "e2e:buyer": "node scripts/e2e-buyer-journey.cjs",
     "e2e:personal": "node scripts/e2e-personal-claim.cjs"
