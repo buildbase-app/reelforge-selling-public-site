@@ -3,11 +3,17 @@
   // The ReelForge store on Cloudflare Workers, built with OpenNext
   // (`npm run preview` / `npm run deploy`). See DEPLOY_CLOUDFLARE.md.
   "name": "reelforge-store",
-  // The Cloudflare account that owns the buildbase.app zone: a Worker's custom
-  // domain must be in the same account as its DNS zone.
-  "account_id": "0109f7bce7af42ac8a88104d324efe4d",
-  "routes": [{ "pattern": "reelforge.buildbase.app", "custom_domain": true }],
-  "workers_dev": false,
+  // The RenderWeld Cloudflare account ("renderweld.com"), which owns the
+  // renderweld.com zone: a Worker's custom domain must be in the same account
+  // as its DNS zone (reelforge-studio#411). Until the cutover the Worker
+  // answers only on https://reelforge-store.hackathon-f12.workers.dev.
+  // The store that serves reelforge.buildbase.app today stays in the old
+  // account (0109f7bce7af42ac8a88104d324efe4d) until then.
+  "account_id": "f12121a39fc6f6eb348d486bc2e282b4",
+  // Cutover: replace `workers_dev: true` with this route (and set
+  // `workers_dev` to false once the custom domain serves the store):
+  //   "routes": [{ "pattern": "renderweld.com", "custom_domain": true }],
+  "workers_dev": true,
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-11-01",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
@@ -29,8 +35,10 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "reelforge-store",
-      "database_id": "db8c0262-90be-47d0-8bf3-84ce75365682",
+      // "-v2": an older "reelforge-store" database from a hackathon deploy
+      // already exists in this account and is kept, unused.
+      "database_name": "reelforge-store-v2",
+      "database_id": "fd3d8d23-58fb-426a-9bc1-ae52443a0f35",
       "migrations_dir": "migrations",
     },
     {
@@ -40,7 +48,7 @@
       // never see these tables. See open-next.config.ts.
       "binding": "NEXT_TAG_CACHE_D1",
       "database_name": "reelforge-store-tag-cache",
-      "database_id": "93907848-dcf0-493c-8e58-1304d582580f",
+      "database_id": "6fad82f7-b6da-49d0-8b6a-91d0c34494d7",
     },
   ],
   "observability": {
@@ -54,10 +62,9 @@
   "env": {
     "dev": {
       "name": "reelforge-store-dev",
-      "routes": [
-        { "pattern": "reelforge-dev.buildbase.app", "custom_domain": true },
-      ],
-      "workers_dev": false,
+      // Cutover: replace `workers_dev: true` with this route:
+      //   "routes": [{ "pattern": "dev.renderweld.com", "custom_domain": true }],
+      "workers_dev": true,
       "services": [
         {
           "binding": "WORKER_SELF_REFERENCE",
@@ -68,17 +75,19 @@
         {
           "binding": "DB",
           "database_name": "reelforge-store-dev",
-          "database_id": "319f3e96-5c82-488e-92bf-3f7fcc794dcf",
+          "database_id": "331b81ea-32fb-4889-9e16-b46da3b87680",
           "migrations_dir": "migrations",
         },
         {
           "binding": "NEXT_TAG_CACHE_D1",
           "database_name": "reelforge-store-dev-tag-cache",
-          "database_id": "9ceb6a6f-d20c-46e8-9e38-750a1d73f39f",
+          "database_id": "46780042-a678-4608-b812-61c42422f4b2",
         },
       ],
       // Runtime values for server code; they override .env.production.
       // NEXT_PUBLIC_* are inlined at build time by the deploy:dev script.
+      // Cutover: the three URLs become https://dev.renderweld.com, here and
+      // in the deploy:dev script.
       "vars": {
         "SITE_URL": "https://reelforge-dev.buildbase.app",
         "NEXT_PUBLIC_SITE_URL": "https://reelforge-dev.buildbase.app",
