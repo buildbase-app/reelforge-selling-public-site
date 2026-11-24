@@ -625,7 +625,8 @@ h1.rf-display {
     }
     /*
      * The page's one authored moment: the formats weld. The frames start
-     * spread apart and slightly faded, and close into one welded row as
+     * spread apart (at full contrast, so their labels always read), and
+     * close into one welded row as
      * the drawing crosses the middle of the screen; the welds appear last.
      * Bound to the scroll, so it is linear and reverses with it.
      */
@@ -764,7 +765,6 @@ h1.rf-display {
    place in the row, centred on 0), so the row closes from both sides. */
 @keyframes rf-spread {
   from {
-    opacity: 0.4;
     transform: translateX(calc(var(--rf-spread, 0) * 24px));
   }
 }
