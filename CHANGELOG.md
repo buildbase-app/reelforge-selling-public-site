@@ -7,6 +7,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed (studio issue #461): marketing content in the BuildBase CMS
+
+- The changelog is the BuildBase collection `changelog` (title, slug,
+  release date, version, summary, rich-text content, share image URL,
+  published), created in the development environment and then production,
+  and seeded with the store's real release notes. `/changelog`, each note,
+  the RSS feed and the sitemap read it; only published records appear, an
+  unknown slug is a 404, and `collection.*` webhooks revalidate the pages.
+  The changelog list shows each note's summary and links to the full note,
+  so the page has one h1 and no repeated heading ids.
+- One rich-text renderer for blog posts, release notes, docs and legal pages
+  (`src/lib/content/rich-text.ts`): sanitised first (no script, style,
+  iframe, object, event handler or `javascript:` URL, with their contents
+  removed), then heading links on h2-h4, a body `# h1` moved down a level,
+  GitHub alert callouts, captioned figures, `.mp4`/`.webm` as video with
+  controls and no autoplay, highlighted code with readable (AA) token
+  colours, scrolling tables, footnotes, labelled task checkboxes, and RTL
+  paragraphs that take their direction from their own text. Rich-text
+  values come back from BuildBase with `<`, `>` and `&` as entities, which
+  the changelog mapping decodes before rendering.
+- Shared rich-text typography (`rich-text.module.css`): about 68
+  characters a line, mono for code only (the post date line is no longer
+  mono), long words and URLs wrap, code and tables scroll inside themselves.
+- robots.txt on dev.renderweld.com is `Disallow: /` with no sitemap, beside
+  the noindex header and meta it already had; production is unchanged.
+- Release notes carry `TechArticle` JSON-LD with the organisation as
+  author; feed items use their URL as a permalink guid.
+
 ### Changed (studio issues #411 and #457): RenderWeld, formerly ReelForge
 
 - The product is now called RenderWeld. Pages, metadata, JSON-LD, the agent

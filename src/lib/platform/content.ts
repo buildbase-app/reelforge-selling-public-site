@@ -182,8 +182,8 @@ export async function getTestimonials() {
 
 /**
  * Every published blog post (console: Content, Blogs), newest first, with
- * its folder, authors and tags. The blog and the changelog are folders of
- * it (src/lib/blog/source.ts). Read in pages of 100 under the SDK's
+ * its folder, authors and tags. The blog is its `blog` folder
+ * (src/lib/blog/source.ts); the changelog is the collection `changelog`. Read in pages of 100 under the SDK's
  * `buildbase:blog` tag, which every `blog.*` webhook revalidates.
  */
 export async function getBlogPosts(): Promise<BuildBaseBlogPost[]> {
@@ -206,7 +206,8 @@ export async function getBlogPosts(): Promise<BuildBaseBlogPost[]> {
 
 /**
  * Every record of a custom collection's live version (console: Content,
- * Collections), e.g. the showcase reels in `gallery`. Cached under the SDK's
+ * Collections), e.g. the showcase reels in `gallery` and the release notes
+ * in `changelog`. Cached under the SDK's
  * collection tag, which the content webhook revalidates on
  * `collection.record_*` and `collection.version_published`.
  */

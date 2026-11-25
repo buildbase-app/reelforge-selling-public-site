@@ -2,18 +2,18 @@ import type { Metadata } from 'next';
 import { ArrowRight } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/link';
-import { ArticleHtml } from '@/components/content/article-html';
 import { ItemListJsonLd } from '@/components/seo/json-ld';
 import { RssButton } from '@/components/marketing/rss-button';
 import { PostMeta } from '@/components/marketing/post-meta';
 import type { Locale } from '@/i18n/config';
 import { getPosts } from '@/lib/blog/source';
-import { renderMarkdown } from '@/lib/platform/markdown';
 import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
 
 /**
- * Release notes: BuildBase Blogs posts in the `changelog` folder, newest
- * first. ISR, revalidated by the `blog.*` webhook like /blog.
+ * Release notes: the BuildBase collection `changelog`, newest first, each
+ * with its summary and a link to the full note (one h1 on the page, and no
+ * heading ids repeated from note to note). ISR, revalidated by the
+ * `collection.*` webhooks (src/lib/cache/webhook-tags.ts).
  */
 export const revalidate = 3600;
 
@@ -38,9 +38,8 @@ export async function generateMetadata({
 export default async function ChangelogPage({ params }: ChangelogPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [t, tBlog, entries] = await Promise.all([
+  const [t, entries] = await Promise.all([
     getTranslations({ locale, namespace: 'changelog' }),
-    getTranslations({ locale, namespace: 'blog' }),
     getPosts('changelog'),
   ]);
 
@@ -71,7 +70,7 @@ export default async function ChangelogPage({ params }: ChangelogPageProps) {
 
       {entries.length === 0 ? (
         <p className="text-muted-foreground border-border border-y py-12 text-base">
-          {tBlog('noPosts')}
+          {t('empty')}
         </p>
       ) : (
         <ol className="border-border divide-border divide-y border-y">
@@ -88,19 +87,16 @@ export default async function ChangelogPage({ params }: ChangelogPageProps) {
                   </Link>
                 </h2>
                 {entry.description ? (
-                  <p className="text-muted-foreground max-w-prose text-lg leading-relaxed">
+                  <p className="text-muted-foreground max-w-measure text-lg leading-relaxed text-pretty">
                     {entry.description}
                   </p>
                 ) : null}
-                <ArticleHtml
-                  html={renderMarkdown(entry.markdown).html}
-                  className="mt-2 [&_h2]:mt-8 [&_h2]:text-lg md:[&_h2]:text-xl"
-                />
                 <Link
                   href={`/changelog/${entry.slug}`}
                   className="text-muted-foreground hover:text-foreground inline-flex w-fit items-center gap-2 text-sm transition-colors"
                 >
                   {t('permalink')}
+                  <span className="sr-only">: {entry.title}</span>
                   <ArrowRight className="size-4" aria-hidden />
                 </Link>
               </article>

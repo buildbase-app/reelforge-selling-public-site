@@ -7,7 +7,7 @@ import type {
   PageContentLoader,
 } from '@/content/pages/page-loader';
 import type { Locale } from '@/i18n/config';
-import { renderMarkdown } from '@/lib/platform/markdown';
+import { renderRichText } from '@/lib/content/rich-text';
 
 /** A legal page: header, draft note when pending review, Markdown body. */
 export async function LegalPage<T extends LegalPageContent>({
@@ -26,6 +26,7 @@ export async function LegalPage<T extends LegalPageContent>({
   ]);
 
   if (!content) notFound();
+  const { html } = await renderRichText(content.body);
 
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-16 md:py-24">
@@ -48,7 +49,7 @@ export async function LegalPage<T extends LegalPageContent>({
         </p>
       </header>
 
-      <ArticleHtml html={renderMarkdown(content.body).html} />
+      <ArticleHtml html={html} />
     </div>
   );
 }

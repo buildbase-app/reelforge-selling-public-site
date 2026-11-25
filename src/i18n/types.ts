@@ -580,6 +580,8 @@ export interface ChangelogMessages {
   description: string;
   rssLabel: string;
   permalink: string;
+  /** Shown when no release note is published (English only for now). */
+  empty?: string;
   meta: {
     title: string;
     description: string;

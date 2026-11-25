@@ -234,13 +234,20 @@ export function FAQJsonLd({ items }: FAQJsonLdProps) {
 // =============================================================================
 
 export interface ArticleJsonLdProps {
+  /** `BlogPosting` (default) for posts, `TechArticle` for release notes. */
+  type?: 'BlogPosting' | 'TechArticle';
   title: string;
   description?: string;
   url: string;
   image?: string;
   datePublished: string;
   dateModified?: string;
-  author: { name: string; url?: string; sameAs?: string[] };
+  author: {
+    type?: 'Person' | 'Organization';
+    name: string;
+    url?: string;
+    sameAs?: string[];
+  };
   publisher?: { name: string; logo?: string };
   /** Word count for schema.org `wordCount`. */
   wordCount?: number;
@@ -253,6 +260,7 @@ export interface ArticleJsonLdProps {
 }
 
 export function ArticleJsonLd({
+  type = 'BlogPosting',
   title,
   description,
   url,
@@ -270,7 +278,7 @@ export function ArticleJsonLd({
   // wordCount, articleSection, keywords, inLanguage, thumbnailUrl.
   const data: Record<string, unknown> = {
     '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
+    '@type': type,
     headline: title,
     url: absoluteUrl(url),
     datePublished,
@@ -280,7 +288,7 @@ export function ArticleJsonLd({
       '@id': absoluteUrl(url),
     },
     author: {
-      '@type': 'Person',
+      '@type': author.type ?? 'Person',
       name: author.name,
       ...(author.url && { url: author.url }),
       ...(author.sameAs &&

@@ -34,7 +34,8 @@ function enclosureFor(image: string | undefined) {
 /**
  * RSS 2.0 for the blog or the changelog: one item per published post, newest
  * first, with its summary, date, authors and tags. The guid is the post's
- * URL, so a republish under the same slug is the same item.
+ * URL (`isPermaLink="true"`), so a republish under the same slug is the same
+ * item.
  */
 export function buildFeed(posts: readonly BlogPost[], options: FeedOptions) {
   const feed = new RSS({
@@ -54,7 +55,6 @@ export function buildFeed(posts: readonly BlogPost[], options: FeedOptions) {
       title: post.version ? `${post.title} (v${post.version})` : post.title,
       description: post.description,
       url,
-      guid: url,
       date: new Date(post.date),
       ...(post.authors.length > 0 && {
         author: post.authors.map((a) => a.name).join(', '),

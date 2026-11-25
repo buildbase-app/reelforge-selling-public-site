@@ -3,8 +3,9 @@ import { formatPostDate, type BlogPost, type BlogTag } from '@/lib/blog/posts';
 
 /**
  * The one meta line every post and release note carries: date, version
- * (release notes), reading time. Muted mono with tabular figures, so dates
- * and versions line up from post to post.
+ * (release notes), reading time. Muted, with tabular figures so dates and
+ * versions line up from post to post; set in the body face, since mono is
+ * for code only.
  */
 export function PostMeta({
   post,
@@ -17,7 +18,7 @@ export function PostMeta({
   latest?: boolean;
 }) {
   return (
-    <p className="text-muted-foreground flex flex-wrap items-center gap-x-2 font-mono text-xs tabular-nums">
+    <p className="text-muted-foreground flex flex-wrap items-center gap-x-2 text-sm tabular-nums">
       <time dateTime={post.date}>{formatPostDate(post.date, locale)}</time>
       {post.version ? (
         <>

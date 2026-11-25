@@ -12,6 +12,7 @@ import { DocsSidebar } from '@/components/docs/docs-sidebar';
 import { DocsJsonLd } from '@/components/docs/docs-json-ld';
 import { CopyCodeButtons } from '@/components/docs/copy-code-buttons';
 import styles from '@/components/docs/docs-prose.module.css';
+import richText from '@/components/content/rich-text.module.css';
 
 interface DocPageProps {
   params: Promise<{ locale: string; path: string[] }>;
@@ -153,8 +154,8 @@ export default async function DocPage({ params }: DocPageProps) {
             </a>
           </p>
           <div
-            className={`${styles.prose} mt-8`}
-            // Sanitised on the server by renderDocMarkdown (src/lib/docs/markdown.ts).
+            className={`${richText.prose} ${styles.copy} mt-8`}
+            // Sanitised on the server by renderDocMarkdown (src/lib/content/rich-text.ts).
             dangerouslySetInnerHTML={{ __html: html }}
           />
           <CopyCodeButtons containerId="doc-article" />

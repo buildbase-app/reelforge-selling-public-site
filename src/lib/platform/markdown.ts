@@ -30,12 +30,50 @@ export interface RenderedMarkdown {
   text: string;
 }
 
-/** GitHub's allow-list; shared with the docs renderer (src/lib/docs/markdown.ts). */
+/**
+ * GitHub's allow-list, shared with the long-form renderer
+ * (src/lib/content/rich-text.ts), plus presentational tags editors use:
+ * `<u>`, `<mark>`, `<abbr>`, `<figure>`/`<figcaption>` and `<video>` (no
+ * autoplay; the CSP's `media-src` decides which hosts play). Script, style,
+ * iframe, object, embed, noscript and template are removed with their
+ * contents, so none of their text leaks onto the page.
+ */
 export const schema = {
   ...defaultSchema,
-  // Keep heading ids readable: no `user-content-` prefix is needed because
-  // nothing on these pages uses the same ids.
+  // Authored ids get this prefix so content cannot clobber the page's ids.
   clobberPrefix: 'md-',
+  tagNames: [
+    ...(defaultSchema.tagNames ?? []),
+    'u',
+    'mark',
+    'abbr',
+    'figure',
+    'figcaption',
+    'video',
+  ],
+  attributes: {
+    ...defaultSchema.attributes,
+    video: [
+      'src',
+      'poster',
+      'controls',
+      'muted',
+      'loop',
+      'playsInline',
+      'preload',
+    ],
+    source: [...(defaultSchema.attributes?.source ?? []), 'src', 'type'],
+  },
+  protocols: { ...defaultSchema.protocols, poster: ['https'] },
+  strip: [
+    'script',
+    'style',
+    'iframe',
+    'object',
+    'embed',
+    'noscript',
+    'template',
+  ],
 };
 
 /** Marks absolute http(s) links as external. Runs after sanitising. */

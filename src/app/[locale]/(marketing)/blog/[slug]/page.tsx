@@ -15,7 +15,7 @@ import { initials, postAuthorJsonLd } from '@/lib/blog/authors';
 import { relatedPosts } from '@/lib/blog/posts';
 import { getPost, getPosts } from '@/lib/blog/source';
 import { localePath, localeUrl } from '@/lib/i18n-url';
-import { renderMarkdown } from '@/lib/platform/markdown';
+import { renderRichText } from '@/lib/content/rich-text';
 import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
 
 /**
@@ -65,7 +65,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
   const postPath = `/blog/${slug}`;
   const fullUrl = localeUrl(siteUrl, localeTyped, postPath);
-  const { html } = renderMarkdown(post.markdown);
+  const { html } = await renderRichText(post.markdown);
   const author = post.authors[0];
 
   return (

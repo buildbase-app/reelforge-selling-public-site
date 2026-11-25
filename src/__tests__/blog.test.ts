@@ -236,7 +236,7 @@ describe('buildFeed (RSS)', () => {
 
   it('uses the post URL as guid, the date, authors, tags and the cover', () => {
     expect(xml).toContain(
-      '<guid isPermaLink="false">https://reelforge.example/blog/introducing-reelforge</guid>'
+      '<guid isPermaLink="true">https://reelforge.example/blog/introducing-reelforge</guid>'
     );
     expect(xml).toContain('<pubDate>Sat, 21 Nov 2026 19:23:33 GMT</pubDate>');
     expect(xml).toContain(
@@ -283,16 +283,13 @@ describe('rendering a post body', () => {
 });
 
 describe('pathsForWebhookEvent (blog.*)', () => {
-  it('names the blog and changelog pages, feeds, the post and the sitemap', () => {
+  it('names the blog page, its feed, the post and the sitemap', () => {
     expect(
       pathsForWebhookEvent('blog.updated', { slug: 'introducing-reelforge' })
     ).toEqual([
       '/en/blog',
       '/en/blog/feed.xml',
-      '/en/changelog',
-      '/en/changelog/feed.xml',
       '/en/blog/introducing-reelforge',
-      '/en/changelog/introducing-reelforge',
       '/sitemap.xml',
     ]);
   });
@@ -301,9 +298,39 @@ describe('pathsForWebhookEvent (blog.*)', () => {
     expect(pathsForWebhookEvent('blog.deleted', { slug: '../x' })).toEqual([
       '/en/blog',
       '/en/blog/feed.xml',
-      '/en/changelog',
-      '/en/changelog/feed.xml',
       '/sitemap.xml',
     ]);
+  });
+});
+
+describe('pathsForWebhookEvent (changelog collection)', () => {
+  const changelogPaths = [
+    '/en/changelog',
+    '/en/changelog/feed.xml',
+    '/sitemap.xml',
+  ];
+
+  it('a record or version of `changelog` revalidates the changelog, its feed and the sitemap', () => {
+    for (const event of [
+      'collection.record_created',
+      'collection.record_updated',
+      'collection.record_deleted',
+      'collection.version_published',
+    ]) {
+      expect(
+        pathsForWebhookEvent(event, { module: 'collection', slug: 'changelog' })
+      ).toEqual(changelogPaths);
+    }
+    expect(
+      pathsForWebhookEvent('collection.record_updated', {
+        tags: ['buildbase:collection:changelog'],
+      })
+    ).toEqual(changelogPaths);
+  });
+
+  it('another collection leaves the changelog alone', () => {
+    expect(
+      pathsForWebhookEvent('collection.record_updated', { slug: 'gallery' })
+    ).not.toContain('/en/changelog');
   });
 });
