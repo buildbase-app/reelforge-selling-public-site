@@ -7,10 +7,11 @@ import type {
 } from '@buildbase/sdk/server';
 
 /**
- * The blog and the changelog are BuildBase Blogs posts (console: Content,
- * Blogs), in two folders: `blog` and `changelog`. A post's URL on this site
- * is `/blog/<slug>` or `/changelog/<slug>`. A changelog post named
- * `v<major>-<minor>-<patch>` (e.g. `v0-1-0`) shows that version.
+ * Blog posts are BuildBase Blogs posts (console: Content, Blogs) in the
+ * `blog` folder, at `/blog/<slug>`. Release notes share the `BlogPost` shape
+ * but come from the collection `changelog` (`./changelog.ts`); a post still
+ * in the old `changelog` folder maps here but is not listed anywhere
+ * (`./source.ts`).
  *
  * This module only maps what the API returns into what the pages use; it
  * reads nothing (see `./source.ts`), so it is unit tested on its own.

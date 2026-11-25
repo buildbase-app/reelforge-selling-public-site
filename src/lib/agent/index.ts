@@ -1,15 +1,12 @@
 import 'server-only';
-import { AI_BOT_USER_AGENTS } from '@buildbase/sdk';
 import { createAgentStack } from '@buildbase/sdk/mcp';
-import { env, siteUrl, buildbaseEnvironment } from '@/env';
+import { env, siteUrl, buildbaseEnvironment, isNoindexSite } from '@/env';
 import { contactUri, siteConfig } from '@/config/site';
 import { logger } from '@/lib/logger';
+import { robotsConfig } from '@/lib/seo/robots';
 import { SCOPES, storeTools, storeResources, storePrompts } from './tools';
 import { buildLlmsTxt, buildLlmsFullTxt, buildSkillMarkdown } from './content';
 import { buildOpenApiSpec } from './openapi';
-
-/** Never crawled: the API, signed-in pages and per-buyer order pages. */
-const DISALLOW = ['/api/', '/dashboard/', '/order'];
 
 /**
  * The agent stack: MCP server + every discovery document, from one config.
@@ -60,19 +57,9 @@ export const agent = createAgentStack({
     },
   },
   discovery: {
-    // /robots.txt (src/app/robots.txt/route.ts). Content Signals: search and
-    // AI answers (ai-input) may use the site; `aiTrain` is left unset (no
-    // preference stated) until the founder decides it.
-    robots: {
-      policies: [{ userAgent: '*', allow: ['/'], disallow: DISALLOW }],
-      aiBots: AI_BOT_USER_AGENTS.map((userAgent) => ({
-        userAgent,
-        allow: ['/'],
-        disallow: DISALLOW,
-      })),
-      contentSignals: { search: true, aiInput: true },
-      sitemaps: [`${siteUrl}/sitemap.xml`],
-    },
+    // /robots.txt (src/app/robots.txt/route.ts): allow on production,
+    // `Disallow: /` on the test copy (src/lib/seo/robots.ts).
+    robots: robotsConfig(isNoindexSite, siteUrl),
     llmsTxt: buildLlmsTxt(),
     llmsFullTxt: buildLlmsFullTxt(),
     skills: [

@@ -636,7 +636,8 @@ const messages: Messages = {
     heading: 'Changelog',
     description: 'Release notes for the RenderWeld store and the product.',
     rssLabel: 'RSS',
-    permalink: 'Permalink',
+    permalink: 'Read the full note',
+    empty: 'No release notes yet.',
     meta: {
       title: 'Changelog',
       description: 'Release notes for the RenderWeld store and the product.',

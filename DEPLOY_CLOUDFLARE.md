@@ -235,15 +235,47 @@ What refreshes what (`src/lib/cache/webhook-tags.ts`, called by
   `rich_content.updated`, `doc.*`, ...): the SDK's `buildbase:*` tags, so
   `/help`, the FAQ sections and the content blocks.
 - `blog.*` (a post published, edited, unpublished or deleted): tag
-  `buildbase:blog`, plus the paths `/blog`, `/changelog`, their feeds, the
-  post's page and `/sitemap.xml`. Blog posts live in the `blog` folder,
-  release notes in `changelog`; a release note named `v1-2-0` shows v1.2.0.
+  `buildbase:blog`, plus the paths `/blog`, its feed, the post's page and
+  `/sitemap.xml`. Blog posts live in the `blog` folder.
   `scripts/content/migrate-blog-to-buildbase.mjs` moved the old posts in.
+- `collection.record_*` and `collection.version_published` on the
+  collection `changelog`: tag `buildbase:collection:changelog`, plus
+  `/changelog`, its feed and `/sitemap.xml`. Release notes are records of
+  that collection (title, slug, date, version, description, rich-text
+  content, share image URL, published); only `published: true` records are
+  shown (`src/lib/blog/changelog.ts`).
 
-Server reads need `BUILDBASE_API_TOKEN` (an app-server API key) whose API role
-has the content-reader permissions and `marketplace_items` read. Without it
-the pages still work: FAQs and blocks use their local defaults, prices are
-read in the browser as before, and the blog and changelog are empty.
+### What each environment needs for CMS content
+
+Every content read (blog, changelog, docs, FAQs, content blocks, gallery,
+server-rendered prices) is a server read with an org API token; BuildBase has
+no browser read path for content. API keys belong to one environment, so
+each Worker needs a key of its own environment:
+
+| Worker                                     | BuildBase environment    | Secret                                                                            |
+| ------------------------------------------ | ------------------------ | --------------------------------------------------------------------------------- |
+| `reelforge-store` (renderweld.com)         | production               | `BUILDBASE_API_TOKEN` = `6b01478bb42d2c444e99fcd8:<secret>`                       |
+| `reelforge-store-dev` (dev.renderweld.com) | development (`fsyqdskf`) | `BUILDBASE_API_TOKEN` = `6b01478bb42d2c444e99fcd8-fsyqdskf:<secret>`, `--env dev` |
+
+1. In the console, in that environment: **Settings**, **API keys**,
+   **Create API key**, role **content-reader**, **App-server key**. The key
+   is shown once.
+2. `npx wrangler secret put BUILDBASE_API_TOKEN` (add `--env dev` for the
+   test Worker) and paste it at the prompt, never on the command line.
+   Server-rendered prices also read `marketplace_items`, which
+   content-reader does not cover: for those, give the key a custom API role
+   with the content-reader permissions plus `marketplace_items` read. With
+   content-reader alone, prices keep their browser read.
+3. Revalidation needs no new secret: the existing endpoint
+   `<site>/api/webhooks/buildbase` (signing secret `BUILDBASE_WEBHOOK_SECRET`)
+   is subscribed to every event (`*`) in both environments, content events
+   included. `/api/webhooks/content` (`BUILDBASE_CONTENT_WEBHOOK_SECRET`) is
+   only for a separate content-only endpoint and stays unset. Without a
+   webhook, edits still show after `CONTENT_REVALIDATE_SECONDS` (one hour).
+
+Without the token the pages still work: FAQs and blocks use their local
+defaults, prices are read in the browser, and the blog, changelog and docs
+are empty (docs say so on the page).
 
 ## How the Cloudflare port works
 
@@ -255,9 +287,10 @@ read in the browser as before, and the blog and changelog are empty.
   to `ctx.waitUntil` so they are not cut off when the response is sent.
 - **Migrations:** SQL files in `migrations/`, generated with
   `prisma migrate diff` and applied by `wrangler d1 migrations apply`.
-- **Content:** the blog and changelog are BuildBase Blogs posts (folders
-  `blog` and `changelog`), read on the server and rendered from Markdown to
-  sanitised HTML (`src/lib/platform/markdown.ts`); the legal pages are
+- **Content:** the blog is BuildBase Blogs (folder `blog`), the changelog
+  the collection `changelog` and the docs BuildBase Docs (published from the
+  studio repository, D-080), read on the server and rendered from Markdown
+  to sanitised HTML (`src/lib/content/rich-text.ts`); the legal pages are
   Markdown in `src/content/pages/`. Nothing evaluates code at runtime, so
   the CSP has no `'unsafe-eval'` (Contentlayer, which needed it, is gone).
 - **Bundle size:** `next.config.ts` excludes the Prisma CLI, its dev database

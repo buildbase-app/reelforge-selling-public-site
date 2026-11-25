@@ -1,0 +1,352 @@
+/*
+ * Typography for rich text from the CMS: blog posts, release notes, docs and
+ * the legal pages (HTML from src/lib/content/rich-text.ts or
+ * src/lib/platform/markdown.ts). Site tokens only (globals.css): tinted
+ * neutrals and hairlines; status colours mark callouts by meaning, never
+ * decoration. Running text keeps the prose measure (`--container-measure`,
+ * about 68 characters); code, tables and figures may use the full column.
+ */
+
+.prose {
+  color: var(--foreground);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  /* A long URL or word breaks instead of widening the page. */
+  overflow-wrap: anywhere;
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose :global(:is(p, ul, ol, blockquote, h2, h3, h4, h5, .callout)) {
+  max-width: var(--container-measure);
+}
+
+/* Each paragraph takes its direction from its own text, so a line of Arabic
+   or Hebrew reads right to left inside an English page. */
+.prose :global(:is(p, li, h2, h3, h4, h5, blockquote, td, th, figcaption)) {
+  unicode-bidi: plaintext;
+  text-align: start;
+}
+
+.prose :global(h2) {
+  margin: 3rem 0 1rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+.prose :global(h3) {
+  margin: 2.25rem 0 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.prose :global(:is(h4, h5)) {
+  margin: 1.75rem 0 0.5rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.prose :global(:is(h2, h3, h4, h5)) {
+  scroll-margin-top: calc(var(--header-h, 4rem) + 1.5rem);
+}
+
+/* The heading's link to itself reads as the heading; a # appears on hover
+   and on keyboard focus. */
+.prose :global(.heading-anchor) {
+  color: inherit;
+  text-decoration: none;
+}
+
+.prose :global(.heading-anchor::after) {
+  content: '#';
+  margin-inline-start: 0.4em;
+  color: var(--muted-foreground);
+  font-weight: 400;
+  opacity: 0;
+}
+
+.prose :global(.heading-anchor:focus-visible::after) {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  .prose :global(.heading-anchor:hover::after) {
+    opacity: 1;
+  }
+}
+
+.prose :global(:is(p, ul, ol)) {
+  margin: 1.25rem 0;
+}
+
+.prose :global(ul) {
+  list-style: disc;
+  padding-inline-start: 1.5rem;
+}
+
+.prose :global(ol) {
+  list-style: decimal;
+  padding-inline-start: 1.5rem;
+}
+
+.prose :global(li) {
+  margin: 0.4rem 0;
+  padding-inline-start: 0.25rem;
+}
+
+.prose :global(li > :is(ul, ol)) {
+  margin: 0.4rem 0;
+}
+
+.prose :global(li::marker) {
+  color: var(--muted-foreground);
+}
+
+/* A task item has its checkbox instead of a bullet; other items of the same
+   list keep theirs. A loose list (blank lines between items) wraps items
+   in paragraphs: keep them close. */
+.prose :global(.task-list-item) {
+  list-style: none;
+  margin-inline-start: -1.25rem;
+}
+
+.prose :global(li > p) {
+  margin: 0.25rem 0;
+}
+
+.prose :global(.task-list-item input) {
+  margin-inline-end: 0.5rem;
+  accent-color: var(--foreground);
+}
+
+.prose :global(a:not(.heading-anchor)) {
+  color: var(--brand-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .prose :global(a:not(.heading-anchor):hover) {
+    text-decoration-thickness: 2px;
+  }
+}
+
+.prose :global(:is(strong, b)) {
+  font-weight: 600;
+}
+
+.prose :global(mark) {
+  background: color-mix(in oklch, var(--brand) 22%, transparent);
+  color: inherit;
+  padding: 0 0.15em;
+  border-radius: 0.2em;
+}
+
+.prose :global(del) {
+  color: var(--muted-foreground);
+}
+
+.prose :global(abbr[title]) {
+  text-decoration: underline dotted;
+  cursor: help;
+}
+
+.prose :global(blockquote) {
+  margin: 1.75rem 0;
+  border-inline-start: 2px solid var(--border);
+  padding-inline-start: 1.25rem;
+  color: var(--muted-foreground);
+}
+
+.prose :global(blockquote > :is(p, ul, ol)) {
+  margin: 0.75rem 0;
+}
+
+.prose :global(hr) {
+  margin: 3rem 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+/* Code: Geist Mono is for code only. */
+.prose :global(:not(pre) > code),
+.prose :global(kbd) {
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+  background: var(--muted);
+  padding: 0.1em 0.35em;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.85em;
+  overflow-wrap: anywhere;
+}
+
+.prose :global(kbd) {
+  border-bottom-width: 2px;
+}
+
+.prose :global(pre) {
+  /* Scrolls inside itself; its long lines never widen the page. */
+  contain: inline-size;
+  margin: 1.75rem 0;
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--muted);
+  padding: 1rem 1.25rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.85rem;
+  line-height: 1.65;
+  overflow-wrap: normal;
+  tab-size: 2;
+}
+
+.prose :global(pre code) {
+  display: block;
+  min-width: max-content;
+  background: none;
+  font-size: inherit;
+}
+
+/* Shiki's two themes, switched with the site's theme. */
+.prose :global(pre.shiki span) {
+  color: var(--shiki-light);
+}
+
+:global(.dark) .prose :global(pre.shiki span) {
+  color: var(--shiki-dark);
+}
+
+/* Tables scroll inside their own region on narrow screens. */
+.prose :global(.table-scroll) {
+  contain: inline-size;
+  margin: 1.75rem 0;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.prose :global(.table-scroll:focus-visible) {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.prose :global(table) {
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  overflow-wrap: normal;
+}
+
+.prose :global(:is(th, td)) {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.75rem;
+  vertical-align: top;
+}
+
+.prose :global(th) {
+  background: var(--muted);
+  font-weight: 600;
+}
+
+.prose :global(td) {
+  min-width: 8rem;
+}
+
+/* Images and video: full column width at most, never wider. */
+.prose :global(:is(img, video)) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+}
+
+.prose :global(video) {
+  /* A vertical reel stays on screen instead of filling the column. */
+  width: auto;
+  max-height: min(80vh, 40rem);
+  background: var(--muted);
+}
+
+.prose :global(p > img) {
+  display: inline;
+  vertical-align: middle;
+}
+
+.prose :global(figure) {
+  margin: 2rem 0;
+}
+
+.prose :global(figure > :is(img, video)) {
+  border: 1px solid var(--border);
+}
+
+.prose :global(figcaption) {
+  margin-top: 0.6rem;
+  max-width: var(--container-measure);
+  color: var(--muted-foreground);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+/* Callouts (`> [!NOTE]`): a labelled box with a hairline and a faint tint
+   of the meaning's colour; the text stays ink. */
+.prose :global(.callout) {
+  --callout: var(--info);
+  margin: 1.75rem 0;
+  border: 1px solid color-mix(in oklch, var(--callout) 45%, var(--border));
+  border-radius: 0.375rem;
+  background: color-mix(in oklch, var(--callout) 8%, var(--card));
+  padding: 0.875rem 1.125rem;
+}
+
+.prose :global(.callout > :is(p, ul, ol)) {
+  margin: 0.5rem 0;
+}
+
+.prose :global(.callout > :first-child) {
+  margin-top: 0;
+}
+
+.prose :global(.callout > :last-child) {
+  margin-bottom: 0;
+}
+
+.prose :global(.callout-title) {
+  font-weight: 600;
+}
+
+.prose :global(.callout[data-callout='tip']) {
+  --callout: var(--success);
+}
+
+.prose :global(.callout[data-callout='important']) {
+  --callout: var(--foreground);
+}
+
+.prose :global(.callout[data-callout='warning']) {
+  --callout: var(--warning);
+}
+
+.prose :global(.callout[data-callout='caution']) {
+  --callout: var(--destructive);
+}
+
+/* Footnotes */
+.prose :global(.footnotes) {
+  margin-top: 3rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+  color: var(--muted-foreground);
+  font-size: 0.9375rem;
+}
+
+.prose :global(sup a) {
+  text-decoration: none;
+}

@@ -6,8 +6,8 @@ import { buildFeed, FEED_HEADERS } from '@/lib/blog/feed';
 import { getPosts } from '@/lib/blog/source';
 
 /**
- * RSS for the changelog, from BuildBase Blogs (folder `changelog`).
- * Revalidated like the blog feed.
+ * RSS for the changelog, from the BuildBase collection `changelog`
+ * (src/lib/blog/changelog.ts): published release notes only, newest first.
  */
 export const dynamic = 'force-dynamic';
 

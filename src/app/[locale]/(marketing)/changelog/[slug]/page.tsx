@@ -10,10 +10,16 @@ import { Link } from '@/i18n/link';
 import { postAuthorJsonLd } from '@/lib/blog/authors';
 import { getPost, getPosts } from '@/lib/blog/source';
 import { localePath, localeUrl } from '@/lib/i18n-url';
-import { renderMarkdown } from '@/lib/platform/markdown';
+import { renderRichText } from '@/lib/content/rich-text';
 import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
 
-/** One release note (folder `changelog`). ISR, as /blog/[slug]. */
+/**
+ * One release note: a record of the BuildBase collection `changelog`
+ * (src/lib/blog/changelog.ts). ISR; the read carries the
+ * `buildbase:collection:changelog` tag, which a `collection.record_*`
+ * webhook revalidates, so an edit in the console shows on the next request.
+ * An unknown or unpublished slug is a 404.
+ */
 export const revalidate = 3600;
 
 interface ChangelogEntryPageProps {
@@ -52,11 +58,12 @@ export default async function ChangelogEntryPage({
   if (!entry) notFound();
 
   const path = `/changelog/${slug}`;
-  const { html } = renderMarkdown(entry.markdown);
+  const { html } = await renderRichText(entry.markdown);
 
   return (
     <>
       <ArticleJsonLd
+        type="TechArticle"
         title={entry.title}
         description={entry.description}
         url={localeUrl(siteUrl, localeTyped, path)}

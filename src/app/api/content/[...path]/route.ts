@@ -51,7 +51,7 @@ export async function GET(
 
   const [type, ...rest] = path;
 
-  // --- Blog posts and changelog entries (BuildBase Blogs) ---
+  // --- Blog posts (BuildBase Blogs) and release notes (collection `changelog`) ---
   if (type === 'blog' || type === 'changelog') {
     // /api/content/blog/{slug}, or /api/content/blog/en/{slug}: the blog is
     // English only.
