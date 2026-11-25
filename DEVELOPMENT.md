@@ -92,11 +92,13 @@ BUILDBASE_CLIENT_SECRET="$(op read op://dev/renderweld-dev-client/secret)" npm r
    found.
 
 `npm run dev:all -- --preview` instead builds the site for Cloudflare Workers
-(`opennextjs-cloudflare build`, a few minutes, about 1.5 GB in `.next` and
-`.open-next`) and serves it with `wrangler dev` on the same port. See
+(`opennextjs-cloudflare build`, a few minutes, about 3 GB in `.next` and
+`.open-next`) and serves it with `wrangler dev` on the same port. Add
+`--no-build` to serve the last build again. See
 [`next dev` vs `npm run preview`](#next-dev-vs-npm-run-preview).
 
-Ctrl-C stops everything; so does SIGTERM (what the studio's `both.sh` sends).
+Ctrl-C stops everything, including the wrangler and workerd processes under
+the preview; so does SIGTERM (what the studio's `both.sh` sends).
 
 Webhooks: BuildBase cannot call `localhost`. To receive them, expose the dev
 server with a tunnel (`cloudflared tunnel --url http://localhost:3000`, or
@@ -260,7 +262,7 @@ databases after merge.
 | Runtime    | Node.js, with D1 from Wrangler's platform proxy | workerd, the Cloudflare Workers runtime, as in production                                        |
 | Code       | Development build, hot reload                   | Production build (OpenNext), no hot reload                                                       |
 | Start time | Seconds (first page compile 10-60 s)            | A few minutes per change                                                                         |
-| Disk       | `.next` (~1 GB)                                 | `.next` and `.open-next` (~1.5-3 GB)                                                             |
+| Disk       | `.next` (~1 GB)                                 | `.next` and `.open-next` (~3 GB)                                                                 |
 | Caching    | Next's dev behaviour, no ISR                    | The real incremental and tag caches in local D1                                                  |
 | Use it for | Almost everything                               | Workers-only bugs, middleware (`src/proxy.ts`), CSP, caching, bundle size, before a risky deploy |
 
@@ -379,7 +381,11 @@ npm config set cafile /path/to/corporate-root-ca.pem   # npm ci
 ```
 
 Keep `localhost` in `NO_PROXY`, or the dev server's own requests (and the
-health check `dev:all` makes) go to the proxy. Never turn TLS verification off
+health check `dev:all` makes) go to the proxy. Behind a proxy, Wrangler prints
+`Proxy environment variables detected` and, when it cannot reach
+Cloudflare, ``Unable to fetch the `Request.cf` object! Falling back to a
+default placeholder`` followed by `Error: Request was cancelled.`: harmless,
+the local Worker uses placeholder geolocation data. Never turn TLS verification off
 (`NODE_TLS_REJECT_UNAUTHORIZED=0`, `strict-ssl=false`).
 
 ## Common errors

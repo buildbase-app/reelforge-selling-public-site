@@ -5,6 +5,8 @@
  *   npm run dev:all                  # next dev on http://localhost:3000
  *   npm run dev:all -- --preview     # production build in the Workers runtime
  *                                    # (OpenNext + wrangler dev), same port
+ *   npm run dev:all -- --preview --no-build
+ *                                    # serve the last preview build again
  *   npm run dev:all -- --skip-db     # do not apply local D1 migrations first
  *
  * Before starting it applies any new D1 migration to the local database and
@@ -36,6 +38,7 @@ const ROOT = path.resolve(
 const argv = process.argv.slice(2);
 const PREVIEW = argv.includes('--preview');
 const SKIP_DB = argv.includes('--skip-db');
+const NO_BUILD = argv.includes('--no-build');
 const IS_WIN = process.platform === 'win32';
 const PORT = DEV_PORT;
 const BASE = `http://localhost:${PORT}`;
@@ -150,26 +153,45 @@ if (!SKIP_DB) {
 let child;
 let stopping = false;
 
+// The server runs in its own process group so a stop reaches every process
+// under it: `opennextjs-cloudflare preview` runs wrangler and workerd through
+// a shell, and killing only the direct child would leave them on port 3000.
+function killTree(sig) {
+  if (!child || child.pid === undefined) return;
+  try {
+    if (IS_WIN) child.kill(sig);
+    else process.kill(-child.pid, sig);
+  } catch {
+    /* already gone */
+  }
+}
+
 function start(cmd, cmdArgs, env) {
   child = spawn(cmd, cmdArgs, {
     cwd: ROOT,
     env,
     stdio: 'inherit',
     shell: IS_WIN,
+    detached: !IS_WIN,
   });
   child.on('exit', (code, signal) => {
     if (!stopping) log(`${path.basename(cmd)} exited (${signal ?? code}).`);
+    killTree('SIGTERM');
     process.exit(stopping ? 0 : (code ?? (signal ? 1 : 0)));
   });
 }
 
 for (const sig of ['SIGINT', 'SIGTERM', 'SIGHUP']) {
   process.on(sig, () => {
+    if (stopping) return;
     stopping = true;
-    if (child && child.exitCode === null) child.kill(sig);
-    else process.exit(0);
-    // Give the server a moment to stop its workers, then leave regardless.
-    setTimeout(() => process.exit(0), 5000).unref();
+    if (!child || child.exitCode !== null) process.exit(0);
+    killTree(sig === 'SIGHUP' ? 'SIGTERM' : sig);
+    // Give the server a moment to stop its workers, then make sure.
+    setTimeout(() => {
+      killTree('SIGKILL');
+      process.exit(0);
+    }, 8000).unref();
   });
 }
 
@@ -232,7 +254,14 @@ if (PREVIEW) {
   const publicKeys = Object.keys(fileEnv).filter(
     (k) => k.startsWith('NEXT_PUBLIC_') || k === 'SITE_URL'
   );
-  const buildEnv = { ...childEnv, SKIP_ENV_VALIDATION: 'true' };
+  // Like CI: the build needs a signing secret to construct the MCP stack but
+  // never signs anything with it, so it gets a throwaway one; the Worker
+  // reads the real SYSTEM_SECRET at runtime.
+  const buildEnv = {
+    ...childEnv,
+    SKIP_ENV_VALIDATION: 'true',
+    SYSTEM_SECRET: generateSecret(),
+  };
   for (const k of publicKeys) buildEnv[k] = fileEnv[k];
   for (const k of [
     'NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION',
@@ -240,18 +269,23 @@ if (PREVIEW) {
     'NEXT_PUBLIC_YANDEX_SITE_VERIFICATION',
   ])
     buildEnv[k] = '';
-  log(
-    'Building for Cloudflare Workers (opennextjs-cloudflare build; a few minutes)...'
-  );
-  const b = spawnSync(bin('opennextjs-cloudflare'), ['build'], {
-    cwd: ROOT,
-    env: buildEnv,
-    stdio: 'inherit',
-    shell: IS_WIN,
-  });
-  if (b.status !== 0) {
-    console.error('OpenNext build failed (see above).');
-    process.exit(b.status ?? 1);
+  const lastBuild = path.join(ROOT, '.open-next', 'worker.js');
+  if (NO_BUILD && fs.existsSync(lastBuild)) {
+    log('Reusing the last build in .open-next (--no-build).');
+  } else {
+    log(
+      'Building for Cloudflare Workers (opennextjs-cloudflare build; a few minutes)...'
+    );
+    const b = spawnSync(bin('opennextjs-cloudflare'), ['build'], {
+      cwd: ROOT,
+      env: buildEnv,
+      stdio: 'inherit',
+      shell: IS_WIN,
+    });
+    if (b.status !== 0) {
+      console.error('OpenNext build failed (see above).');
+      process.exit(b.status ?? 1);
+    }
   }
   log(`Starting wrangler dev on ${BASE} ...`);
   start(
