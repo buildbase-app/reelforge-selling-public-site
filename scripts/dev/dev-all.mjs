@@ -159,7 +159,7 @@ function start(cmd, cmdArgs, env) {
   });
   child.on('exit', (code, signal) => {
     if (!stopping) log(`${path.basename(cmd)} exited (${signal ?? code}).`);
-    process.exit(code ?? (signal ? 1 : 0));
+    process.exit(stopping ? 0 : (code ?? (signal ? 1 : 0)));
   });
 }
 

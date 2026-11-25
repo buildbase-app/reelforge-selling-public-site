@@ -260,7 +260,7 @@ databases after merge.
 | Runtime    | Node.js, with D1 from Wrangler's platform proxy | workerd, the Cloudflare Workers runtime, as in production                                        |
 | Code       | Development build, hot reload                   | Production build (OpenNext), no hot reload                                                       |
 | Start time | Seconds (first page compile 10-60 s)            | A few minutes per change                                                                         |
-| Disk       | `.next` (~0.5 GB)                               | `.next` and `.open-next` (~1.5-3 GB)                                                             |
+| Disk       | `.next` (~1 GB)                                 | `.next` and `.open-next` (~1.5-3 GB)                                                             |
 | Caching    | Next's dev behaviour, no ISR                    | The real incremental and tag caches in local D1                                                  |
 | Use it for | Almost everything                               | Workers-only bugs, middleware (`src/proxy.ts`), CSP, caching, bundle size, before a risky deploy |
 
@@ -442,6 +442,22 @@ After sign-in you land on `https://dev.renderweld.com` instead: your
 **`The entry-point file at ".open-next/worker.js" was not found`**: `wrangler dev`
 ran without a build. Use `npm run dev:all -- --preview` or `npm run preview`,
 which build first.
+
+**`[ERROR] Launch price note: content block unusable, built-in note shown`**
+(and similar lines for other content blocks) without `BUILDBASE_API_TOKEN`:
+expected. The page uses its built-in fallback; the log line is loud by design
+so a broken block is noticed in production.
+
+**`The following page files do not match any complete route`**, then 404 for
+`/pricing`, `/order` and `/dashboard` under `next dev`: Next 16.4's dev server
+checks parallel-route slots without their `default.tsx`. `next.config.ts`
+turns on `deprecated.looseRouteMatching` for development only; if you see
+this, check that setting is still there. `next build` is not affected.
+
+**`AGENTS.md` shows up as modified after `next dev`**: Next 16.4 appends a
+"nextjs-agent-rules" block unless `agentRules: false` is set in
+`next.config.ts` (it is). Discard the change (`git checkout AGENTS.md`); never
+commit it.
 
 **Webhook deliveries fail or `/api/webhooks/buildbase` answers 503**: no
 `BUILDBASE_WEBHOOK_SECRET`, or BuildBase is trying to reach `localhost`. See
