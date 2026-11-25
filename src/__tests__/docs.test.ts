@@ -273,7 +273,9 @@ describe('renderDocMarkdown', () => {
     const { html, headings } = await renderDocMarkdown(
       '## Install it\n\nRun `docker compose up`.\n\n```bash\necho "hi"\n```\n\n```unknownlang\nplain\n```\n\n```\nno language\n```'
     );
-    expect(html).toContain('<h2 id="install-it">Install it</h2>');
+    expect(html).toContain(
+      '<h2 id="install-it"><a href="#install-it" class="heading-anchor">Install it</a></h2>'
+    );
     expect(headings).toEqual([{ id: 'install-it', text: 'Install it' }]);
     expect(html).toContain(
       '<pre class="shiki shiki-themes github-light github-dark"'

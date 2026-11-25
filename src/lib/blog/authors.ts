@@ -25,14 +25,23 @@ export function authorSameAs(author: BlogAuthor): string[] {
 
 /** The author block of a post's BlogPosting JSON-LD. */
 export function postAuthorJsonLd(post: BlogPost): {
+  type: 'Person' | 'Organization';
   name: string;
   url?: string;
   sameAs?: string[];
 } {
   const author = post.authors[0];
-  if (!author) return { name: seoConfig.brand.name };
+  // No named author (every release note): the organisation wrote it.
+  if (!author) {
+    return {
+      type: 'Organization',
+      name: seoConfig.brand.name,
+      url: absoluteUrl('/'),
+    };
+  }
   const sameAs = authorSameAs(author);
   return {
+    type: 'Person',
     name: post.authors.map((a) => a.name).join(', '),
     url: absoluteUrl(`/blog/authors/${author.username}`),
     ...(sameAs.length > 0 && { sameAs }),
