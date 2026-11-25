@@ -84,11 +84,17 @@ export function isStrongSecret(value) {
   return new Set(value).size >= 12;
 }
 
+/** @typedef {Record<string, string | undefined>} EnvMap */
+
 /**
  * Parses a dotenv file: `KEY=value`, optional `export `, `#` comments,
  * single or double quotes. Enough for the files this repo writes.
+ *
+ * @param {string} text
+ * @returns {Record<string, string>}
  */
 export function parseEnv(text) {
+  /** @type {Record<string, string>} */
   const out = {};
   for (const raw of String(text).split(/\r?\n/)) {
     const line = raw.trim();
@@ -104,7 +110,11 @@ export function parseEnv(text) {
   return out;
 }
 
-/** What works with the values in an env object. */
+/**
+ * What works with the values in an env object.
+ *
+ * @param {EnvMap} env
+ */
 export function credentialsState(env) {
   const has = (k) => !!env[k] && !isPlaceholder(env[k]);
   return {
@@ -120,13 +130,16 @@ export function credentialsState(env) {
  * over from an earlier file or passed in the environment; anything missing
  * stays an empty placeholder. Without a client secret the file sets
  * SKIP_ENV_VALIDATION so the marketing pages still render.
+ *
+ * @param {{ systemSecret: string, secrets?: EnvMap, port?: number, date?: Date }} options
+ * @returns {string}
  */
 export function renderDevEnv({
   systemSecret,
   secrets = {},
   port = DEV_PORT,
   date = new Date(),
-} = {}) {
+}) {
   if (!isStrongSecret(systemSecret)) {
     throw new Error('renderDevEnv: systemSecret must be a strong secret');
   }
@@ -186,8 +199,12 @@ export function renderDevEnv({
  * Builds the values for a (re)written env file: keeps a strong SYSTEM_SECRET
  * and every bring-your-own secret from the previous file, then lets the
  * process environment fill in what is still missing.
+ *
+ * @param {{ previous?: EnvMap, processEnv?: EnvMap }} [sources]
+ * @returns {{ systemSecret: string, secrets: Record<string, string> }}
  */
 export function collectSecrets({ previous = {}, processEnv = {} } = {}) {
+  /** @type {Record<string, string>} */
   const secrets = {};
   for (const key of BRING_YOUR_OWN) {
     const old = previous[key];
@@ -205,6 +222,9 @@ export function collectSecrets({ previous = {}, processEnv = {} } = {}) {
  * Writes `content` to `file` unless it exists. With `force`, the old file is
  * first copied to `<file>.bak`. Returns what happened.
  *
+ * @param {string} file
+ * @param {string} content
+ * @param {{ force?: boolean }} [options]
  * @returns {{ action: 'created' | 'kept' | 'overwritten', backup?: string }}
  */
 export function writeFileSafe(file, content, { force = false } = {}) {
@@ -248,6 +268,9 @@ export function requiredNode(nvmrc) {
  * STUDIO_REPO_DIR when set, else `../reelforge-studio` next to this repo.
  * `explicit` says whether the developer asked for it, so callers can fail
  * loudly instead of falling back when an explicit path is wrong.
+ *
+ * @param {{ env?: EnvMap, repoRoot: string }} options
+ * @returns {{ dir: string, explicit: boolean }}
  */
 export function resolveStudioDir({ env = {}, repoRoot }) {
   const explicit = !!env.STUDIO_REPO_DIR;
