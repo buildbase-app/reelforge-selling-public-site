@@ -23,6 +23,16 @@ const isNoindexSite = /reelforge-dev|\/\/dev\.renderweld\.com/.test(
 const nextConfig: NextConfig = {
   // No `x-powered-by: Next.js` header.
   poweredByHeader: false,
+  // `next dev` would otherwise append a block to AGENTS.md on every start
+  // (a maintainer-only file); this repo's agent rules live there already.
+  agentRules: false,
+  // Next 16.4's dev server checks parallel-route slots without their
+  // default.tsx files (`next build` passes them), so it reports every page
+  // under (app) as "not part of a complete route" and answers 404 for
+  // /pricing, /order and /dashboard. Builds keep strict matching.
+  ...(process.env.NODE_ENV === 'development'
+    ? { deprecated: { looseRouteMatching: true as const } }
+    : {}),
   async headers() {
     return isNoindexSite
       ? [

@@ -181,6 +181,9 @@ as a redirect URL, and its webhook endpoint is
 
 ## Local development
 
+`npm run setup` and `npm run dev:all` do all of this; see
+[DEVELOPMENT.md](DEVELOPMENT.md). By hand:
+
 ```bash
 cp .dev.vars.example .dev.vars
 ```
