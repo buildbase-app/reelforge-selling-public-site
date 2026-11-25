@@ -34,6 +34,7 @@ import { externalLinks, schema } from '@/lib/platform/markdown';
  *   only the grammars below (the full bundle would put every grammar and the
  *   Oniguruma WebAssembly into the Worker); unknown languages stay plain;
  * - tables scroll inside a focusable region on narrow screens;
+ * - task-list checkboxes are labelled "Done" or "Not done";
  * - external links open in a new tab with `rel="noopener noreferrer"`.
  *
  * Runs on the server only; the browser gets finished HTML.
@@ -59,6 +60,34 @@ const ALIASES: Record<string, string> = {
   docker: 'dockerfile',
   conf: 'ini',
 };
+
+/**
+ * GitHub's themes have a few token colours under WCAG AA (4.5:1) on the
+ * site's code background (`--muted`): these replace them, each at least 4.7:1
+ * on `--muted` and `--card` in its theme.
+ */
+const READABLE: Record<'light' | 'dark', Record<string, string>> = {
+  light: {
+    '#E36209': '#A84A00', // orange, 3.0:1 -> 5.0:1
+    '#D73A49': '#C4303E', // red, 4.0:1 -> 4.8:1
+    '#22863A': '#1D7534', // green, 4.0:1 -> 5.0:1
+    '#6A737D': '#57606A', // comments, 4.2:1 -> 5.6:1
+  },
+  dark: {
+    '#6A737D': '#959DA5', // comments, 3.1:1 -> 5.0:1
+  },
+};
+
+/** Shiki's `--shiki-light:#…;--shiki-dark:#…` with the readable colours. */
+export function readableTokenStyle(style: string): string {
+  return style.replace(
+    /--shiki-(light|dark):(#[0-9a-f]{6})/gi,
+    (all, theme: 'light' | 'dark', hex: string) => {
+      const swap = READABLE[theme][hex.toUpperCase()];
+      return swap ? `--shiki-${theme}:${swap}` : all;
+    }
+  );
+}
 
 let highlighter: Promise<HighlighterCore> | null = null;
 
@@ -274,6 +303,11 @@ function highlightCode() {
       const pre = out.children.find((n): n is Element => n.type === 'element');
       if (!pre) return;
       pre.properties = { ...pre.properties, dataLanguage: lang };
+      walk(pre, (token) => {
+        if (typeof token.properties?.style === 'string') {
+          token.properties.style = readableTokenStyle(token.properties.style);
+        }
+      });
       parent.children[index] = pre;
     });
   };
@@ -320,6 +354,18 @@ function scrollingTables() {
   };
 }
 
+/** A task list's checkboxes say what they mean to screen readers. */
+function taskCheckboxes() {
+  return (tree: Root) => {
+    walk(tree, (node) => {
+      if (node.tagName !== 'input' || node.properties?.type !== 'checkbox') {
+        return;
+      }
+      node.properties.ariaLabel = node.properties.checked ? 'Done' : 'Not done';
+    });
+  };
+}
+
 /** Each h2-h4 links to itself, so a section can be shared by its URL. */
 function headingAnchors() {
   return (tree: Root) => {
@@ -354,7 +400,8 @@ function build(withCopyButtons: boolean) {
     .use(callouts)
     .use(media)
     .use(highlightCode)
-    .use(scrollingTables);
+    .use(scrollingTables)
+    .use(taskCheckboxes);
   if (withCopyButtons) p.use(copyButtons);
   return p.use(headingAnchors).use(externalLinks);
 }

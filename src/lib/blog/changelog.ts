@@ -44,6 +44,26 @@ function isoDate(value: unknown): string | undefined {
   return Number.isNaN(time) ? undefined : new Date(time).toISOString();
 }
 
+/**
+ * BuildBase cleans a rich-text value when it is written: it removes scripts,
+ * event handlers and `javascript:` URLs, and stores `<`, `>` and `&` outside
+ * the tags it keeps as `&lt;`, `&gt;` and `&amp;` (seen on the development
+ * environment, 2026-11-25: a `> quote` line came back as `&gt; quote`).
+ * Markdown needs the characters back, so they are decoded once here; the
+ * site's own sanitiser (src/lib/content/rich-text.ts) still runs on the
+ * result, so nothing decoded here can reach the page as markup it does not
+ * allow.
+ */
+export function decodeRichText(value: string): string {
+  return value.replace(
+    /&(lt|gt|quot|#39|#x27|amp);/g,
+    (_, name: string) =>
+      ({ lt: '<', gt: '>', quot: '"', '#39': "'", '#x27': "'", amp: '&' })[
+        name
+      ] ?? _
+  );
+}
+
 /** BuildBase stores `true`; a value typed as text reads as "true". */
 function isPublished(value: unknown): boolean {
   return value === true || value === 'true';
@@ -70,7 +90,8 @@ export function toChangelogPost(record: ChangelogRecord): BlogPost | null {
       ? edited
       : undefined;
 
-  const markdown = typeof data.content === 'string' ? data.content : '';
+  const markdown =
+    typeof data.content === 'string' ? decodeRichText(data.content) : '';
   const wordCount = countWords(markdown);
   const version =
     SEMVER.exec(text(data.version))?.[1] ?? versionFromSlug(slug) ?? undefined;

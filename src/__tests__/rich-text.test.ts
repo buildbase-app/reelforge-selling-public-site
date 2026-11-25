@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import { renderRichText } from '@/lib/content/rich-text';
+import { readableTokenStyle, renderRichText } from '@/lib/content/rich-text';
 
 /**
  * The long-form renderer (blog posts, release notes, docs): every rich-text
@@ -64,6 +64,8 @@ describe('renderRichText: features', () => {
     expect(html).toMatch(/<ol>\s*<li>one<\/li>/);
     expect(html).toMatch(/<ul>\s*<li>nested\s*<ul>\s*<li>deeper/);
     expect(html).toContain('type="checkbox"');
+    expect(html).toMatch(/checked[^>]*aria-label="Done"/);
+    expect(html).toContain('aria-label="Not done"');
   });
 
   it('turns GitHub alerts into labelled callouts and keeps plain quotes', async () => {
@@ -85,6 +87,21 @@ describe('renderRichText: features', () => {
     expect(html).toMatch(/--shiki-light:#[0-9A-Fa-f]{6}/);
     expect(html).toContain('<pre><code class="language-brainfuck">+++');
     expect(html).not.toContain('data-copy-code');
+  });
+
+  it('swaps theme colours that fail WCAG AA on the code background', async () => {
+    expect(
+      readableTokenStyle('--shiki-light:#E36209;--shiki-dark:#6a737d')
+    ).toBe('--shiki-light:#A84A00;--shiki-dark:#959DA5');
+    expect(
+      readableTokenStyle('--shiki-light:#24292E;--shiki-dark:#E1E4E8')
+    ).toBe('--shiki-light:#24292E;--shiki-dark:#E1E4E8');
+    const { html } = await renderRichText(
+      '```ts\n// a comment\nfunction f(a: string) { return a; }\n```'
+    );
+    expect(html).not.toMatch(/--shiki-light:#(E36209|D73A49|22863A|6A737D)/i);
+    expect(html).not.toMatch(/--shiki-dark:#6A737D/i);
+    expect(html).toMatch(/--shiki-light:#57606A/i);
   });
 
   it('adds Copy buttons only when asked (docs)', async () => {

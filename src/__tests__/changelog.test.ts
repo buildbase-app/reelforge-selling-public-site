@@ -1,6 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import { robotsTxt } from '@buildbase/sdk';
-import { toChangelogPost, toChangelogPosts } from '@/lib/blog/changelog';
+import {
+  decodeRichText,
+  toChangelogPost,
+  toChangelogPosts,
+} from '@/lib/blog/changelog';
 import { buildFeed } from '@/lib/blog/feed';
 import { robotsConfig } from '@/lib/seo/robots';
 
@@ -119,6 +123,25 @@ describe('toChangelogPost', () => {
         record({ date: '2026-11-24' }, { updatedAt: '2026-11-24T20:00:00Z' })
       )!.updated
     ).toBeUndefined();
+  });
+});
+
+describe('decodeRichText', () => {
+  it('gives Markdown back the characters BuildBase stores as entities', () => {
+    expect(
+      decodeRichText(
+        '&gt; [!NOTE]\n&gt; a &amp;&amp; b &lt;Button&gt; &quot;x&quot; it&#39;s'
+      )
+    ).toBe('> [!NOTE]\n> a && b <Button> "x" it\'s');
+    // Decoded once: an escaped entity stays an entity.
+    expect(decodeRichText('&amp;lt;')).toBe('&lt;');
+  });
+
+  it('maps a stored record body so quotes and callouts render', () => {
+    const post = toChangelogPost(
+      record({ content: '&gt; [!TIP]\n&gt; Use ?a=1&amp;b=2' })
+    )!;
+    expect(post.markdown).toBe('> [!TIP]\n> Use ?a=1&b=2');
   });
 });
 

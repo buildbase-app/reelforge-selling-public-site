@@ -109,9 +109,16 @@
   color: var(--muted-foreground);
 }
 
-.prose :global(.contains-task-list) {
+/* A task item has its checkbox instead of a bullet; other items of the same
+   list keep theirs. A loose list (blank lines between items) wraps items
+   in paragraphs: keep them close. */
+.prose :global(.task-list-item) {
   list-style: none;
-  padding-inline-start: 0.25rem;
+  margin-inline-start: -1.25rem;
+}
+
+.prose :global(li > p) {
+  margin: 0.25rem 0;
 }
 
 .prose :global(.task-list-item input) {
@@ -186,6 +193,8 @@
 }
 
 .prose :global(pre) {
+  /* Scrolls inside itself; its long lines never widen the page. */
+  contain: inline-size;
   margin: 1.75rem 0;
   overflow-x: auto;
   border: 1px solid var(--border);
@@ -217,6 +226,7 @@
 
 /* Tables scroll inside their own region on narrow screens. */
 .prose :global(.table-scroll) {
+  contain: inline-size;
   margin: 1.75rem 0;
   max-width: 100%;
   overflow-x: auto;
@@ -285,13 +295,14 @@
   line-height: 1.5;
 }
 
-/* Callouts (`> [!NOTE]`): a hairline in the meaning's colour, ink text. */
+/* Callouts (`> [!NOTE]`): a labelled box with a hairline and a faint tint
+   of the meaning's colour; the text stays ink. */
 .prose :global(.callout) {
+  --callout: var(--info);
   margin: 1.75rem 0;
-  border: 1px solid var(--border);
-  border-inline-start: 3px solid var(--callout, var(--info));
+  border: 1px solid color-mix(in oklch, var(--callout) 45%, var(--border));
   border-radius: 0.375rem;
-  background: var(--card);
+  background: color-mix(in oklch, var(--callout) 8%, var(--card));
   padding: 0.875rem 1.125rem;
 }
 
