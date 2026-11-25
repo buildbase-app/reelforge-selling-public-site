@@ -27,6 +27,19 @@ OpenNext. See `DEPLOY_CLOUDFLARE.md`.
 > served (they still hold starter copy). Translate one, then add its code back
 > to `locales` and to `src/i18n/messages/index.ts`.
 
+## Developer setup
+
+```bash
+npm run setup     # prerequisites, npm ci, local config for the BuildBase development environment, local D1
+npm run dev:all   # the site on http://localhost:3000
+```
+
+Marketing pages work with no credentials; sign-in and checkout need your own
+development client secret. [DEVELOPMENT.md](DEVELOPMENT.md) covers every
+case: operating systems, credentials, local and remote D1, `next dev` vs the
+Workers preview, tests, deploying, proxies, common errors, and working on the
+studio and the site together.
+
 ## What is in here
 
 | Area                                                                                  | Where                                                                                                                   |

@@ -12,6 +12,11 @@
  *      node scripts/agents/refresh-mcp-tools.mjs
  *      node scripts/agents/refresh-mcp-tools.mjs --reference ../reelforge-studio/docs/public/mcp/tools.md
  *
+ *    Without --reference, a local studio checkout wins over GitHub:
+ *    STUDIO_REPO_DIR when set (an error if it has no reference), else
+ *    ../reelforge-studio when it exists. `--github` always reads GitHub
+ *    (what CI does, having no checkout next to this one).
+ *
  * 2. A running studio's MCP server (`tools/list`). Any key with the `read`
  *    scope works; tools/list needs no licence.
  *
@@ -25,9 +30,11 @@
  * so a new tool is never dropped silently: add it to a group and run the
  * script again (a unit test fails while "Other" exists).
  */
-import { readFileSync, writeFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { resolveStudioDir } from '../dev/lib.mjs';
 
 const OUT = join(
   dirname(fileURLToPath(import.meta.url)),
@@ -173,6 +180,8 @@ const check = args.includes('--check');
 const live = args.includes('--live');
 const refArg = args[args.indexOf('--reference') + 1];
 const reference = args.includes('--reference') ? refArg : null;
+const forceGithub = args.includes('--github');
+const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 
 /** The first sentence (two if the first is a stub like "Start here."). */
 function summary(description = '') {
@@ -234,6 +243,55 @@ export function parseReference(md) {
   return tools;
 }
 
+/** The reference from a local studio checkout, or null to use GitHub. */
+function fromStudioCheckout() {
+  if (reference || forceGithub) return null;
+  const { dir, explicit } = resolveStudioDir({
+    env: process.env,
+    repoRoot: REPO_ROOT,
+  });
+  const file = join(dir, REFERENCE_PATH);
+  if (!existsSync(file)) {
+    if (!explicit) return null;
+    console.error(
+      `STUDIO_REPO_DIR=${process.env.STUDIO_REPO_DIR}: no ${REFERENCE_PATH} in ${dir}. ` +
+        'Point it at a reelforge-studio checkout, or unset it to read GitHub.'
+    );
+    process.exit(2);
+  }
+  let commit;
+  try {
+    commit = execFileSync('git', ['-C', dir, 'rev-parse', 'HEAD'], {
+      encoding: 'utf8',
+    }).trim();
+  } catch {
+    /* not a git checkout */
+  }
+  let version;
+  try {
+    version = JSON.parse(
+      readFileSync(join(dir, 'apps', 'server', 'package.json'), 'utf8')
+    ).version;
+  } catch {
+    /* older layout */
+  }
+  console.log(
+    `Reading ${REFERENCE_PATH} from the studio checkout ${dir}` +
+      (commit ? ` (commit ${commit.slice(0, 7)})` : '') +
+      '. Use --github to read the studio main branch instead.'
+  );
+  return {
+    tools: parseReference(readFileSync(file, 'utf8')),
+    source: {
+      server: STUDIO_REPO.split('/')[1],
+      ...(version ? { version } : {}),
+      method: 'reference',
+      reference: REFERENCE_PATH,
+      ...(commit ? { commit } : {}),
+    },
+  };
+}
+
 async function fromReference() {
   if (reference && !/^https?:/.test(reference)) {
     return {
@@ -241,6 +299,8 @@ async function fromReference() {
       source: { method: 'reference', reference: REFERENCE_PATH },
     };
   }
+  const local = fromStudioCheckout();
+  if (local) return local;
   const [commit] = await github(
     `commits?path=${encodeURIComponent(REFERENCE_PATH)}&per_page=1`
   );

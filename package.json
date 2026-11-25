@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "setup": "node scripts/dev/setup.mjs",
     "dev": "next dev --turbopack",
+    "dev:all": "node scripts/dev/dev-all.mjs",
     "start": "next start",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
