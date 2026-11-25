@@ -260,12 +260,17 @@ function fromStudioCheckout() {
     process.exit(2);
   }
   let commit;
-  try {
-    commit = execFileSync('git', ['-C', dir, 'rev-parse', 'HEAD'], {
-      encoding: 'utf8',
-    }).trim();
-  } catch {
-    /* not a git checkout */
+  // Only the checkout's own repository (.git is a folder, or a file in a
+  // worktree), never a parent repository the folder happens to sit in.
+  if (existsSync(join(dir, '.git'))) {
+    try {
+      commit = execFileSync('git', ['-C', dir, 'rev-parse', 'HEAD'], {
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      }).trim();
+    } catch {
+      /* git missing or a broken checkout */
+    }
   }
   let version;
   try {
