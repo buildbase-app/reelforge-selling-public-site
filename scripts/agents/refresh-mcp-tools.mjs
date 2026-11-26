@@ -119,6 +119,7 @@ const GROUPS = [
       'get_render_output',
       'get_frames',
       'list_renders',
+      'delete_render',
       'get_analytics_summary',
     ],
   },

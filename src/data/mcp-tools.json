@@ -4,10 +4,10 @@
     "version": "0.1.0",
     "method": "reference",
     "reference": "docs/public/mcp/tools.md",
-    "commit": "a8e7194a741cb5d128d62bb471064c6f865f300b",
+    "commit": "73aeb8782cecec8bc3af75feb6b66788d7ec8e1b",
     "fetchedOn": "2026-11-26"
   },
-  "count": 78,
+  "count": 79,
   "groups": [
     {
       "id": "discover",
@@ -300,6 +300,12 @@
           "title": "List renders of a project",
           "summary": "Lists finished renders and previews of a project, newest first, with output URLs, size, fps, frames and duration.",
           "readOnly": true
+        },
+        {
+          "name": "delete_render",
+          "title": "Delete a render",
+          "summary": "Deletes one finished render or preview with all its files (video, poster, captions, scene clips, manifest) from storage.",
+          "readOnly": false
         },
         {
           "name": "get_analytics_summary",
