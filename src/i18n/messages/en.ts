@@ -64,6 +64,8 @@ const messages: Messages = {
         refund: 'Refund policy',
         privacy: 'Privacy Policy',
         terms: 'Terms of Service',
+        cookies: 'Cookie Policy',
+        cookieSettings: 'Cookie settings',
         github: 'Source on GitHub',
       },
     },

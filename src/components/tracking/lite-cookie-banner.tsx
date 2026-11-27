@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import {
   getAnalyticsConsent,
@@ -8,6 +8,7 @@ import {
   useTracking,
   type AnalyticsConsent,
 } from '@buildbase/sdk/tracking';
+import { COOKIE_SETTINGS_EVENT } from './cookie-settings-button';
 
 /**
  * The cookie banner's first view on provider-free pages (studio issue #79):
@@ -26,6 +27,10 @@ import {
  * Accept all look the same (the SDK's default, `buttons="equal"`): neither
  * answer is made the easier one (no dark pattern; EDPB guidance on equal
  * prominence). Choose is an outline button of the same shape.
+ *
+ * The footer's "Cookie settings" (`CookieSettingsButton`) reopens the
+ * choices at any time: it loads the SDK's banner the same way "Choose"
+ * does, remounted on each press so it opens again after being closed.
  */
 const BUTTON =
   'inline-flex items-center justify-center rounded-full font-medium transition-colors disabled:opacity-50 disabled:pointer-events-none aria-disabled:opacity-50 aria-disabled:pointer-events-none h-9 sm:h-8 px-3 text-xs';
@@ -48,8 +53,18 @@ export function LiteCookieBanner({ privacyHref }: { privacyHref: string }) {
     () => getAnalyticsConsent() !== null
   );
   const [choose, setChoose] = useState(false);
+  const [opens, setOpens] = useState(0);
 
-  if (choose) return <SdkCookieBanner privacyHref={privacyHref} />;
+  useEffect(() => {
+    const reopen = () => {
+      setChoose(true);
+      setOpens((n) => n + 1);
+    };
+    window.addEventListener(COOKIE_SETTINGS_EVENT, reopen);
+    return () => window.removeEventListener(COOKIE_SETTINGS_EVENT, reopen);
+  }, []);
+
+  if (choose) return <SdkCookieBanner key={opens} privacyHref={privacyHref} />;
   if (answered || consent.state) return null;
 
   const answer = (state: AnalyticsConsent) => {

@@ -63,6 +63,8 @@ export interface CommonMessages {
       refund: string;
       privacy: string;
       terms: string;
+      cookies: string;
+      cookieSettings: string;
       github: string;
     };
   };
