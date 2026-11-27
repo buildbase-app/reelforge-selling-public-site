@@ -6,11 +6,7 @@ import { ContactForm } from '@/components/contact/contact-form';
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
 import type { Locale } from '@/i18n/config';
 import { getCollectionRecords } from '@/lib/platform/content';
-import {
-  FEATURE_REQUEST_FORM_ID,
-  TEMPLATE_REQUEST_FORM_ID,
-  getPublicForm,
-} from '@/lib/platform/forms';
+import { getPublicForm } from '@/lib/platform/forms';
 import {
   ROADMAP_COLLECTION,
   ROADMAP_STATUSES,
@@ -51,8 +47,8 @@ export default async function FeedbackPage({ params }: FeedbackPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
   const [featureForm, templateForm, records] = await Promise.all([
-    getPublicForm(FEATURE_REQUEST_FORM_ID),
-    getPublicForm(TEMPLATE_REQUEST_FORM_ID),
+    getPublicForm('feature'),
+    getPublicForm('template'),
     getCollectionRecords(ROADMAP_COLLECTION),
   ]);
   const roadmap = toRoadmap(records as RoadmapRecord[]);
