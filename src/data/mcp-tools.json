@@ -328,7 +328,7 @@
         {
           "name": "get_config",
           "title": "Get the server configuration (owner)",
-          "summary": "Returns every server setting with its effective value and where it comes from: source \"default\", \"file\" (REELFORGE_CONFIG), \"env\" (origin names the variable) or \"runtime\" (set w...",
+          "summary": "Returns every server setting with its effective value and where it comes from: source \"default\", \"file\" (RENDERWELD_CONFIG), \"env\" (origin names the variable) or \"runtime\" (set w...",
           "readOnly": true
         },
         {
@@ -346,7 +346,7 @@
         {
           "name": "activate_licence",
           "title": "Set and activate the licence key (owner)",
-          "summary": "Stores the licence key (encrypted; needs REELFORGE_SECRET_KEY on the server) and activates it for this server with the licence server, then returns the status (see get_licence).",
+          "summary": "Stores the licence key (encrypted; needs RENDERWELD_SECRET_KEY on the server) and activates it for this server with the licence server, then returns the status (see get_licence).",
           "readOnly": false
         },
         {
