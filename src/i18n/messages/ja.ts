@@ -126,7 +126,6 @@ const messages: DraftMessages = {
       viewer: '閲覧者',
     },
     title: 'ダッシュボード',
-    welcome: 'おかえりなさい、{name}！',
     trial: {
       endingSoon: 'トライアル終了間近',
       endingSoonMsg:
