@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Turns a ReelForge render (final.mp4, 1080x1920 with audio) into the small,
+# Turns a RenderWeld render (final.mp4, 1080x1920 with audio) into the small,
 # silent web loops the homepage plays, plus posters:
 #   <slug>.<hash>.mp4   H.264 High, 720x1280, CRF 27, no audio, faststart
 #   <slug>.<hash>.webm  AV1 (SVT-AV1, CRF 46) if ffmpeg has it, else VP9
