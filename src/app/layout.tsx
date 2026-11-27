@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
+import { getLocale } from 'next-intl/server';
 import { OrganizationJsonLd, WebSiteJsonLd } from '@/components/seo/json-ld';
 import { seoConfig } from '@/config/seo';
 import { FontPreload, GEIST_CORE_URL } from '@/lib/fonts';
+import { htmlLangAttributes } from '@/i18n/config';
 import './globals.css';
 // Geist and Geist Mono are self-hosted, so pages can preload them, and their
 // variables are set on :root, where Tailwind resolves them (see the files).
@@ -39,8 +41,12 @@ export default async function RootLayout({
   const requestHeaders = await headers();
   const nonce = requestHeaders.get('x-nonce') ?? undefined;
   const isPrivatePage = requestHeaders.get('x-page-scope') === 'private';
+  // The locale the proxy resolved for this request (default when none).
+  const { lang, dir } = htmlLangAttributes(
+    await getLocale().catch(() => undefined)
+  );
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={lang} dir={dir} suppressHydrationWarning>
       <head>
         {/* Geist sets every page's text (see src/lib/fonts.tsx). */}
         <FontPreload href={GEIST_CORE_URL} />
