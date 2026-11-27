@@ -99,6 +99,11 @@ export const env = createEnv({
     // BuildBase form shown on /contact (console: Forms). Optional: without it
     // the page lists only its email addresses.
     NEXT_PUBLIC_BUILDBASE_CONTACT_FORM_ID: z.string().optional(),
+
+    // BuildBase forms shown on /feedback. Optional: without one, its form is
+    // left off the page and the page points to /contact.
+    NEXT_PUBLIC_BUILDBASE_FEATURE_REQUEST_FORM_ID: z.string().optional(),
+    NEXT_PUBLIC_BUILDBASE_TEMPLATE_REQUEST_FORM_ID: z.string().optional(),
   },
 
   /**
@@ -136,6 +141,10 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPPORT_EMAIL: process.env.NEXT_PUBLIC_SUPPORT_EMAIL,
     NEXT_PUBLIC_BUILDBASE_CONTACT_FORM_ID:
       process.env.NEXT_PUBLIC_BUILDBASE_CONTACT_FORM_ID,
+    NEXT_PUBLIC_BUILDBASE_FEATURE_REQUEST_FORM_ID:
+      process.env.NEXT_PUBLIC_BUILDBASE_FEATURE_REQUEST_FORM_ID,
+    NEXT_PUBLIC_BUILDBASE_TEMPLATE_REQUEST_FORM_ID:
+      process.env.NEXT_PUBLIC_BUILDBASE_TEMPLATE_REQUEST_FORM_ID,
   },
 
   /**

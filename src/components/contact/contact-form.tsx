@@ -16,7 +16,18 @@ const FIELD =
  * built-in check when the form asks for one, its content rules, and the
  * hidden `_hp` trap below.
  */
-export function ContactForm({ form }: { form: PublicForm }) {
+export function ContactForm({
+  form,
+  idPrefix = 'contact',
+  submitLabel = 'Send message',
+  sentMessage = 'Thanks, your message is on its way. We reply by email.',
+}: {
+  form: PublicForm;
+  /** Keeps field ids unique when a page shows more than one form. */
+  idPrefix?: string;
+  submitLabel?: string;
+  sentMessage?: string;
+}) {
   const [state, setState] = useState<'idle' | 'sending' | 'sent'>('idle');
   const [errors, setErrors] = useState<string[]>([]);
 
@@ -49,7 +60,7 @@ export function ContactForm({ form }: { form: PublicForm }) {
   if (state === 'sent') {
     return (
       <p role="status" className="text-foreground">
-        Thanks, your message is on its way. We reply by email.
+        {sentMessage}
       </p>
     );
   }
@@ -57,7 +68,7 @@ export function ContactForm({ form }: { form: PublicForm }) {
   return (
     <form onSubmit={onSubmit} className="relative space-y-4">
       {form.fields.map((field) => {
-        const id = `contact-${field.slug}`;
+        const id = `${idPrefix}-${field.slug}`;
         const help = field.helpText ? `${id}-help` : undefined;
         if (field.type === 'bool') {
           return (
@@ -98,6 +109,7 @@ export function ContactForm({ form }: { form: PublicForm }) {
                 name={field.slug}
                 required={field.required}
                 rows={6}
+                maxLength={field.max}
                 aria-describedby={help}
                 className={FIELD}
               />
@@ -107,6 +119,7 @@ export function ContactForm({ form }: { form: PublicForm }) {
                 name={field.slug}
                 type={inputType(field.type)}
                 required={field.required}
+                maxLength={field.type === 'text' ? field.max : undefined}
                 aria-describedby={help}
                 autoComplete={field.type === 'email' ? 'email' : undefined}
               />
@@ -122,8 +135,13 @@ export function ContactForm({ form }: { form: PublicForm }) {
 
       {/* Bot trap: people never see it; anything typed here is dropped. */}
       <div aria-hidden="true" className="absolute -left-[10000px]">
-        <label htmlFor="contact-hp">Leave this field empty</label>
-        <input id="contact-hp" name="_hp" tabIndex={-1} autoComplete="off" />
+        <label htmlFor={`${idPrefix}-hp`}>Leave this field empty</label>
+        <input
+          id={`${idPrefix}-hp`}
+          name="_hp"
+          tabIndex={-1}
+          autoComplete="off"
+        />
       </div>
 
       {errors.length > 0 && (
@@ -135,7 +153,7 @@ export function ContactForm({ form }: { form: PublicForm }) {
       )}
 
       <Button type="submit" disabled={state === 'sending'}>
-        {state === 'sending' ? 'Sending…' : 'Send message'}
+        {state === 'sending' ? 'Sending…' : submitLabel}
       </Button>
     </form>
   );

@@ -82,6 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: url('/about'), changeFrequency: 'monthly', priority: 0.5 },
     { url: url('/security'), changeFrequency: 'monthly', priority: 0.4 },
     { url: url('/contact'), changeFrequency: 'monthly', priority: 0.5 },
+    { url: url('/feedback'), changeFrequency: 'weekly', priority: 0.5 },
   ];
 
   const legalPaths = ['/licence', '/refund', '/privacy', '/terms', '/cookies'];

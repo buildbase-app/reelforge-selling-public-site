@@ -36,6 +36,7 @@ export async function SiteFooter({ title }: SiteFooterProps) {
         { label: t('footer.links.blog'), href: '/blog' },
         { label: t('footer.links.about'), href: '/about' },
         { label: t('footer.links.security'), href: '/security' },
+        { label: t('footer.links.feedback'), href: '/feedback' },
         { label: t('footer.links.contact'), href: '/contact' },
       ],
     },
