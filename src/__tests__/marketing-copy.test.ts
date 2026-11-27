@@ -67,7 +67,6 @@ describe('marketing copy', () => {
       /REELFORGE_(SECRET_KEY|DOMAIN|PUBLIC_URL)\b/, // what that compose file reads
       /media\.reelforge\.buildbase\.app/, // the media host
       /'reelforge-(personal|commercial)'/, // BuildBase item slugs
-      /'reelforge:last-order'/, // a key in the visitor's own browser storage
     ];
     const old = hits(/reelforge/i).filter((hit) => {
       const rest = TECHNICAL.reduce(

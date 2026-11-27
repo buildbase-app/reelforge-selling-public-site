@@ -6,7 +6,7 @@
  * URL carries no order id). Losing it is harmless: /order then shows the
  * newest order.
  */
-const KEY = 'reelforge:last-order';
+const KEY = 'renderweld:last-order';
 
 export function rememberOrder(orderId: string) {
   try {
