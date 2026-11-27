@@ -15,7 +15,7 @@ const page: LegalPageContent = {
     'RenderWeld is source-available. Free for noncommercial use under the PolyForm Noncommercial License 1.0.0; any commercial use needs the RenderWeld Commercial License. Summary, draft pending review.',
   lastUpdated: '2026-11-27',
   pendingReview: true,
-  body: `RenderWeld (formerly ReelForge) is **source-available**: anyone can read its code on [GitHub](https://github.com/buildbase-app/reelforge-studio). It is developed, maintained and licensed by **${company.legalName}**. What you may do with it depends on how you use it. This page summarises the two licences; the full texts in the repository are what apply, and some of them still use the old name. Nothing here is legal advice.
+  body: `RenderWeld is **source-available**: anyone can read its code on [GitHub](https://github.com/buildbase-app/reelforge-studio). It is developed, maintained and licensed by **${company.legalName}**. What you may do with it depends on how you use it. This page summarises the two licences; the full texts in the repository are what apply. Nothing here is legal advice.
 
 | You want to…                                                                                            | You need                                                                                 |
 | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
@@ -40,7 +40,7 @@ In short:
 
 ## Commercial licence
 
-> **Draft – pending review.** The RenderWeld Commercial License (the repository's ReelForge Commercial License) is a plain-language draft that a lawyer must review before launch. Full draft: [COMMERCIAL-LICENSE.md](https://github.com/buildbase-app/reelforge-studio/blob/main/COMMERCIAL-LICENSE.md).
+> **Draft – pending review.** The RenderWeld Commercial License is a plain-language draft that a lawyer must review before launch. Full draft: [COMMERCIAL-LICENSE.md](https://github.com/buildbase-app/reelforge-studio/blob/main/COMMERCIAL-LICENSE.md).
 
 Between **${company.legalName}** and the person or organisation that buys a Commercial licence. In short:
 

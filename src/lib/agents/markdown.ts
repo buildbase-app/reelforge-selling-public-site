@@ -61,7 +61,7 @@ ${clients}
 
 ## Keys
 
-Create one per agent on your studio: \`docker compose exec reelforge reelforge keys create --name agent --scopes read,write,render\`. Shown once, stored hashed.
+Create one per agent on your studio: \`docker compose exec reelforge renderweld keys create --name agent --scopes read,write,render\`. Shown once, stored hashed.
 
 ${KEY_SCOPES.map((s) => `- \`${s.scope}\`: ${s.what}`).join('\n')}
 
@@ -69,7 +69,7 @@ The studio binds 127.0.0.1 by default; for remote agents put it behind TLS (comp
 
 ## Prompt cookbook
 
-Real renders. The calls were sent by a script that follows the studio's workflow guide (MCP resource \`reelforge://guide/workflow\`, prompt \`make_reel\`).
+Real renders. The calls were sent by a script that follows the studio's workflow guide (MCP resource \`renderweld://guide/workflow\`, prompt \`make_reel\`).
 
 ${cookbook}
 

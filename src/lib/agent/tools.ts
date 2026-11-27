@@ -57,8 +57,8 @@ export const storeTools = [] as const;
 
 export const storeResources = [
   defineMcpResource({
-    uri: 'reelforge://guide',
-    name: 'reelforge-guide',
+    uri: 'renderweld://guide',
+    name: 'renderweld-guide',
     title: 'RenderWeld store - what this site is and how to use it',
     description: 'The same content served at /llms-full.txt.',
     mimeType: 'text/markdown',

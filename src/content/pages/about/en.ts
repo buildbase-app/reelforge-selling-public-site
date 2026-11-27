@@ -18,7 +18,7 @@ const page: LegalPageContent = {
 
 ## Who makes it
 
-RenderWeld is developed and maintained by ${company.maintainer} at **${company.legalName}**, ${companyAddressLine}. ${company.legalName} also sells the licences on this site. RenderWeld was formerly ReelForge, and the code and some documents still use the old name.
+RenderWeld is developed and maintained by ${company.maintainer} at **${company.legalName}**, ${companyAddressLine}. ${company.legalName} also sells the licences on this site.
 
 ## How it works for you
 

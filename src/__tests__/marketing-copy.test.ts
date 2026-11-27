@@ -4,7 +4,7 @@ import { join, relative } from 'node:path';
 import { describe, expect, it } from 'vitest';
 
 /**
- * ReelForge is source-available, NOT open source (founder decision
+ * RenderWeld is source-available, NOT open source (founder decision
  * 2026-11-21), and is no longer sold as a locked image. This fails if the
  * marketing copy (pages, components, messages, FAQs, content blocks, legal
  * and blog content, site/SEO config, agent docs) ever says "open source"
@@ -58,14 +58,23 @@ describe('marketing copy', () => {
     expect(hits(/open[\s_-]*source/i)).toEqual([]);
   });
 
-  it('calls the product RenderWeld; ReelForge only as its old name', () => {
-    // Allowed: saying it was renamed, and the licence document's own title.
-    const old = hits(/ReelForge/).filter(
-      (hit) =>
-        !/Formerly ReelForge|formerly ReelForge|same as ReelForge|ReelForge was renamed|ReelForge Commercial License/.test(
-          hit
-        )
-    );
+  it('calls the product RenderWeld and never shows its old name', () => {
+    // Allowed: technical names that still carry it and that a visitor's
+    // commands or links depend on. Each goes when its owner renames it.
+    const TECHNICAL = [
+      /github\.com\/buildbase-app\/reelforge-(studio|selling-public-site)/, // the repositories
+      /docker compose exec reelforge /, // the studio compose file's service name
+      /REELFORGE_(SECRET_KEY|DOMAIN|PUBLIC_URL)\b/, // what that compose file reads
+      /media\.reelforge\.buildbase\.app/, // the media host
+      /'reelforge-(personal|commercial)'/, // BuildBase item slugs
+    ];
+    const old = hits(/reelforge/i).filter((hit) => {
+      const rest = TECHNICAL.reduce(
+        (line, name) => line.replace(name, ''),
+        hit
+      );
+      return /reelforge/i.test(rest.replace(/^[^:]+:\d+: /, ''));
+    });
     expect(old).toEqual([]);
   });
 

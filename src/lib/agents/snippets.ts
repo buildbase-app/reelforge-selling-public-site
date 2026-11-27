@@ -10,8 +10,8 @@
  *   reported "Connected". Separately, the studio's Docker test (#16) had
  *   headless Claude Code make a reel over MCP only.
  * - Codex CLI 0.171.0: both forms below write the same config, and
- *   `codex mcp get reelforge` reads it back (streamable_http, bearer token
- *   from REELFORGE_KEY). No Codex agent run has been recorded yet.
+ *   `codex mcp get <name>` reads it back (streamable_http, bearer token
+ *   from the key variable). No Codex agent run has been recorded yet.
  * - REST: every curl below, in order, rendered a 1080x1920 H.264 + AAC MP4.
  */
 
@@ -37,7 +37,7 @@ export interface AgentClient {
 export const LOCAL_URL = 'http://127.0.0.1:4321';
 
 const KEY_LINE =
-  'export REELFORGE_KEY=rf_...   # a key from: reelforge keys create --name agent';
+  'export RENDERWELD_KEY=rf_...   # a key from: renderweld keys create --name agent';
 
 export const AGENT_CLIENTS: AgentClient[] = [
   {
@@ -49,9 +49,9 @@ export const AGENT_CLIENTS: AgentClient[] = [
         label: 'Terminal',
         language: 'bash',
         code: `${KEY_LINE}
-claude mcp add --transport http reelforge ${LOCAL_URL}/mcp \\
-  --header "Authorization: Bearer $REELFORGE_KEY"
-claude mcp list   # reelforge: ${LOCAL_URL}/mcp (HTTP) - Connected`,
+claude mcp add --transport http renderweld ${LOCAL_URL}/mcp \\
+  --header "Authorization: Bearer $RENDERWELD_KEY"
+claude mcp list   # renderweld: ${LOCAL_URL}/mcp (HTTP) - Connected`,
       },
     ],
     checked:
@@ -66,14 +66,14 @@ claude mcp list   # reelforge: ${LOCAL_URL}/mcp (HTTP) - Connected`,
         label: 'Terminal',
         language: 'bash',
         code: `${KEY_LINE}
-codex mcp add reelforge --url ${LOCAL_URL}/mcp --bearer-token-env-var REELFORGE_KEY`,
+codex mcp add renderweld --url ${LOCAL_URL}/mcp --bearer-token-env-var RENDERWELD_KEY`,
       },
       {
         label: '~/.codex/config.toml (the same, by hand)',
         language: 'toml',
-        code: `[mcp_servers.reelforge]
+        code: `[mcp_servers.renderweld]
 url = "${LOCAL_URL}/mcp"
-bearer_token_env_var = "REELFORGE_KEY"`,
+bearer_token_env_var = "RENDERWELD_KEY"`,
       },
     ],
     checked:
@@ -90,7 +90,7 @@ bearer_token_env_var = "REELFORGE_KEY"`,
         language: 'json',
         code: `{
   "mcpServers": {
-    "reelforge": {
+    "renderweld": {
       "type": "http",
       "url": "${LOCAL_URL}/mcp",
       "headers": { "Authorization": "Bearer rf_..." }
@@ -112,7 +112,7 @@ bearer_token_env_var = "REELFORGE_KEY"`,
         label: 'Terminal',
         language: 'bash',
         code: `${KEY_LINE}
-H="Authorization: Bearer $REELFORGE_KEY"
+H="Authorization: Bearer $RENDERWELD_KEY"
 curl -s -H "$H" ${LOCAL_URL}/v1/capabilities
 curl -s -X POST -H "$H" -H 'content-type: application/json' \\
   -d @manifest.json ${LOCAL_URL}/v1/projects

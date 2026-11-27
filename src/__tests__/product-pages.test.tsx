@@ -173,12 +173,12 @@ describe('homepage sections', () => {
       expect(container.textContent).toContain(format);
   });
 
-  it('says what the product was called, once, with its source', () => {
+  it('never shows the old product name', () => {
     const { container } = render(<Home />);
-    expect(container.textContent).toContain('Formerly ReelForge');
+    expect(container.textContent).not.toMatch(/Formerly ReelForge/i);
     expect(
       container.querySelector('a[href$="renamed-from-reelforge.md"]')
-    ).not.toBeNull();
+    ).toBeNull();
   });
 
   it('gives every measured number its conditions', () => {
