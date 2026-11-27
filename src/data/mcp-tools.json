@@ -4,10 +4,10 @@
     "version": "0.1.0",
     "method": "reference",
     "reference": "docs/public/mcp/tools.md",
-    "commit": "9c5ba4a0a471106ef67da1aebf02340649417da3",
-    "fetchedOn": "2026-11-24"
+    "commit": "73aeb8782cecec8bc3af75feb6b66788d7ec8e1b",
+    "fetchedOn": "2026-11-26"
   },
-  "count": 76,
+  "count": 79,
   "groups": [
     {
       "id": "discover",
@@ -16,7 +16,7 @@
         {
           "name": "get_capabilities",
           "title": "Get server capabilities",
-          "summary": "Start here. Returns what this ReelForge server can do right now: installed engines (and whether each can render on this machine), templates, themes, media providers (configured...",
+          "summary": "Start here. Returns what this RenderWeld server can do right now: installed engines (and whether each can render on this machine), templates, themes, media providers (configured...",
           "readOnly": true
         },
         {
@@ -29,6 +29,12 @@
           "name": "get_project_schema",
           "title": "Get the project manifest JSON Schema",
           "summary": "Returns the JSON Schema of the project manifest (current schemaVersion).",
+          "readOnly": true
+        },
+        {
+          "name": "get_skill",
+          "title": "Read a craft skill",
+          "summary": "Rules for one step of making a video, with numbers, so the result follows professional craft, published standards and the physical world instead of generic defaults.",
           "readOnly": true
         },
         {
@@ -88,7 +94,7 @@
         {
           "name": "delete_project",
           "title": "Delete a project",
-          "summary": "Deletes a project with all its versions and renders.",
+          "summary": "Deletes a project with all its versions and renders, and cancels its queued and running renders and previews.",
           "readOnly": false
         },
         {
@@ -284,10 +290,22 @@
           "readOnly": true
         },
         {
+          "name": "get_frames",
+          "title": "Look at frames of a render",
+          "summary": "Stills of exact frames of a finished render or preview, so you can SEE what you made before calling it done: one labelled contact sheet (default) or one image per frame, taken f...",
+          "readOnly": true
+        },
+        {
           "name": "list_renders",
           "title": "List renders of a project",
           "summary": "Lists finished renders and previews of a project, newest first, with output URLs, size, fps, frames and duration.",
           "readOnly": true
+        },
+        {
+          "name": "delete_render",
+          "title": "Delete a render",
+          "summary": "Deletes one finished render or preview with all its files (video, poster, captions, scene clips, manifest) from storage.",
+          "readOnly": false
         },
         {
           "name": "get_analytics_summary",
