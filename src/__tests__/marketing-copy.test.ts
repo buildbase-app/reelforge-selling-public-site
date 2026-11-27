@@ -63,8 +63,6 @@ describe('marketing copy', () => {
     // commands or links depend on. Each goes when its owner renames it.
     const TECHNICAL = [
       /github\.com\/buildbase-app\/reelforge-(studio|selling-public-site)/, // the repositories
-      /docker compose exec reelforge /, // the studio compose file's service name
-      /REELFORGE_(SECRET_KEY|DOMAIN|PUBLIC_URL)\b/, // what that compose file reads
       /media\.reelforge\.buildbase\.app/, // the media host
       /'reelforge-(personal|commercial)'/, // BuildBase item slugs
     ];

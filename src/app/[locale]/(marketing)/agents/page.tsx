@@ -48,7 +48,7 @@ export async function generateMetadata({
 }
 
 const KEY_COMMAND =
-  'docker compose exec reelforge renderweld keys create --name agent --scopes read,write,render';
+  'docker compose exec renderweld renderweld keys create --name agent --scopes read,write,render';
 
 /**
  * "Connect your agent" (studio issue #49, /agents only): client tabs with
@@ -164,8 +164,8 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
               <code>tls</code> profile with Caddy that gets a certificate for
               your domain (
               <code>docker compose --profile tls up -d --build</code> with{' '}
-              <code>REELFORGE_DOMAIN</code> and{' '}
-              <code>REELFORGE_PUBLIC_URL</code> set). Then use{' '}
+              <code>RENDERWELD_DOMAIN</code> and{' '}
+              <code>RENDERWELD_PUBLIC_URL</code> set). Then use{' '}
               <code>https://YOUR-HOST/mcp</code> in the snippets above.
             </p>
             <p>

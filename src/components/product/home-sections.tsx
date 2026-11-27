@@ -562,10 +562,10 @@ const STEPS = [
     body: 'One Docker image with FFmpeg and a headless browser inside, on your computer or a server you run. Keep a copy of the secret key, and of the admin key it prints once.',
     code: `git clone ${siteConfig.repo.url}.git renderweld
 cd renderweld
-echo "REELFORGE_SECRET_KEY=$(openssl rand -base64 32)" >> .env
+echo "RENDERWELD_SECRET_KEY=$(openssl rand -base64 32)" >> .env
 docker compose up -d --build
 docker compose ps   # wait until the server shows (healthy)
-docker compose exec reelforge renderweld keys create --name admin --scopes admin`,
+docker compose exec renderweld renderweld keys create --name admin --scopes admin`,
     fn: 6,
   },
   {
@@ -579,7 +579,7 @@ curl -s -X POST http://127.0.0.1:4321/v1/licence \\
   {
     title: 'Connect your agent',
     body: 'Make a key for your agent that can build and render but not change the server, give it the MCP address, then ask for a reel. Or call the REST API from a script.',
-    code: `docker compose exec reelforge renderweld keys create --name agent --scopes read,write,render
+    code: `docker compose exec renderweld renderweld keys create --name agent --scopes read,write,render
 claude mcp add --transport http renderweld http://127.0.0.1:4321/mcp \\
   --header "Authorization: Bearer rf_..."   # the agent key`,
   },
