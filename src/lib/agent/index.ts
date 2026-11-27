@@ -37,7 +37,7 @@ export const agent = createAgentStack({
   secret: env.SYSTEM_SECRET,
   scopes: [...SCOPES],
   mcp: {
-    serverInfo: { name: 'reelforge-store', version: '0.1.0' },
+    serverInfo: { name: 'renderweld-store', version: '0.1.0' },
     builtinTools: 'readonly',
     tools: [...storeTools],
     handler: {
@@ -64,7 +64,7 @@ export const agent = createAgentStack({
     llmsFullTxt: buildLlmsFullTxt(),
     skills: [
       {
-        name: 'reelforge-store',
+        name: 'renderweld-store',
         description:
           "Read a RenderWeld customer's account over MCP (read-only).",
         content: buildSkillMarkdown(),

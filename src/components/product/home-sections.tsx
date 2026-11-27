@@ -173,10 +173,6 @@ export function Hero({
             fees
             <Fn n={1} />
           </p>
-          <p className="rf-muted mt-2 text-sm">
-            Formerly ReelForge: nothing you already set up breaks
-            <Fn n={9} />
-          </p>
         </div>
         <figure className="relative min-w-0">
           {/* The far layer: the mark's two frames, welded, behind the
@@ -564,12 +560,12 @@ const STEPS = [
   {
     title: 'Run the server',
     body: 'One Docker image with FFmpeg and a headless browser inside, on your computer or a server you run. Keep a copy of the secret key, and of the admin key it prints once.',
-    code: `git clone ${siteConfig.repo.url}.git
-cd reelforge-studio
+    code: `git clone ${siteConfig.repo.url}.git renderweld
+cd renderweld
 echo "REELFORGE_SECRET_KEY=$(openssl rand -base64 32)" >> .env
 docker compose up -d --build
-docker compose ps   # wait until reelforge shows (healthy)
-docker compose exec reelforge reelforge keys create --name admin --scopes admin`,
+docker compose ps   # wait until the server shows (healthy)
+docker compose exec reelforge renderweld keys create --name admin --scopes admin`,
     fn: 6,
   },
   {
@@ -583,8 +579,8 @@ curl -s -X POST http://127.0.0.1:4321/v1/licence \\
   {
     title: 'Connect your agent',
     body: 'Make a key for your agent that can build and render but not change the server, give it the MCP address, then ask for a reel. Or call the REST API from a script.',
-    code: `docker compose exec reelforge reelforge keys create --name agent --scopes read,write,render
-claude mcp add --transport http reelforge http://127.0.0.1:4321/mcp \\
+    code: `docker compose exec reelforge renderweld keys create --name agent --scopes read,write,render
+claude mcp add --transport http renderweld http://127.0.0.1:4321/mcp \\
   --header "Authorization: Bearer rf_..."   # the agent key`,
   },
 ] as const;
@@ -1190,13 +1186,6 @@ export function Footnotes() {
       <DocLink path="SCALE.md" /> (2026-11-23): one 4-vCPU container shared with
       other workloads, so every number is a lower bound and timings are noisy.
       The run on dedicated hardware is defined there and not measured yet.
-    </>,
-    <>
-      ReelForge was renamed RenderWeld in November 2026. Old environment
-      variables, commands and MCP resource URIs keep working for at least 90
-      days after the rename ships (
-      <DocLink path="public/install/renamed-from-reelforge.md" />
-      ).
     </>,
   ];
   return (

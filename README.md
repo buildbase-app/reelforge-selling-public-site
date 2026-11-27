@@ -1,6 +1,6 @@
 # RenderWeld store
 
-The public site for **RenderWeld** (formerly ReelForge), a source-available,
+The public site for **RenderWeld**, a source-available,
 agent-driven short-form video studio that people self-host and drive from an
 AI agent over REST and MCP (engines: Remotion, Motion Canvas, HTML and HyperFrames). The
 product's source is public at
@@ -92,8 +92,8 @@ waitlist. Checkout returns to `/order` (a guest with `?order=&token=`).
 Selling itself (Stripe Connect, the own store, item types, items, files and
 licence keys) is set up in the BuildBase console, not here.
 
-The free **ReelForge Personal** item comes first on the pricing page, with a
-"Get it free" claim (no payment page), then **ReelForge Commercial**'s tiers.
+The free **RenderWeld Personal** item comes first on the pricing page, with a
+"Get it free" claim (no payment page), then **RenderWeld Commercial**'s tiers.
 Which item is which is decided in `src/lib/store/edition.ts`: `edition`
 (`personal` or `commercial`) in the item's metadata (copied, alone, by the
 server read), else a known item id or slug, else "every price free" means
@@ -122,7 +122,7 @@ the server and sanitised with `rehype-sanitize` (`src/lib/platform/markdown.ts`)
 | Variable                             | Where it comes from                                                                          |
 | ------------------------------------ | -------------------------------------------------------------------------------------------- |
 | `NEXT_PUBLIC_BUILDBASE_SERVER_URL`   | `https://api.console.buildbase.app`                                                          |
-| `NEXT_PUBLIC_BUILDBASE_ORG_ID`       | The ReelForge organization's id in the BuildBase console                                     |
+| `NEXT_PUBLIC_BUILDBASE_ORG_ID`       | The RenderWeld organization's id in the BuildBase console                                    |
 | `NEXT_PUBLIC_BUILDBASE_CLIENT_ID`    | Console, Auth: an OAuth client whose redirect URLs include the site URL                      |
 | `BUILDBASE_CLIENT_SECRET`            | The same client's secret. Server only                                                        |
 | `NEXT_PUBLIC_BUILDBASE_REDIRECT_URL` | Where the hosted sign-in returns to; one of the client's redirect URLs                       |
@@ -151,7 +151,7 @@ typed by hand:
 
 - `src/data/reels.json` and `public/reels/*`: demo reels rendered by a real
   RenderWeld Studio. Start a studio locally (in `reelforge-studio`:
-  `REELFORGE_LICENCE_MODE=off REELFORGE_BOOTSTRAP_KEY=rf_... pnpm start`), then
+  `RENDERWELD_LICENCE_MODE=off RENDERWELD_BOOTSTRAP_KEY=rf_... pnpm start`), then
   `node scripts/reels/render-demo-reels.mjs <dir>` (drives it over MCP),
   `scripts/reels/transcode.sh <dir>/<slug>/final.mp4 <slug>` (720p H.264 + AV1,
   AVIF/WebP/JPEG posters at 720 px plus 360 and 540 px AVIF/WebP for

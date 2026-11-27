@@ -31,7 +31,7 @@ describe('AgentTabs', () => {
     expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
     // Inactive panels are hidden but still in the document (crawlable).
     expect(document.querySelectorAll('[role="tabpanel"]')).toHaveLength(4);
-    expect(document.body.textContent).toContain('codex mcp add reelforge');
+    expect(document.body.textContent).toContain('codex mcp add renderweld');
   });
 
   it('moves between tabs with the arrow keys, Home and End', () => {

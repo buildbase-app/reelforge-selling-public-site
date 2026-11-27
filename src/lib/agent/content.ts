@@ -65,7 +65,7 @@ export const PAGES: PageEntry[] = [
     title: 'Licences',
     path: '/licence',
     summary:
-      'Summary of the two licences: Personal (PolyForm Noncommercial 1.0.0) and the ReelForge Commercial License (draft), with the trademark policy.',
+      'Summary of the two licences: Personal (PolyForm Noncommercial 1.0.0) and the RenderWeld Commercial License (draft), with the trademark policy.',
   },
   {
     title: 'Blog',
@@ -85,9 +85,9 @@ export const PAGES: PageEntry[] = [
  * rather than leave it implied.
  */
 export const PRODUCT_FACTS = [
-  '- RenderWeld (formerly ReelForge) is a source-available video renderer that the buyer self-hosts on their own machine or cloud server. The code is public to read; the licence limits how it may be used. Old ReelForge names (environment variables, CLI, MCP resource URIs) keep working for at least 90 days after the rename ships.',
+  '- RenderWeld is a source-available video renderer that the buyer self-hosts on their own machine or cloud server. The code is public to read; the licence limits how it may be used.',
   `- Source: ${siteConfig.repo.url} (licensing: ${siteConfig.repo.licensing}).`,
-  '- Personal use is free under the PolyForm Noncommercial License 1.0.0, with a free Personal licence key claimed with a BuildBase account. Any commercial use needs a paid ReelForge Commercial License (the licence document keeps its name; one-time; tiers and prices read from the store).',
+  '- Personal use is free under the PolyForm Noncommercial License 1.0.0, with a free Personal licence key claimed with a BuildBase account. Any commercial use needs a paid RenderWeld Commercial License (one-time; tiers and prices read from the store).',
   '- Every released Docker image activates with a licence key from BuildBase. No resale, redistribution, rebranding or competing hosted service under either licence; forks must be renamed.',
   "- The buyer's own AI agent drives it over a REST API and an MCP server running on the buyer's machine (any MCP client; tested with Claude Code). The agent plans every scene and its timing.",
   '- Four rendering engines: Remotion, Motion Canvas, HTML and HyperFrames, mixed per scene in one project.',
@@ -110,7 +110,7 @@ function licensingLinks(b: string): string {
     `- [Source on GitHub](${siteConfig.repo.url}): source-available, default branch \`main\`.`,
     `- [LICENSING.md](${siteConfig.repo.licensing}): which licence you need.`,
     `- [Personal licence: PolyForm Noncommercial 1.0.0](${siteConfig.repo.license}) (canonical text: ${siteConfig.polyformNoncommercial}).`,
-    `- [ReelForge Commercial License (draft)](${siteConfig.repo.commercialLicense}).`,
+    `- [RenderWeld Commercial License (draft)](${siteConfig.repo.commercialLicense}).`,
     `- [Trademark policy](${siteConfig.repo.trademark}): forks must be renamed.`,
     `- [Licences summary](${b}/licence) and [pricing](${b}/pricing) on this site.`,
   ].join('\n');
@@ -234,7 +234,7 @@ Security: ${contactUri()}
 export function buildSkillMarkdown(): string {
   const b = base();
   return `---
-name: reelforge-store
+name: renderweld-store
 description: Read a RenderWeld customer's account over MCP (read-only).
 ---
 

@@ -105,7 +105,7 @@ const content = process.env.BUILDBASE_API_TOKEN
       apiToken: process.env.BUILDBASE_API_TOKEN,
       // Names this template in the `X-BuildBase-Client` header (beside the
       // SDK version and runtime); it carries no user or org data.
-      source: 'reelforge-store',
+      source: 'renderweld-store',
       ...withNextCache({ revalidate: CONTENT_REVALIDATE_SECONDS }),
     })
   : null;

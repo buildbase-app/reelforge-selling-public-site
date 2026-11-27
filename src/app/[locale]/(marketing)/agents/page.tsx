@@ -48,7 +48,7 @@ export async function generateMetadata({
 }
 
 const KEY_COMMAND =
-  'docker compose exec reelforge reelforge keys create --name agent --scopes read,write,render';
+  'docker compose exec reelforge renderweld keys create --name agent --scopes read,write,render';
 
 /**
  * "Connect your agent" (studio issue #49, /agents only): client tabs with
@@ -170,9 +170,9 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
             </p>
             <p>
               <code>/mcp</code> checks the Host and Origin headers against the
-              public URL and <code>REELFORGE_ALLOWED_HOSTS</code>, so a web page
-              cannot reach your studio through the visitor&apos;s browser. Keys
-              can also carry an IP allowlist, an expiry and render quotas.
+              public URL and the allowed hosts setting, so a web page cannot
+              reach your studio through the visitor&apos;s browser. Keys can
+              also carry an IP allowlist, an expiry and render quotas.
             </p>
           </div>
         </details>

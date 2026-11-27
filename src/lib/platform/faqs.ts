@@ -103,11 +103,6 @@ const Q = {
     answer:
       'For a Commercial licence, yes, if RenderWeld does not run on a supported system and our support cannot fix it. Personal keys are free, so there is nothing to refund. See the [refund policy](/refund) (draft, pending review).',
   },
-  renamed: {
-    id: 'renamed',
-    question: 'Is RenderWeld the same as ReelForge?',
-    answer: `Yes. ReelForge was renamed RenderWeld in November 2026. Nothing you already set up breaks: the old environment variables, commands and MCP resource URIs keep working for at least 90 days after the rename ships, and the [rename guide](${siteConfig.repo.url}/blob/main/docs/public/install/renamed-from-reelforge.md) lists every old name next to its new one.`,
-  },
   contact: {
     id: 'contact',
     question: 'How do I reach you?',
@@ -189,7 +184,6 @@ export const DEFAULT_FAQS: Record<FaqCollectionKey, FaqEntry[]> = {
     Q.sourceCode,
     Q.commercialUse,
     Q.buy,
-    Q.renamed,
   ],
   pricing: [
     Q.personalFree,
