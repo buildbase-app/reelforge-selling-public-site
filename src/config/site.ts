@@ -15,6 +15,28 @@ const supportEmail: string | null =
 
 const REPO = 'https://github.com/buildbase-app/reelforge-studio';
 
+/**
+ * The company that develops, maintains and sells RenderWeld (founder decision
+ * 2026-11-27). The legal pages, the contact page and the Organization JSON-LD
+ * read it from here.
+ */
+const company = {
+  legalName: 'Jagodana LLC',
+  /** Who builds and maintains RenderWeld at the company. */
+  maintainer: 'Dharmendra Jagodana',
+  address: {
+    street: '1021 E Lincolnway, 7463',
+    locality: 'Cheyenne',
+    region: 'WY',
+    postalCode: '82001',
+    country: 'US',
+    countryName: 'United States',
+  },
+} as const;
+
+/** The postal address on one line, for pages and machine-readable files. */
+export const companyAddressLine = `${company.address.street}, ${company.address.locality}, ${company.address.region} ${company.address.postalCode}, ${company.address.countryName}`;
+
 export const siteConfig = {
   name: 'RenderWeld',
   shortName: 'RenderWeld',
@@ -46,9 +68,16 @@ export const siteConfig = {
     agentGuide:
       'https://github.com/buildbase-app/sdk/blob/main/docs/MCP-AND-AGENT-READINESS.md',
   },
+  company,
   contact: {
     /** Support email, or null when NEXT_PUBLIC_SUPPORT_EMAIL is not set. */
     support: supportEmail,
+    /** Personal data requests and privacy questions. */
+    privacy: 'privacy@renderweld.com',
+    /** Questions about the terms and the licences. */
+    legal: 'terms@renderweld.com',
+    /** Everything else: partnerships, press, general questions. */
+    general: 'contact@renderweld.com',
     /** Public contact page; works whether or not an email is configured. */
     page: `${siteUrl.replace(/\/$/, '')}/contact`,
   },

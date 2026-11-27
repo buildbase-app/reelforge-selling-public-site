@@ -28,12 +28,8 @@ export const seoConfig = {
   brand: {
     /** Product / company name used everywhere (JSON-LD, OG, Twitter). */
     name: siteConfig.name,
-    /**
-     * PLACEHOLDER: the legal entity that sells RenderWeld is not confirmed
-     * yet (founder decision). Replace this string once it is; the legal
-     * pages show the same placeholder.
-     */
-    legalName: LEGAL_ENTITY_PLACEHOLDER,
+    /** The company that sells RenderWeld (src/config/site.ts). */
+    legalName: siteConfig.company.legalName as string,
     description: siteConfig.description,
     tagline: 'Agents write the manifest. RenderWeld renders the video.',
     /** The product's public, source-available repository. */
@@ -66,7 +62,12 @@ export const seoConfig = {
      */
     sameAs: [] as readonly string[],
   },
-  contactPoint: undefined as ContactPoint | undefined,
+  contactPoint: (siteConfig.contact.support
+    ? {
+        contactType: 'customer support',
+        email: siteConfig.contact.support,
+      }
+    : undefined) as ContactPoint | undefined,
   /**
    * Search engine verification tokens, from the environment (public values:
    * the content of each engine's verification meta tag). Empty or unset

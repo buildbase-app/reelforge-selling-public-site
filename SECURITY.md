@@ -23,7 +23,7 @@ patched unless stated in the release notes.
 
 ## Scope
 
-The ReelForge store website in this repository: sign-in and session handling, the order and licence pages, webhooks, server routes and the Cloudflare Worker configuration. Payment processing (Stripe) and accounts (BuildBase) are run by those providers; report issues in them to the provider as well.
+The RenderWeld store website in this repository: sign-in and session handling, the order and licence pages, webhooks, server routes and the Cloudflare Worker configuration. Payment processing (Stripe) and accounts (BuildBase) are run by those providers; report issues in them to the provider as well.
 
 Out of scope: findings that need a compromised machine or stolen credentials,
 missing security headers on pages without sensitive actions, rate limits on
@@ -32,5 +32,5 @@ public pages, and reports from automated scanners without a demonstrated impact.
 ## Handling secrets
 
 Never paste secrets, licence keys or API keys into issues, pull requests or
-reports. If you find a leaked secret belonging to ReelForge or BuildBase,
+reports. If you find a leaked secret belonging to RenderWeld or BuildBase,
 report it privately as above.

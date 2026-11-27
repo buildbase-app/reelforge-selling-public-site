@@ -1,4 +1,4 @@
-# Deploying the ReelForge store to Cloudflare Workers
+# Deploying the RenderWeld store to Cloudflare Workers
 
 The store runs on Cloudflare Workers through
 [OpenNext](https://opennext.js.org/cloudflare) (`@opennextjs/cloudflare`), with

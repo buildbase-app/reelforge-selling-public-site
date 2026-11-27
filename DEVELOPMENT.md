@@ -1,7 +1,7 @@
 # Developer setup
 
 How to run the RenderWeld site (this repository, the store formerly called
-ReelForge store) on your own machine. Two commands cover the usual case:
+RenderWeld store) on your own machine. Two commands cover the usual case:
 
 ```bash
 npm run setup     # check prerequisites, install, write local config, create the local database

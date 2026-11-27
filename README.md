@@ -1,8 +1,8 @@
-# ReelForge store
+# RenderWeld store
 
-The public site for **ReelForge**, a source-available, agent-driven
-short-form video studio that people self-host and drive from an AI agent over
-REST and MCP (engines: Remotion, Motion Canvas, HTML and HyperFrames). The
+The public site for **RenderWeld** (formerly ReelForge), a source-available,
+agent-driven short-form video studio that people self-host and drive from an
+AI agent over REST and MCP (engines: Remotion, Motion Canvas, HTML and HyperFrames). The
 product's source is public at
 <https://github.com/buildbase-app/reelforge-studio> (see its `LICENSING.md`).
 Never call it open source; say "source-available".
@@ -11,7 +11,7 @@ Licensing (founder decision 2026-11-21): a free **Personal** licence key for
 noncommercial use (PolyForm Noncommercial 1.0.0), claimed with a BuildBase
 account; a paid one-time **Commercial** licence (Solo, Studio, Agency) for any
 commercial use. Every released Docker image needs a licence key from
-BuildBase. This is where people learn about ReelForge, sign in, claim or buy a
+BuildBase. This is where people learn about RenderWeld, sign in, claim or buy a
 key, and manage their licences.
 
 Built with Next.js 16 on [BuildBase](https://buildbase.app) (sign-in,
@@ -19,7 +19,7 @@ workspaces, billing, notifications) and deployed to Cloudflare Workers with
 OpenNext. See `DEPLOY_CLOUDFLARE.md`.
 
 > **Status:** started from the BuildBase Next.js starter; the BuildBase demo
-> pages and the org-token demo routes have been removed. ReelForge is not on
+> pages and the org-token demo routes have been removed. RenderWeld is not on
 > sale yet.
 >
 > **Language:** English only for now. `locales` in `src/i18n/config.ts` is
@@ -150,7 +150,7 @@ the server and sanitised with `rehype-sanitize` (`src/lib/platform/markdown.ts`)
 typed by hand:
 
 - `src/data/reels.json` and `public/reels/*`: demo reels rendered by a real
-  ReelForge Studio. Start a studio locally (in `reelforge-studio`:
+  RenderWeld Studio. Start a studio locally (in `reelforge-studio`:
   `REELFORGE_LICENCE_MODE=off REELFORGE_BOOTSTRAP_KEY=rf_... pnpm start`), then
   `node scripts/reels/render-demo-reels.mjs <dir>` (drives it over MCP),
   `scripts/reels/transcode.sh <dir>/<slug>/final.mp4 <slug>` (720p H.264 + AV1,
