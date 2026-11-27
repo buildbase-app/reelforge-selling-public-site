@@ -58,6 +58,7 @@ const messages: Messages = {
         waitlist: 'Waitlist',
         help: 'Help',
         contact: 'Contact',
+        feedback: 'Feedback',
         about: 'About',
         security: 'Security',
         gallery: 'Gallery',

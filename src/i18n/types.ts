@@ -57,6 +57,7 @@ export interface CommonMessages {
       waitlist: string;
       help: string;
       contact: string;
+      feedback: string;
       about: string;
       security: string;
       gallery: string;

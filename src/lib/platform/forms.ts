@@ -26,6 +26,8 @@ export interface FormField {
   helpText?: string;
   type: FormFieldType;
   required: boolean;
+  /** Longest value the form takes, for text and rich-text fields. */
+  max?: number;
 }
 
 /** What `ContactForm` needs to render and submit one form. */
@@ -40,6 +42,12 @@ export interface PublicForm {
 /** The contact form's id, from NEXT_PUBLIC_BUILDBASE_CONTACT_FORM_ID. */
 export const CONTACT_FORM_ID =
   process.env.NEXT_PUBLIC_BUILDBASE_CONTACT_FORM_ID?.trim() || null;
+
+/** The forms on /feedback, from their NEXT_PUBLIC_BUILDBASE_* ids. */
+export const FEATURE_REQUEST_FORM_ID =
+  process.env.NEXT_PUBLIC_BUILDBASE_FEATURE_REQUEST_FORM_ID?.trim() || null;
+export const TEMPLATE_REQUEST_FORM_ID =
+  process.env.NEXT_PUBLIC_BUILDBASE_TEMPLATE_REQUEST_FORM_ID?.trim() || null;
 
 const FORM_REVALIDATE_SECONDS = 300;
 

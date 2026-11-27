@@ -144,4 +144,46 @@ describe('ContactForm', () => {
     );
     fetchMock.mockRestore();
   });
+
+  it('takes its own labels, ids and length limits for another form', async () => {
+    const fetchMock = vi
+      .spyOn(globalThis, 'fetch')
+      .mockResolvedValue(new Response('{}', { status: 200 }));
+    const form = toPublicForm(ENDPOINT, undefined, [
+      { slug: 'title', title: 'Idea', type: 'text', required: true, max: 140 },
+      {
+        slug: 'details',
+        title: 'Details',
+        type: 'rich-text',
+        required: true,
+        max: 4000,
+      },
+    ])!;
+    render(
+      <ContactForm
+        form={form}
+        idPrefix="feature"
+        submitLabel="Send suggestion"
+        sentMessage="Thanks for the idea."
+      />
+    );
+    const idea = screen.getByLabelText('Idea');
+    expect(idea).toHaveAttribute('id', 'feature-title');
+    expect(idea).toHaveAttribute('maxlength', '140');
+    expect(screen.getByLabelText('Details')).toHaveAttribute(
+      'maxlength',
+      '4000'
+    );
+    fireEvent.change(idea, { target: { value: 'GIF export' } });
+    fireEvent.change(screen.getByLabelText('Details'), {
+      target: { value: 'For chat apps' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Send suggestion' }));
+    await waitFor(() =>
+      expect(screen.getByRole('status')).toHaveTextContent(
+        'Thanks for the idea.'
+      )
+    );
+    fetchMock.mockRestore();
+  });
 });
