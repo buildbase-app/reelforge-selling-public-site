@@ -106,8 +106,8 @@ export default async function ContactPage({ params }: ContactPageProps) {
             ))}
           </dl>
           <p className="text-muted-foreground mt-4 text-sm">
-            Include your order number if you have one. Write in English if
-            you can.
+            Include your order number if you have one. Write in English if you
+            can.
           </p>
         </section>
 
