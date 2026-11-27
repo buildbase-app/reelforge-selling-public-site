@@ -4,6 +4,7 @@ import {
   LEGAL_ENTITY_PLACEHOLDER,
   seoConfig,
 } from '@/config/seo';
+import { siteConfig } from '@/config/site';
 import { serializeJsonLd } from '@/lib/seo/json-ld';
 import type { SchemaOffer } from '@/lib/store/offers';
 
@@ -89,6 +90,14 @@ export function OrganizationJsonLd({
       ? { foundingDate: seoConfig.brand.foundingDate }
       : {}),
     ...(legalName ? { legalName } : {}),
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: siteConfig.company.address.street,
+      addressLocality: siteConfig.company.address.locality,
+      addressRegion: siteConfig.company.address.region,
+      postalCode: siteConfig.company.address.postalCode,
+      addressCountry: siteConfig.company.address.country,
+    },
   };
   return <JsonLdScript data={data} scriptKey="organization-jsonld" />;
 }

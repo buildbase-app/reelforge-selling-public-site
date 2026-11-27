@@ -3,8 +3,11 @@ import { setRequestLocale } from 'next-intl/server';
 import { HelpCircle, Mail, ScrollText } from 'lucide-react';
 import { Link } from '@/i18n/link';
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
-import { SUPPORT_EMAIL_TODO, siteConfig } from '@/config/site';
-import { LEGAL_ENTITY_PLACEHOLDER } from '@/config/seo';
+import {
+  SUPPORT_EMAIL_TODO,
+  companyAddressLine,
+  siteConfig,
+} from '@/config/site';
 import type { Locale } from '@/i18n/config';
 import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
 
@@ -28,17 +31,40 @@ export async function generateMetadata({
   });
 }
 
+const { company, contact } = siteConfig;
+
+/** One inbox per purpose, so a request lands with whoever handles it. */
+const CHANNELS = [
+  {
+    title: 'Support',
+    email: contact.support,
+    about: 'Installation, your licence key, your order or a refund.',
+  },
+  {
+    title: 'Privacy',
+    email: contact.privacy,
+    about: 'Your personal data: a copy, a correction or deletion.',
+  },
+  {
+    title: 'Terms and licences',
+    email: contact.legal,
+    about: 'The terms of service, the licences and commercial use.',
+  },
+  {
+    title: 'Everything else',
+    email: contact.general,
+    about: 'Partnerships, press and general questions.',
+  },
+] as const;
+
 /**
- * Public contact page. Shows the support email when NEXT_PUBLIC_SUPPORT_EMAIL
- * is set; otherwise points to Help (and, in development only, says the
- * address is missing). The seller's legal name is a visible placeholder
- * until the founder confirms it.
+ * Public contact page: one inbox per purpose and the seller's name and
+ * address. The support address comes from NEXT_PUBLIC_SUPPORT_EMAIL (set in
+ * .env.production); a development build without it says so.
  */
 export default async function ContactPage({ params }: ContactPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const email = siteConfig.contact.support;
-
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-16 md:py-24">
       <BreadcrumbJsonLd items={[{ name: TITLE, url: '/contact' }]} />
@@ -53,50 +79,36 @@ export default async function ContactPage({ params }: ContactPageProps) {
         <section className="bg-card rounded-xl border p-6">
           <h2 className="flex items-center gap-2 text-lg font-semibold">
             <Mail className="text-muted-foreground h-5 w-5" aria-hidden />
-            Support
+            Email us
           </h2>
-          {email ? (
-            <p className="text-muted-foreground mt-2">
-              Email{' '}
-              <a
-                href={`mailto:${email}`}
-                className="text-foreground font-medium underline underline-offset-2"
-              >
-                {email}
-              </a>{' '}
-              about installation, your order, refunds or your personal data.
-              Include your order number if you have one.
-            </p>
-          ) : (
-            <div className="text-muted-foreground mt-2 space-y-2">
-              {process.env.NODE_ENV !== 'production' && (
-                <p className="text-destructive font-mono text-xs">
-                  {SUPPORT_EMAIL_TODO}
-                </p>
-              )}
-              <p>
-                Contact us via the help page: the{' '}
-                <Link
-                  href="/help"
-                  className="text-foreground font-medium underline underline-offset-2"
-                >
-                  Help
-                </Link>{' '}
-                page answers the common questions, and a direct support address
-                will be published here before RenderWeld goes on sale.
-              </p>
-              <p>
-                To hear when RenderWeld can be bought,{' '}
-                <Link
-                  href="/waitlist"
-                  className="text-foreground font-medium underline underline-offset-2"
-                >
-                  join the waitlist
-                </Link>
-                .
-              </p>
-            </div>
-          )}
+          <dl className="mt-4 grid gap-4 sm:grid-cols-2">
+            {CHANNELS.map((channel) => (
+              <div key={channel.title}>
+                <dt className="text-foreground font-medium">{channel.title}</dt>
+                <dd className="text-muted-foreground mt-1 text-sm">
+                  {channel.email ? (
+                    <a
+                      href={`mailto:${channel.email}`}
+                      className="text-foreground underline underline-offset-2"
+                    >
+                      {channel.email}
+                    </a>
+                  ) : (
+                    process.env.NODE_ENV !== 'production' && (
+                      <span className="text-destructive font-mono text-xs">
+                        {SUPPORT_EMAIL_TODO}
+                      </span>
+                    )
+                  )}
+                  <span className="mt-1 block">{channel.about}</span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <p className="text-muted-foreground mt-4 text-sm">
+            Include your order number if you have one. Write in English if you
+            can.
+          </p>
         </section>
 
         <section className="bg-card rounded-xl border p-6">
@@ -133,10 +145,11 @@ export default async function ContactPage({ params }: ContactPageProps) {
             <ScrollText className="text-muted-foreground h-5 w-5" aria-hidden />
             Seller
           </h2>
-          <p className="text-muted-foreground mt-2">
-            RenderWeld is sold by {LEGAL_ENTITY_PLACEHOLDER}. [Address and
-            country to be confirmed.]
-          </p>
+          <address className="text-muted-foreground mt-2 not-italic">
+            RenderWeld is developed, maintained and sold by{' '}
+            <span className="text-foreground">{company.legalName}</span>,{' '}
+            {companyAddressLine}.
+          </address>
         </section>
       </div>
     </div>

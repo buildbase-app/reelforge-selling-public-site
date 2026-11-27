@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  // The ReelForge store on Cloudflare Workers, built with OpenNext
+  // The RenderWeld store on Cloudflare Workers, built with OpenNext
   // (`npm run preview` / `npm run deploy`). See DEPLOY_CLOUDFLARE.md.
   "name": "reelforge-store",
   // The RenderWeld Cloudflare account ("renderweld.com"), which owns the
