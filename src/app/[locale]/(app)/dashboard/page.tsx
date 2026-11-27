@@ -3,7 +3,7 @@
 import '@/lib/zod-jitless';
 import { useTranslations } from 'next-intl';
 import { KeyRound, Receipt, ShoppingBag } from 'lucide-react';
-import { useHoldings, useMyOrders, useSaaSAuth } from '@buildbase/sdk/react';
+import { useHoldings, useMyOrders } from '@buildbase/sdk/react';
 import {
   formatMinorAmountIntl,
   orderDisplayStatus,
@@ -34,7 +34,6 @@ const ORDER_STATUS: Record<OrderDisplayStatus, string> = {
 /** The account home: what the person owns and their latest orders. */
 export default function DashboardPage() {
   const t = useTranslations('dashboard');
-  const { user } = useSaaSAuth();
   const { holdings, loading: holdingsLoading } = useHoldings({ limit: 50 });
   const { orders, loading: ordersLoading } = useMyOrders({ limit: 5 });
   const available = holdings.filter((h) => h.state === 'available');
@@ -47,9 +46,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">
-          {t('welcome', { name: user?.name || '' })}
-        </h1>
+        <h1 className="text-3xl font-medium tracking-tight">{t('title')}</h1>
         <p className="text-muted-foreground">
           Your RenderWeld purchases, downloads and licence keys.
         </p>

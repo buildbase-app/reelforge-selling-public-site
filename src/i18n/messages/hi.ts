@@ -127,7 +127,6 @@ const messages: DraftMessages = {
       viewer: 'दर्शक',
     },
     title: 'डैशबोर्ड',
-    welcome: 'वापस आने पर स्वागत है, {name}!',
     trial: {
       endingSoon: 'ट्रायल जल्द समाप्त होगा',
       endingSoonMsg:

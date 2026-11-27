@@ -126,7 +126,6 @@ const messages: DraftMessages = {
       viewer: '查看者',
     },
     title: '仪表板',
-    welcome: '欢迎回来，{name}！',
     trial: {
       endingSoon: '试用即将结束',
       endingSoonMsg: '您的试用将在{days}天内结束。立即升级以保持访问权限。',

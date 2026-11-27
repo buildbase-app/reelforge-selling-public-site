@@ -127,7 +127,6 @@ const messages: DraftMessages = {
       viewer: 'Betrachter',
     },
     title: 'Dashboard',
-    welcome: 'Willkommen zurück, {name}!',
     trial: {
       endingSoon: 'Testphase endet bald',
       endingSoonMsg:

@@ -146,7 +146,6 @@ const messages: Messages = {
       viewer: 'Viewer',
     },
     title: 'Dashboard',
-    welcome: 'Welcome back, {name}!',
     trial: {
       endingSoon: 'Trial ending soon',
       endingSoonMsg:

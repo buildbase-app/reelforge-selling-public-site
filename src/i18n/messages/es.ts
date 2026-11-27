@@ -127,7 +127,6 @@ const messages: DraftMessages = {
       viewer: 'Lector',
     },
     title: 'Panel',
-    welcome: '¡Bienvenido de nuevo, {name}!',
     trial: {
       endingSoon: 'Prueba por terminar',
       endingSoonMsg:

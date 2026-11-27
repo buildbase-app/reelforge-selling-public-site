@@ -126,7 +126,6 @@ const messages: DraftMessages = {
       viewer: 'مشاهد',
     },
     title: 'لوحة التحكم',
-    welcome: 'مرحباً بعودتك، {name}!',
     trial: {
       endingSoon: 'تنتهي الفترة التجريبية قريباً',
       endingSoonMsg:
