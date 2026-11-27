@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
-import { HelpCircle, Mail, ScrollText } from 'lucide-react';
+import { HelpCircle, Mail, MessageSquare, ScrollText } from 'lucide-react';
 import { Link } from '@/i18n/link';
+import { ContactForm } from '@/components/contact/contact-form';
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
 import {
   SUPPORT_EMAIL_TODO,
@@ -9,6 +10,7 @@ import {
   siteConfig,
 } from '@/config/site';
 import type { Locale } from '@/i18n/config';
+import { getPublicForm } from '@/lib/platform/forms';
 import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
 
 interface ContactPageProps {
@@ -58,13 +60,15 @@ const CHANNELS = [
 ] as const;
 
 /**
- * Public contact page: one inbox per purpose and the seller's name and
- * address. The support address comes from NEXT_PUBLIC_SUPPORT_EMAIL (set in
+ * Public contact page: a message form (a BuildBase form, when
+ * NEXT_PUBLIC_BUILDBASE_CONTACT_FORM_ID is set), one inbox per purpose, and
+ * the seller's name and address. The support address comes from NEXT_PUBLIC_SUPPORT_EMAIL (set in
  * .env.production); a development build without it says so.
  */
 export default async function ContactPage({ params }: ContactPageProps) {
   const { locale } = await params;
   setRequestLocale(locale);
+  const form = await getPublicForm();
   return (
     <div className="mx-auto w-full max-w-3xl px-6 py-16 md:py-24">
       <BreadcrumbJsonLd items={[{ name: TITLE, url: '/contact' }]} />
@@ -76,6 +80,21 @@ export default async function ContactPage({ params }: ContactPageProps) {
       </p>
 
       <div className="mt-10 space-y-6">
+        {form && (
+          <section className="bg-card rounded-xl border p-6">
+            <h2 className="flex items-center gap-2 text-lg font-semibold">
+              <MessageSquare
+                className="text-muted-foreground h-5 w-5"
+                aria-hidden
+              />
+              Send a message
+            </h2>
+            <div className="mt-4">
+              <ContactForm form={form} />
+            </div>
+          </section>
+        )}
+
         <section className="bg-card rounded-xl border p-6">
           <h2 className="flex items-center gap-2 text-lg font-semibold">
             <Mail className="text-muted-foreground h-5 w-5" aria-hidden />
