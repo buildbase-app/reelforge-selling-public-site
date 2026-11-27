@@ -19,6 +19,8 @@ export async function SiteFooter({ title }: SiteFooterProps) {
       section: t('footer.sections.product'),
       links: [
         { label: t('footer.links.pricing'), href: '/pricing' },
+        { label: t('footer.links.gallery'), href: '/gallery' },
+        { label: t('footer.links.agents'), href: '/agents' },
         { label: t('footer.links.waitlist'), href: '/waitlist' },
         { label: t('footer.links.changelog'), href: '/changelog' },
         { label: t('footer.links.dashboard'), href: '/dashboard' },
@@ -29,9 +31,12 @@ export async function SiteFooter({ title }: SiteFooterProps) {
       links: [
         // The product's public, source-available repository.
         { label: t('footer.links.github'), href: siteConfig.repo.url },
+        { label: t('footer.links.docs'), href: '/docs' },
         { label: t('footer.links.help'), href: '/help' },
-        { label: t('footer.links.contact'), href: '/contact' },
         { label: t('footer.links.blog'), href: '/blog' },
+        { label: t('footer.links.about'), href: '/about' },
+        { label: t('footer.links.security'), href: '/security' },
+        { label: t('footer.links.contact'), href: '/contact' },
       ],
     },
     {

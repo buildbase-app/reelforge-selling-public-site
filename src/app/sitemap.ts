@@ -79,6 +79,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     },
     { url: url('/waitlist'), changeFrequency: 'monthly', priority: 0.6 },
+    { url: url('/about'), changeFrequency: 'monthly', priority: 0.5 },
+    { url: url('/security'), changeFrequency: 'monthly', priority: 0.4 },
     { url: url('/contact'), changeFrequency: 'monthly', priority: 0.5 },
   ];
 
