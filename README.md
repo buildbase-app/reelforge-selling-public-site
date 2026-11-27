@@ -53,6 +53,31 @@ studio and the site together.
 | Agents: MCP server at `/api/mcp`, OAuth discovery, `llms.txt`, `openapi.json`         | `src/lib/agent/`                                                                                                        |
 | Database (Prisma)                                                                     | `prisma/schema.prisma`, `src/lib/db.ts`                                                                                 |
 
+## Built with BuildBase
+
+[BuildBase](https://buildbase.app) is a backend for SaaS apps: sign-in,
+workspaces, billing and selling, content, notifications and agent access,
+through one SDK (`@buildbase/sdk`) and API. This site uses these modules:
+
+| Module                                                                | What it does for RenderWeld                                                           | Where                                                                                           |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| [Authentication](https://docs.buildbase.app/authentication/overview)  | Hosted sign-in, the session cookie, sessions and devices                              | `src/components/saas-provider.tsx`, `src/app/api/auth/*`, `dashboard/security`                  |
+| [Workspaces](https://docs.buildbase.app/workspaces/overview)          | Workspace switcher, members, invitations, seats and permissions                       | `src/components/app-sidebar.tsx`, `dashboard/team`                                              |
+| [Selling](https://docs.buildbase.app/billing/orders)                  | Published items and prices, BuyButton, guest checkout, orders, licence keys and files | `src/components/store/*`, `src/lib/store/items.ts`, `dashboard/licences`                        |
+| [Billing](https://docs.buildbase.app/billing/payments-end-to-end)     | Invoices and the billing portal                                                       | `dashboard/invoices`, `src/components/billing/`                                                 |
+| [Notifications](https://docs.buildbase.app/notifications/inbox)       | Bell, inbox, browser push and preferences                                             | `src/components/dashboard-layout-client.tsx`, `dashboard/inbox`, `dashboard/notifications`      |
+| [Content](https://docs.buildbase.app/content/overview)                | Blog, changelog, docs, FAQs, content blocks and testimonials                          | `src/lib/platform/content.ts`, `src/lib/blog/`, `src/lib/docs/`, `src/app/api/webhooks/content` |
+| [Collections](https://docs.buildbase.app/collections/overview)        | The `/gallery` reels, published by the studio's `pnpm gallery publish`                | `src/lib/gallery/`                                                                              |
+| [Webhooks](https://docs.buildbase.app/webhooks/overview)              | Signed events mirrored into the database                                              | `src/app/api/webhooks/buildbase`                                                                |
+| [Workflows](https://docs.buildbase.app/workflows/webhook-actions)     | A workflow's HTTP webhook action calls the provision route                            | `src/app/api/buildbase/provision`                                                               |
+| [MCP and agents](https://docs.buildbase.app/reference/mcp-agents)     | The MCP server, agent OAuth tokens, WebMCP tools and connected agents                 | `src/lib/agent/`, `src/app/api/auth/oauth2-*`, `src/components/agents/`                         |
+| [Tracking and consent](https://docs.buildbase.app/tracking/consent)   | Analytics and the cookie banner                                                       | `src/components/tracking/`, `src/components/cookie-consent.tsx`                                 |
+| [Waitlist](https://docs.buildbase.app/pre-built-ui/overview#betaform) | The sign-up form while RenderWeld is not on sale                                      | `src/components/modules/waitlist-form.tsx`                                                      |
+
+The studio uses BuildBase too, for licence keys, docs publishing and the
+gallery records: see
+[its README](https://github.com/buildbase-app/reelforge-studio#built-with-buildbase).
+
 ## Selling
 
 The pricing page, the hero buttons, `/order` and `/dashboard/licences` read
