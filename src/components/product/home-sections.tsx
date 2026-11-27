@@ -219,28 +219,30 @@ export function Hero({
 /**
  * Frames from 16 gallery reels the studio rendered (`public/reels/marquee`,
  * 288×512 WebP, about 4 KB each), in two rows that drift in opposite
- * directions.
+ * directions. Each name ends in the first 8 hex digits of the file's SHA-256,
+ * because public/_headers caches /reels/* as immutable: a changed poster
+ * needs a new name.
  */
 const MARQUEE = [
   [
-    'city-cycling-growth',
-    'colour-palette-tour',
-    'air-squat-form-tip',
-    'lumen-desk-lamp-launch',
-    'election-turnout-explainer',
-    'city-weekend-guide',
-    'podcast-founder-stories',
-    'sheet-pan-tacos',
+    'city-cycling-growth.8345d050',
+    'colour-palette-tour.2b8a1575',
+    'air-squat-form-tip.9626dfc4',
+    'lumen-desk-lamp-launch.432dbecf',
+    'election-turnout-explainer.d5f2afb9',
+    'city-weekend-guide.6b884e91',
+    'podcast-founder-stories.0776ba94',
+    'sheet-pan-tacos.865d60ef',
   ],
   [
-    'generative-brand-loop',
-    'habitloop-app-promo',
-    'charity-run-event',
-    'packing-light-checklist',
-    'remote-work-data-story',
-    'pay-yourself-first',
-    'studio-apartment-rent',
-    'small-steps-daily',
+    'generative-brand-loop.b3090ee3',
+    'habitloop-app-promo.67d90538',
+    'charity-run-event.bcff8138',
+    'packing-light-checklist.93d0e149',
+    'remote-work-data-story.d579152e',
+    'pay-yourself-first.3a55e1bd',
+    'studio-apartment-rent.2db9c604',
+    'small-steps-daily.0196a3e0',
   ],
 ];
 
@@ -562,10 +564,10 @@ const STEPS = [
     body: 'One Docker image with FFmpeg and a headless browser inside, on your computer or a server you run. Keep a copy of the secret key, and of the admin key it prints once.',
     code: `git clone ${siteConfig.repo.url}.git renderweld
 cd renderweld
-echo "REELFORGE_SECRET_KEY=$(openssl rand -base64 32)" >> .env
+echo "RENDERWELD_SECRET_KEY=$(openssl rand -base64 32)" >> .env
 docker compose up -d --build
 docker compose ps   # wait until the server shows (healthy)
-docker compose exec reelforge renderweld keys create --name admin --scopes admin`,
+docker compose exec renderweld renderweld keys create --name admin --scopes admin`,
     fn: 6,
   },
   {
@@ -579,7 +581,7 @@ curl -s -X POST http://127.0.0.1:4321/v1/licence \\
   {
     title: 'Connect your agent',
     body: 'Make a key for your agent that can build and render but not change the server, give it the MCP address, then ask for a reel. Or call the REST API from a script.',
-    code: `docker compose exec reelforge renderweld keys create --name agent --scopes read,write,render
+    code: `docker compose exec renderweld renderweld keys create --name agent --scopes read,write,render
 claude mcp add --transport http renderweld http://127.0.0.1:4321/mcp \\
   --header "Authorization: Bearer rf_..."   # the agent key`,
   },

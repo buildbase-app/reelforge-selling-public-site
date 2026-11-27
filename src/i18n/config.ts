@@ -53,6 +53,21 @@ export function isRtlLocale(locale: AvailableLocale): boolean {
   return rtlLocales.includes(locale);
 }
 
+/**
+ * The <html> element's `lang` and `dir` for a request's locale (studio issue
+ * #7). A locale the site does not serve falls back to the default, so the
+ * attribute always names a language the page is written in.
+ */
+export function htmlLangAttributes(locale: string | undefined): {
+  lang: Locale;
+  dir: 'ltr' | 'rtl';
+} {
+  const lang = (locales as readonly string[]).includes(locale ?? '')
+    ? (locale as Locale)
+    : defaultLocale;
+  return { lang, dir: isRtlLocale(lang) ? 'rtl' : 'ltr' };
+}
+
 // Get OpenGraph locale format
 export function getOgLocale(locale: AvailableLocale): string {
   return ogLocales[locale] || 'en_US';

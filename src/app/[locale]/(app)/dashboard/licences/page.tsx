@@ -27,7 +27,7 @@ export default function LicencesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="flex items-center gap-2 text-3xl font-bold tracking-tight">
+        <h1 className="flex items-center gap-2 text-3xl font-medium tracking-tight">
           <KeyRound className="h-7 w-7" aria-hidden /> Licences
         </h1>
         <p className="text-muted-foreground">

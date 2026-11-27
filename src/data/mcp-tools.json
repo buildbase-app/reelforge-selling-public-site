@@ -4,10 +4,10 @@
     "version": "0.1.0",
     "method": "reference",
     "reference": "docs/public/mcp/tools.md",
-    "commit": "73aeb8782cecec8bc3af75feb6b66788d7ec8e1b",
-    "fetchedOn": "2026-11-26"
+    "commit": "a4d76fff6e3539dfda652233a864ccb7cf669fef",
+    "fetchedOn": "2026-11-27"
   },
-  "count": 79,
+  "count": 83,
   "groups": [
     {
       "id": "discover",
@@ -22,7 +22,7 @@
         {
           "name": "get_me",
           "title": "Get the calling API key",
-          "summary": "Returns the API key this call uses: id, name, scopes (read, write, render, admin), expiry, limits and its render usage today and this month.",
+          "summary": "Returns the API key this call uses: id, name, scopes (read, write, render, approve, admin), expiry, limits and its render usage today and this month.",
           "readOnly": true
         },
         {
@@ -58,7 +58,7 @@
         {
           "name": "list_providers",
           "title": "List media providers",
-          "summary": "Media providers (TTS, ...) installed on this server, whether the operator configured them, and their cost notes.",
+          "summary": "Media providers (TTS, ...) installed on this server, whether each is configured for your workspace, where its settings come from (settingsFrom: \"workspace\" = your workspace's ow...",
           "readOnly": true
         }
       ]
@@ -248,6 +248,18 @@
           "readOnly": false
         },
         {
+          "name": "plan_render",
+          "title": "Plan a render (estimate before rendering)",
+          "summary": "Before render_project: what the same call would render (each output with its size, frames, length and format; every variant when the project has variants and no variant is given...",
+          "readOnly": true
+        },
+        {
+          "name": "approve_render_plan",
+          "title": "Approve a render plan",
+          "summary": "Approves the plan plan_render returned (planId, and the same variant), when the server asks for approvals (render.approval; render_project answers 409 approval_required).",
+          "readOnly": false
+        },
+        {
           "name": "render_project",
           "title": "Render the project",
           "summary": "Validates the project and starts the final render (every scene with its engine, assembled with audio, checked with ffprobe and a full decode).",
@@ -328,7 +340,7 @@
         {
           "name": "get_config",
           "title": "Get the server configuration (owner)",
-          "summary": "Returns every server setting with its effective value and where it comes from: source \"default\", \"file\" (REELFORGE_CONFIG), \"env\" (origin names the variable) or \"runtime\" (set w...",
+          "summary": "Returns every server setting with its effective value and where it comes from: source \"default\", \"file\" (RENDERWELD_CONFIG), \"env\" (origin names the variable) or \"runtime\" (set w...",
           "readOnly": true
         },
         {
@@ -346,7 +358,7 @@
         {
           "name": "activate_licence",
           "title": "Set and activate the licence key (owner)",
-          "summary": "Stores the licence key (encrypted; needs REELFORGE_SECRET_KEY on the server) and activates it for this server with the licence server, then returns the status (see get_licence).",
+          "summary": "Stores the licence key (encrypted; needs RENDERWELD_SECRET_KEY on the server) and activates it for this server with the licence server, then returns the status (see get_licence).",
           "readOnly": false
         },
         {
@@ -382,7 +394,7 @@
         {
           "name": "create_key",
           "title": "Create an API key (admin)",
-          "summary": "Creates an API key in this key's workspace with the given scopes (read, write, render, admin; owner only from an owner key) and optional expiry, per-key rate limit, render quota...",
+          "summary": "Creates an API key in this key's workspace with the given scopes (read, write, render, approve, admin; owner only from an owner key) and optional expiry, per-key rate limit, ren...",
           "readOnly": false
         },
         {
@@ -442,7 +454,7 @@
         {
           "name": "update_workspace",
           "title": "Rename, limit, suspend or resume a workspace (owner)",
-          "summary": "Changes a workspace's name or limits (null clears them: the workspaces.* defaults apply), or suspends it (suspended: true: its keys are refused with workspace_suspended and its...",
+          "summary": "Changes a workspace's name or limits (rendersPerDay, rendersPerMonth, rateLimitPerMinute, storageBytes, and the retention limits retentionMaxAgeHours, retentionKeepLast and rete...",
           "readOnly": false
         },
         {
@@ -455,6 +467,18 @@
           "name": "restore_workspace",
           "title": "Restore a deleted workspace (owner)",
           "summary": "Brings back a deleted workspace before its purge (see list_workspaces: purgeAfter): its keys work again and its jobs run.",
+          "readOnly": false
+        },
+        {
+          "name": "configure_workspace_provider",
+          "title": "Configure your workspace's own provider account",
+          "summary": "Sets or clears your workspace's own setting for a provider, such as its ELEVENLABS_API_KEY (#480).",
+          "readOnly": false
+        },
+        {
+          "name": "set_workspace_retention",
+          "title": "Tighten this workspace's retention (admin)",
+          "summary": "Makes this key's workspace keep renders for less (#487): maxAgeHours (renders older than this are deleted), keepLast (the newest N per project the age rule always keeps) and del...",
           "readOnly": false
         }
       ]

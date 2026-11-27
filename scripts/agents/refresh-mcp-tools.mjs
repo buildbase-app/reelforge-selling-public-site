@@ -110,6 +110,8 @@ const GROUPS = [
     title: 'Render and deliver',
     tools: [
       'preview_scene',
+      'plan_render',
+      'approve_render_plan',
       'render_project',
       'get_job',
       'list_jobs',
@@ -155,6 +157,8 @@ const GROUPS = [
       'update_workspace',
       'delete_workspace',
       'restore_workspace',
+      'configure_workspace_provider',
+      'set_workspace_retention',
     ],
   },
   {

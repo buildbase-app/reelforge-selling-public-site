@@ -128,7 +128,6 @@ const messages: DraftMessages = {
       viewer: 'Lecteur',
     },
     title: 'Tableau de bord',
-    welcome: 'Bon retour, {name} !',
     trial: {
       endingSoon: 'Essai bientôt terminé',
       endingSoonMsg:

@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { render } from '@testing-library/react';
@@ -65,7 +66,11 @@ describe('reel posters', () => {
       const url = img.getAttribute('src')!;
       expect(inPublic(url), url).toBe(true);
       expect(img.getAttribute('loading')).toBe('lazy');
-      bytes += fs.statSync(path.join(root, 'public', url)).size;
+      // /reels/* is cached as immutable, so the name carries the content hash.
+      const file = fs.readFileSync(path.join(root, 'public', url));
+      const hash = createHash('sha256').update(file).digest('hex').slice(0, 8);
+      expect(url, url).toMatch(new RegExp(`\\.${hash}\\.webp$`));
+      bytes += file.length;
     }
     // The 16 files stay well under the 600 KB the issue allows.
     expect(bytes).toBeLessThan(150e3);

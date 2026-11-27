@@ -61,7 +61,7 @@ ${clients}
 
 ## Keys
 
-Create one per agent on your studio: \`docker compose exec reelforge renderweld keys create --name agent --scopes read,write,render\`. Shown once, stored hashed.
+Create one per agent on your studio: \`docker compose exec renderweld renderweld keys create --name agent --scopes read,write,render\`. Shown once, stored hashed.
 
 ${KEY_SCOPES.map((s) => `- \`${s.scope}\`: ${s.what}`).join('\n')}
 

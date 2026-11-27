@@ -138,7 +138,6 @@ export interface DashboardMessages {
     viewer: string;
   };
   title: string;
-  welcome: string;
   trial: {
     endingSoon: string;
     endingSoonMsg: string;
