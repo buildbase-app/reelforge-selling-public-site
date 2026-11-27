@@ -11,8 +11,9 @@ const FIELD =
 
 /**
  * The contact form, rendered from a BuildBase form's published fields and
- * submitted to its public endpoint: the message lands in the console, where
- * a workflow can email or post it. Spam protection is BuildBase's: its
+ * submitted through the site's /api/public-forms route to the form's public
+ * endpoint: the message lands in the console, where a workflow can email or
+ * post it. Spam protection is BuildBase's: its
  * built-in check when the form asks for one, its content rules, and the
  * hidden `_hp` trap below.
  */
@@ -162,6 +163,7 @@ export function ContactForm({
 /** BuildBase's built-in check: find the number whose hash is the challenge. */
 async function solveChallenge(form: PublicForm): Promise<string> {
   const res = await fetch(`${form.endpoint}/challenge`);
+  if (!res.ok) throw new Error('No challenge');
   const c = (await res.json()) as {
     algorithm: string;
     challenge: string;

@@ -3,10 +3,13 @@ import { logger } from '@/lib/logger';
 
 /**
  * BuildBase Forms (console: Forms) read on the server: a form's published
- * fields and whether it asks for a captcha. The browser then submits to the
- * form's public endpoint (`ContactForm`), so the console stays the source of
+ * fields and whether it asks for a captcha. The browser then submits through
+ * this site's own /api/public-forms/<key> route (`ContactForm`), which passes the
+ * call on to the form's public endpoint. BuildBase answers the organization
+ * API, /api/forms included, without CORS headers for other sites, so a page
+ * on renderweld.com cannot call it directly. The console stays the source of
  * truth for what the fields are, and submissions land in the console.
- * Docs: https://docs.buildbase.app/forms/custom-forms
+ * Docs: https://docs.buildbase.app/forms/custom-forms#server-side-submission
  */
 
 export type FormFieldType =
@@ -32,24 +35,48 @@ export interface FormField {
 
 /** What `ContactForm` needs to render and submit one form. */
 export interface PublicForm {
-  /** `<server>/api/forms/public/<orgId>/<formId>`. */
+  /** This site's route for the form, `/api/public-forms/<key>`. */
   endpoint: string;
   fields: FormField[];
   /** `pow` is BuildBase's built-in check, solved in the browser. */
   captcha: 'none' | 'pow';
 }
 
-/** The contact form's id, from NEXT_PUBLIC_BUILDBASE_CONTACT_FORM_ID. */
-export const CONTACT_FORM_ID =
-  process.env.NEXT_PUBLIC_BUILDBASE_CONTACT_FORM_ID?.trim() || null;
-
-/** The forms on /feedback, from their NEXT_PUBLIC_BUILDBASE_* ids. */
-export const FEATURE_REQUEST_FORM_ID =
-  process.env.NEXT_PUBLIC_BUILDBASE_FEATURE_REQUEST_FORM_ID?.trim() || null;
-export const TEMPLATE_REQUEST_FORM_ID =
-  process.env.NEXT_PUBLIC_BUILDBASE_TEMPLATE_REQUEST_FORM_ID?.trim() || null;
-
 const FORM_REVALIDATE_SECONDS = 300;
+
+/** The forms this site shows, by the short key in their /api/public-forms route. */
+export type FormKey = 'contact' | 'feature' | 'template';
+
+/** A form's BuildBase id by its key, or null for an unknown or unset one. */
+export function formIdFor(key: string): string | null {
+  switch (key) {
+    case 'contact':
+      return process.env.NEXT_PUBLIC_BUILDBASE_CONTACT_FORM_ID?.trim() || null;
+    case 'feature':
+      return (
+        process.env.NEXT_PUBLIC_BUILDBASE_FEATURE_REQUEST_FORM_ID?.trim() ||
+        null
+      );
+    case 'template':
+      return (
+        process.env.NEXT_PUBLIC_BUILDBASE_TEMPLATE_REQUEST_FORM_ID?.trim() ||
+        null
+      );
+    default:
+      return null;
+  }
+}
+
+/** A form's public BuildBase endpoint, or null when the org id is unset. */
+export function upstreamEndpoint(formId: string): string | null {
+  const orgId = process.env.NEXT_PUBLIC_BUILDBASE_ORG_ID?.trim();
+  if (!orgId) return null;
+  const server = (
+    process.env.NEXT_PUBLIC_BUILDBASE_SERVER_URL ||
+    'https://api.console.buildbase.app'
+  ).replace(/\/+$/, '');
+  return `${server}/api/forms/public/${encodeURIComponent(orgId)}/${encodeURIComponent(formId)}`;
+}
 
 /**
  * One published form, or null when it is not configured, cannot be read, or
@@ -58,15 +85,11 @@ const FORM_REVALIDATE_SECONDS = 300;
  * required file field. The page then shows only its email addresses.
  */
 export async function getPublicForm(
-  formId: string | null = CONTACT_FORM_ID
+  key: FormKey = 'contact'
 ): Promise<PublicForm | null> {
-  const orgId = process.env.NEXT_PUBLIC_BUILDBASE_ORG_ID?.trim();
-  if (!formId || !orgId) return null;
-  const server = (
-    process.env.NEXT_PUBLIC_BUILDBASE_SERVER_URL ||
-    'https://api.console.buildbase.app'
-  ).replace(/\/+$/, '');
-  const endpoint = `${server}/api/forms/public/${encodeURIComponent(orgId)}/${encodeURIComponent(formId)}`;
+  const formId = formIdFor(key);
+  const endpoint = formId ? upstreamEndpoint(formId) : null;
+  if (!formId || !endpoint) return null;
 
   try {
     const init = { next: { revalidate: FORM_REVALIDATE_SECONDS } };
@@ -85,7 +108,11 @@ export async function getPublicForm(
       captcha?: { widget?: string } | null;
     };
     const fields = (await fieldsRes.json()) as FormField[];
-    return toPublicForm(endpoint, form.captcha?.widget, fields);
+    return toPublicForm(
+      `/api/public-forms/${key}`,
+      form.captcha?.widget,
+      fields
+    );
   } catch (error) {
     logger.warn('Form fetch failed', {
       formId,
