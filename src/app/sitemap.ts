@@ -4,6 +4,7 @@ import { defaultLocale } from '@/i18n/config';
 import { localeUrl } from '@/lib/i18n-url';
 import { getGallery } from '@/lib/gallery';
 import { getPosts } from '@/lib/blog/source';
+import { cookies } from '@/content/pages/cookies';
 import { licence } from '@/content/pages/licence';
 import { privacy } from '@/content/pages/privacy';
 import { refund } from '@/content/pages/refund';
@@ -50,6 +51,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     refund.get(defaultLocale),
     privacy.get(defaultLocale),
     terms.get(defaultLocale),
+    cookies.get(defaultLocale),
   ]);
 
   const pages: MetadataRoute.Sitemap = [
@@ -80,7 +82,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: url('/contact'), changeFrequency: 'monthly', priority: 0.5 },
   ];
 
-  const legalPaths = ['/licence', '/refund', '/privacy', '/terms'];
+  const legalPaths = ['/licence', '/refund', '/privacy', '/terms', '/cookies'];
   const legalPages: MetadataRoute.Sitemap = legalPaths.map((path, i) => ({
     url: url(path),
     lastModified: toIso(legal[i]?.lastUpdated),

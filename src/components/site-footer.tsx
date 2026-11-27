@@ -4,6 +4,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { siteConfig } from '@/config/site';
 import { BrandLogo } from '@/components/brand-logo';
+import { CookieSettingsButton } from '@/components/tracking/cookie-settings-button';
 
 interface SiteFooterProps {
   title: string;
@@ -40,6 +41,7 @@ export async function SiteFooter({ title }: SiteFooterProps) {
         { label: t('footer.links.refund'), href: '/refund' },
         { label: t('footer.links.privacy'), href: '/privacy' },
         { label: t('footer.links.terms'), href: '/terms' },
+        { label: t('footer.links.cookies'), href: '/cookies' },
       ],
     },
   ];
@@ -88,6 +90,13 @@ export async function SiteFooter({ title }: SiteFooterProps) {
                     )}
                   </li>
                 ))}
+                {section === t('footer.sections.legal') && (
+                  <li>
+                    <CookieSettingsButton
+                      label={t('footer.links.cookieSettings')}
+                    />
+                  </li>
+                )}
               </ul>
             </div>
           ))}
