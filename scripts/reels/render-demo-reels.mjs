@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 /**
- * Renders the homepage demo reels with a real ReelForge Studio, over MCP,
+ * Renders the homepage demo reels with a real RenderWeld server, over MCP,
  * and records the tool calls each one took (shown on / and /agents).
  *
- *   REELFORGE_URL=http://127.0.0.1:4321 REELFORGE_KEY=rf_... \
+ *   RENDERWELD_URL=http://127.0.0.1:4321 RENDERWELD_KEY=rf_... \
  *     node scripts/reels/render-demo-reels.mjs <out-dir> [slug]
  *
  * Writes <out-dir>/<slug>/final.mp4, meta.json (prompt, scenes, tool calls,
@@ -12,20 +12,20 @@
  * and build-index.mjs to refresh src/data/reels.json.
  *
  * The calls come from this script, not from an LLM: it follows the studio's
- * MCP workflow guide (resource reelforge://guide/workflow) step by step.
+ * MCP workflow guide (resource renderweld://guide/workflow) step by step.
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 
-const BASE = (process.env.REELFORGE_URL ?? 'http://127.0.0.1:4321').replace(
+const BASE = (process.env.RENDERWELD_URL ?? 'http://127.0.0.1:4321').replace(
   /\/$/,
   ''
 );
-const KEY = process.env.REELFORGE_KEY;
+const KEY = process.env.RENDERWELD_KEY;
 const [OUT, only] = process.argv.slice(2);
 if (!KEY || !OUT) {
   console.error(
-    'Usage: REELFORGE_KEY=rf_... node scripts/reels/render-demo-reels.mjs <out-dir> [slug]'
+    'Usage: RENDERWELD_KEY=rf_... node scripts/reels/render-demo-reels.mjs <out-dir> [slug]'
   );
   process.exit(1);
 }
@@ -71,7 +71,7 @@ async function download(path, file) {
 const reels = {
   'agent-directs': {
     prompt:
-      'Make a 10-second vertical reel that explains ReelForge: hook first, then three steps, then an end card. Midnight theme. Use all four engines.',
+      'Make a 10-second vertical reel that explains RenderWeld: hook first, then three steps, then an end card. Midnight theme. Use all four engines.',
     theme: 'midnight',
     scenes: [
       {
@@ -115,7 +115,7 @@ const reels = {
         template: 'hyperframes-title',
         durationSeconds: 2,
         props: {
-          headline: 'ReelForge',
+          headline: 'RenderWeld',
           subline: 'Self-hosted. Driven over MCP.',
         },
       },
