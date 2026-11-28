@@ -28,8 +28,9 @@ import { ORDER_STATUS as STATUS } from './order-status';
 /**
  * The page Stripe sends a buyer back to. A guest arrives with `?order=` and
  * `?token=` and reads the order by its token. A signed-in buyer arrives
- * with no order id: `?id=` if given, else the order this tab just started,
- * else their newest order.
+ * with `?ref=`, the checkout's reference: `?id=` if given, else the order
+ * that reference became, else the order this tab last started, else their
+ * newest order.
  */
 export function OrderView() {
   const params = useSearchParams();
@@ -38,7 +39,12 @@ export function OrderView() {
   if (orderId && token) {
     return <GuestOrder link={{ orderId, token }} />;
   }
-  return <SignedInOrder requestedId={params.get('id')} />;
+  return (
+    <SignedInOrder
+      requestedId={params.get('id')}
+      checkoutRef={params.get('ref')}
+    />
+  );
 }
 
 function GuestOrder({ link }: { link: { orderId: string; token: string } }) {
@@ -56,11 +62,17 @@ function GuestOrder({ link }: { link: { orderId: string; token: string } }) {
   );
 }
 
-function SignedInOrder({ requestedId }: { requestedId: string | null }) {
+function SignedInOrder({
+  requestedId,
+  checkoutRef,
+}: {
+  requestedId: string | null;
+  checkoutRef: string | null;
+}) {
   const { isAuthenticated, status, signIn } = useSaaSAuth();
   // Rendered in the browser only (useSearchParams under Suspense), so
   // reading this tab's storage once here is safe.
-  const [remembered] = useState(() => recallOrder());
+  const [remembered] = useState(() => recallOrder(checkoutRef));
 
   if (status === 'loading' || status === 'authenticating') {
     return <Pending />;

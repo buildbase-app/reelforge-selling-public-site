@@ -55,6 +55,7 @@ vi.mock('@/i18n/link', () => ({
 
 import { PricingCatalog } from '@/components/store/pricing-catalog';
 import { priceLabel, priceParts } from '@/components/store/price';
+import { recallOrder } from '@/components/store/last-order';
 
 function item(overrides: Partial<PublicItemView> = {}): PublicItemView {
   return {
@@ -169,8 +170,21 @@ describe('PricingCatalog', () => {
       itemId: 'item_1',
       variantId: 'solo',
       priceId: 'eur',
-      successUrl: `${window.location.origin}/order`,
+      successUrl: expect.stringMatching(/\/order\?ref=[a-z0-9]+$/),
     });
+  });
+
+  it('records which order the return URL reference became', () => {
+    state.items = [item()];
+    render(<PricingCatalog />);
+    const props = buyProps[0] as {
+      successUrl: string;
+      onStarted: (start: { order: { _id: string } }) => void;
+    };
+    const ref = new URL(props.successUrl).searchParams.get('ref');
+    props.onStarted({ order: { _id: 'order_started' } });
+    sessionStorage.setItem('renderweld:last-order', 'another_order');
+    expect(recallOrder(ref)).toBe('order_started');
   });
 
   it('skips retired prices and variants with none left', () => {
@@ -236,7 +250,7 @@ describe('PricingCatalog: Personal first, then Commercial', () => {
       priceId: 'free',
       free: true,
       label: 'Get it free',
-      successUrl: `${window.location.origin}/order`,
+      successUrl: expect.stringMatching(/\/order\?ref=[a-z0-9]+$/),
     });
   });
 
