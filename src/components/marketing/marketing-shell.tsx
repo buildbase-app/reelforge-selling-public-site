@@ -34,7 +34,9 @@ export async function MarketingShell({
   const hasSession = Boolean(jar.get(SESSION_COOKIE_NAME)?.value);
   return (
     <SessionHintProvider hasSession={hasSession}>
-      <div className="bg-background flex min-h-screen flex-col">
+      {/* overflow-x-clip, not hidden: hidden makes this a scroll container
+          and breaks the sticky header (studio issue #725). */}
+      <div className="bg-background flex min-h-screen flex-col overflow-x-clip">
         <HomeHeader
           title={t('title')}
           action={headerAction}
