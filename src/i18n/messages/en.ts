@@ -694,9 +694,16 @@ const messages: Messages = {
     title: 'Join the RenderWeld waitlist',
     description:
       'RenderWeld is not on sale yet. Leave your name and email and we will tell you when it is, with what it costs and what you get.',
+    heading: 'Get an email when RenderWeld launches',
+    nameLabel: 'Name',
+    emailLabel: 'Email',
+    submit: 'Join the waitlist',
+    submitting: 'Joining…',
     success:
       'You are on the list. We will email you when RenderWeld can be bought.',
-    note: 'We use your email only to tell you about RenderWeld availability. See the privacy policy.',
+    failed: 'That did not go through. Check your connection and try again.',
+    note: 'One email on launch day. No spam. Read our',
+    privacyLink: 'privacy policy',
   },
   account: {
     exports: {

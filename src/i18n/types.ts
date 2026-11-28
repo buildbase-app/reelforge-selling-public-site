@@ -636,8 +636,17 @@ export interface HelpMessages {
 export interface WaitlistMessages {
   title: string;
   description: string;
+  /** The form's own heading, above its fields (studio issue #630). */
+  heading: string;
+  nameLabel: string;
+  emailLabel: string;
+  submit: string;
+  submitting: string;
   success: string;
+  failed: string;
+  /** The note under the button; `privacyLink` follows it as a link. */
   note: string;
+  privacyLink: string;
 }
 
 // Combined messages type
