@@ -786,6 +786,7 @@ const messages: Messages = {
     },
     invoice: {
       details: 'Details',
+      description: 'Invoice details',
       title: 'Invoice {number}',
       loading: 'Loading the invoice…',
       missing: 'Invoice not found.',

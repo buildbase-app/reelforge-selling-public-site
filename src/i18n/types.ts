@@ -719,6 +719,7 @@ export interface AccountMessages {
   };
   invoice: {
     details: string;
+    description: string;
     title: string;
     loading: string;
     missing: string;

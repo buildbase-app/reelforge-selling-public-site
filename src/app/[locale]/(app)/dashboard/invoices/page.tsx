@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { ExternalLink, FileText, CreditCard, RefreshCw } from 'lucide-react';
 import { InvoiceDetail } from '@/components/billing/invoice-detail';
 import { OrderList } from '@/components/store/order-list';
+import { formatMinorAmount } from '@/lib/format/minor-amount';
 
 const STATUS_COLORS: Record<string, string> = {
   paid: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
@@ -27,14 +28,6 @@ const STATUS_COLORS: Record<string, string> = {
   uncollectible: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
   draft: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
 };
-
-function formatCurrency(amount: number, currency: string) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: currency.toUpperCase(),
-    minimumFractionDigits: 2,
-  }).format(amount / 100);
-}
 
 /**
  * Dashboard > Orders and receipts (the route keeps its old name): the
@@ -147,7 +140,7 @@ export default function InvoicesPage() {
                         {new Date(inv.created * 1000).toLocaleDateString()}
                       </td>
                       <td className="py-2 font-mono text-xs">
-                        {formatCurrency(inv.amount_due, inv.currency)}
+                        {formatMinorAmount(inv.amount_due, inv.currency)}
                       </td>
                       <td className="py-2">
                         <span

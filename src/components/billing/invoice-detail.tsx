@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useInvoice } from '@buildbase/sdk/react';
 import { ExternalLink, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { formatMinorAmount } from '@/lib/format/minor-amount';
 import {
   Dialog,
   DialogContent,
@@ -17,13 +18,6 @@ interface Props {
   workspaceId: string | null | undefined;
   invoiceId: string | null;
   onClose: () => void;
-}
-
-function money(amount: number, currency: string) {
-  return new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency: currency.toUpperCase(),
-  }).format(amount / 100);
 }
 
 function day(seconds: number | null) {
@@ -42,9 +36,7 @@ export function InvoiceDetail({ workspaceId, invoiceId, onClose }: Props) {
           <DialogTitle>
             {t('title', { number: invoice?.number ?? invoiceId ?? '' })}
           </DialogTitle>
-          <DialogDescription>
-            <code className="text-xs">useInvoice(workspaceId, invoiceId)</code>
-          </DialogDescription>
+          <DialogDescription>{t('description')}</DialogDescription>
         </DialogHeader>
         {loading ? (
           <p className="text-muted-foreground text-sm">{t('loading')}</p>
@@ -56,9 +48,11 @@ export function InvoiceDetail({ workspaceId, invoiceId, onClose }: Props) {
               <dt className="text-muted-foreground">{t('status')}</dt>
               <dd className="capitalize">{invoice.status}</dd>
               <dt className="text-muted-foreground">{t('amountDue')}</dt>
-              <dd>{money(invoice.amount_due, invoice.currency)}</dd>
+              <dd>{formatMinorAmount(invoice.amount_due, invoice.currency)}</dd>
               <dt className="text-muted-foreground">{t('amountPaid')}</dt>
-              <dd>{money(invoice.amount_paid, invoice.currency)}</dd>
+              <dd>
+                {formatMinorAmount(invoice.amount_paid, invoice.currency)}
+              </dd>
               <dt className="text-muted-foreground">{t('created')}</dt>
               <dd>{day(invoice.created)}</dd>
               <dt className="text-muted-foreground">{t('due')}</dt>
