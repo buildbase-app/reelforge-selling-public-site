@@ -7,6 +7,11 @@
  * same-origin request gets it, the answer is never cached, and the strict
  * CSP (src/lib/security/csp.ts) limits where a page can send data.
  *
+ * Accepted trade-off (studio issue #608): page scripts can read the session
+ * id this answers with. The strict nonce-based CSP covers it for now.
+ * Revisit if the SDK gains a cookie-only mode, and stop answering with the
+ * id then.
+ *
  * A session BuildBase says is over is answered as signed out and its
  * cookie cleared, so the site header stops saying "Dashboard" for it
  * (studio issue #602).
