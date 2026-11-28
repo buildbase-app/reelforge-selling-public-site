@@ -26,7 +26,11 @@ vi.mock('next/headers', () => ({
 vi.mock('@/lib/db', () => ({
   prisma: {
     webhookEvent: { upsert },
-    user: { upsert: async () => ({}) },
+    user: {
+      upsert: async () => ({}),
+      findUnique: async () => null,
+      update: async () => ({}),
+    },
   },
   setAuditContext: vi.fn(),
 }));
@@ -311,6 +315,39 @@ describe('/api/auth/token, a refused exchange (studio issue #600)', () => {
     expect(res.status).toBe(502);
     expect(res.headers.get('set-cookie')).toBeNull();
     warn.mockRestore();
+  });
+});
+
+describe('/api/auth/token, saving the user (studio issue #601)', () => {
+  it('fails the sign-in, with no cookie, when the user row cannot be saved', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () =>
+        Response.json({
+          data: {
+            sessionId: 'sess-1',
+            user: { id: 'u1', email: 'a@example.com', name: 'A' },
+          },
+        })
+      )
+    );
+    const db = await import('@/lib/db');
+    const upsertUser = vi
+      .spyOn(db.prisma.user, 'upsert')
+      .mockRejectedValueOnce(new Error('D1 down') as never);
+    const error = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const { POST } = await import('@/app/api/auth/token/route');
+    const res = await POST(
+      new NextRequest(new URL('/api/auth/token', SITE), {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', origin: SITE },
+        body: '{"code":"AAAAAAAAAAAAAAAAAAAAAAAA"}',
+      })
+    );
+    expect(res.status).toBe(500);
+    expect(res.headers.get('set-cookie')).toBeNull();
+    upsertUser.mockRestore();
+    error.mockRestore();
   });
 });
 

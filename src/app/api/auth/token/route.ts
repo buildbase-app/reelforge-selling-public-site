@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma, setAuditContext } from '@/lib/db';
+import { setAuditContext } from '@/lib/db';
+import { mirrorUser } from '@/lib/user-mirror';
 import { SESSION_COOKIE_NAME } from '@/lib/buildbase';
 import { authCodeSchema } from '@/lib/validation/schemas';
 import { validateBody, isValidationError } from '@/lib/validation/api';
@@ -80,7 +81,9 @@ export async function POST(request: NextRequest) {
       );
     }
     const userData = responseResult.user;
-    // Create or update user in database
+    // The store's copy of the user, keyed by BuildBase user id (studio
+    // issue #601). A failed write fails the sign-in: the account pages
+    // need this row.
     const userId = userData.id || userData._id;
     setAuditContext({
       userId,
@@ -88,40 +91,28 @@ export async function POST(request: NextRequest) {
       userAgent: request.headers.get('user-agent') || undefined,
       source: 'api',
     });
-    // DB write is a local mirror — don't block auth if it fails
-    await prisma.user
-      .upsert({
-        where: { email: userData.email },
-        update: {
-          id: userId,
-          name: userData.name,
-          image: userData.image || null,
-          role: userData.role || 'user',
-          emailVerified: userData.emailVerified || false,
-          timezone: userData.timezone || null,
-          language: userData.language || null,
-          country: userData.country || null,
-          currency: userData.currency || null,
-        },
-        create: {
-          id: userId,
-          email: userData.email,
-          name: userData.name,
-          image: userData.image || null,
-          role: userData.role || 'user',
-          emailVerified: userData.emailVerified || false,
-          timezone: userData.timezone || null,
-          language: userData.language || null,
-          country: userData.country || null,
-          currency: userData.currency || null,
-        },
-      })
-      .catch((err: unknown) => {
-        logger.error('Failed to upsert user — auth continues', {
-          error: err instanceof Error ? err.message : String(err),
-          userId,
-        });
+    try {
+      await mirrorUser(userId, {
+        email: userData.email,
+        name: userData.name,
+        image: userData.image,
+        role: userData.role,
+        emailVerified: userData.emailVerified || false,
+        timezone: userData.timezone,
+        language: userData.language,
+        country: userData.country,
+        currency: userData.currency,
       });
+    } catch (err) {
+      logger.error('Failed to save the user at sign-in', {
+        error: err instanceof Error ? err.message : String(err),
+        userId,
+      });
+      return NextResponse.json(
+        { success: false, message: 'Sign-in could not be completed' },
+        { status: 500 }
+      );
+    }
 
     // Set httpOnly cookie so getSession() can restore the session on page refresh
     const response = NextResponse.json(
