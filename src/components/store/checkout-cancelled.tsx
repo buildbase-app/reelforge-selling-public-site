@@ -21,9 +21,12 @@ export function CheckoutCancelledNote() {
   useEffect(() => {
     const url = new URL(window.location.href);
     if (url.searchParams.get('checkout') !== 'cancelled') return;
-    setCancelled(true);
     url.searchParams.delete('checkout');
     window.history.replaceState(window.history.state, '', url.toString());
+    // After this render, not inside the effect itself. Not cleared on
+    // unmount: in development React runs effects twice, and the second run
+    // no longer sees the flag it just removed.
+    window.setTimeout(() => setCancelled(true), 0);
   }, []);
   if (!cancelled) return null;
   return (

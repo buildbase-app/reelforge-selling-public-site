@@ -20,10 +20,10 @@ describe('cancelled checkout', () => {
     );
   });
 
-  it('says checkout was cancelled and nothing was charged', () => {
+  it('says checkout was cancelled and nothing was charged', async () => {
     window.history.replaceState(null, '', '/pricing?checkout=cancelled');
     render(<CheckoutCancelledNote />);
-    expect(screen.getByRole('status').textContent).toBe(
+    expect((await screen.findByRole('status')).textContent).toBe(
       "Checkout cancelled. You haven't been charged."
     );
     // Taken off the address so a reload doesn't show it again.
