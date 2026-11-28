@@ -117,16 +117,52 @@ function toItems(body: unknown): PublicItemView[] {
     .filter((item): item is PublicItemView => item !== null);
 }
 
-/** True when at least one variant has a price a buyer can pay now. */
+type Price = PublicItemView['variants'][number]['prices'][number];
+
+/** A free price: mode `free`, or a fixed price of zero. */
+function costsNothing(price: Price): boolean {
+  return price.mode === 'free' || (price.mode === 'fixed' && !price.amount);
+}
+
+/** A current price a buyer pays money for: not retired and not free. */
+function isPaid(price: Price): boolean {
+  return !price.retired && !costsNothing(price);
+}
+
+/** A current free price: the Personal key. */
+function isFree(price: Price): boolean {
+  return !price.retired && costsNothing(price);
+}
+
+/**
+ * True when at least one variant has a price a buyer pays now. A free
+ * variant doesn't count: publishing only the free Personal item must not
+ * switch the site to "Buy RenderWeld" (studio issue #554).
+ */
 export function hasOffers(items: PublicItemView[]): boolean {
-  return items.some((item) => item.variants.some((v) => v.prices.length > 0));
+  return items.some((item) => item.variants.some((v) => v.prices.some(isPaid)));
+}
+
+/** True when a free key (the Personal licence) can be claimed now. */
+export function hasFreeKey(items: PublicItemView[]): boolean {
+  return items.some((item) => item.variants.some((v) => v.prices.some(isFree)));
 }
 
 /**
  * Whether the store is on sale, from a read: undefined when the read failed
- * (`unavailable`, so "unknown"). The home page's buttons and the header's
- * primary action (`HeaderCta`) both decide from this.
+ * (`unavailable`, so "unknown"). Only paid prices count (`hasOffers`). The
+ * home page's buttons and the header's primary action (`HeaderCta`) both
+ * decide from this.
  */
 export function onSaleFrom(store: StoreItems): boolean | undefined {
   return store.source === 'server' ? hasOffers(store.items) : undefined;
+}
+
+/**
+ * Whether a free key can be claimed, from a read: its own state beside
+ * `onSaleFrom`, so the buttons can say "Get the free Personal licence"
+ * while nothing is for sale yet. Undefined when the read failed.
+ */
+export function freeKeyFrom(store: StoreItems): boolean | undefined {
+  return store.source === 'server' ? hasFreeKey(store.items) : undefined;
 }
