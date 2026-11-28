@@ -185,6 +185,30 @@ describe('homepage sections', () => {
     ).toBeNull();
   });
 
+  it('names the product, not "the studio", and every note has its marker', () => {
+    // Studio issues #625 (S1), #617 (N3), #633 (P5), #641 (P13), #642 (P14).
+    const { container } = render(<Home />);
+    expect(container.textContent).not.toMatch(
+      /the studio(&apos;|')s|ReelForge/
+    );
+    expect(container.textContent).toContain(
+      'This is the sequence your agent follows'
+    );
+    const notes = container.querySelectorAll('[id^="fn-"]').length;
+    for (let n = 1; n <= notes; n++)
+      expect(
+        container.querySelector(`a[href="#fn-${n}"]`),
+        `marker ${n}`
+      ).not.toBeNull();
+    expect(container.textContent).toContain(
+      "Counted from RenderWeld's tool reference on 27 November 2026."
+    );
+    for (const button of screen.queryAllByRole('button', {
+      name: /^Copy the prompt for: /,
+    }))
+      expect(button.getAttribute('aria-label')).not.toMatch(/reel reel/);
+  });
+
   it('gives every measured number its conditions', () => {
     const { container } = render(<NumbersBand />);
     expect(container.textContent).toMatch(/Lower bounds from a shared/);

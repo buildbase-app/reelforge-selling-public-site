@@ -2,8 +2,8 @@
   "reels": [
     {
       "slug": "agent-directs",
-      "title": "Explainer, four engines",
-      "prompt": "Make a 10-second vertical reel that explains ReelForge: hook first, then three steps, then an end card. Midnight theme. Use all four engines.",
+      "title": "Product explainer (four engines)",
+      "prompt": "Make a 10-second vertical reel that explains RenderWeld: hook first, then three steps, then an end card. Midnight theme. Use all four engines.",
       "theme": "midnight",
       "scenes": [
         {
@@ -133,7 +133,7 @@
     },
     {
       "slug": "hook-tips",
-      "title": "Tips reel",
+      "title": "Three tips for a better hook",
       "prompt": "Make an 8-second reel with three tips for writing a better hook. Default theme, bold title first, end on a call to follow.",
       "theme": "default",
       "scenes": [
@@ -251,7 +251,7 @@
     },
     {
       "slug": "release-notes",
-      "title": "Release notes, custom brand colour",
+      "title": "Release notes in your brand colour",
       "prompt": "Turn our release notes into a 7-second reel: a custom HTML title card in our teal brand colour, the three changes as a list, and a HyperFrames end card.",
       "theme": "custom",
       "scenes": [
