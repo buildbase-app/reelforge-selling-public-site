@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma, setAuditContext } from '@/lib/db';
+import { mirrorUser } from '@/lib/user-mirror';
 import { logger } from '@/lib/logger';
 import { getSessionContext, type SessionContext } from '@/lib/server-auth';
 import { clientIp } from '@/lib/security/client-ip';
@@ -78,21 +79,17 @@ function workspaceIdOf(data: unknown): string | undefined {
 /** Mirror the session's own profile - never a user named in the body. */
 async function syncSelf(session: SessionContext): Promise<Outcome> {
   const user = await session.bb.users.getProfile();
-  const fields = {
+  // Keyed by BuildBase user id; an email clash is resolved there (#601).
+  // emailVerified is not on the profile; /api/auth/token sets it at login.
+  await mirrorUser(session.userId, {
     email: user.email,
     name: user.name,
-    image: user.image || null,
-    role: user.role || 'user',
-    // emailVerified is not on the profile; /api/auth/token sets it at login.
-    timezone: user.timezone || null,
-    language: user.language || null,
-    country: user.country || null,
-    currency: user.currency || null,
-  };
-  await prisma.user.upsert({
-    where: { id: session.userId },
-    update: fields,
-    create: { id: session.userId, ...fields },
+    image: user.image,
+    role: user.role,
+    timezone: user.timezone,
+    language: user.language,
+    country: user.country,
+    currency: user.currency,
   });
   return 'ok';
 }
