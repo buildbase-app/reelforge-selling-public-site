@@ -83,4 +83,19 @@ describe('marketing copy', () => {
       )
     ).toEqual([]);
   });
+
+  it("calls the demo reels' studio build a pre-release build", () => {
+    // The footnotes under the demo reels name the studio build they were
+    // made with. Until the reels are re-rendered on a release build they
+    // say "pre-release build" (private site plan, P3).
+    expect(hits(/licen[cs]e check (is )?off/i)).toEqual([]);
+    const footnotes = [
+      'src/components/product/home-sections.tsx',
+      'src/app/[locale]/(marketing)/agents/page.tsx',
+    ];
+    for (const file of footnotes) {
+      const source = sources.find((s) => s.file === file);
+      expect(source?.text).toContain('(pre-release build)');
+    }
+  });
 });
