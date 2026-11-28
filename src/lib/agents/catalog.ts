@@ -96,8 +96,8 @@ export const toolCatalog = mcpTools as McpToolCatalog;
 export function toolCatalogSource(): string {
   const s = toolCatalog.source;
   if (s.method === 'tools/list')
-    return `the studio's own MCP tool list (RenderWeld ${s.version}, read ${s.fetchedOn})`;
-  return `the studio's MCP tool list (RenderWeld ${s.version}, read ${s.fetchedOn}), which is built from the server's tool registry`;
+    return `RenderWeld's own MCP tool list (RenderWeld ${s.version}, read ${s.fetchedOn})`;
+  return `RenderWeld's MCP tool list (RenderWeld ${s.version}, read ${s.fetchedOn}), which is built from the server's tool registry`;
 }
 export const reels = (reelsData as { reels: Reel[] }).reels;
 

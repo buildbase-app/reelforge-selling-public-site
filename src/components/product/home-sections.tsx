@@ -7,7 +7,6 @@ import {
   hardwareLabel,
   reels,
   toolCatalog,
-  toolCatalogSource,
   type Reel,
 } from '@/lib/agents/catalog';
 import { CopyButton } from './copy-button';
@@ -38,6 +37,19 @@ export function Fn({ n }: { n: number }) {
       </a>
     </sup>
   );
+}
+
+/** `2026-11-27` -> `27 November 2026`. */
+export function longDate(iso: string): string {
+  const d = new Date(`${iso.slice(0, 10)}T00:00:00Z`);
+  return Number.isNaN(d.getTime())
+    ? iso
+    : d.toLocaleDateString('en-GB', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'UTC',
+      });
 }
 
 export function reelSource(reel: Reel): ReelSource {
@@ -474,7 +486,7 @@ export function Formats() {
             <FrameRow frames={FRAMES.slice(3)} />
           </div>
           <figcaption className="rf-receipt mt-6">
-            Drawn to scale from the studio&apos;s formats guide. The built-in
+            Drawn to scale from RenderWeld&apos;s formats guide. The built-in
             templates are checked for overflow on rendered pixels at 9:16, 4:5,
             1:1, 16:9 and 4K
             <Fn n={7} />.
@@ -501,9 +513,10 @@ export function AgentTranscript() {
             One prompt in. A checked video out
           </h2>
           <p className="rf-muted max-w-measure mt-5 text-lg text-pretty">
-            The agent reads what the server can do, writes the scenes, checks
-            them and renders. These are the real calls that made the reel on the
-            right.
+            This is the sequence your agent follows: read what RenderWeld can
+            do, write the scenes, check them, render. The calls below made the
+            reel on the right; we sent them from a script that follows the same
+            steps an agent would.
           </p>
         </div>
         <div className="mt-14 grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
@@ -548,9 +561,9 @@ export function AgentTranscript() {
           </figure>
         </div>
         <p className="rf-muted max-w-measure mt-10 text-xs leading-relaxed">
-          We sent these calls from a short script that follows the studio&apos;s
-          own workflow guide, so you can rerun them. In the studio&apos;s Docker
-          test, headless Claude Code made a reel with the same tools
+          The script follows RenderWeld&apos;s own workflow guide, so you can
+          rerun it. In RenderWeld&apos;s Docker test, headless Claude Code made
+          a reel with the same tools
           <Fn n={5} />.
         </p>
       </div>
@@ -692,6 +705,7 @@ export function ConnectAgent({ tabs }: { tabs: React.ReactNode }) {
             Every client, a prompt cookbook and all {toolCatalog.count} tools
             <ChevronRight className="h-4 w-4" aria-hidden />
           </Link>
+          <Fn n={3} />
         </p>
       </div>
     </section>
@@ -823,7 +837,7 @@ export function ReelGallery() {
               <CopyButton
                 text={reel.prompt}
                 label="Copy prompt"
-                ariaLabel={`Copy prompt for the ${reel.title} reel`}
+                ariaLabel={`Copy the prompt for: ${reel.title}`}
                 goal="copy_reel_prompt"
                 goalProps={{ reel: reel.slug }}
                 className="mt-4 self-start"
@@ -988,7 +1002,7 @@ export function Privacy() {
           ))}
         </div>
         <p className="text-muted-foreground mt-10 text-sm">
-          Every connection the studio can make is listed in its{' '}
+          Every connection RenderWeld can make is listed in its{' '}
           <a
             href={`${siteConfig.repo.url}/blob/main/docs/PRIVACY.md`}
             className="rf-link underline"
@@ -1152,8 +1166,8 @@ export function Footnotes() {
       it. Not a benchmark.
     </>,
     <>
-      Counted from {toolCatalogSource()}. The studio&apos;s parity test fails if
-      a REST route has no MCP tool.
+      Counted from RenderWeld&apos;s tool reference on{' '}
+      {longDate(toolCatalog.source.fetchedOn)}.
     </>,
     <>
       Storage: local disk in CI; S3-compatible storage on MinIO, Azure Blob on
@@ -1164,13 +1178,13 @@ export function Footnotes() {
       ).
     </>,
     <>
-      In the studio&apos;s Docker test (2026-11-21), headless Claude Code made
+      In RenderWeld&apos;s Docker test (2026-11-21), headless Claude Code made
       an 18-second, four-engine reel over MCP only, with no other docs. Codex:
       its config is checked, but no Codex agent run is recorded yet.
     </>,
     <>
       Docker on Linux, tested on x64 and arm64. macOS and Windows are not tested
-      yet. The commands follow the studio&apos;s quick start (
+      yet. The commands follow RenderWeld&apos;s quick start (
       <DocLink path="public/start/quick-start.md" />
       ).
     </>,

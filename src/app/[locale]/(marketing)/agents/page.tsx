@@ -236,7 +236,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
                   <CopyButton
                     text={reel.prompt}
                     label="Copy prompt"
-                    ariaLabel={`Copy prompt for the ${reel.title} reel`}
+                    ariaLabel={`Copy the prompt for: ${reel.title}`}
                     goal="copy_reel_prompt"
                     goalProps={{ reel: reel.slug }}
                     className="mt-4"
