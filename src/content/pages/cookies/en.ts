@@ -7,10 +7,10 @@ const { company, contact } = siteConfig;
 const page: LegalPageContent = {
   locale: 'en',
   heroEyebrow: 'Legal',
-  heroTitle: 'Cookie Policy',
+  heroTitle: 'Cookie policy',
   heroDescription:
     'Which cookies this website uses, what each one is for, and how to change your choice. Draft, pending review.',
-  seoTitle: 'Cookie Policy',
+  seoTitle: 'Cookie policy',
   seoDescription:
     'The cookies the RenderWeld website uses, grouped by purpose, and how to change your cookie choice. Draft pending review.',
   lastUpdated: '2026-11-27',

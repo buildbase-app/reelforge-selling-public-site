@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { createTranslator } from 'next-intl';
 import { describe, expect, it, vi } from 'vitest';
 import en from '@/i18n/messages/en';
@@ -41,7 +41,7 @@ describe('footer seller line', () => {
     const year = new Date().getFullYear();
     expect(siteConfig.company.legalName).toBe('Jagodana LLC');
     expect(document.body.textContent).toContain(
-      `© ${year} Jagodana LLC. RenderWeld is a product of Jagodana LLC.`
+      `© ${year} Jagodana LLC. RenderWeld is a trademark of Jagodana LLC.`
     );
   });
 
@@ -49,5 +49,25 @@ describe('footer seller line', () => {
     render(await SiteFooter({ title: 'RenderWeld' }));
     expect(document.querySelector('img[alt*="BuildBase"]')).toBeNull();
     expect(document.body.textContent).not.toContain('Built with');
+  });
+
+  it('uses the plain tagline and link labels (studio issues #649 to #654)', async () => {
+    render(await SiteFooter({ title: 'RenderWeld' }));
+    const text = document.body.textContent ?? '';
+    expect(text).toContain(
+      'Your AI agent plans the video. RenderWeld renders it on your own server. Free for personal use; pay once for commercial use.'
+    );
+    for (const label of [
+      'Connect your agent',
+      'Source code',
+      'Licence terms',
+      'Privacy policy',
+      'Terms of service',
+      'Cookie policy',
+      'Refund policy',
+    ])
+      expect(screen.getByRole('link', { name: label })).toBeInTheDocument();
+    for (const href of ['/gallery', '/blog', '/changelog'])
+      expect(document.querySelector(`a[href="${href}"]`)).toBeNull();
   });
 });

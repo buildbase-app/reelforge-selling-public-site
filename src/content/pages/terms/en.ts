@@ -7,7 +7,7 @@ const { company, contact } = siteConfig;
 const page: LegalPageContent = {
   locale: 'en',
   heroEyebrow: 'Legal',
-  heroTitle: 'Terms of Service',
+  heroTitle: 'Terms of service',
   heroDescription:
     'The terms for using this website, your account and the store. Draft, pending review.',
   lastUpdated: '2026-11-27',

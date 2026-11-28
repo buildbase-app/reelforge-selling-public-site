@@ -87,8 +87,8 @@ export function LiteCookieBanner({ privacyHref }: { privacyHref: string }) {
         <div className="min-w-0 space-y-1 sm:max-w-2xl">
           <p className="font-medium">Cookies on this site</p>
           <p className="text-muted-foreground break-words">
-            Cookies help us see how people find and use this site and measure
-            our ads. You choose which we use.{' '}
+            We&apos;d like to use cookies to see how people find and use this
+            site. You choose which ones.{' '}
             <a
               href={privacyHref}
               className="text-foreground hover:text-primary underline underline-offset-2"

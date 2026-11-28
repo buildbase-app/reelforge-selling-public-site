@@ -54,7 +54,7 @@ async function renderHeader(action?: React.ReactNode) {
     action,
     auth: (
       <LiteAuthButton
-        labels={{ signIn: 'Sign In', dashboard: 'Dashboard', loading: '…' }}
+        labels={{ signIn: 'Sign in', dashboard: 'Dashboard', loading: '…' }}
       />
     ),
   });
@@ -133,11 +133,27 @@ describe('HomeHeader', () => {
       within(banner).getByRole('link', { name: 'Join the waitlist' })
     ).toBeInTheDocument();
     expect(
-      within(banner).getByRole('button', { name: 'Sign In' })
+      within(banner).getByRole('button', { name: 'Sign in' })
     ).toHaveAttribute('data-variant', 'ghost');
-    // "Connect your agent" goes to the home page's section of that name.
-    for (const link of within(banner).getAllByText('Connect your agent'))
-      expect(link.closest('a')).toHaveAttribute('href', '/#connect');
+  });
+
+  it('lists only Docs, Pricing, Connect your agent and Help (studio issue #649)', async () => {
+    await renderHeader();
+    const banner = screen.getByRole('banner');
+    const nav = banner.querySelector('nav')!;
+    expect(
+      [...nav.querySelectorAll('a')].map((a) => [
+        a.textContent,
+        a.getAttribute('href'),
+      ])
+    ).toEqual([
+      ['footer.links.docs', '/docs'],
+      ['footer.links.pricing', '/pricing'],
+      ['footer.links.agents', '/agents'],
+      ['footer.links.help', '/help'],
+    ]);
+    for (const href of ['/gallery', '/blog', '/changelog'])
+      expect(banner.querySelector(`a[href="${href}"]`)).toBeNull();
   });
 
   it('has no primary action on other pages', async () => {
@@ -159,7 +175,7 @@ describe('HomeHeader', () => {
     expect(menu).toHaveAttribute('popover', 'auto');
     // jsdom cannot navigate; the handler only needs the click.
     menu.addEventListener('click', (event) => event.preventDefault());
-    fireEvent.click(within(menu).getByText('Gallery'));
+    fireEvent.click(within(menu).getByText('footer.links.docs'));
     expect(hide).toHaveBeenCalledTimes(1);
   });
 });

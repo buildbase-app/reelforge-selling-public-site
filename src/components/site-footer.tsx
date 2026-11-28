@@ -18,11 +18,11 @@ export async function SiteFooter({ title }: SiteFooterProps) {
     {
       section: t('footer.sections.product'),
       links: [
+        // Gallery, Blog and Changelog come back once they have content
+        // (studio issue #649).
         { label: t('footer.links.pricing'), href: '/pricing' },
-        { label: t('footer.links.gallery'), href: '/gallery' },
         { label: t('footer.links.agents'), href: '/agents' },
         { label: t('footer.links.waitlist'), href: '/waitlist' },
-        { label: t('footer.links.changelog'), href: '/changelog' },
         { label: t('footer.links.dashboard'), href: '/dashboard' },
       ],
     },
@@ -33,7 +33,6 @@ export async function SiteFooter({ title }: SiteFooterProps) {
         { label: t('footer.links.github'), href: siteConfig.repo.url },
         { label: t('footer.links.docs'), href: '/docs' },
         { label: t('footer.links.help'), href: '/help' },
-        { label: t('footer.links.blog'), href: '/blog' },
         { label: t('footer.links.about'), href: '/about' },
         { label: t('footer.links.security'), href: '/security' },
         { label: t('footer.links.feedback'), href: '/feedback' },
@@ -112,7 +111,7 @@ export async function SiteFooter({ title }: SiteFooterProps) {
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row">
           <p className="text-muted-foreground text-xs">
             © {year} {siteConfig.company.legalName}.{' '}
-            {t('footer.productOf', {
+            {t('footer.trademarkOf', {
               product: title,
               company: siteConfig.company.legalName,
             })}
