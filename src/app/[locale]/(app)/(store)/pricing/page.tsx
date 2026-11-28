@@ -16,7 +16,9 @@ import { Link } from '@/i18n/routing';
 import type { Locale } from '@/i18n/config';
 import { getFaqSection } from '@/lib/platform/faqs';
 import { buildOffers } from '@/lib/store/offers';
-import { getStoreItems } from '@/lib/store/items';
+import { freeKeyFrom, getStoreItems, onSaleFrom } from '@/lib/store/items';
+import { PRICING_SUBTITLE_KEY } from '@/lib/store/sale-copy';
+import { saleState } from '@/components/store/store-ctas';
 import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
 
 interface PricingPageProps {
@@ -80,7 +82,21 @@ export default async function PricingPageRoute({ params }: PricingPageProps) {
             {t('title')}
           </h1>
           <p className="text-muted-foreground max-w-measure mx-auto mt-3 text-lg">
-            {t('subtitle')}
+            {t.rich(
+              PRICING_SUBTITLE_KEY[
+                saleState(onSaleFrom(store), freeKeyFrom(store))
+              ],
+              {
+                waitlist: (chunks) => (
+                  <Link
+                    href="/waitlist"
+                    className="underline underline-offset-2"
+                  >
+                    {chunks}
+                  </Link>
+                ),
+              }
+            )}
           </p>
         </div>
         <PricingCatalog serverItems={serverItems} />

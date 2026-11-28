@@ -529,6 +529,8 @@ export interface ProfileMessages {
 export interface PricingMessages {
   title: string;
   subtitle: string;
+  subtitleFree: string;
+  subtitleComingSoon: string;
   legal: string;
   meta: {
     title: string;

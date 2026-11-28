@@ -1,6 +1,7 @@
 import { ArrowRight, Check, ChevronRight } from 'lucide-react';
 import { Link } from '@/i18n/link';
 import { siteConfig } from '@/config/site';
+import { FINAL_CTA, LICENCE_STEP, type SaleState } from '@/lib/store/sale-copy';
 import {
   enginesOf,
   getReel,
@@ -567,7 +568,8 @@ docker compose exec renderweld renderweld keys create --name admin --scopes admi
   },
   {
     title: 'Add your licence key',
-    body: 'Claim the free Personal key, or buy a Commercial key, on this site. The server checks it once a day and keeps rendering for 14 days without a connection.',
+    // Replaced by LICENCE_STEP[state] when rendered (studio issue #553).
+    body: LICENCE_STEP.paid,
     code: `export ADMIN_KEY=rf_...   # the admin key from step 1
 curl -s -X POST http://127.0.0.1:4321/v1/licence \\
   -H "Authorization: Bearer $ADMIN_KEY" -H 'content-type: application/json' \\
@@ -583,7 +585,10 @@ claude mcp add --transport http renderweld http://127.0.0.1:4321/mcp \\
 ] as const;
 
 /** Sticky "how it works": the title stays while three steps scroll past. */
-export function HowItWorks() {
+export function HowItWorks({ state = 'none' }: { state?: SaleState }) {
+  const steps = STEPS.map((step, i) =>
+    i === 1 ? { ...step, body: LICENCE_STEP[state] } : step
+  );
   return (
     <section
       id="how"
@@ -603,7 +608,7 @@ export function HowItWorks() {
             <span className="rf-how-track" aria-hidden />
             <span className="rf-how-fill" aria-hidden />
             <ol className="text-[15px]">
-              {STEPS.map((step, i) => (
+              {steps.map((step, i) => (
                 <li key={step.title} className="rf-how-label">
                   <a
                     href={`#how-step-${i + 1}`}
@@ -625,7 +630,7 @@ export function HowItWorks() {
           </nav>
         </div>
         <ol className="rf-how-steps space-y-16 lg:space-y-32">
-          {STEPS.map((step, i) => (
+          {steps.map((step, i) => (
             <li
               key={step.title}
               id={`how-step-${i + 1}`}
@@ -1097,7 +1102,13 @@ export function EnterpriseStrip() {
   );
 }
 
-export function FinalCta({ ctas }: { ctas: React.ReactNode }) {
+export function FinalCta({
+  ctas,
+  state = 'none',
+}: {
+  ctas: React.ReactNode;
+  state?: SaleState;
+}) {
   return (
     <section aria-labelledby="final-title" className="dark rf-stage w-full">
       <div className="mx-auto max-w-[980px] px-4 py-28 text-center md:px-6 md:py-40">
@@ -1105,8 +1116,7 @@ export function FinalCta({ ctas }: { ctas: React.ReactNode }) {
           Give your agent a render server
         </h2>
         <p className="rf-muted max-w-measure mx-auto mt-6 text-lg text-pretty">
-          Start with the free Personal licence. Move to Commercial when it
-          starts earning.
+          {FINAL_CTA[state]}
         </p>
         <div className="mt-10">{ctas}</div>
         <p className="mt-6 text-sm">

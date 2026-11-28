@@ -261,3 +261,38 @@ describe('/agents', () => {
     footnotesResolve(container);
   });
 });
+
+/**
+ * Buy-related sentences follow the same sale state as the buttons (studio
+ * issue #553): before launch nothing says buy or claim.
+ */
+describe('buy copy follows the sale state', () => {
+  it('says coming soon and the waitlist while nothing is on sale', () => {
+    const { container } = render(
+      <>
+        <HowItWorks state="none" />
+        <FinalCta state="none" ctas={<button>Join</button>} />
+      </>
+    );
+    expect(container.textContent).toContain('go on sale on this site soon');
+    expect(container.textContent).toContain('Join the waitlist');
+    expect(container.textContent).not.toMatch(/\bbuy\b|claim/i);
+  });
+
+  it('offers only the free key while only it is published', () => {
+    const { container } = render(
+      <>
+        <HowItWorks state="free" />
+        <FinalCta state="free" ctas={<button>Get</button>} />
+      </>
+    );
+    expect(container.textContent).toContain('Claim the free Personal key');
+    expect(container.textContent).toContain('Commercial keys go on sale soon');
+    expect(container.textContent).not.toMatch(/\bbuy\b/i);
+  });
+
+  it('says buy once a paid licence is on sale', () => {
+    const { container } = render(<HowItWorks state="paid" />);
+    expect(container.textContent).toContain('or buy a Commercial key');
+  });
+});
