@@ -682,8 +682,8 @@ export function ConnectAgent({ tabs }: { tabs: React.ReactNode }) {
             Paste one line. Ask for a reel
           </h2>
           <p className="rf-muted max-w-measure mx-auto mt-5 text-lg text-pretty">
-            Your server, your keys. Keys carry scopes (read, write, render,
-            admin, owner), are stored hashed, and see only their own workspace.
+            Your server, your keys. Each key gets only the permissions you give
+            it, is stored hashed, and sees only its own workspace.
           </p>
         </div>
         <div className="mt-12">{tabs}</div>

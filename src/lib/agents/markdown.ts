@@ -61,21 +61,21 @@ ${clients}
 
 ## Keys
 
-Create one per agent on your studio: \`docker compose exec renderweld renderweld keys create --name agent --scopes read,write,render\`. Shown once, stored hashed.
+Create one per agent on your RenderWeld server: \`docker compose exec renderweld renderweld keys create --name agent --scopes read,write,render\`. Shown once, stored hashed.
 
 ${KEY_SCOPES.map((s) => `- \`${s.scope}\`: ${s.what}`).join('\n')}
 
-The studio binds 127.0.0.1 by default; for remote agents put it behind TLS (compose profile \`tls\`) and use \`https://YOUR-HOST/mcp\`.
+RenderWeld only listens on this computer by default. To reach it from elsewhere, put it behind HTTPS and set its public address; see Remote access in the docs. A web page can't reach your RenderWeld server through a visitor's browser.
 
 ## Prompt cookbook
 
-Real renders. The calls were sent by a script that follows the studio's workflow guide (MCP resource \`renderweld://guide/workflow\`, prompt \`make_reel\`).
+Real renders. The calls were sent by a script that follows RenderWeld's workflow guide (MCP resource \`renderweld://guide/workflow\`, prompt \`make_reel\`).
 
 ${cookbook}
 
 ## Tools (${toolCatalog.count}, from ${toolCatalogSource()})
 
-Every REST route has a tool with the same scope. Tool names are experimental until v1.0.
+Every REST route has a tool with the same scope. Tool names may change before version 1.0; we list every change in the changelog.
 
 ${tools}
 `;
