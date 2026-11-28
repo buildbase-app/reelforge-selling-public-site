@@ -16,6 +16,8 @@ const state: {
 } = { items: [], loading: false, error: null };
 let browserReads = 0;
 let signedIn = true;
+/** Sign-in still loading (or stuck): neither signed in nor out yet. */
+let authLoading = false;
 const buyProps: Record<string, unknown>[] = [];
 const signIn = vi.fn();
 const guest = {
@@ -30,12 +32,15 @@ vi.mock('@buildbase/sdk/react', () => ({
     browserReads += 1;
     return { ...state, hasNextPage: false, refetch: vi.fn() };
   },
-  useSaaSAuth: () => ({ signIn }),
+  useSaaSAuth: () => ({
+    signIn,
+    status: authLoading
+      ? 'loading'
+      : signedIn
+        ? 'authenticated'
+        : 'unauthenticated',
+  }),
   useGuestCheckout: () => ({ ...guest, problems: [] }),
-  WhenAuthenticated: ({ children }: { children: React.ReactNode }) =>
-    signedIn ? <>{children}</> : null,
-  WhenUnauthenticated: ({ children }: { children: React.ReactNode }) =>
-    signedIn ? null : <>{children}</>,
   BuyButton: (props: Record<string, unknown>) => {
     buyProps.push(props);
     return <button type="button">{String(props.label)}</button>;
@@ -78,6 +83,7 @@ beforeEach(() => {
   buyProps.length = 0;
   browserReads = 0;
   signedIn = true;
+  authLoading = false;
   signIn.mockReset();
   guest.checkout.mockReset();
   guest.reset.mockReset();
@@ -400,6 +406,15 @@ describe('PricingCatalog: guest checkout (studio issue #257)', () => {
     for (const card of others) {
       expect(within(card).queryByLabelText('Email')).toBeNull();
     }
+  });
+
+  it('shows the guest buttons while sign-in is still loading, or never loads', () => {
+    authLoading = true;
+    state.items = [commercialItem(), personalItem()];
+    render(<PricingCatalog />);
+    expect(buyProps).toHaveLength(0);
+    expect(screen.getAllByRole('button', { name: 'Buy now' })).toHaveLength(3);
+    expect(screen.getByRole('button', { name: 'Get it free' })).toBeVisible();
   });
 
   it("signed in: no guest checkout, the SDK's Buy button", () => {
