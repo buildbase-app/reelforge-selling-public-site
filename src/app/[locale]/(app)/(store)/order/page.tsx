@@ -6,7 +6,7 @@ import { OrderView } from '@/components/store/order-view';
 
 export const metadata: Metadata = {
   title: 'Your order',
-  description: 'Your RenderWeld order, downloads and licence keys.',
+  description: 'Your RenderWeld order and licence key.',
   robots: { index: false, follow: false },
 };
 

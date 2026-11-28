@@ -68,7 +68,10 @@ function SignedInOrder({ requestedId }: { requestedId: string | null }) {
   if (!isAuthenticated) {
     return (
       <Message title="Sign in to see your order">
-        <p>Your order is in the account you bought it with.</p>
+        <p>
+          Sign in with the account you used, or open the link in your receipt
+          email.
+        </p>
         <Button className="mt-4" onClick={() => signIn()}>
           Sign in
         </Button>
@@ -94,8 +97,8 @@ function NewestOrder() {
   return (
     <Message title="No orders yet">
       <p>
-        When you buy RenderWeld, your order, downloads and licence keys appear
-        here and under{' '}
+        When you buy RenderWeld, your order and licence key appear here and
+        under{' '}
         <Link href="/dashboard/licences" className="underline">
           Licences
         </Link>

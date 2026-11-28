@@ -16,7 +16,7 @@ export const ORDER_STATUS: Record<
   },
   partly_paid: {
     label: 'Partly paid',
-    hint: 'The first payment went through; the rest follows the plan you chose.',
+    hint: "Part of the payment has arrived. We'll email you when the rest does.",
     tone: 'ok',
   },
   checkout_open: {
