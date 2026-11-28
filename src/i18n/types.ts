@@ -321,6 +321,19 @@ export interface SettingsMessages {
   danger: {
     openButton: string;
   };
+  data: {
+    title: string;
+    description: string;
+    download: string;
+    downloading: string;
+    downloadFailed: string;
+    delete: string;
+    confirmTitle: string;
+    confirmBody: string;
+    kept: string;
+    continue: string;
+    cancel: string;
+  };
   sections: {
     profile: SettingsSectionItem;
     security: SettingsSectionItem;

@@ -11,6 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { YourDataCard } from '@/components/settings/your-data-card';
 import {
   User,
   Building2,
@@ -109,6 +110,8 @@ export default function SettingsPage() {
           })}
         </CardContent>
       </Card>
+
+      <YourDataCard />
 
       {DANGER_SECTIONS.map((section) => {
         const Icon = (section ? SECTION_ICONS[section] : null) ?? Trash2;

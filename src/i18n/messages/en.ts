@@ -327,6 +327,22 @@ const messages: Messages = {
     danger: {
       openButton: 'Open danger zone',
     },
+    data: {
+      title: 'Your data',
+      description:
+        'Download what this store holds about you, or delete your account.',
+      download: 'Download my data',
+      downloading: 'Preparing your file…',
+      downloadFailed:
+        "Your data couldn't be downloaded. Try again in a moment.",
+      delete: 'Delete my account',
+      confirmTitle: 'Delete your account?',
+      confirmBody:
+        "The next step asks you to confirm it's you. Once the deletion runs, you can't sign in with this account, every device is signed out, and this store's copy of your profile is erased.",
+      kept: 'Order, invoice and licence records are kept for as long as tax law requires.',
+      continue: 'Continue to delete',
+      cancel: 'Keep my account',
+    },
     sections: {
       security: {
         label: 'Security',
