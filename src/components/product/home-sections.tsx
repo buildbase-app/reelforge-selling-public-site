@@ -10,7 +10,14 @@ import {
   toolCatalogSource,
   type Reel,
 } from '@/lib/agents/catalog';
-import { marqueeRows, showcaseReels } from '@/lib/gallery/showcase';
+import {
+  heroDemoShown,
+  heroEntry,
+  marqueeRows,
+  showcaseReels,
+  transcriptEntry,
+  transcriptReelShown,
+} from '@/lib/gallery/showcase';
 import { CopyButton } from './copy-button';
 import { ReelVideo, type ReelSource } from './reel-video';
 import './product.css';
@@ -106,7 +113,7 @@ function Phone({
  * never plays on its own under reduced motion, and has a pause button.
  */
 const DEMO = {
-  base: '/walkthroughs/agent-session.4cc6d476',
+  base: `/walkthroughs/${heroEntry.file}`,
   seconds: 35,
   prompt: 'make a 9-second reel that mixes all four engines',
 };
@@ -130,14 +137,18 @@ const DEMO_SOURCE: ReelSource = {
  * Hero: the promise, the buttons, and a real agent session in a window.
  * Two layers give it depth: the welded frames of the brand mark sit behind
  * the window and move slower than it on scroll (still offset, so the depth
- * stays under reduced motion).
+ * stays under reduced motion). The session follows the gallery bar (studio
+ * issue #807): below it, only the welded frames show and nothing is
+ * preloaded.
  */
 export function Hero({
   heading,
   ctas,
+  showDemo = heroDemoShown(),
 }: {
   heading: React.ReactNode;
   ctas: React.ReactNode;
+  showDemo?: boolean;
 }) {
   const duration = `0:${String(DEMO.seconds).padStart(2, '0')}`;
   return (
@@ -175,43 +186,53 @@ export function Hero({
             <Fn n={1} />
           </p>
         </div>
-        <figure className="relative min-w-0">
-          {/* The far layer: the mark's two frames, welded, behind the
-              window. Decoration only. */}
-          <div className="rf-hero-frames rf-par-far" aria-hidden="true">
-            <span className="rf-hero-tall" />
-            <span className="rf-hero-wide" />
-            <Weld className="rf-hero-weld" />
-          </div>
-          <div className="rf-par-near relative">
-            <div className="rf-window rf-demo">
-              <div className="rf-demo-bar border-b border-white/10">
-                <span className="rf-receipt truncate">
-                  Claude Code over MCP · agent-session.mp4
-                </span>
-                <span className="rf-receipt shrink-0">{duration}</span>
-              </div>
-              <div className="rf-demo-screen">
-                <ReelVideo
-                  sources={[DEMO_SOURCE]}
-                  priority
-                  sizes={DEMO_SIZES}
-                  className="absolute inset-0"
-                />
-              </div>
-              <div className="rf-demo-bar border-t border-white/10">
-                <span className="rf-receipt">
-                  prompt, MCP calls, checked MP4
-                </span>
-                <span className="rf-receipt shrink-0">silent</span>
-              </div>
+        {showDemo ? (
+          <figure className="relative min-w-0">
+            {/* The far layer: the mark's two frames, welded, behind the
+                window. Decoration only. */}
+            <div className="rf-hero-frames rf-par-far" aria-hidden="true">
+              <span className="rf-hero-tall" />
+              <span className="rf-hero-wide" />
+              <Weld className="rf-hero-weld" />
             </div>
-            <figcaption className="rf-receipt mt-4">
-              A replay of a recorded session on 2026-11-21: the real prompt,
-              tool calls, results and reel, with the waits shortened.
-            </figcaption>
+            <div className="rf-par-near relative">
+              <div className="rf-window rf-demo">
+                <div className="rf-demo-bar border-b border-white/10">
+                  <span className="rf-receipt truncate">
+                    Claude Code over MCP · agent-session.mp4
+                  </span>
+                  <span className="rf-receipt shrink-0">{duration}</span>
+                </div>
+                <div className="rf-demo-screen">
+                  <ReelVideo
+                    sources={[DEMO_SOURCE]}
+                    priority
+                    sizes={DEMO_SIZES}
+                    className="absolute inset-0"
+                  />
+                </div>
+                <div className="rf-demo-bar border-t border-white/10">
+                  <span className="rf-receipt">
+                    prompt, MCP calls, checked MP4
+                  </span>
+                  <span className="rf-receipt shrink-0">silent</span>
+                </div>
+              </div>
+              <figcaption className="rf-receipt mt-4">
+                A replay of a recorded session on 2026-11-21: the real prompt,
+                tool calls, results and reel, with the waits shortened.
+              </figcaption>
+            </div>
+          </figure>
+        ) : (
+          <div className="relative min-w-0" aria-hidden="true">
+            <div className="rf-hero-frames rf-par-far">
+              <span className="rf-hero-tall" />
+              <span className="rf-hero-wide" />
+              <Weld className="rf-hero-weld" />
+            </div>
           </div>
-        </figure>
+        )}
       </div>
     </section>
   );
@@ -468,8 +489,13 @@ export function Formats() {
 }
 
 /** "Your agent is the editor": the prompt, the recorded tool calls, the reel. */
-export function AgentTranscript() {
-  const reel = getReel('agent-directs');
+export function AgentTranscript({
+  showReel = transcriptReelShown(),
+}: {
+  /** The reel beside the calls follows the gallery bar (studio issue #807). */
+  showReel?: boolean;
+} = {}) {
+  const reel = getReel(transcriptEntry.slug);
   const last = reel.toolCalls.length - 1;
   return (
     <section
@@ -484,11 +510,15 @@ export function AgentTranscript() {
           </h2>
           <p className="rf-muted max-w-measure mt-5 text-lg text-pretty">
             The agent reads what the server can do, writes the scenes, checks
-            them and renders. These are the real calls that made the reel on the
-            right.
+            them and renders.{' '}
+            {showReel
+              ? 'These are the real calls that made the reel on the right.'
+              : 'These are the real calls from one run.'}
           </p>
         </div>
-        <div className="mt-14 grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+        <div
+          className={`mt-14 grid grid-cols-1 items-start gap-10 ${showReel ? 'lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]' : 'max-w-[760px]'}`}
+        >
           <ol
             className="rf-window space-y-2 p-4 font-mono text-[13px] md:p-6"
             aria-label="MCP calls, in order"
@@ -520,14 +550,16 @@ export function AgentTranscript() {
               </li>
             ))}
           </ol>
-          <figure className="flex flex-col items-center">
-            <Phone sources={[reelSource(reel)]} />
-            <figcaption className="rf-receipt mt-4 max-w-[300px] text-center">
-              {enginesOf(reel).join(' · ')}: four engines,{' '}
-              {reel.output.durationSeconds} seconds, rendered in{' '}
-              {reel.renderSeconds} s<Fn n={2} />.
-            </figcaption>
-          </figure>
+          {showReel && (
+            <figure className="flex flex-col items-center">
+              <Phone sources={[reelSource(reel)]} />
+              <figcaption className="rf-receipt mt-4 max-w-[300px] text-center">
+                {enginesOf(reel).join(' · ')}: four engines,{' '}
+                {reel.output.durationSeconds} seconds, rendered in{' '}
+                {reel.renderSeconds} s<Fn n={2} />.
+              </figcaption>
+            </figure>
+          )}
         </div>
         <p className="rf-muted max-w-measure mt-10 text-xs leading-relaxed">
           We sent these calls from a short script that follows the studio&apos;s

@@ -12,6 +12,7 @@ vi.mock('@/env', () => ({
 import { reels, toolCatalog, toolCatalogSource } from '@/lib/agents/catalog';
 import { AGENT_CLIENTS } from '@/lib/agents/snippets';
 import { buildAgentsMarkdown } from '@/lib/agents/markdown';
+import { agentsVideoSlugs } from '@/lib/gallery/showcase';
 
 /**
  * The generated data behind / and /agents stays honest: the tool list is the
@@ -154,5 +155,11 @@ describe('/agents.md', () => {
 
   it('never says "open source"', () => {
     expect(md).not.toMatch(/open[\s_-]*source/i);
+  });
+
+  it('lists a video only for a recipe whose reel meets the gallery bar', () => {
+    const shown = agentsVideoSlugs();
+    for (const reel of reels)
+      expect(md.includes(reel.files.mp4)).toBe(shown.has(reel.slug));
   });
 });

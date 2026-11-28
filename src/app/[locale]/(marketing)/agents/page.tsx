@@ -19,6 +19,7 @@ import {
   toolCatalogSource,
 } from '@/lib/agents/catalog';
 import { AGENT_CLIENTS, KEY_SCOPES } from '@/lib/agents/snippets';
+import { agentsVideoSlugs } from '@/lib/gallery/showcase';
 import { FontPreload, GEIST_MONO_CORE_URL } from '@/lib/fonts';
 import { getFaqSection } from '@/lib/platform/faqs';
 import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
@@ -62,6 +63,10 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
   setRequestLocale(locale);
   const faq = await getFaqSection('agents');
   const ref = reels[0];
+  // Cookbook videos follow the gallery bar (studio issue #807); a recipe
+  // below it keeps its prompt and tool calls.
+  const withVideo = agentsVideoSlugs();
+  const anyVideo = reels.some((r) => withVideo.has(r.slug));
 
   return (
     <div className="rf-product flex flex-1 flex-col items-center">
@@ -185,25 +190,29 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
               A prompt, the tools it calls, the reel it makes
             </h2>
             <p className="text-muted-foreground max-w-measure mt-5 text-lg text-pretty">
-              Each recipe is a real render. No other docs needed: the server
-              explains its own workflow to agents (the{' '}
-              <code>renderweld://guide/workflow</code> resource and the{' '}
-              <code>make_reel</code> prompt).
+              {anyVideo
+                ? 'Each recipe with a video is a real render. '
+                : 'Each recipe is a prompt and the tool calls it makes. '}
+              No other docs needed: the server explains its own workflow to
+              agents (the <code>renderweld://guide/workflow</code> resource and
+              the <code>make_reel</code> prompt).
             </p>
           </div>
           <ol className="mt-12 space-y-6">
             {reels.map((reel) => (
               <li
                 key={reel.slug}
-                className="rf-reveal bg-card grid gap-6 rounded-2xl border p-5 md:grid-cols-[160px_1fr] md:p-8"
+                className={`rf-reveal bg-card grid gap-6 rounded-2xl border p-5 md:p-8 ${withVideo.has(reel.slug) ? 'md:grid-cols-[160px_1fr]' : ''}`}
               >
-                <div className="dark rf-stage relative mx-auto aspect-[9/16] w-40 overflow-hidden rounded-xl md:mx-0">
-                  <ReelVideo
-                    sources={[reelSource(reel)]}
-                    sizes="160px"
-                    className="rf-screen absolute inset-0"
-                  />
-                </div>
+                {withVideo.has(reel.slug) && (
+                  <div className="dark rf-stage relative mx-auto aspect-[9/16] w-40 overflow-hidden rounded-xl md:mx-0">
+                    <ReelVideo
+                      sources={[reelSource(reel)]}
+                      sizes="160px"
+                      className="rf-screen absolute inset-0"
+                    />
+                  </div>
+                )}
                 <div className="min-w-0">
                   <h3 className="text-xl font-medium tracking-tight">
                     {reel.title}
@@ -222,17 +231,23 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
                       )
                       .join(' → ')}
                   </p>
-                  <p className="text-muted-foreground mt-4 text-xs">Result</p>
-                  <p className="mt-1 text-sm">
-                    {reel.output.width}×{reel.output.height},{' '}
-                    {reel.output.durationSeconds} s, {reel.output.frames}{' '}
-                    frames, {enginesOf(reel).join(' + ')}; rendered in{' '}
-                    {reel.renderSeconds} s<Fn n={1} />; checks:{' '}
-                    {Object.entries(reel.checks)
-                      .map(([k, v]) => `${k} ${v}`)
-                      .join(', ')}
-                    .
-                  </p>
+                  {withVideo.has(reel.slug) && (
+                    <>
+                      <p className="text-muted-foreground mt-4 text-xs">
+                        Result
+                      </p>
+                      <p className="mt-1 text-sm">
+                        {reel.output.width}×{reel.output.height},{' '}
+                        {reel.output.durationSeconds} s, {reel.output.frames}{' '}
+                        frames, {enginesOf(reel).join(' + ')}; rendered in{' '}
+                        {reel.renderSeconds} s<Fn n={1} />; checks:{' '}
+                        {Object.entries(reel.checks)
+                          .map(([k, v]) => `${k} ${v}`)
+                          .join(', ')}
+                        .
+                      </p>
+                    </>
+                  )}
                   <CopyButton
                     text={reel.prompt}
                     label="Copy prompt"
@@ -323,17 +338,19 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
             Notes
           </h2>
           <ol className="text-muted-foreground max-w-measure mt-4 list-decimal space-y-2 pl-5 text-xs leading-relaxed">
-            <li id="fn-1" className="scroll-mt-32">
-              Wall-clock time from each render&apos;s render-manifest.json, one
-              run each on {ref.renderedAt.slice(0, 10)}: RenderWeld{' '}
-              {ref.versions.studio} (pre-release build), {hardwareLabel(ref)}.
-              Times vary from run to run; not a benchmark.{' '}
-              <Link href="/methods" className="underline underline-offset-2">
-                How we measured
-              </Link>
-              .
-            </li>
-            <li id="fn-2" className="scroll-mt-32">
+            {anyVideo && (
+              <li id="fn-1" className="scroll-mt-32">
+                Wall-clock time from each render&apos;s render-manifest.json,
+                one run each on {ref.renderedAt.slice(0, 10)}: RenderWeld{' '}
+                {ref.versions.studio} (pre-release build), {hardwareLabel(ref)}.
+                Times vary from run to run; not a benchmark.{' '}
+                <Link href="/methods" className="underline underline-offset-2">
+                  How we measured
+                </Link>
+                .
+              </li>
+            )}
+            <li id="fn-2" value={2} className="scroll-mt-32">
               Counted from {toolCatalogSource()}. The studio&apos;s parity test
               fails if a REST route has no tool.{' '}
               <Link href="/methods" className="underline underline-offset-2">

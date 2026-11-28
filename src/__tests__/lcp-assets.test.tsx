@@ -101,7 +101,7 @@ describe('reel posters', () => {
   });
 
   it('the hero demo poster is small, exists and is preloaded at high priority', () => {
-    render(<Hero heading="Your agent directs." ctas={null} />);
+    render(<Hero heading="Your agent directs." ctas={null} showDemo />);
     const link = [
       ...document.head.querySelectorAll('link[rel="preload"][as="image"]'),
     ].find((l) => l.getAttribute('imagesrcset')?.includes('/walkthroughs/'))!;

@@ -1,5 +1,12 @@
 {
-  "_about": "Which reels the home page may show (studio issue #807). An entry is shown only when `shown` is true and its `counts` (htmlComponents, animations, soundEffects, music) meet the gallery bar in src/lib/gallery/bar.ts; a test fails if an entry marked shown is below it. An entry without counts was not counted, which is below the bar. None of the current reels was counted, so none is shown; their files stay in the repo.",
+  "_about": "Which reels the home page may show (studio issue #807). An entry is shown only when `shown` is true and its `counts` (htmlComponents, animations, soundEffects, music) meet the gallery bar in src/lib/gallery/bar.ts; a test fails if an entry marked shown is below it. An entry without counts was not counted, which is below the bar. The bar also covers the hero's recorded agent session (`hero`), the reel beside the home page's agent transcript (`transcript`) and the videos of the /agents prompt cookbook (`agents`). None of the current reels was counted, so none is shown; their files stay in the repo.",
+  "hero": { "file": "agent-session.4cc6d476", "shown": false },
+  "transcript": { "slug": "agent-directs", "shown": false },
+  "agents": [
+    { "slug": "agent-directs", "shown": false },
+    { "slug": "hook-tips", "shown": false },
+    { "slug": "release-notes", "shown": false }
+  ],
   "rail": [
     { "slug": "agent-directs", "shown": false },
     { "slug": "hook-tips", "shown": false },
