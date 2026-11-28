@@ -23,7 +23,14 @@ vi.mock('@/env', () => ({
   buildbaseEnvironment: undefined,
 }));
 vi.mock('@/i18n/routing', () => ({
-  Link: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (
+  Link: ({
+    href,
+    children,
+    ...props
+  }: {
+    href: string;
+    children: React.ReactNode;
+  }) => (
     <a href={href} {...props}>
       {children}
     </a>
@@ -89,7 +96,9 @@ describe('WaitlistForm', () => {
   });
 
   it('announces a failure and keeps the form', async () => {
-    submitBetaUser.mockRejectedValue(new Error('offline'));
+    submitBetaUser.mockImplementation(async () => {
+      throw new Error('offline');
+    });
     render(<WaitlistForm copy={copy} />);
     fill();
     expect(await screen.findByRole('alert')).toHaveTextContent(w.failed);
