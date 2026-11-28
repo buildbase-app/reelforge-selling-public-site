@@ -9,6 +9,11 @@ import { useParams } from 'next/navigation';
 import { defaultLocale, type Locale } from '@/i18n/config';
 import { clearLegacyAuthToken, setClientAuthToken } from '@/lib/auth-client';
 import { TRACKING } from '@/lib/tracking-config';
+import {
+  exchangeSignInCode,
+  readSessionId,
+} from '@/components/auth/token-exchange';
+import { SignInUnfinished } from '@/components/auth/sign-in-unfinished';
 
 const config = {
   serverUrl: env.NEXT_PUBLIC_BUILDBASE_SERVER_URL,
@@ -75,20 +80,11 @@ export function SaaSProvider({
           // Called on page refresh to restore session from httpOnly cookie.
           // The SDK (1.8) needs the session id in the browser to call
           // BuildBase; /api/auth/session answers only same-origin reads.
-          getSession: async () => {
-            const res = await fetch('/api/auth/session');
-            const data = await res.json();
-            return data.sessionId ?? null;
-          },
-          handleAuthentication: async (code: string) => {
-            const response = await fetch('/api/auth/token', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ code }),
-            });
-            const data = await response.json();
-            return { sessionId: data.sessionId };
-          },
+          getSession: () => readSessionId(),
+          // A refused exchange throws and shows "Sign-in didn't finish"
+          // (studio issue #600) instead of a silent signed-in-without-a-
+          // session state.
+          handleAuthentication: (code: string) => exchangeSignInCode(code),
           onSignOut: async () => {
             setClientAuthToken(null);
             // JSON, same-origin: the store refuses anything else (SEC-14).
@@ -139,6 +135,7 @@ export function SaaSProvider({
         },
       }}
     >
+      <SignInUnfinished />
       {children}
     </SaaSOSProvider>
   );

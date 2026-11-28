@@ -57,6 +57,10 @@ export async function POST(request: NextRequest) {
     );
 
     if (!authResponse.ok) {
+      // The status only: never the code or the answer's body.
+      logger.warn('Auth token exchange refused', {
+        status: authResponse.status,
+      });
       return NextResponse.json(
         { success: false, message: 'Failed to verify token' },
         { status: 401 }
@@ -65,7 +69,16 @@ export async function POST(request: NextRequest) {
 
     const responseData = await authResponse.json();
     const responseResult = responseData.data;
-    const sessionId = responseResult.sessionId;
+    const sessionId = responseResult?.sessionId;
+    if (typeof sessionId !== 'string' || !sessionId) {
+      logger.warn('Auth token exchange answered without a session', {
+        status: authResponse.status,
+      });
+      return NextResponse.json(
+        { success: false, message: 'Failed to verify token' },
+        { status: 502 }
+      );
+    }
     const userData = responseResult.user;
     // Create or update user in database
     const userId = userData.id || userData._id;
