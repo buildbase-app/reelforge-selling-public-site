@@ -71,6 +71,7 @@ Object.defineProperty(HTMLMediaElement.prototype, 'play', {
   value: vi.fn().mockResolvedValue(undefined),
 });
 import { reels, toolCatalog } from '@/lib/agents/catalog';
+import { showcaseReels } from '@/lib/gallery/showcase';
 
 function Home() {
   return (
@@ -107,10 +108,13 @@ describe('homepage sections', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Your agent directs.'
     );
+    // The hero demo, the agent transcript's reel, and the showcase rail,
+    // which holds only reels that meet the gallery bar (studio issue #807).
+    const showcased = showcaseReels();
     expect(container.querySelectorAll('video').length).toBe(
-      1 + 1 + reels.length
+      1 + 1 + showcased.length
     );
-    for (const reel of reels)
+    for (const reel of showcased)
       expect(container.textContent).toContain(reel.prompt);
     expect(container.textContent).toContain(String(toolCatalog.count));
     for (const engine of [

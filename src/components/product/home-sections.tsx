@@ -10,6 +10,7 @@ import {
   toolCatalogSource,
   type Reel,
 } from '@/lib/agents/catalog';
+import { marqueeRows, showcaseReels } from '@/lib/gallery/showcase';
 import { CopyButton } from './copy-button';
 import { ReelVideo, type ReelSource } from './reel-video';
 import './product.css';
@@ -217,35 +218,13 @@ export function Hero({
 }
 
 /**
- * Frames from 16 gallery reels the studio rendered (`public/reels/marquee`,
+ * Frames from gallery reels the studio rendered (`public/reels/marquee`,
  * 288×512 WebP, about 4 KB each), in two rows that drift in opposite
  * directions. Each name ends in the first 8 hex digits of the file's SHA-256,
  * because public/_headers caches /reels/* as immutable: a changed poster
- * needs a new name.
+ * needs a new name. Only posters of reels that meet the gallery bar are
+ * shown (src/data/showcase.json, studio issue #807).
  */
-const MARQUEE = [
-  [
-    'city-cycling-growth.8345d050',
-    'colour-palette-tour.2b8a1575',
-    'air-squat-form-tip.9626dfc4',
-    'lumen-desk-lamp-launch.432dbecf',
-    'election-turnout-explainer.d5f2afb9',
-    'city-weekend-guide.6b884e91',
-    'podcast-founder-stories.0776ba94',
-    'sheet-pan-tacos.865d60ef',
-  ],
-  [
-    'generative-brand-loop.b3090ee3',
-    'habitloop-app-promo.67d90538',
-    'charity-run-event.bcff8138',
-    'packing-light-checklist.93d0e149',
-    'remote-work-data-story.d579152e',
-    'pay-yourself-first.3a55e1bd',
-    'studio-apartment-rent.2db9c604',
-    'small-steps-daily.0196a3e0',
-  ],
-];
-
 function MarqueeRow({
   slugs,
   reverse,
@@ -279,6 +258,9 @@ function MarqueeRow({
 
 /** The light card: real reel posters drifting past, and what RenderWeld is. */
 export function ReelMarquee() {
+  const rows = marqueeRows();
+  // "Every poster here is a real render" needs posters: no section without.
+  if (rows[0].length + rows[1].length === 0) return null;
   return (
     <section
       aria-labelledby="made-title"
@@ -287,7 +269,7 @@ export function ReelMarquee() {
       <div className="mx-auto max-w-[1200px] px-4 pb-24 md:px-6 md:pb-32">
         <div className="rf-paper overflow-hidden py-6 md:py-8">
           <div aria-hidden="true">
-            <MarqueeRow slugs={MARQUEE[0]} />
+            <MarqueeRow slugs={rows[0]} />
           </div>
           <div className="mx-auto max-w-[760px] px-6 py-10 text-center md:py-14">
             <h2 id="made-title" className="rf-headline">
@@ -332,7 +314,7 @@ export function ReelMarquee() {
             </div>
           </div>
           <div aria-hidden="true">
-            <MarqueeRow slugs={MARQUEE[1]} reverse />
+            <MarqueeRow slugs={rows[1]} reverse />
           </div>
         </div>
       </div>
@@ -772,8 +754,14 @@ export function Engines() {
   );
 }
 
-/** Real reels with the prompt that made each one. */
+/**
+ * Real reels with the prompt that made each one: only those that meet the
+ * gallery bar (studio issue #807). With none, the section is left out
+ * rather than showing an empty rail.
+ */
 export function ReelGallery() {
+  const shown = showcaseReels();
+  if (shown.length === 0) return null;
   return (
     <section
       id="reels"
@@ -798,7 +786,7 @@ export function ReelGallery() {
           </Link>
         </div>
         <ul className="rf-rail mt-14 pb-4">
-          {reels.map((reel, i) => (
+          {shown.map((reel, i) => (
             <li
               key={reel.slug}
               className="rf-reveal flex min-w-0 flex-col"

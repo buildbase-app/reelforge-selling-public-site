@@ -58,7 +58,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: url('/'), changeFrequency: 'weekly', priority: 1 },
     { url: url('/pricing'), changeFrequency: 'weekly', priority: 0.9 },
     { url: url('/agents'), changeFrequency: 'weekly', priority: 0.8 },
-    { url: url('/gallery'), changeFrequency: 'weekly', priority: 0.8 },
+    // Left out while no reel meets the gallery bar: the page is noindex then.
+    ...(reels.length > 0
+      ? [
+          {
+            url: url('/gallery'),
+            changeFrequency: 'weekly' as const,
+            priority: 0.8,
+          },
+        ]
+      : []),
     { url: url('/help'), changeFrequency: 'weekly', priority: 0.7 },
     {
       url: url('/docs'),
