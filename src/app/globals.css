@@ -317,9 +317,8 @@
 }
 /* While the banner is up, a control reached with Tab scrolls clear of it
    instead of landing under it, the footer's last link too: the page gets
-   room below its end, after the body's content, since the body itself is a
-   fixed screen tall (the banner is about 160px tall on a phone, 100px
-   from 640px up). */
+   room below its end, after the body's content (the banner is about 160px
+   tall on a phone, 100px from 640px up). */
 html:has(.rf-consent) {
   scroll-padding-bottom: 11rem;
 }

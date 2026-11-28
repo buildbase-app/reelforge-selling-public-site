@@ -86,7 +86,7 @@ export default async function RootLayout({
           description={seoConfig.brand.description}
         />
       </head>
-      <body className="h-screen w-screen antialiased">{children}</body>
+      <body className="min-h-dvh antialiased">{children}</body>
     </html>
   );
 }
