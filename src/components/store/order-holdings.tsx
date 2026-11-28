@@ -77,6 +77,24 @@ export function LicenceEdition({ edition }: { edition: Edition }) {
   );
 }
 
+/**
+ * A guest's order link can't give an activation back (BuildBase allows it
+ * only from an account), so it says how to free an install instead: ask
+ * support with the order number (studio issue #583). The app's
+ * "limit reached" message points here.
+ */
+export function GuestFreeInstall({ orderId }: { orderId: string }) {
+  return (
+    <p role="note" data-free-install className="text-muted-foreground text-sm">
+      Need to move this key to another server? To free an install,{' '}
+      <Link href="/contact" className="font-medium underline">
+        contact support
+      </Link>{' '}
+      with your order number, <span className="font-mono">{orderId}</span>.
+    </p>
+  );
+}
+
 function HoldingBlock({
   holding,
   guestOrder,
@@ -95,6 +113,7 @@ function HoldingBlock({
       <div className="space-y-3">
         {edition && <LicenceEdition edition={edition} />}
         <HoldingKeys holding={holding} canRemove={!guestOrder} />
+        {guestOrder && <GuestFreeInstall orderId={guestOrder.orderId} />}
       </div>
     );
   }
