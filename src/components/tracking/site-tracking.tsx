@@ -4,9 +4,9 @@ import { clientOnly } from '@/components/client-only';
 
 /**
  * BuildBase tracking for the provider-free public pages (studio issue #79):
- * `BuildBaseTracking` from `@buildbase/sdk/tracking` (no UI dependencies),
- * the cookie banner and the sign-in island, loaded right after the page
- * hydrates instead of with it. Pages inside `SaaSProvider` get the same
+ * `BuildBaseTracking` from `@buildbase/sdk/tracking` (no UI dependencies)
+ * and the cookie banner, loaded right after the page hydrates instead of
+ * with it. Sign-in is not part of it (see `MarketingShell`). Pages inside `SaaSProvider` get the same
  * tracking from the provider's `tracking` option instead.
  */
 export const SiteTracking = clientOnly(
