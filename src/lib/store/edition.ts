@@ -17,13 +17,21 @@ import type { PublicItemView } from '@buildbase/sdk';
 
 export type Edition = 'personal' | 'commercial';
 
-/** Item slugs per edition; the same in every BuildBase environment. */
-const PERSONAL_SLUGS = new Set(['reelforge-personal']);
-const COMMERCIAL_SLUGS = new Set(['reelforge-commercial']);
+/**
+ * Item slugs per edition; the same in every BuildBase environment. The
+ * renderweld-* slugs are the names the production items are due to take.
+ */
+const PERSONAL_SLUGS = new Set(['reelforge-personal', 'renderweld-personal']);
+const COMMERCIAL_SLUGS = new Set([
+  'reelforge-commercial',
+  'renderweld-commercial',
+]);
 
 /**
- * Item ids per edition. The development environment's items; production's
- * get added here (or set `metadata.edition`) when they are created.
+ * Item ids per edition, a backup for when an item carries no `edition`
+ * field. The development environment's items; production's get added here
+ * when they are created. Each production item should also carry
+ * `metadata.edition`, which is read first.
  */
 const PERSONAL_ITEM_IDS = new Set(['6b01b5a42e4626d1e671e34f']);
 const COMMERCIAL_ITEM_IDS = new Set(['6b01b5c5a2516bdd69b225e2']);
@@ -74,15 +82,15 @@ export function orderByEdition<T extends ItemLike>(items: T[]): T[] {
 
 /**
  * The edition of a key a buyer holds, by its item id: the published item it
- * came from when it is still listed, else a known id. Unknown items are
- * Commercial: every paid RenderWeld item so far, the archived combined one
- * included, sold commercial licences.
+ * came from when it is still listed, else a known id. Null when neither
+ * tells: the key's page then says the edition is unknown and points to
+ * support, rather than guessing a licence the buyer may not have.
  */
 export function editionOfHolding(
   itemId: string,
   items: readonly ItemLike[]
-): Edition {
+): Edition | null {
   const item = items.find((i) => i._id === itemId);
   if (item) return editionOf(item);
-  return editionOfItemId(itemId) ?? 'commercial';
+  return editionOfItemId(itemId);
 }

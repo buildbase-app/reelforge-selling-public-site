@@ -46,6 +46,8 @@ describe('editionOf', () => {
       'commercial'
     );
     expect(editionOf(item('reelforge-personal', paid))).toBe('personal');
+    expect(editionOf(item('renderweld-personal', paid))).toBe('personal');
+    expect(editionOf(item('renderweld-commercial', free))).toBe('commercial');
   });
 
   it('falls back to the price: all free is Personal', () => {
@@ -60,10 +62,18 @@ describe('editionOf', () => {
 });
 
 describe('editionOfHolding', () => {
-  it('uses the published item, then a known id, then Commercial', () => {
+  it('uses the published item, then a known id, else null (unknown)', () => {
     expect(editionOfHolding('p', [item('p', free)])).toBe('personal');
     expect(editionOfHolding('6b01b5a42e4626d1e671e34f', [])).toBe('personal');
-    expect(editionOfHolding('archived-combined', [])).toBe('commercial');
+    expect(editionOfHolding('archived-combined', [])).toBeNull();
+  });
+
+  it('reads the edition field before the id and the prices', () => {
+    // A production item: unknown id, a price to pay, edition field Personal.
+    const prod = item('prod-personal', paid, {
+      data: { edition: 'personal' },
+    });
+    expect(editionOfHolding('prod-personal', [prod])).toBe('personal');
   });
 });
 
