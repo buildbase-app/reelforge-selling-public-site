@@ -34,7 +34,9 @@
     "deploy:dev": "NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION= NEXT_PUBLIC_BING_SITE_VERIFICATION= NEXT_PUBLIC_YANDEX_SITE_VERIFICATION= NEXT_PUBLIC_SITE_URL=https://dev.renderweld.com SITE_URL=https://dev.renderweld.com NEXT_PUBLIC_BUILDBASE_REDIRECT_URL=https://dev.renderweld.com NEXT_PUBLIC_BUILDBASE_ORG_ID=6b01478bb42d2c444e99fcd8 NEXT_PUBLIC_BUILDBASE_CLIENT_ID=gqLbQtwsNKyzl2dKtx7v2u2GVAhP6AzPpAe1GvL7 NEXT_PUBLIC_BUILDBASE_ENVIRONMENT=fsyqdskf opennextjs-cloudflare build && opennextjs-cloudflare deploy --env dev",
     "db:migrate:dev": "wrangler d1 migrations apply reelforge-store-dev --remote --env dev",
     "e2e:buyer": "node scripts/e2e-buyer-journey.cjs",
-    "e2e:personal": "node scripts/e2e-personal-claim.cjs"
+    "e2e:personal": "node scripts/e2e-personal-claim.cjs",
+    "smoke:sign-in": "node scripts/smoke-sign-in.cjs",
+    "e2e:personal:nightly": "node scripts/alert-on-failure.cjs e2e:personal"
   },
   "dependencies": {
     "@buildbase/sdk": "^1.8.0",
