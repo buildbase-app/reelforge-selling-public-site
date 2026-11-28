@@ -232,10 +232,20 @@ function OrderLayout({
 
       {holdings.length > 0 && (
         <section>
-          <h2 className="mb-3 text-lg font-semibold">
-            Your downloads and keys
-          </h2>
+          {hasKey(holdings) ? (
+            <>
+              <h2 className="text-lg font-semibold">Your licence key</h2>
+              <p className="text-muted-foreground mt-1 mb-3 text-sm">
+                Thank you! Your licence key is below.
+              </p>
+            </>
+          ) : (
+            <h2 className="mb-3 text-lg font-semibold">
+              Your downloads and keys
+            </h2>
+          )}
           <OrderHoldings holdings={holdings} guestOrder={guestOrder} />
+          {hasKey(holdings) && <NextSteps />}
         </section>
       )}
 
@@ -256,6 +266,40 @@ function OrderLayout({
           .
         </p>
       </section>
+    </div>
+  );
+}
+
+/** The order delivered a licence key the buyer can use now. */
+function hasKey(holdings: HoldingView[]) {
+  return holdings.some(
+    (h) => h.kind === 'license_key' && h.state === 'available'
+  );
+}
+
+/** The install guide's first page, in BuildBase Docs. */
+const QUICK_START_HREF = '/docs/start/quick-start';
+
+/**
+ * What to do with the key (studio issue #581): three steps and the Quick
+ * start. The key's own copy button is the SDK's, in `OrderHoldings`.
+ */
+function NextSteps() {
+  return (
+    <div className="bg-card mt-4 rounded-xl border p-6 text-sm">
+      <h3 className="text-base font-semibold">Next steps</h3>
+      <p className="text-muted-foreground mt-1">
+        Next: add this key to your RenderWeld server. The{' '}
+        <Link href={QUICK_START_HREF} className="underline">
+          Quick start
+        </Link>{' '}
+        shows how.
+      </p>
+      <ol className="mt-3 list-decimal space-y-1 pl-5">
+        <li>Pull the RenderWeld image.</li>
+        <li>Add your licence key to the server&apos;s settings.</li>
+        <li>Start RenderWeld.</li>
+      </ol>
     </div>
   );
 }

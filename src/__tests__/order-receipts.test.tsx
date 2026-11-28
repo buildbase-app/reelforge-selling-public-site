@@ -15,6 +15,7 @@ import en from '@/i18n/messages/en';
 const orders = {
   list: [] as BuyerOrderView[],
   one: null as BuyerOrderView | null,
+  holdings: [] as unknown[],
 };
 let search = '';
 
@@ -27,7 +28,7 @@ vi.mock('@buildbase/sdk/react', () => ({
     refetch: vi.fn(),
   }),
   useMyOrder: () => ({ order: orders.one, loading: false, error: null }),
-  useHoldings: () => ({ holdings: [], refetch: vi.fn() }),
+  useHoldings: () => ({ holdings: orders.holdings, refetch: vi.fn() }),
   useOrderByToken: () => ({
     order: orders.one,
     holdings: [],
@@ -115,6 +116,7 @@ function withIntl(ui: React.ReactNode) {
 
 beforeEach(() => {
   orders.list = [];
+  orders.holdings = [];
   orders.one = null;
   search = '';
 });
@@ -188,6 +190,37 @@ describe('Dashboard > Orders and receipts', () => {
     expect(en.invoices.title).toBe('Orders and receipts');
     expect(en.invoices.card.empty).not.toMatch(/plan/i);
     expect(JSON.stringify(en.invoices)).not.toMatch(/subscribe/i);
+  });
+});
+
+describe('/order after paying for a key (studio issue #581)', () => {
+  it('names the key, thanks the buyer and lists the next steps with the Quick start', () => {
+    search = 'id=order_studio';
+    orders.one = order();
+    orders.holdings = [
+      { _id: 'h1', kind: 'license_key', state: 'available', itemId: 'x' },
+    ];
+    render(<OrderView />);
+    expect(
+      screen.getByRole('heading', { name: 'Your licence key' })
+    ).toBeVisible();
+    expect(
+      screen.getByText('Thank you! Your licence key is below.')
+    ).toBeVisible();
+    const steps = screen.getByRole('heading', { name: 'Next steps' })
+      .parentElement!;
+    expect(within(steps).getAllByRole('listitem')).toHaveLength(3);
+    expect(
+      within(steps).getByRole('link', { name: 'Quick start' })
+    ).toHaveAttribute('href', '/docs/start/quick-start');
+  });
+
+  it('shows no next steps when the order delivered no key', () => {
+    search = 'id=order_studio';
+    orders.one = order();
+    orders.holdings = [];
+    render(<OrderView />);
+    expect(screen.queryByRole('heading', { name: 'Next steps' })).toBeNull();
   });
 });
 
