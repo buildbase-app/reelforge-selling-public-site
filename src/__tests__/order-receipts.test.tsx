@@ -207,8 +207,9 @@ describe('/order after paying for a key (studio issue #581)', () => {
     expect(
       screen.getByText('Thank you! Your licence key is below.')
     ).toBeVisible();
-    const steps = screen.getByRole('heading', { name: 'Next steps' })
-      .parentElement!;
+    const steps = screen.getByRole('heading', {
+      name: 'Next steps',
+    }).parentElement!;
     expect(within(steps).getAllByRole('listitem')).toHaveLength(3);
     expect(
       within(steps).getByRole('link', { name: 'Quick start' })
