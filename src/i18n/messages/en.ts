@@ -44,6 +44,7 @@ const messages: Messages = {
     },
     footer: {
       rights: 'All rights reserved',
+      productOf: '{product} is a product of {company}',
       tagline:
         'Agents write the manifest. RenderWeld renders the video. Source-available and self-hosted; free for personal use, one-time Commercial licence.',
       sections: {
