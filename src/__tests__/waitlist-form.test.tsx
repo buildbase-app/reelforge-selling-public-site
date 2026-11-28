@@ -96,9 +96,8 @@ describe('WaitlistForm', () => {
   });
 
   it('announces a failure and keeps the form', async () => {
-    submitBetaUser.mockImplementation(async () => {
-      throw new Error('offline');
-    });
+    // The API answers with a failure and no message of its own.
+    submitBetaUser.mockResolvedValue({ status: 'error', message: '' });
     render(<WaitlistForm copy={copy} />);
     fill();
     expect(await screen.findByRole('alert')).toHaveTextContent(w.failed);
