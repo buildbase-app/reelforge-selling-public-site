@@ -565,13 +565,13 @@ const messages: Messages = {
   pricing: {
     title: 'Pricing',
     subtitle:
-      'Free for personal use. A one-time Commercial licence for anything that earns money. Every key activates the released Docker image on your own machine or cloud server. Prices come straight from the store.',
+      'Free for personal projects. Pay once for commercial use: no subscription and no per-video fees. Your licence key unlocks RenderWeld on your own computer or server.',
     legal:
       'Claiming or buying a key means you accept the <licence>licence that applies</licence> and the <terms>terms of service</terms>. See the <refund>refund policy</refund>.',
     meta: {
       title: 'Pricing',
       description:
-        'RenderWeld is free for personal use (PolyForm Noncommercial). Commercial use needs a one-time Commercial licence: what each tier costs and includes.',
+        'RenderWeld is free for personal use. Commercial use needs a one-time licence. See what each licence includes.',
     },
   },
   errors: {

@@ -27,7 +27,8 @@ export const copy = {
   notOnSaleBody:
     'RenderWeld is in early access and cannot be bought yet. Prices and what each option includes will appear here as soon as they are published. Join the waitlist to hear first.',
   joinWaitlist: 'Join the waitlist',
-  storeUnreachable: 'The store could not be reached just now.',
+  storeUnreachable:
+    "We couldn't load prices just now. Refresh the page in a minute.",
   includes: 'What is included',
   signInToBuy: 'Sign in to buy',
   buy: 'Buy',
@@ -36,7 +37,7 @@ export const copy = {
     personal: {
       badge: 'Personal',
       tagline: 'Free for personal use',
-      note: 'Noncommercial use only: hobby, study, research and evaluation. Needs a free account.',
+      note: 'For hobby, study, research, charities and schools. One deployment. Needs a free account on this site.',
     },
     commercial: {
       badge: 'Commercial',

@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils';
 const ROWS: { want: string; need: string }[] = [
   {
     want: 'Read the code, learn from it, or run it for yourself as a hobby, for study, research or evaluation',
-    need: 'Nothing to pay. A free Personal licence key (PolyForm Noncommercial 1.0.0), claimed with a free account.',
+    need: 'Nothing to pay. A free Personal licence key (PolyForm Noncommercial 1.0.0), claimed with a free RenderWeld account.',
   },
   {
     want: 'Make videos for anything that earns money: a monetised channel, client work, ads, a business, an agency, a product',
@@ -46,9 +46,9 @@ export function LicenceGuide({ className }: { className?: string }) {
         Which licence do I need?
       </h2>
       <p className="text-muted-foreground mt-2 text-sm">
-        RenderWeld is source-available: you can read every line of it on GitHub.
-        What you may do with it depends on how you use it. Every released Docker
-        image activates with a RenderWeld licence key.
+        RenderWeld is source-available: anyone can read the code. What you may
+        do with it depends on how you use it. Each install is activated with
+        your RenderWeld licence key.
       </p>
       <div className="mt-6 overflow-x-auto">
         <table className="w-full text-left text-sm">
