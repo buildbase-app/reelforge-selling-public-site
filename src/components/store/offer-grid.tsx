@@ -36,7 +36,7 @@ export const copy = {
     personal: {
       badge: 'Personal',
       tagline: 'Free for personal use',
-      note: 'Noncommercial use only: hobby, study, research and evaluation. Needs a free BuildBase account.',
+      note: 'Noncommercial use only: hobby, study, research and evaluation. Needs a free account.',
     },
     commercial: {
       badge: 'Commercial',

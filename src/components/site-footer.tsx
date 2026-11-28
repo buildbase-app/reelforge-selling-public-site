@@ -111,29 +111,14 @@ export async function SiteFooter({ title }: SiteFooterProps) {
         {/* Bottom bar */}
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row">
           <p className="text-muted-foreground text-xs">
-            © {year} {title}. {t('footer.rights')}.
+            © {year} {siteConfig.company.legalName}.{' '}
+            {t('footer.productOf', {
+              product: title,
+              company: siteConfig.company.legalName,
+            })}
+            .
           </p>
           <div className="flex items-center gap-3">
-            {/* The platform's badge: an image and a link, no script. The
-                markup of the SDK's <BuildBaseBadge variant="built-with"
-                theme="auto" size="sm" />, written out so the footer does not
-                load @buildbase/sdk/react (studio issue #79). */}
-            <a
-              href="https://www.buildbase.app/?utm_source=badge&utm_medium=built-with"
-              target="_blank"
-              rel="noopener"
-              className="inline-block"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element -- an external SVG badge, as the SDK renders it */}
-              <img
-                src="https://www.buildbase.app/badge/v1/built-with.svg?theme=auto"
-                alt="Built with BuildBase"
-                width={120}
-                height={40}
-                loading="lazy"
-                decoding="async"
-              />
-            </a>
             <LanguageSwitcher label={t('language.select')} />
             <ThemeToggle
               labels={{

@@ -47,6 +47,7 @@ export interface CommonMessages {
   };
   footer: {
     rights: string;
+    productOf: string;
     tagline: string;
     sections: {
       product: string;
