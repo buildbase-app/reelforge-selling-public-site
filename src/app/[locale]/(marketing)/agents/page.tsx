@@ -13,10 +13,8 @@ import type { Locale } from '@/i18n/config';
 import {
   collapsedCalls,
   enginesOf,
-  hardwareLabel,
   reels,
   toolCatalog,
-  toolCatalogSource,
 } from '@/lib/agents/catalog';
 import { AGENT_CLIENTS, KEY_SCOPES } from '@/lib/agents/snippets';
 import { FontPreload, GEIST_MONO_CORE_URL } from '@/lib/fonts';
@@ -30,8 +28,18 @@ interface AgentsPageProps {
 
 export const revalidate = 3600;
 
-const TITLE = 'Connect your agent to RenderWeld: Claude Code, Codex, MCP, REST';
-const DESCRIPTION = `Connect Claude Code, Codex or any MCP client to your self-hosted RenderWeld server. Copyable configs, a prompt cookbook and all ${toolCatalog.count} MCP tools, grouped by job.`;
+const TITLE = 'Connect Claude Code or any MCP client to RenderWeld';
+const DESCRIPTION = `Connect Claude Code or any MCP client to your own RenderWeld server. Copy-paste setup, a prompt cookbook and all ${toolCatalog.count} tools.`;
+
+/** A render date as the notes print it, e.g. "21 November 2026". */
+function longDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
 
 export async function generateMetadata({
   params,
@@ -83,7 +91,7 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
       <section aria-labelledby="agents-title" className="dark rf-stage w-full">
         <div className="mx-auto max-w-[980px] px-4 pt-16 pb-20 text-center md:px-6 md:pt-24">
           <h1 id="agents-title" className="rf-display rf-fade-up">
-            Your agent drives. Over MCP or REST
+            Connect your AI agent in one step
           </h1>
           <p className="rf-muted rf-fade-up-2 max-w-measure mx-auto mt-6 text-lg text-pretty md:text-xl">
             RenderWeld serves an MCP server at <code>/mcp</code> and a REST API
@@ -95,9 +103,9 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
           </div>
           <p className="rf-muted mt-6 text-sm">
             Cursor and other clients are not listed until we have tested them.
-            Not running the studio yet?{' '}
+            Haven&apos;t installed RenderWeld yet?{' '}
             <Link href="/#how" className="rf-link underline">
-              Three steps to set it up
+              Set it up in three steps
             </Link>
             .
           </p>
@@ -159,20 +167,17 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
           </summary>
           <div className="text-muted-foreground mt-3 space-y-3 text-sm leading-relaxed">
             <p>
-              The studio listens on 127.0.0.1 by default. To reach it from
-              elsewhere, put it behind TLS: the studio&apos;s compose file has a{' '}
-              <code>tls</code> profile with Caddy that gets a certificate for
-              your domain (
-              <code>docker compose --profile tls up -d --build</code> with{' '}
-              <code>RENDERWELD_DOMAIN</code> and{' '}
-              <code>RENDERWELD_PUBLIC_URL</code> set). Then use{' '}
-              <code>https://YOUR-HOST/mcp</code> in the snippets above.
+              RenderWeld only listens on this computer by default. To reach it
+              from elsewhere, put it behind HTTPS and set its public address;
+              see Remote access in the{' '}
+              <Link href="/docs" className="underline">
+                docs
+              </Link>
+              . A web page can&apos;t reach your RenderWeld server through a
+              visitor&apos;s browser.
             </p>
             <p>
-              <code>/mcp</code> checks the Host and Origin headers against the
-              public URL and the allowed hosts setting, so a web page cannot
-              reach your studio through the visitor&apos;s browser. Keys can
-              also carry an IP allowlist, an expiry and render quotas.
+              Keys can also carry an IP allowlist, an expiry and render quotas.
             </p>
           </div>
         </details>
@@ -260,7 +265,8 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
           <p className="text-muted-foreground max-w-measure mt-5 text-lg text-pretty">
             Every REST route has a tool with the same scope, so an agent can do
             everything the API can
-            <Fn n={2} />. Tool names are experimental until v1.0.
+            <Fn n={2} />. Tool names may change before version 1.0; we list
+            every change in the changelog.
           </p>
         </div>
         <div className="mt-12 grid gap-10 lg:grid-cols-2">
@@ -324,18 +330,16 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
           </h2>
           <ol className="text-muted-foreground max-w-measure mt-4 list-decimal space-y-2 pl-5 text-xs leading-relaxed">
             <li id="fn-1" className="scroll-mt-32">
-              Wall-clock time from each render&apos;s render-manifest.json, one
-              run each on {ref.renderedAt.slice(0, 10)}: RenderWeld{' '}
-              {ref.versions.studio} (pre-release build), {hardwareLabel(ref)}.
-              Times vary from run to run; not a benchmark.{' '}
+              Times are from one run each on {longDate(ref.renderedAt)} on a
+              shared 4-vCPU Linux server; they vary from run to run.{' '}
               <Link href="/methods" className="underline underline-offset-2">
                 How we measured
               </Link>
               .
             </li>
             <li id="fn-2" className="scroll-mt-32">
-              Counted from {toolCatalogSource()}. The studio&apos;s parity test
-              fails if a REST route has no tool.{' '}
+              Every REST endpoint has a matching MCP tool; our tests check this
+              on every release.{' '}
               <Link href="/methods" className="underline underline-offset-2">
                 How we counted
               </Link>

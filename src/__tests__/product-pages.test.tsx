@@ -71,6 +71,7 @@ Object.defineProperty(HTMLMediaElement.prototype, 'play', {
   value: vi.fn().mockResolvedValue(undefined),
 });
 import { reels, toolCatalog } from '@/lib/agents/catalog';
+import { KEY_SCOPES } from '@/lib/agents/snippets';
 
 function Home() {
   return (
@@ -216,7 +217,7 @@ describe('/agents', () => {
     });
     const { container } = render(page);
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
-      'Your agent drives.'
+      'Connect your AI agent in one step'
     );
     expect(screen.getAllByRole('tab')).toHaveLength(4);
     for (const reel of reels)
@@ -231,5 +232,28 @@ describe('/agents', () => {
     );
     expect(container.textContent).not.toMatch(/open[\s_-]*source/i);
     footnotesResolve(container);
+  });
+
+  it('uses the product name, one scope list and plain notes', async () => {
+    const page = await AgentsPage({
+      params: Promise.resolve({ locale: 'en' }),
+    });
+    const { container } = render(page);
+    const text = container.textContent ?? '';
+    for (const scope of KEY_SCOPES) expect(text).toContain(scope.what);
+    expect(KEY_SCOPES.map((s) => s.scope)).toEqual([
+      'read',
+      'write',
+      'render',
+      'approve',
+      'admin',
+      'owner',
+    ]);
+    expect(text).toContain("Haven't installed RenderWeld yet?");
+    expect(text).toContain('RenderWeld only listens on this computer');
+    expect(text).toContain('Tool names may change before version 1.0');
+    expect(text).toMatch(/one run each on\s+21 November 2026/);
+    expect(text).toContain('Every REST endpoint has a matching MCP tool');
+    expect(text).not.toMatch(/\bthe studio\b|experimental until/i);
   });
 });

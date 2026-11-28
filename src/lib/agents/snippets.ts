@@ -43,7 +43,7 @@ export const AGENT_CLIENTS: AgentClient[] = [
   {
     id: 'claude-code',
     name: 'Claude Code',
-    summary: 'Add the studio as an HTTP MCP server, then ask for a reel.',
+    summary: 'Add RenderWeld as an HTTP MCP server, then ask for a reel.',
     snippets: [
       {
         label: 'Terminal',
@@ -55,7 +55,7 @@ claude mcp list   # renderweld: ${LOCAL_URL}/mcp (HTTP) - Connected`,
       },
     ],
     checked:
-      'Checked on 2026-11-21 with Claude Code 2.1.330: "Connected". In the studio\'s Docker test, headless Claude Code made a reel over MCP only.',
+      'Checked on 2026-11-21 with Claude Code 2.1.330: "Connected". In RenderWeld\'s Docker test, headless Claude Code made a reel over MCP only.',
   },
   {
     id: 'codex',
@@ -141,13 +141,16 @@ curl -s -H "$H" -o reel.mp4 ${LOCAL_URL}/v1/renders/RENDER_ID/output`,
   },
 ];
 
-/** The four scopes an API key can carry (studio docs/AGENT_PLATFORM.md §8). */
+/**
+ * The scopes an API key can carry (studio docs/AGENT_PLATFORM.md §8): the one
+ * list the site uses, on /agents, in the agents Markdown and on the home page
+ * (studio issue #679).
+ */
 export const KEY_SCOPES = [
   { scope: 'read', what: 'Read capabilities, projects, jobs and renders.' },
   { scope: 'write', what: 'Create and edit projects, scenes, themes, assets.' },
   { scope: 'render', what: 'Start, cancel and retry renders and previews.' },
-  {
-    scope: 'admin',
-    what: 'Keys, configuration, licence, storage, audit log.',
-  },
+  { scope: 'approve', what: 'Approve a render before it runs.' },
+  { scope: 'admin', what: 'Keys and settings.' },
+  { scope: 'owner', what: 'Licence and server settings.' },
 ] as const;

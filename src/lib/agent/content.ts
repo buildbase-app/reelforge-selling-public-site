@@ -93,7 +93,7 @@ export const PRODUCT_FACTS = [
   '- Four rendering engines: Remotion, Motion Canvas, HTML and HyperFrames, mixed per scene in one project.',
   '- Output: any even width and height from 16 to 4096 px, frame rates 23.976 to 60 including exact NTSC rates; MP4, ProRes MOV (with alpha), WebM (VP9, AV1), GIF, PNG sequence, or audio only (M4A, WAV). One render call can produce several variants (sizes and formats) with one batch id. Layouts: split screen, picture-in-picture, lower thirds, grids.',
   '- Captions: off, burned in, sidecar files (SRT, WebVTT, ASS) or both, per render.',
-  '- Workspaces: one install can host several teams; each key sees only its own workspace (scopes read, write, render, admin, owner).',
+  '- Workspaces: one install can host several teams; each key sees only its own workspace (scopes read, write, render, approve, admin, owner).',
   '- Storage: local disk, S3-compatible, Google Cloud Storage, Azure Blob. Database: SQLite, PostgreSQL, MySQL/MariaDB. Queue dispatch: poll, PostgreSQL notify, Redis, SQS. Deployment guides for AWS, Google Cloud, Azure and other platforms.',
   '- Isolation: the only outside service an install needs is the BuildBase licence check; installs never talk to each other; no telemetry.',
   '- Media providers today: ElevenLabs text-to-speech and faster-whisper speech-to-text. AI image and video providers are not shipped.',
