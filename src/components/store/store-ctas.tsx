@@ -2,6 +2,7 @@ import { ArrowRight } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/link';
+import type { SaleState } from '@/lib/store/sale-copy';
 
 export interface StoreCtaLabels {
   waitlist: string;
@@ -62,8 +63,7 @@ export function StoreCtas({
   );
 }
 
-/** What the store offers now: paid licences, only the free key, or nothing. */
-export type SaleState = 'paid' | 'free' | 'none';
+export type { SaleState };
 
 /** Unknown (undefined) counts as nothing on sale: both buttons still lead to the prices. */
 export function saleState(onSale?: boolean, freeKey?: boolean): SaleState {

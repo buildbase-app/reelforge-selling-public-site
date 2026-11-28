@@ -1,7 +1,12 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { LitePricingCatalog } from '@/components/store/pricing-catalog-lite';
-import { getStoreCtaLabels, StoreCtas } from '@/components/store/store-ctas';
+import {
+  getStoreCtaLabels,
+  saleState,
+  StoreCtas,
+} from '@/components/store/store-ctas';
+import { PRICING_SUBTITLE_KEY } from '@/lib/store/sale-copy';
 import { RemotionNotice } from '@/components/remotion-notice';
 import { AnnouncementBar } from '@/components/content/announcement-bar';
 import { LaunchPriceNote } from '@/components/content/launch-price-note';
@@ -82,6 +87,7 @@ export default async function HomePage({ params }: HomePageProps) {
     : [];
   const onSale = onSaleFrom(store);
   const freeKey = freeKeyFrom(store);
+  const state = saleState(onSale, freeKey);
 
   return (
     <div className="rf-product flex flex-1 flex-col items-center">
@@ -109,7 +115,7 @@ export default async function HomePage({ params }: HomePageProps) {
       <ReelMarquee />
       <Formats />
       <AgentTranscript />
-      <HowItWorks />
+      <HowItWorks state={state} />
       <ConnectAgent tabs={<AgentTabs clients={AGENT_CLIENTS} />} />
       <Engines />
       <ReelGallery />
@@ -126,7 +132,13 @@ export default async function HomePage({ params }: HomePageProps) {
             {tPricing('title')}
           </h2>
           <p className="text-muted-foreground max-w-measure mx-auto mt-4 text-lg">
-            {tPricing('subtitle')}
+            {tPricing.rich(PRICING_SUBTITLE_KEY[state], {
+              waitlist: (chunks) => (
+                <Link href="/waitlist" className="rf-link underline">
+                  {chunks}
+                </Link>
+              ),
+            })}
           </p>
         </div>
         <LitePricingCatalog serverItems={serverItems} />
@@ -152,6 +164,7 @@ export default async function HomePage({ params }: HomePageProps) {
         <FaqSection items={faq.items} />
       </section>
       <FinalCta
+        state={state}
         ctas={
           <StoreCtas
             labels={ctaLabels}
