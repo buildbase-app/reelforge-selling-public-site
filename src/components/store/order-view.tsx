@@ -197,10 +197,10 @@ function OrderLayout({
               <dd>{new Date(order.paidAt).toLocaleString()}</dd>
             </>
           )}
-          {buyerLabel(order) && (
+          {buyerLabel(order, !!guestOrder) && (
             <>
               <dt className="text-muted-foreground">Bought by</dt>
-              <dd>{buyerLabel(order)}</dd>
+              <dd>{buyerLabel(order, !!guestOrder)}</dd>
             </>
           )}
           {order.refunded > 0 && (
@@ -233,6 +233,16 @@ function OrderLayout({
           <div className="mt-4 border-t pt-4">
             <ReceiptSeller />
           </div>
+        )}
+        {guestOrder && (
+          <p
+            role="note"
+            data-private-link
+            className="text-muted-foreground mt-4 text-sm"
+          >
+            Keep this page&apos;s link private: anyone who has it can see this
+            order and its licence keys.
+          </p>
         )}
         {order.paidAt && <Receipt signedIn={!guestOrder} />}
       </section>
@@ -311,11 +321,29 @@ function NextSteps() {
   );
 }
 
-/** "Ada Lovelace (ada@example.com)", or whichever of the two the order has. */
-function buyerLabel(order: BuyerOrderView): string | null {
-  const { name, email } = order.buyer;
+/**
+ * "Ada Lovelace (ada@example.com)", or whichever of the two the order has.
+ * On a guest's order link the email is masked ("a****@example.com"): the
+ * link is a credential that can be forwarded (studio issue #580).
+ */
+export function buyerLabel(
+  order: Pick<BuyerOrderView, 'buyer'>,
+  masked = false
+): string | null {
+  const { name } = order.buyer;
+  const email =
+    masked && order.buyer.email
+      ? maskEmail(order.buyer.email)
+      : order.buyer.email;
   if (name && email) return `${name} (${email})`;
   return name || email || null;
+}
+
+/** "ada@example.com" becomes "a****@example.com". */
+export function maskEmail(email: string): string {
+  const at = email.lastIndexOf('@');
+  if (at < 1) return '****';
+  return `${email[0]}****${email.slice(at)}`;
 }
 
 /**

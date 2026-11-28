@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { render, screen, within } from '@testing-library/react';
 import { NextIntlClientProvider } from 'next-intl';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -77,7 +79,7 @@ vi.mock('@/components/support-contact', () => ({
 }));
 
 import { OrderList } from '@/components/store/order-list';
-import { OrderView } from '@/components/store/order-view';
+import { OrderView, maskEmail } from '@/components/store/order-view';
 
 function order(overrides: Partial<BuyerOrderView> = {}): BuyerOrderView {
   return {
@@ -254,7 +256,12 @@ describe('/order as the receipt', () => {
       buyer: { type: 'guest', id: 'g@example.com', email: 'g@example.com' },
     } as Partial<BuyerOrderView>);
     render(<OrderView />);
-    expect(screen.getByText('g@example.com')).toBeVisible();
+    // The link can be forwarded: the email is masked (studio issue #580).
+    expect(screen.getByText('g****@example.com')).toBeVisible();
+    expect(screen.queryByText('g@example.com')).toBeNull();
+    expect(screen.getByRole('note')).toHaveTextContent(
+      "Keep this page's link private"
+    );
     expect(screen.getByText(/This page is your receipt/)).toBeVisible();
     expect(
       screen.getByRole('button', { name: /Print or save as PDF/ })
@@ -299,6 +306,36 @@ describe('/order as the receipt', () => {
     expect(amounts).not.toHaveTextContent('Tax');
     expect(amounts).not.toHaveTextContent('Discount');
     expect(amounts).toHaveTextContent('Total$149.00');
+  });
+
+  it('a signed-in buyer sees their own email in full and no link warning', () => {
+    search = 'id=order_studio';
+    orders.one = order();
+    render(<OrderView />);
+    expect(screen.getByText('Sample Buyer (buyer@example.com)')).toBeVisible();
+    expect(document.querySelector('[data-private-link]')).toBeNull();
+  });
+
+  it('masks an email to its first letter and domain', () => {
+    expect(maskEmail('ada@example.com')).toBe('a****@example.com');
+    expect(maskEmail('not-an-email')).toBe('****');
+  });
+
+  it('is never indexed', () => {
+    const page = readFileSync(
+      join(
+        __dirname,
+        '..',
+        'app',
+        '[locale]',
+        '(app)',
+        '(store)',
+        'order',
+        'page.tsx'
+      ),
+      'utf8'
+    );
+    expect(page).toMatch(/robots:\s*\{\s*index:\s*false/);
   });
 
   it('an unpaid order shows no receipt yet', () => {
