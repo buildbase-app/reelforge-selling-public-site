@@ -37,6 +37,14 @@ describe('secrets', () => {
     expect(isStrongSecret(a)).toBe(true);
   });
 
+  it('never generates a secret that reads as a placeholder', () => {
+    // About 1 in 500 random draws contains "xxx" (any case), which
+    // isStrongSecret rejects; this made the setup tests fail now and then.
+    for (let i = 0; i < 3000; i += 1) {
+      expect(isStrongSecret(generateSecret())).toBe(true);
+    }
+  });
+
   it('rejects short, placeholder and low-variety secrets', () => {
     expect(isStrongSecret('')).toBe(false);
     expect(isStrongSecret(undefined)).toBe(false);
