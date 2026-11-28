@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import type { OfferActionProps } from './offer-grid';
 import { GUEST_BUY_PARAM, guestBuyKey } from './guest-buy-link';
+import { pricingCancelUrl } from './checkout-cancelled';
 
 // English only for now (src/i18n/config.ts); kept together for translation.
 export const guestCopy = {
@@ -77,7 +78,7 @@ export function GuestCheckout({
       name: String(data.get('name') ?? '').trim(),
       email: String(data.get('email') ?? '').trim(),
       successUrl: `${origin}/order`,
-      cancelUrl: `${origin}/pricing`,
+      cancelUrl: pricingCancelUrl(origin),
     });
     if (!start) return; // refused: `error` says why
     window.location.assign(

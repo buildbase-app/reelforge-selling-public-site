@@ -170,6 +170,7 @@ describe('PricingCatalog', () => {
       variantId: 'solo',
       priceId: 'eur',
       successUrl: `${window.location.origin}/order`,
+      cancelUrl: `${window.location.origin}/pricing?checkout=cancelled`,
     });
   });
 
@@ -368,7 +369,7 @@ describe('PricingCatalog: guest checkout (studio issue #257)', () => {
       name: 'Ada Lovelace',
       email: 'ada@example.com',
       successUrl: `${window.location.origin}/order`,
-      cancelUrl: `${window.location.origin}/pricing`,
+      cancelUrl: `${window.location.origin}/pricing?checkout=cancelled`,
     });
     expect(assign).toHaveBeenCalledWith(
       'https://checkout.stripe.com/c/pay/cs_test_1'
