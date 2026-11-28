@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Prisma } from '@/generated/prisma/client';
 import { prisma, setAuditContext } from '@/lib/db';
 import { getSessionUser } from '@/lib/session';
 import { logger } from '@/lib/logger';
+import { eraseLocalUser, KEPT_AFTER_DELETE } from '@/lib/account-erase';
 import { clientIp } from '@/lib/security/client-ip';
 
 /**
- * GDPR Data Deletion — Right to Erasure (Article 17)
- * Deletes all personal data associated with the authenticated user.
- * Audit logs are anonymized (userId set to null) rather than deleted for compliance.
+ * Erase this store's own copy of the signed-in person (studio issue #603).
+ *
+ * This is not the account deletion: the account, its sign-in and its
+ * sessions are BuildBase's, and the person deletes them from Settings,
+ * Delete my account, which opens BuildBase's own flow. When BuildBase deletes
+ * the account it sends `user.deleted`, and the webhook runs the same erase.
+ * The answer says exactly that, rather than claiming everything is gone.
  */
 export async function DELETE(request: NextRequest) {
   // Identity comes from the session, NOT from a bearer token.
@@ -35,34 +39,13 @@ export async function DELETE(request: NextRequest) {
   });
 
   try {
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user) {
+    const found = await eraseLocalUser(userId);
+    if (!found) {
       return NextResponse.json(
         { success: false, message: 'User not found' },
         { status: 404 }
       );
     }
-
-    // Run all deletions in a transaction
-    await prisma.$transaction([
-      // 1. Remove all workspace memberships
-      prisma.userWorkspace.deleteMany({ where: { userId } }),
-
-      // 2. Anonymize audit logs (keep for compliance, remove PII)
-      prisma.auditLog.updateMany({
-        where: { userId },
-        data: {
-          userId: null,
-          ipAddress: null,
-          userAgent: null,
-          before: Prisma.DbNull,
-          after: Prisma.DbNull,
-        },
-      }),
-
-      // 3. Delete user record
-      prisma.user.delete({ where: { id: userId } }),
-    ]);
 
     // Log the deletion event (with anonymized record since user is now gone)
     await prisma.auditLog.create({
@@ -80,7 +63,9 @@ export async function DELETE(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: 'All personal data has been deleted',
+      message:
+        "This store's copy of your profile was removed. Your BuildBase account and its sign-in stay until you delete the account in Settings. " +
+        KEPT_AFTER_DELETE,
       deletedAt: new Date().toISOString(),
     });
   } catch (error) {

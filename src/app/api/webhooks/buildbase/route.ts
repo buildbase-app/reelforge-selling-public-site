@@ -4,6 +4,7 @@ import { parseWebhookEvent } from '@buildbase/sdk';
 import type { Prisma } from '@/generated/prisma/client';
 import { prisma } from '@/lib/db';
 import { logger } from '@/lib/logger';
+import { eraseLocalUser } from '@/lib/account-erase';
 import {
   pathsForWebhookEvent,
   tagsForWebhookEvent,
@@ -107,6 +108,21 @@ export async function POST(request: NextRequest) {
     });
     // 500 makes the platform retry; the body hash keeps the retry idempotent.
     return NextResponse.json({ error: 'Storage failed' }, { status: 500 });
+  }
+
+  // BuildBase deleted the account (studio issue #603): erase the store's
+  // copy too. A failure answers 500 so the delivery is retried; the erase is
+  // safe to run again.
+  if (event.event === 'user.deleted' && userId) {
+    try {
+      await eraseLocalUser(userId);
+    } catch (error) {
+      logger.error('Webhook: local erase failed', {
+        userId,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return NextResponse.json({ error: 'Erase failed' }, { status: 500 });
+    }
   }
 
   if (alert && !alreadyStored) await sendSaleAlert(alert);
