@@ -71,7 +71,11 @@ Object.defineProperty(HTMLMediaElement.prototype, 'play', {
   value: vi.fn().mockResolvedValue(undefined),
 });
 import { reels, toolCatalog } from '@/lib/agents/catalog';
-import { showcaseReels } from '@/lib/gallery/showcase';
+import {
+  agentsVideoSlugs,
+  heroDemoShown,
+  showcaseReels,
+} from '@/lib/gallery/showcase';
 
 function Home() {
   return (
@@ -108,11 +112,11 @@ describe('homepage sections', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Your agent directs.'
     );
-    // The hero demo, the agent transcript's reel, and the showcase rail,
-    // which holds only reels that meet the gallery bar (studio issue #807).
+    // The hero demo and the showcase rail follow the gallery bar (studio
+    // issue #807); the agent transcript's reel is always there.
     const showcased = showcaseReels();
     expect(container.querySelectorAll('video').length).toBe(
-      1 + 1 + showcased.length
+      (heroDemoShown() ? 1 : 0) + 1 + showcased.length
     );
     for (const reel of showcased)
       expect(container.textContent).toContain(reel.prompt);
@@ -143,9 +147,25 @@ describe('homepage sections', () => {
     ).toHaveLength(players.length);
   });
 
-  it('shows a real agent session in the hero, with the prompt as a chip', () => {
+  it('hides the hero session while it is below the gallery bar', () => {
+    expect(heroDemoShown()).toBe(false);
     const { container } = render(
       <Hero heading="Your agent directs." ctas={<button>Join</button>} />
+    );
+    expect(container.querySelector('video')).toBeNull();
+    expect(container.querySelector('figure')).toBeNull();
+    expect(container.querySelector('code')).toHaveTextContent(
+      'make a 9-second reel that mixes all four engines'
+    );
+  });
+
+  it('shows a real agent session in the hero, with the prompt as a chip', () => {
+    const { container } = render(
+      <Hero
+        heading="Your agent directs."
+        ctas={<button>Join</button>}
+        showDemo
+      />
     );
     const video = container.querySelector('video')!;
     expect(video).not.toHaveAttribute('autoplay');
@@ -235,5 +255,18 @@ describe('/agents', () => {
     );
     expect(container.textContent).not.toMatch(/open[\s_-]*source/i);
     footnotesResolve(container);
+  });
+
+  it('shows a cookbook video only for a reel that meets the gallery bar', async () => {
+    const page = await AgentsPage({
+      params: Promise.resolve({ locale: 'en' }),
+    });
+    const { container } = render(page);
+    const shown = agentsVideoSlugs();
+    expect(container.querySelectorAll('video').length).toBe(shown.size);
+    if (shown.size === 0) {
+      expect(container.querySelector('#fn-1')).toBeNull();
+      expect(container.querySelector('a[href="#fn-1"]')).toBeNull();
+    }
   });
 });

@@ -19,6 +19,10 @@ import {
 } from '@/lib/gallery/bar';
 import { toReels, type GalleryRecordData } from '@/lib/gallery/model';
 import {
+  agentsEntries,
+  agentsVideoSlugs,
+  heroDemoShown,
+  heroEntry,
   isShowcased,
   marqueeEntries,
   marqueeRows,
@@ -111,7 +115,12 @@ describe('the gallery collection', () => {
 });
 
 describe('the home page showcase data (src/data/showcase.json)', () => {
-  const entries = [...railEntries, ...marqueeEntries];
+  const entries = [
+    ...railEntries,
+    ...marqueeEntries,
+    heroEntry,
+    ...agentsEntries,
+  ];
 
   it('fails when a reel below the bar is marked as shown', () => {
     for (const entry of entries)
@@ -145,6 +154,34 @@ describe('the home page showcase data (src/data/showcase.json)', () => {
         e.file
       ).toBe(true);
     expect(showcase.marquee.length).toBe(16);
+    expect(agentsEntries.map((e) => e.slug).sort()).toEqual(
+      reels.map((r) => r.slug).sort()
+    );
+    for (const ext of ['mp4', 'webm', 'jpg'])
+      expect(
+        fs.existsSync(
+          path.join(
+            process.cwd(),
+            'public/walkthroughs',
+            `${heroEntry.file}.${ext}`
+          )
+        ),
+        `${heroEntry.file}.${ext}`
+      ).toBe(true);
+  });
+
+  it('applies the bar to the hero session and the /agents videos', () => {
+    expect(heroDemoShown({ ...heroEntry, shown: true, counts: AT_BAR })).toBe(
+      true
+    );
+    expect(heroDemoShown({ ...heroEntry, shown: true })).toBe(false);
+    expect([
+      ...agentsVideoSlugs([
+        { slug: 'a', shown: true, counts: AT_BAR },
+        { slug: 'b', shown: true },
+        { slug: 'c', shown: false, counts: AT_BAR },
+      ]),
+    ]).toEqual(['a']);
   });
 
   it('shows an entry only when it is marked shown and meets the bar', () => {

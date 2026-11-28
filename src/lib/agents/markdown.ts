@@ -7,6 +7,7 @@ import {
   toolCatalogSource,
 } from './catalog';
 import { AGENT_CLIENTS, KEY_SCOPES } from './snippets';
+import { agentsVideoSlugs } from '@/lib/gallery/showcase';
 
 /**
  * /agents as Markdown, for agents (served at /agents.md and listed in
@@ -24,17 +25,23 @@ ${c.snippets.map((s) => `${s.label}:\n\n\`\`\`${s.language}\n${s.code}\n\`\`\``)
 What we checked: ${c.checked}`
   ).join('\n\n');
 
+  // Videos and render facts follow the gallery bar (studio issue #807).
+  const withVideo = agentsVideoSlugs();
   const cookbook = reels
-    .map(
-      (r) => `### ${r.title}
-
-- Prompt: "${r.prompt}"
-- Tools called: ${collapsedCalls(r)
-        .map((c) => (c.times > 1 ? `${c.tool} x${c.times}` : c.tool))
-        .join(' -> ')}
-- Result: ${r.output.width}x${r.output.height}, ${r.output.durationSeconds} s, ${enginesOf(r).join(' + ')}, rendered in ${r.renderSeconds} s (RenderWeld ${r.versions.studio}, ${r.renderedAt.slice(0, 10)}; times vary)
-- Video: ${base}${r.files.mp4}`
-    )
+    .map((r) => {
+      const lines = [
+        `- Prompt: "${r.prompt}"`,
+        `- Tools called: ${collapsedCalls(r)
+          .map((c) => (c.times > 1 ? `${c.tool} x${c.times}` : c.tool))
+          .join(' -> ')}`,
+      ];
+      if (withVideo.has(r.slug))
+        lines.push(
+          `- Result: ${r.output.width}x${r.output.height}, ${r.output.durationSeconds} s, ${enginesOf(r).join(' + ')}, rendered in ${r.renderSeconds} s (RenderWeld ${r.versions.studio}, ${r.renderedAt.slice(0, 10)}; times vary)`,
+          `- Video: ${base}${r.files.mp4}`
+        );
+      return `### ${r.title}\n\n${lines.join('\n')}`;
+    })
     .join('\n\n');
 
   const tools = toolCatalog.groups
@@ -69,7 +76,7 @@ The studio binds 127.0.0.1 by default; for remote agents put it behind TLS (comp
 
 ## Prompt cookbook
 
-Real renders. The calls were sent by a script that follows the studio's workflow guide (MCP resource \`renderweld://guide/workflow\`, prompt \`make_reel\`).
+${withVideo.size > 0 ? 'Recipes with a video are real renders. ' : ''}The calls were sent by a script that follows the studio's workflow guide (MCP resource \`renderweld://guide/workflow\`, prompt \`make_reel\`).
 
 ${cookbook}
 
