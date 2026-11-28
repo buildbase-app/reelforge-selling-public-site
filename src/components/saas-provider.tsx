@@ -85,6 +85,16 @@ export function SaaSProvider({
           // (studio issue #600) instead of a silent signed-in-without-a-
           // session state.
           handleAuthentication: (code: string) => exchangeSignInCode(code),
+          // A session that ends while the page is open: clear the cookie
+          // too, so the header stops saying "Dashboard" (studio issue #602).
+          onSessionExpired: (reason) => {
+            if (reason === 'missing') return;
+            void fetch('/api/auth/signout', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: '{}',
+            }).catch(() => {});
+          },
           onSignOut: async () => {
             setClientAuthToken(null);
             // JSON, same-origin: the store refuses anything else (SEC-14).

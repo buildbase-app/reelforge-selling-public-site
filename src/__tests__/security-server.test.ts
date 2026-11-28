@@ -17,8 +17,12 @@ const PROVISION_SECRET = 'provision-test-secret-0123456789abcdefghij';
 const WEBHOOK_SECRET = 'webhook-test-secret-0123456789abcdefghijkl';
 
 const upsert = vi.fn(async () => ({ id: 'row' }));
+const sessionDead = vi.hoisted(() => ({ value: false }));
 
 vi.mock('server-only', () => ({}));
+vi.mock('@/lib/session-check', () => ({
+  isSessionDead: async () => sessionDead.value,
+}));
 vi.mock('next/headers', () => ({
   cookies: async () => ({ get: () => undefined }),
   headers: async () => new Headers(),
@@ -331,6 +335,27 @@ describe('/api/auth/session and /api/auth/signout', () => {
     );
     expect(await same.json()).toEqual({ sessionId: 's' });
     expect(same.headers.get('cache-control')).toBe('no-store');
+  });
+
+  it('session: a session BuildBase says is over answers signed out and clears the cookie (studio issue #602)', async () => {
+    sessionDead.value = true;
+    try {
+      const { GET } = await import('@/app/api/auth/session/route');
+      const res = await GET(
+        new NextRequest(new URL('/api/auth/session', SITE), {
+          headers: {
+            'sec-fetch-site': 'same-origin',
+            cookie: 'bb-session-id=s',
+          },
+        })
+      );
+      expect(await res.json()).toEqual({ sessionId: null });
+      const cookie = res.headers.get('set-cookie') ?? '';
+      expect(cookie).toContain('bb-session-id=;');
+      expect(cookie.toLowerCase()).toContain('max-age=0');
+    } finally {
+      sessionDead.value = false;
+    }
   });
 
   it('signout refuses a cross-site POST', async () => {

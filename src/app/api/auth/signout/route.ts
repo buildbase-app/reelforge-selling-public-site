@@ -9,6 +9,12 @@ import { SESSION_COOKIE_NAME } from '@/lib/buildbase';
  * session the user has with `signOut({ everywhere: true })`. Revoking here
  * first would leave the SDK's revoke holding a dead id, and "sign out
  * everywhere" would end only this browser's session.
+ *
+ * Studio issue #604 asked for a server-side revoke here. Checked against
+ * @buildbase/sdk 1.8: `signOut()` runs `onSignOut`, then revokes the session
+ * at BuildBase, then clears its own state, so every sign-out on this site
+ * (all of them go through `signOut()`) already revokes. Revisit if a
+ * sign-out path appears that doesn't use the SDK.
  */
 export async function POST(request: NextRequest) {
   // Same-origin JSON only: another site cannot sign a visitor out.
