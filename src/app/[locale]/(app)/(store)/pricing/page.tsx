@@ -97,6 +97,11 @@ export default async function PricingPageRoute({ params }: PricingPageProps) {
                 {chunks}
               </Link>
             ),
+            terms: (chunks) => (
+              <Link href="/terms" className="underline underline-offset-2">
+                {chunks}
+              </Link>
+            ),
             refund: (chunks) => (
               <Link href="/refund" className="underline underline-offset-2">
                 {chunks}

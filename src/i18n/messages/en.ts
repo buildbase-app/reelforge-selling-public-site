@@ -565,7 +565,7 @@ const messages: Messages = {
     subtitle:
       'Free for personal use. A one-time Commercial licence for anything that earns money. Every key activates the released Docker image on your own machine or cloud server. Prices come straight from the store.',
     legal:
-      'Claiming or buying a key means you accept the <licence>licence that applies</licence>. See the <refund>refund policy</refund>. Both are drafts pending review.',
+      'Claiming or buying a key means you accept the <licence>licence that applies</licence> and the <terms>terms of service</terms>. See the <refund>refund policy</refund>.',
     meta: {
       title: 'Pricing',
       description:
