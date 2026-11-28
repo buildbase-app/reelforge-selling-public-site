@@ -274,6 +274,43 @@ describe('/api/auth/token', () => {
   });
 });
 
+describe('/api/auth/token, a refused exchange (studio issue #600)', () => {
+  function signIn() {
+    return new NextRequest(new URL('/api/auth/token', SITE), {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', origin: SITE },
+      body: '{"code":"AAAAAAAAAAAAAAAAAAAAAAAA"}',
+    });
+  }
+
+  it('logs the status BuildBase gave and sets no cookie', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => Response.json({ error: 'bad code' }, { status: 400 }))
+    );
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const { POST } = await import('@/app/api/auth/token/route');
+    const res = await POST(signIn());
+    expect(res.status).toBe(401);
+    expect(res.headers.get('set-cookie')).toBeNull();
+    expect(warn.mock.calls.flat().join(' ')).toMatch(/400/);
+    warn.mockRestore();
+  });
+
+  it('refuses an answer without a session id', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => Response.json({ data: { user: { id: 'u1' } } }))
+    );
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const { POST } = await import('@/app/api/auth/token/route');
+    const res = await POST(signIn());
+    expect(res.status).toBe(502);
+    expect(res.headers.get('set-cookie')).toBeNull();
+    warn.mockRestore();
+  });
+});
+
 describe('/api/auth/session and /api/auth/signout', () => {
   it('session: same-origin only, never cached', async () => {
     const { GET } = await import('@/app/api/auth/session/route');
