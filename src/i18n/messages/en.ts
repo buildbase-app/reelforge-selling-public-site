@@ -590,17 +590,15 @@ const messages: Messages = {
     },
     blogNotFound: {
       title: 'Post not found',
-      description:
-        "The blog post you're looking for doesn't exist, may have been removed, or is not available in your language.",
+      description: "This post doesn't exist or has moved.",
       browseAll: 'Browse all posts',
     },
   },
   blog: {
     label: 'Blog',
     heading: 'Blog',
-    description:
-      'What we ship in RenderWeld and how to run it. We only write about what exists.',
-    noPosts: 'No posts yet.',
+    description: 'Guides and news about RenderWeld.',
+    noPosts: 'The first posts are on their way.',
     noPostsTag: 'No posts with this tag yet.',
     noPostsCategory: 'No posts in this category yet.',
     noPostsAuthor: 'No posts by this author yet.',
@@ -634,7 +632,7 @@ const messages: Messages = {
       title: 'Blog',
       titlePage: 'Blog, page {page}',
       description:
-        'Announcements and guides from the people building RenderWeld, a self-hosted studio your AI agent drives.',
+        'News and how-to guides for RenderWeld, the self-hosted video renderer your AI agent drives.',
       tagTitle: 'Posts tagged "{tag}"',
       tagDescription: 'All blog posts tagged with "{tag}".',
       categoryTitle: '{category}: Blog',
@@ -644,13 +642,13 @@ const messages: Messages = {
   changelog: {
     label: 'Changelog',
     heading: 'Changelog',
-    description: 'Release notes for the RenderWeld store and the product.',
+    description: "What's new in RenderWeld.",
     rssLabel: 'RSS',
     permalink: 'Read the full note',
     empty: 'No release notes yet.',
     meta: {
       title: 'Changelog',
-      description: 'Release notes for the RenderWeld store and the product.',
+      description: "What's new in RenderWeld.",
     },
   },
   inbox: {
