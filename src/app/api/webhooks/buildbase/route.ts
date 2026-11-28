@@ -8,6 +8,7 @@ import {
   pathsForWebhookEvent,
   tagsForWebhookEvent,
 } from '@/lib/cache/webhook-tags';
+import { saleAlertText, sendSaleAlert } from '@/lib/store/sale-alert';
 
 /**
  * Platform webhooks (server to server).
@@ -32,6 +33,10 @@ import {
  * (src/lib/cache/webhook-tags.ts). Tags expire at once, so the next request
  * renders fresh data. Done before storing, so a storage failure (and the
  * retry it triggers) never delays a price change.
+ *
+ * Sale alerts: a paid order, a refund or a dispute also posts a short
+ * message to `SALES_ALERT_WEBHOOK_URL` (src/lib/store/sale-alert.ts), once
+ * per delivery: a retry finds its row already stored and sends nothing.
  */
 export async function POST(request: NextRequest) {
   const secret = process.env.BUILDBASE_WEBHOOK_SECRET;
@@ -76,6 +81,8 @@ export async function POST(request: NextRequest) {
     typeof data.workspaceId === 'string' ? data.workspaceId : null;
   const userId = typeof data.userId === 'string' ? data.userId : null;
   const id = await bodyHash(body);
+  const alert = saleAlertText(event.event, data);
+  const alreadyStored = alert ? await isStored(id) : false;
 
   try {
     await prisma.webhookEvent.upsert({
@@ -102,8 +109,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Storage failed' }, { status: 500 });
   }
 
+  if (alert && !alreadyStored) await sendSaleAlert(alert);
+
   logger.debug('Webhook stored', { event: event.event, workspaceId });
   return NextResponse.json({ received: true, revalidated: tags });
+}
+
+/** Whether a delivery with this body was stored before (a retry). */
+async function isStored(id: string): Promise<boolean> {
+  try {
+    const row = await prisma.webhookEvent.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+    return row !== null;
+  } catch {
+    return false; // can't tell: better a second alert than none
+  }
 }
 
 async function bodyHash(body: string): Promise<string> {

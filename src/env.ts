@@ -38,6 +38,9 @@ export const env = createEnv({
     // Shared secret for the platform's webhook deliveries.
     BUILDBASE_WEBHOOK_SECRET: z.string().optional(),
     BUILDBASE_CONTENT_WEBHOOK_SECRET: z.string().optional(),
+    // Incoming webhook (Slack or Discord) for sale, refund and dispute
+    // alerts (src/lib/store/sale-alert.ts). A secret: anyone with it can post.
+    SALES_ALERT_WEBHOOK_URL: z.string().url().optional(),
     // Own secret for /api/buildbase/provision (a workflow's HTTP Webhook
     // action). Never the webhook signing key.
     BUILDBASE_PROVISION_SECRET: z.string().min(32).optional(),
@@ -118,6 +121,7 @@ export const env = createEnv({
     BUILDBASE_WEBHOOK_SECRET: process.env.BUILDBASE_WEBHOOK_SECRET,
     BUILDBASE_CONTENT_WEBHOOK_SECRET:
       process.env.BUILDBASE_CONTENT_WEBHOOK_SECRET,
+    SALES_ALERT_WEBHOOK_URL: process.env.SALES_ALERT_WEBHOOK_URL,
     BUILDBASE_PROVISION_SECRET: process.env.BUILDBASE_PROVISION_SECRET,
     BUILDBASE_OAUTH2_CLIENT_ID: process.env.BUILDBASE_OAUTH2_CLIENT_ID,
     BUILDBASE_OAUTH2_CLIENT_SECRET: process.env.BUILDBASE_OAUTH2_CLIENT_SECRET,
