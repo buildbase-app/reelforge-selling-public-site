@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { HomeHeader } from '@/components/home-header';
 import { SiteFooter } from '@/components/site-footer';
 import { LiteAuthButton } from '@/components/auth/lite-auth-button';
+import { AuthIslandHost } from '@/components/auth/auth-island';
 import { SessionHintProvider } from '@/components/auth/session-hint';
 import { SiteTracking } from '@/components/tracking/site-tracking';
 import { SESSION_COOKIE_NAME } from '@/lib/buildbase';
@@ -11,8 +12,9 @@ import { SESSION_COOKIE_NAME } from '@/lib/buildbase';
  * The public site's frame: header, the page as `<main>`, footer.
  *
  * Without `auth` it is provider-free (studio issue #79): the header's
- * button is `LiteAuthButton`, and `SiteTracking` adds BuildBase tracking,
- * the cookie banner and on-demand sign-in. The `(store)` group renders it
+ * button is `LiteAuthButton`, `AuthIslandHost` loads sign-in on demand, and
+ * `SiteTracking` adds BuildBase tracking and the cookie banner. The two are
+ * separate so a tracking blocker never stops sign-in (studio issue #596). The `(store)` group renders it
  * inside `SaaSProvider` and passes `ProviderAuthButton`; the provider then
  * does the tracking.
  */
@@ -63,7 +65,12 @@ export async function MarketingShell({
         </main>
         <SiteFooter title={t('title')} />
       </div>
-      {auth === undefined && <SiteTracking />}
+      {auth === undefined && (
+        <>
+          <AuthIslandHost />
+          <SiteTracking />
+        </>
+      )}
     </SessionHintProvider>
   );
 }

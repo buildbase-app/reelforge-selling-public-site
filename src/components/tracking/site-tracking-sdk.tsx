@@ -2,19 +2,18 @@
 
 import { BuildBaseTracking } from '@buildbase/sdk/tracking';
 import { TRACKING, TRACKING_APP } from '@/lib/tracking-config';
-import { AuthIslandHost } from '@/components/auth/auth-island';
 import { LiteCookieBanner } from './lite-cookie-banner';
 
 /**
- * Loaded by `SiteTracking`. The banner and the sign-in island sit inside
- * the tracker so `useTracking()` reaches it: the banner's answer, and the
- * SDK's sign-in events from the island, go to this one tracker.
+ * Loaded by `SiteTracking`. The banner sits inside the tracker so
+ * `useTracking()` reaches it. Sign-in does not live here: a blocker that
+ * stops this chunk must never stop sign-in (studio issue #596), so the
+ * sign-in island mounts on its own in `MarketingShell`.
  */
 export default function SiteTrackingSdk() {
   return (
     <BuildBaseTracking {...TRACKING_APP} {...TRACKING}>
       <LiteCookieBanner privacyHref="/privacy" />
-      <AuthIslandHost />
     </BuildBaseTracking>
   );
 }

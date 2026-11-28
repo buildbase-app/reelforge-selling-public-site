@@ -19,8 +19,9 @@ export type AuthRequest =
  * Loaded on demand by `AuthIslandHost` (./auth-island.tsx). The provider
  * finishes a sign-in return on its own; for a sign-in request it waits until
  * the SDK knows the session, then starts the hosted sign-in. Its tracking
- * is off: the page's `BuildBaseTracking` (an ancestor) receives the SDK's
- * sign-in events instead.
+ * is off: sign-in mounts outside the page's tracker, so a tracking blocker
+ * can't stop it (studio issue #596), and the SDK's sign-in events are not
+ * counted on these pages.
  */
 export default function AuthIslandSdk({ request }: { request: AuthRequest }) {
   return (
