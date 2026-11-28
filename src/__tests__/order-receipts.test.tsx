@@ -19,6 +19,13 @@ const orders = {
 };
 let search = '';
 
+// The seller's name comes from the site config, which reads the env.
+vi.mock('@/env', () => ({
+  env: {},
+  siteUrl: 'https://renderweld.com',
+  isNoindexSite: false,
+  buildbaseEnvironment: undefined,
+}));
 vi.mock('@buildbase/sdk/react', () => ({
   useMyOrders: () => ({
     orders: orders.list,
@@ -232,7 +239,9 @@ describe('/order as the receipt', () => {
     render(<OrderView />);
     expect(screen.getByText('Sample Buyer (buyer@example.com)')).toBeVisible();
     expect(screen.getByText(/This page is your receipt/)).toBeVisible();
-    expect(screen.getByRole('button', { name: /Print receipt/ })).toBeVisible();
+    expect(
+      screen.getByRole('button', { name: /Print or save as PDF/ })
+    ).toBeVisible();
     expect(
       screen.getByRole('link', { name: 'Orders and receipts' })
     ).toHaveAttribute('href', '/dashboard/invoices');
@@ -247,10 +256,49 @@ describe('/order as the receipt', () => {
     render(<OrderView />);
     expect(screen.getByText('g@example.com')).toBeVisible();
     expect(screen.getByText(/This page is your receipt/)).toBeVisible();
-    expect(screen.getByRole('button', { name: /Print receipt/ })).toBeVisible();
+    expect(
+      screen.getByRole('button', { name: /Print or save as PDF/ })
+    ).toBeVisible();
     expect(
       screen.queryByRole('link', { name: 'Orders and receipts' })
     ).toBeNull();
+  });
+
+  it('names the seller and its address on a paid order', () => {
+    search = 'id=order_studio';
+    orders.one = order();
+    render(<OrderView />);
+    const seller = screen.getByTestId('receipt-seller');
+    expect(seller).toHaveTextContent('Sold by');
+    expect(seller).toHaveTextContent('Jagodana LLC');
+    expect(seller).toHaveTextContent('Cheyenne, WY 82001, United States');
+  });
+
+  it('breaks the total into subtotal, discount, tax and total', () => {
+    search = 'id=order_studio';
+    orders.one = order({
+      subtotal: 14900,
+      discount: 1490,
+      coupon: { id: 'c1', code: 'LAUNCH', discount: 1490 },
+      tax: 2682,
+      total: 16092,
+    } as Partial<BuyerOrderView>);
+    render(<OrderView />);
+    const amounts = screen.getByTestId('receipt-amounts');
+    expect(amounts).toHaveTextContent('Subtotal$149.00');
+    expect(amounts).toHaveTextContent('Discount (LAUNCH)−$14.90');
+    expect(amounts).toHaveTextContent('Tax$26.82');
+    expect(amounts).toHaveTextContent('Total$160.92');
+  });
+
+  it('leaves out the tax line when the platform reports no tax figure', () => {
+    search = 'id=order_studio';
+    orders.one = order();
+    render(<OrderView />);
+    const amounts = screen.getByTestId('receipt-amounts');
+    expect(amounts).not.toHaveTextContent('Tax');
+    expect(amounts).not.toHaveTextContent('Discount');
+    expect(amounts).toHaveTextContent('Total$149.00');
   });
 
   it('an unpaid order shows no receipt yet', () => {
