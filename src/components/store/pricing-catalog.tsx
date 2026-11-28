@@ -1,13 +1,13 @@
 'use client';
 
 import '@/lib/zod-jitless';
-import { useSyncExternalStore } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { Loader2 } from 'lucide-react';
 import { BuyButton, useSaaSAuth } from '@buildbase/sdk/react';
 import type { CheckoutStart, PublicItemView } from '@buildbase/sdk';
 import { Button } from '@/components/ui/button';
 import { useStoreItems } from './use-store-items';
-import { rememberOrder } from './last-order';
+import { newCheckoutRef, orderReturnUrl, rememberOrder } from './last-order';
 import { copy, OfferGrid, type OfferActionProps } from './offer-grid';
 import { GuestCheckout } from './guest-checkout';
 
@@ -61,6 +61,9 @@ function LiveCatalog() {
 function BuyAction({ item, variant, price, free, label }: OfferActionProps) {
   const { signIn, status } = useSaaSAuth();
   const origin = useOrigin();
+  // One reference per offer on this page load: the return URL names it, and
+  // the checkout's start records which order it became.
+  const [ref] = useState(newCheckoutRef);
   if (status === 'authenticated') {
     return origin ? (
       <BuyButton
@@ -74,13 +77,13 @@ function BuyAction({ item, variant, price, free, label }: OfferActionProps) {
         recurring={!!price.recurring}
         buyerCountries={item.buyerCountries}
         currency={price.currency}
-        successUrl={`${origin}/order`}
+        successUrl={orderReturnUrl(origin, ref)}
         label={label}
         onStarted={(start: CheckoutStart) => {
-          rememberOrder(start.order._id);
+          rememberOrder(start.order._id, ref);
         }}
         onComplete={(order) => {
-          rememberOrder(order._id);
+          rememberOrder(order._id, ref);
           window.location.assign(
             `${origin}/order?id=${encodeURIComponent(order._id)}`
           );
