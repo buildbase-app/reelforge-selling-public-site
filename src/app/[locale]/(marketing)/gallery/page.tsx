@@ -93,10 +93,9 @@ export default async function GalleryPage({
             Reels rendered by RenderWeld over MCP
           </h1>
           <p className="text-muted-foreground mt-4 text-lg text-pretty">
-            We wrote a manifest for each reel. A script sent it to RenderWeld
-            Studio over MCP, calling the same tools your agent would, and the
-            studio rendered it. Open one to see how it was made, copy the
-            manifest or give a matching prompt to your own agent.
+            We wrote the plan for each reel and sent it to RenderWeld the same
+            way your agent would. Open one to see how it was made, copy its
+            plan, or give the matching prompt to your own agent.
           </p>
           {all.length > 0 && (
             <p className="gl-receipt text-muted-foreground mt-4 text-sm">

@@ -127,7 +127,8 @@ export default async function ReelPage({ params }: ReelPageProps) {
               />
             </div>
             <p className="gl-receipt text-muted-foreground mt-3 text-center text-xs">
-              Web copy: 720×1280, no sound. The master is 1080×1920 with music.
+              Preview: 720×1280 without sound. The full render is 1080×1920 with
+              music.
             </p>
           </div>
 
@@ -154,7 +155,7 @@ export default async function ReelPage({ params }: ReelPageProps) {
               <CopyButton
                 text={reel.prompt}
                 label="Copy prompt"
-                ariaLabel={`Copy prompt for ${reel.title}`}
+                ariaLabel={`Copy the prompt for: ${reel.title}`}
                 goal="copy_reel_prompt"
                 goalProps={{ reel: reel.slug }}
                 className="mt-3"
@@ -168,9 +169,8 @@ export default async function ReelPage({ params }: ReelPageProps) {
               <p className="text-muted-foreground mt-2 text-sm text-pretty">
                 We wrote the manifest (its scenes, templates and timing) for
                 this gallery. The gallery script sent it to RenderWeld over MCP
-                with the same tool calls an agent makes, and the studio rendered
-                it. No AI agent planned it. The facts below come from the
-                studio&apos;s render manifest
+                with the same tool calls an agent makes, and RenderWeld rendered
+                it. These facts come from RenderWeld&apos;s own render report
                 {reel.manifestUrl ? (
                   <>
                     ; the{' '}
@@ -207,7 +207,7 @@ export default async function ReelPage({ params }: ReelPageProps) {
                   </Fact>
                 )}
                 {reel.studioVersion && (
-                  <Fact label="Studio">
+                  <Fact label="Version">
                     RenderWeld {reel.studioVersion}
                     {reel.engineVersions && (
                       <span className="text-muted-foreground block text-xs">
@@ -250,7 +250,7 @@ export default async function ReelPage({ params }: ReelPageProps) {
                 Make this with your agent
               </h2>
               <p className="text-muted-foreground mt-2 text-sm text-pretty">
-                Connect your agent to your own studio (
+                Connect your agent to your RenderWeld server (
                 <Link href="/agents" className="text-foreground underline">
                   how
                 </Link>
