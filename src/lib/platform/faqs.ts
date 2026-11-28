@@ -16,7 +16,7 @@ import { renderMarkdown } from '@/lib/platform/markdown';
  * Answers are Markdown (as in the console) and are rendered with
  * `renderMarkdown`, so console and local answers go through one sanitiser.
  *
- * Keep every default true today (docs/research/DESIGN_BRIEF.md §7): no
+ * Keep every default true today (the private design brief, §7): no
  * prices, no dates, no untested clients or features. Verified as of
  * 2026-11-21: Docker end-to-end run; headless Claude Code made an 18-second
  * reel with all four engines over MCP only. Not verified: rendering on the
