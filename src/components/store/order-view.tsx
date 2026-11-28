@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/routing';
 import { SupportContact } from '@/components/support-contact';
 import { OrderHoldings } from './order-holdings';
+import { ReceiptAmounts, ReceiptSeller } from './receipt-amounts';
 import { recallOrder } from './last-order';
 import { ORDER_STATUS as STATUS } from './order-status';
 
@@ -196,8 +197,6 @@ function OrderLayout({
               <dd>{new Date(order.paidAt).toLocaleString()}</dd>
             </>
           )}
-          <dt className="text-muted-foreground">Total</dt>
-          <dd>{formatMinorAmountIntl(order.total, order.currency, 'en')}</dd>
           {buyerLabel(order) && (
             <>
               <dt className="text-muted-foreground">Bought by</dt>
@@ -227,6 +226,14 @@ function OrderLayout({
             </li>
           ))}
         </ul>
+        <div className="mt-3 border-t pt-3">
+          <ReceiptAmounts order={order} />
+        </div>
+        {order.paidAt && (
+          <div className="mt-4 border-t pt-4">
+            <ReceiptSeller />
+          </div>
+        )}
         {order.paidAt && <Receipt signedIn={!guestOrder} />}
       </section>
 
@@ -297,7 +304,7 @@ function Receipt({ signedIn }: { signedIn: boolean }) {
         onClick={() => window.print()}
       >
         <Printer className="h-4 w-4" aria-hidden />
-        Print receipt
+        Print or save as PDF
       </Button>
     </div>
   );
