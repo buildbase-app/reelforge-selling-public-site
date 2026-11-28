@@ -18,6 +18,13 @@ const orders = {
 };
 let search = '';
 
+// The seller's name comes from the site config, which reads the env.
+vi.mock('@/env', () => ({
+  env: {},
+  siteUrl: 'https://renderweld.com',
+  isNoindexSite: false,
+  buildbaseEnvironment: undefined,
+}));
 vi.mock('@buildbase/sdk/react', () => ({
   useMyOrders: () => ({
     orders: orders.list,
