@@ -98,4 +98,15 @@ describe('marketing copy', () => {
       expect(source?.text).toContain('(pre-release build)');
     }
   });
+
+  it('names no internal script paths on /agents and links the methods page', () => {
+    const agents = sources.find(
+      (s) => s.file === 'src/app/[locale]/(marketing)/agents/page.tsx'
+    );
+    expect(agents?.text).not.toMatch(/scripts\/[\w/-]+\.m?js/);
+    expect(agents?.text).toContain('href="/methods"');
+    expect(
+      sources.some((s) => s.file === 'src/content/pages/methods/en.ts')
+    ).toBe(true);
+  });
 });
