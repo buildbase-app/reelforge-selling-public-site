@@ -49,7 +49,12 @@ export function priceLabel(price: VariantPrice, locale = 'en'): string {
   return term ? `${amount} ${term}` : amount;
 }
 
-/** The "was" price shown struck through, when the seller set one. */
+/**
+ * The price a launch price goes up to, when the seller set one
+ * (`compareAtAmount`). It is shown as a future rise ("Goes up to $99 on
+ * 16 December 2026"), never struck through as a former price: the higher
+ * price has not been charged yet (studio issue #558).
+ */
 export function compareAtLabel(
   price: VariantPrice,
   locale = 'en'

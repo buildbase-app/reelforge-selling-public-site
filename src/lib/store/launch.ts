@@ -27,6 +27,9 @@ export const LAUNCH_PRICE_ENDS_AT = new Date('2026-12-16T13:00:00Z');
 /** The same instant as buyers read it (and as the content block says it). */
 export const LAUNCH_PRICE_ENDS_LABEL = '16 December 2026, 13:00 UTC';
 
+/** The day the launch price ends, for "Goes up to $99 on 16 December 2026". */
+export const LAUNCH_PRICE_ENDS_DAY = LAUNCH_PRICE_ENDS_LABEL.split(',')[0];
+
 /** The built-in note, shown when the content block can't be used. */
 export const LAUNCH_PRICE_FALLBACK_NOTE = `Launch prices end ${LAUNCH_PRICE_ENDS_LABEL}. Regular prices apply after that.`;
 

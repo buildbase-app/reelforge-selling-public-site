@@ -18,6 +18,7 @@ import {
   variantBenefits,
 } from './price';
 import { editionOf, orderByEdition, type Edition } from '@/lib/store/edition';
+import { isLaunchPriceActive, LAUNCH_PRICE_ENDS_DAY } from '@/lib/store/launch';
 
 // English only for now (src/i18n/config.ts); kept together for translation.
 export const copy = {
@@ -115,7 +116,9 @@ function OfferCard({
   Action: React.ComponentType<OfferActionProps>;
 }) {
   const benefits = variantBenefits(item, variant).filter((b) => b.title);
-  const was = compareAtLabel(price);
+  // A future price rise while the launch price lasts; nothing afterwards,
+  // when the price itself goes up. Never a struck-through "was" price.
+  const rise = isLaunchPriceActive() ? compareAtLabel(price) : null;
   const { amount, term } = priceParts(price);
   const description = variant.terms || item.summary || item.description;
   const title = variant.label ? `${item.title}: ${variant.label}` : item.title;
@@ -147,17 +150,17 @@ function OfferCard({
           <span className="text-3xl font-medium tracking-tight tabular-nums">
             {amount}
           </span>{' '}
-          {was && (
-            <span className="text-muted-foreground text-sm line-through">
-              {was}
-            </span>
-          )}
           {term && (
             <span className="text-muted-foreground text-sm whitespace-nowrap">
               {term}
             </span>
           )}
         </div>
+        {rise && (
+          <p className="text-muted-foreground mt-1 text-sm" data-price-rise="">
+            Launch price. Goes up to {rise} on {LAUNCH_PRICE_ENDS_DAY}.
+          </p>
+        )}
         {description && (
           <CardDescription className="mt-2 whitespace-pre-line">
             {description}
