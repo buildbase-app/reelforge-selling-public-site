@@ -21,7 +21,6 @@ vi.mock('@/i18n/routing', () => ({
   ),
 }));
 
-
 type Holding = Pick<HoldingView, 'kind' | 'itemId'>;
 const key = (itemId: string): Holding => ({ kind: 'license_key', itemId });
 
