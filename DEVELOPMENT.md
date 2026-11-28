@@ -11,12 +11,16 @@ npm run dev:all   # run the site on http://localhost:3000
 Both are safe to run again. Everything else on this page is for when you
 need more than that, or when something goes wrong.
 
-|                       | URL                           | Runs                                                       | BuildBase environment                      |
-| --------------------- | ----------------------------- | ---------------------------------------------------------- | ------------------------------------------ |
-| Your machine          | http://localhost:3000         | `npm run dev:all` (`next dev`) or `-- --preview` (workerd) | development (`fsyqdskf`)                   |
-| Test site             | https://dev.renderweld.com    | Worker `reelforge-store-dev`                               | development (`fsyqdskf`), Stripe test keys |
-| Production            | https://renderweld.com        | Worker `reelforge-store`                                   | production                                 |
-| Old hosts (redirects) | reelforge(-dev).buildbase.app | 301 to the matching renderweld.com host                    |                                            |
+|                       | URL                           | Runs                                                       | BuildBase environment                                   |
+| --------------------- | ----------------------------- | ---------------------------------------------------------- | ------------------------------------------------------- |
+| Your machine          | http://localhost:3000         | `npm run dev:all` (`next dev`) or `-- --preview` (workerd) | development (`<dev-environment-key>`)                   |
+| Test site             | https://dev.renderweld.com    | Worker `reelforge-store-dev`                               | development (`<dev-environment-key>`), Stripe test keys |
+| Production            | https://renderweld.com        | Worker `reelforge-store`                                   | production                                              |
+| Old hosts (redirects) | reelforge(-dev).buildbase.app | 301 to the matching renderweld.com host                    |                                                         |
+
+Names in angle brackets, such as `<buildbase-org-id>`, stand for ids that
+are not written in this repo's docs. `npm run setup` writes the public ones
+into your env file, and a maintainer can give you the rest.
 
 ## Contents
 
@@ -48,8 +52,8 @@ need more than that, or when something goes wrong.
    `postinstall` generates the Prisma client into `src/generated/`.
 3. **Writes `.env.development.local`** (git-ignored, mode 600) for the
    BuildBase **development** environment: organization
-   `6b01478bb42d2c444e99fcd8`, environment `fsyqdskf`, its public sign-in
-   client `gqLbQtwsNKyzl2dKtx7v2u2GVAhP6AzPpAe1GvL7`, redirect URL
+   `<buildbase-org-id>`, environment `<dev-environment-key>`, its public sign-in
+   client `<development-oauth-client-id>`, redirect URL
    `http://localhost:3000`, and a `SYSTEM_SECRET` generated on your machine.
    The secrets you must bring yourself are left empty
    ([BuildBase credentials](#buildbase-credentials)). It also copies
@@ -155,13 +159,13 @@ Without a client secret the env file sets `SKIP_ENV_VALIDATION=true`, because
 ### Getting your own development secrets
 
 All of them come from the BuildBase console
-(https://console.buildbase.app), organization `6b01478bb42d2c444e99fcd8`,
-switched to the **development** environment `fsyqdskf`. Ask a maintainer to
+(https://console.buildbase.app), organization `<buildbase-org-id>`,
+switched to the **development** environment `<dev-environment-key>`. Ask a maintainer to
 invite you if you cannot open it. Never use production secrets locally.
 
 | Variable                   | Where in the console                                                                                                       |
 | -------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `BUILDBASE_CLIENT_SECRET`  | Auth, the client `gqLbQtwsNKyzl2dKtx7v2u2GVAhP6AzPpAe1GvL7`, its secret                                                    |
+| `BUILDBASE_CLIENT_SECRET`  | Auth, the client `<development-oauth-client-id>`, its secret                                                               |
 | `BUILDBASE_API_TOKEN`      | Settings, API keys: an app-server key whose role has the content-reader permissions and `marketplace_items` read. Optional |
 | `BUILDBASE_WEBHOOK_SECRET` | Settings, Webhooks: the signing secret of the endpoint you registered for your tunnel. Optional                            |
 
@@ -172,7 +176,7 @@ Then:
 2. Delete the `SKIP_ENV_VALIDATION=true` line, so a missing value fails loudly.
 3. **Add localhost to the development client** (once per client, by someone
    with console access): on the client
-   `gqLbQtwsNKyzl2dKtx7v2u2GVAhP6AzPpAe1GvL7`, add `http://localhost:3000` to
+   `<development-oauth-client-id>`, add `http://localhost:3000` to
    the redirect URLs and to the allowed origins. Without it the hosted
    sign-in page refuses to send you back to localhost.
 4. Restart `npm run dev:all`.
@@ -186,12 +190,12 @@ and the verification code is `424242`. Pay with Stripe test card
 The organization has two environments with separate users, clients, webhooks
 and Stripe keys:
 
-|                                     | development                                | production                                 |
-| ----------------------------------- | ------------------------------------------ | ------------------------------------------ |
-| `NEXT_PUBLIC_BUILDBASE_ENVIRONMENT` | `fsyqdskf`                                 | empty                                      |
-| Sign-in client                      | `gqLbQtwsNKyzl2dKtx7v2u2GVAhP6AzPpAe1GvL7` | `XUlR38I2gOAZOCpxleNxgPURGpHlzsykAMwypHS8` |
-| Used by                             | localhost, dev.renderweld.com              | renderweld.com                             |
-| Payments                            | Stripe test mode                           | real money                                 |
+|                                     | development                     | production                     |
+| ----------------------------------- | ------------------------------- | ------------------------------ |
+| `NEXT_PUBLIC_BUILDBASE_ENVIRONMENT` | `<dev-environment-key>`         | empty                          |
+| Sign-in client                      | `<development-oauth-client-id>` | `<production-oauth-client-id>` |
+| Used by                             | localhost, dev.renderweld.com   | renderweld.com                 |
+| Payments                            | Stripe test mode                | real money                     |
 
 Local work always uses development. Pointing a local server at production
 means real customers' data and real charges; don't. To reproduce a
@@ -343,7 +347,7 @@ You do not deploy from your machine. Merging a pull request into `main` runs
 Builds use `SKIP_ENV_VALIDATION=true` and a throwaway `SYSTEM_SECRET`; the real
 secrets are read by the Worker at runtime. The only repository secret is
 `CLOUDFLARE_API_TOKEN`. The Cloudflare account is RenderWeld
-(`f12121a39fc6f6eb348d486bc2e282b4`, `account_id` in `wrangler.jsonc`), which
+(`<cloudflare-account-id>`, `account_id` in `wrangler.jsonc`), which
 owns the `renderweld.com` zone.
 
 | Worker                | URL                        | Runtime secrets (`wrangler secret put`)                                                                                                                                                      |
