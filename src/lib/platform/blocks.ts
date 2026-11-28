@@ -7,6 +7,7 @@ import {
   LAUNCH_PRICE_FALLBACK_NOTE,
   isLaunchPriceActive,
   statesLaunchEnd,
+  statesPercentDiscount,
 } from '@/lib/store/launch';
 
 /**
@@ -49,28 +50,29 @@ export async function getBlock(key: BlockKey): Promise<BlockData | null> {
 
 /**
  * The note beside the launch prices. Until the launch price ends it is the
- * `launch-price-note` block when that block can be read and states the end
- * date, and the built-in note with the end date otherwise (no token, a
- * failed read, a missing or edited block), so a launch price is never shown
- * without its end date (studio issue #260). After the end date: null.
+ * `launch-price-note` block when that block can be read, states the end
+ * date and gives no percentage discount, and the built-in note with the end
+ * date otherwise (no token, a failed read, a missing or edited block), so a
+ * launch price is never shown without its end date (studio issue #260) or as
+ * a percentage (studio issue #556). After the end date: null.
  */
 export async function getLaunchPriceNote(
   now: Date = new Date()
 ): Promise<BlockData | null> {
   if (!isLaunchPriceActive(now)) return null;
   const block = await getBlock('launchPriceNote');
-  if (block?.source === 'buildbase' && statesLaunchEnd(block.text)) {
-    return block;
-  }
+  const reason =
+    block?.source !== 'buildbase'
+      ? 'block missing or unreadable'
+      : !statesLaunchEnd(block.text)
+        ? `block does not state "${LAUNCH_PRICE_ENDS_LABEL}"`
+        : statesPercentDiscount(block.text)
+          ? 'block gives the discount as a percentage'
+          : null;
+  if (block && !reason) return block;
   logger.error(
     'Launch price note: content block unusable, built-in note shown',
-    {
-      slug: CONTENT_BLOCKS.launchPriceNote,
-      reason:
-        block?.source === 'buildbase'
-          ? `block does not state "${LAUNCH_PRICE_ENDS_LABEL}"`
-          : 'block missing or unreadable',
-    }
+    { slug: CONTENT_BLOCKS.launchPriceNote, reason }
   );
   return {
     slug: CONTENT_BLOCKS.launchPriceNote,
