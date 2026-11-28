@@ -65,13 +65,14 @@ const Q = {
   },
   delivery: {
     id: 'delivery',
-    question: 'What do I get, and how?',
-    answer: `A licence key, from your order page and your account: a free Personal key for noncommercial use, or a paid Commercial key, bought once. Every released RenderWeld Docker image activates with a key from BuildBase. The source and install documentation are public on [GitHub](${siteConfig.repo.url}). You run it yourself: there is no render service run by us. The [licences](/licence) say what you may do with it.`,
+    question: 'What do I get?',
+    answer:
+      'A licence key, shown on your order page and in your receipt email. RenderWeld runs on your own computer or server and your key activates it. There is no hosted service to sign up for.',
   },
   sourceCode: {
     id: 'source-code',
     question: 'Can I read the source code?',
-    answer: `Yes. RenderWeld is source-available: every line is public on [GitHub](${siteConfig.repo.url}). You may use it for noncommercial purposes under the PolyForm Noncommercial License 1.0.0; any commercial use needs a Commercial licence. You may not resell, redistribute or rebrand it, or offer it as a hosted service, and forks must be renamed. See [LICENSING.md](${siteConfig.repo.licensing}).`,
+    answer: `Yes. RenderWeld is source-available: every line is public on [GitHub](${siteConfig.repo.url}). You may use it for noncommercial purposes under the PolyForm Noncommercial License 1.0.0; any commercial use needs a Commercial licence. You may share it free for noncommercial use, with the licence notices, and a changed copy must use a new name. You may not sell it, rebrand it or offer it as a paid or hosted service. See [LICENSING.md](${siteConfig.repo.licensing}).`,
   },
   commercialUse: {
     id: 'commercial-use',
@@ -81,9 +82,9 @@ const Q = {
   },
   personalFree: {
     id: 'personal-free',
-    question: 'Is the Personal licence really free?',
+    question: 'Is the Personal licence free?',
     answer:
-      'Yes. Sign in with a BuildBase account and press "Get it free" on the [pricing page](/pricing): there is no payment page. You get a Personal licence key for one server, for noncommercial use only. If you start using RenderWeld to earn money, upgrade to a Commercial licence.',
+      'Yes. Create a free account, claim the Personal licence on the [pricing page](/pricing), and your key appears straight away. It covers one deployment, for noncommercial use.',
   },
   ai: {
     id: 'ai',
@@ -162,6 +163,30 @@ const Q = {
     answer:
       'There are no per-video fees to RenderWeld. You may still pay for a Remotion licence (companies over 3 people), your AI agent’s own account, any voice provider you use, and the computer or server it runs on.',
   },
+  online: {
+    id: 'online',
+    question: 'Do I need to be online?',
+    answer:
+      "Only for a daily licence check. If RenderWeld can't reach our licence server, it keeps working for 14 days. After that, new renders pause until a check succeeds. Your projects and finished videos stay available.",
+  },
+  moveServer: {
+    id: 'move-server',
+    question: 'Can I move to a new server?',
+    answer:
+      'Yes. Move your database and the activation moves with it. For a fresh install, run `renderweld licence deactivate` on the old one, then activate the new one.',
+  },
+  updates: {
+    id: 'updates',
+    question: 'How long do I get updates?',
+    answer:
+      'Every release published in the 12 months after you buy. Those releases keep working after that.',
+  },
+  seller: {
+    id: 'seller',
+    question: 'Who is the seller, and do you charge tax?',
+    answer:
+      'Jagodana LLC in Cheyenne, Wyoming, USA. Payments are processed by Stripe. Sales tax or VAT is calculated at checkout from your country and shown before you pay.',
+  },
 } satisfies Record<string, FaqEntry>;
 
 export const DEFAULT_FAQS: Record<FaqCollectionKey, FaqEntry[]> = {
@@ -173,6 +198,10 @@ export const DEFAULT_FAQS: Record<FaqCollectionKey, FaqEntry[]> = {
     Q.commercialUse,
     Q.ai,
     Q.remotion,
+    Q.online,
+    Q.moveServer,
+    Q.updates,
+    Q.seller,
     Q.refund,
     Q.contact,
   ],
@@ -192,6 +221,8 @@ export const DEFAULT_FAQS: Record<FaqCollectionKey, FaqEntry[]> = {
     Q.subscription,
     Q.otherCosts,
     Q.sourceCode,
+    Q.updates,
+    Q.seller,
     Q.refund,
   ],
   agents: [Q.whichAgents, Q.connect, Q.agentDecides, Q.notYet],
