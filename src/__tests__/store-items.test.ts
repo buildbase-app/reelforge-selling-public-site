@@ -124,6 +124,65 @@ describe('buildOffers', () => {
   it('emits nothing without items', () => {
     expect(buildOffers([], 'https://x.test/pricing')).toEqual([]);
   });
+
+  it('says until when a paid launch price applies, and only during the launch', () => {
+    const paid = toPublicItem(serverItem())!;
+    const during = buildOffers(
+      [paid],
+      'https://x.test/pricing',
+      new Date('2026-12-01T00:00:00Z')
+    );
+    expect(during[0]).toMatchObject({ priceValidUntil: '2026-12-16' });
+    const after = buildOffers(
+      [paid],
+      'https://x.test/pricing',
+      new Date('2026-12-17T00:00:00Z')
+    );
+    expect(after[0]).not.toHaveProperty('priceValidUntil');
+  });
+
+  it('gives a free offer no end date', () => {
+    const free = toPublicItem(
+      serverItem({
+        variants: [
+          {
+            id: 'personal',
+            prices: [{ id: 'free', currency: 'usd', mode: 'free' }],
+            stock: { mode: 'none' },
+          },
+        ],
+      })
+    )!;
+    const [offer] = buildOffers(
+      [free],
+      'https://x.test/pricing',
+      new Date('2026-12-01T00:00:00Z')
+    );
+    expect(offer).not.toHaveProperty('priceValidUntil');
+  });
+
+  it('marks a variant with no counted units left as sold out', () => {
+    const counted = (available: number) =>
+      toPublicItem(
+        serverItem({
+          variants: [
+            {
+              id: 'solo',
+              prices: [
+                { id: 'usd', currency: 'usd', mode: 'fixed', amount: 4900 },
+              ],
+              stock: { mode: 'counted', available },
+            },
+          ],
+        })
+      )!;
+    expect(
+      buildOffers([counted(0)], 'https://x.test/pricing')[0]?.availability
+    ).toBe('https://schema.org/SoldOut');
+    expect(
+      buildOffers([counted(5)], 'https://x.test/pricing')[0]?.availability
+    ).toBe('https://schema.org/InStock');
+  });
 });
 
 describe('tagsForWebhookEvent', () => {
