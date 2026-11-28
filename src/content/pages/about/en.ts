@@ -10,7 +10,7 @@ const page: LegalPageContent = {
   heroTitle: 'About RenderWeld',
   heroDescription:
     'Who makes RenderWeld, what it is for, and how it is built and sold.',
-  seoTitle: 'About RenderWeld',
+  seoTitle: 'About',
   seoDescription:
     'RenderWeld is a source-available video renderer that AI agents drive over REST and MCP, developed and maintained by Jagodana LLC.',
   lastUpdated: '2026-11-27',

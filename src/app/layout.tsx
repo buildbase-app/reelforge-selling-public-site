@@ -75,7 +75,7 @@ export default async function RootLayout({
         />
         {/* JSON-LD Structured Data */}
         <OrganizationJsonLd
-          name={seoConfig.brand.name}
+          name={seoConfig.publisher.name}
           description={seoConfig.brand.description}
           logo={seoConfig.brand.logo}
           sameAs={[...seoConfig.social.sameAs]}

@@ -60,7 +60,7 @@ export interface OrganizationJsonLdProps {
 }
 
 export function OrganizationJsonLd({
-  name = seoConfig.brand.name,
+  name = seoConfig.publisher.name,
   url = seoConfig.brand.url,
   logo,
   description = seoConfig.brand.description,

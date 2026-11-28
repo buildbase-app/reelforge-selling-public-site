@@ -60,7 +60,7 @@ export function authorPersonJsonLd(author: BlogAuthor) {
     ...(sameAs.length > 0 && { sameAs }),
     worksFor: {
       '@type': 'Organization' as const,
-      name: seoConfig.brand.name,
+      name: seoConfig.publisher.name,
       url: seoConfig.brand.url,
     },
   };
