@@ -122,14 +122,15 @@ describe('the home page showcase data (src/data/showcase.json)', () => {
         ).toEqual([]);
   });
 
-  it('records all four counts for every reel', () => {
+  it('records all four counts wherever counts are given', () => {
     for (const entry of entries)
-      expect(Object.keys(entry.counts).sort()).toEqual([
-        'animations',
-        'htmlComponents',
-        'music',
-        'soundEffects',
-      ]);
+      if (entry.counts)
+        expect(Object.keys(entry.counts).sort()).toEqual([
+          'animations',
+          'htmlComponents',
+          'music',
+          'soundEffects',
+        ]);
   });
 
   it('lists every demo reel and existing poster files', () => {

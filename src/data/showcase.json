@@ -1,232 +1,26 @@
 {
-  "_about": "Which reels the home page may show (studio issue #807). A reel is shown only when `shown` is true AND its counts meet the gallery bar (src/lib/gallery/bar.ts); a test fails if a reel marked shown is below the bar. Counts are null where nobody counted them, which is below the bar.",
+  "_about": "Which reels the home page may show (studio issue #807). An entry is shown only when `shown` is true and its `counts` (htmlComponents, animations, soundEffects, music) meet the gallery bar in src/lib/gallery/bar.ts; a test fails if an entry marked shown is below it. An entry without counts was not counted, which is below the bar. None of the current reels was counted, so none is shown; their files stay in the repo.",
   "rail": [
-    {
-      "slug": "agent-directs",
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "4 scenes, 10 s; counts not recorded, below the bar"
-    },
-    {
-      "slug": "hook-tips",
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "3 scenes, 8 s; counts not recorded, below the bar"
-    },
-    {
-      "slug": "release-notes",
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "3 scenes, 7 s; counts not recorded, below the bar"
-    }
+    { "slug": "agent-directs", "shown": false },
+    { "slug": "hook-tips", "shown": false },
+    { "slug": "release-notes", "shown": false }
   ],
   "marquee": [
-    {
-      "file": "city-cycling-growth.8345d050",
-      "row": 0,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "colour-palette-tour.2b8a1575",
-      "row": 0,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "air-squat-form-tip.9626dfc4",
-      "row": 0,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "lumen-desk-lamp-launch.432dbecf",
-      "row": 0,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "election-turnout-explainer.d5f2afb9",
-      "row": 0,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "city-weekend-guide.6b884e91",
-      "row": 0,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "podcast-founder-stories.0776ba94",
-      "row": 0,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "sheet-pan-tacos.865d60ef",
-      "row": 0,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "generative-brand-loop.b3090ee3",
-      "row": 1,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "habitloop-app-promo.67d90538",
-      "row": 1,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "charity-run-event.bcff8138",
-      "row": 1,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "packing-light-checklist.93d0e149",
-      "row": 1,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "remote-work-data-story.d579152e",
-      "row": 1,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "pay-yourself-first.3a55e1bd",
-      "row": 1,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "studio-apartment-rent.2db9c604",
-      "row": 1,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    },
-    {
-      "file": "small-steps-daily.0196a3e0",
-      "row": 1,
-      "shown": false,
-      "counts": {
-        "htmlComponents": null,
-        "animations": null,
-        "soundEffects": null,
-        "music": null
-      },
-      "note": "counts not recorded, below the bar"
-    }
+    { "file": "city-cycling-growth.8345d050", "row": 0, "shown": false },
+    { "file": "colour-palette-tour.2b8a1575", "row": 0, "shown": false },
+    { "file": "air-squat-form-tip.9626dfc4", "row": 0, "shown": false },
+    { "file": "lumen-desk-lamp-launch.432dbecf", "row": 0, "shown": false },
+    { "file": "election-turnout-explainer.d5f2afb9", "row": 0, "shown": false },
+    { "file": "city-weekend-guide.6b884e91", "row": 0, "shown": false },
+    { "file": "podcast-founder-stories.0776ba94", "row": 0, "shown": false },
+    { "file": "sheet-pan-tacos.865d60ef", "row": 0, "shown": false },
+    { "file": "generative-brand-loop.b3090ee3", "row": 1, "shown": false },
+    { "file": "habitloop-app-promo.67d90538", "row": 1, "shown": false },
+    { "file": "charity-run-event.bcff8138", "row": 1, "shown": false },
+    { "file": "packing-light-checklist.93d0e149", "row": 1, "shown": false },
+    { "file": "remote-work-data-story.d579152e", "row": 1, "shown": false },
+    { "file": "pay-yourself-first.3a55e1bd", "row": 1, "shown": false },
+    { "file": "studio-apartment-rent.2db9c604", "row": 1, "shown": false },
+    { "file": "small-steps-daily.0196a3e0", "row": 1, "shown": false }
   ]
 }

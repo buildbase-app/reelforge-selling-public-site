@@ -10,8 +10,8 @@ import { meetsGalleryBar, type ReelCounts } from './bar';
  */
 export interface ShowcaseEntry {
   shown: boolean;
-  counts: ReelCounts;
-  note?: string;
+  /** Absent when nobody counted: below the bar. */
+  counts?: ReelCounts;
 }
 
 export interface RailEntry extends ShowcaseEntry {
