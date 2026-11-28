@@ -7,9 +7,12 @@ import { NextRequest } from 'next/server';
  * tier and order number and nothing about the buyer (studio issue #571).
  */
 
-const findUnique = vi.fn(async () => null as { id: string } | null);
-const upsert = vi.fn(async () => ({ id: 'row' }));
-const parsed = { event: null as null | Record<string, unknown> };
+// Hoisted with the mocks below, which use them.
+const { findUnique, upsert, parsed } = vi.hoisted(() => ({
+  findUnique: vi.fn(async () => null as { id: string } | null),
+  upsert: vi.fn(async () => ({ id: 'row' })),
+  parsed: { event: null as null | Record<string, unknown> },
+}));
 
 vi.mock('server-only', () => ({}));
 vi.mock('next/cache', () => ({
