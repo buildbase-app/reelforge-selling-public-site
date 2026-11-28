@@ -8,6 +8,7 @@ import type { CheckoutStart, PublicItemView } from '@buildbase/sdk';
 import { Button } from '@/components/ui/button';
 import { useStoreItems } from './use-store-items';
 import { rememberOrder } from './last-order';
+import { pricingCancelUrl } from './checkout-cancelled';
 import { copy, OfferGrid, type OfferActionProps } from './offer-grid';
 import { GuestCheckout } from './guest-checkout';
 
@@ -75,6 +76,7 @@ function BuyAction({ item, variant, price, free, label }: OfferActionProps) {
         buyerCountries={item.buyerCountries}
         currency={price.currency}
         successUrl={`${origin}/order`}
+        cancelUrl={pricingCancelUrl(origin)}
         label={label}
         onStarted={(start: CheckoutStart) => {
           rememberOrder(start.order._id);

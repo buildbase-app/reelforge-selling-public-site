@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { PricingCatalog } from '@/components/store/pricing-catalog';
+import { CheckoutCancelledNote } from '@/components/store/checkout-cancelled';
 import { RemotionNotice } from '@/components/remotion-notice';
 import { LicenceGuide } from '@/components/store/licence-guide';
 import { LaunchPriceNote } from '@/components/content/launch-price-note';
@@ -83,6 +84,7 @@ export default async function PricingPageRoute({ params }: PricingPageProps) {
             {t('subtitle')}
           </p>
         </div>
+        <CheckoutCancelledNote />
         <PricingCatalog serverItems={serverItems} />
         <LaunchPriceNote
           className="mt-6"
