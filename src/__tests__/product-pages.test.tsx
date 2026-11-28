@@ -252,7 +252,9 @@ describe('/agents', () => {
     expect(text).toContain("Haven't installed RenderWeld yet?");
     expect(text).toContain('RenderWeld only listens on this computer');
     expect(text).toContain('Tool names may change before version 1.0');
-    expect(text).toMatch(/one run each on\s+21 November 2026/);
+    expect(text).toMatch(
+      /one run each on\s+21 November 2026 with\s+RenderWeld \S+ \(pre-release build\)/
+    );
     expect(text).toContain('Every REST endpoint has a matching MCP tool');
     expect(text).not.toMatch(/\bthe studio\b|experimental until/i);
   });

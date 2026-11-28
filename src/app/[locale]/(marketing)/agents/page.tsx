@@ -330,8 +330,9 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
           </h2>
           <ol className="text-muted-foreground max-w-measure mt-4 list-decimal space-y-2 pl-5 text-xs leading-relaxed">
             <li id="fn-1" className="scroll-mt-32">
-              Times are from one run each on {longDate(ref.renderedAt)} on a
-              shared 4-vCPU Linux server; they vary from run to run.{' '}
+              Times are from one run each on {longDate(ref.renderedAt)} with
+              RenderWeld {ref.versions.studio} (pre-release build) on a shared
+              4-vCPU Linux server; they vary from run to run.{' '}
               <Link href="/methods" className="underline underline-offset-2">
                 How we measured
               </Link>
