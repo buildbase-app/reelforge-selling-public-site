@@ -11,6 +11,7 @@ import {
   reelSource,
 } from '@/components/product/home-sections';
 import { reels } from '@/lib/agents/catalog';
+import { marqueeEntries } from '@/lib/gallery/showcase';
 import { FontPreload, GEIST_CORE_URL, GEIST_MONO_CORE_URL } from '@/lib/fonts';
 
 /**
@@ -58,14 +59,15 @@ describe('reel posters', () => {
   });
 
   it('the marquee posters exist, are small and load lazily', () => {
+    // Every listed poster, shown or not: the files stay in the repo.
     const { container } = render(<ReelMarquee />);
-    const imgs = [...container.querySelectorAll('img')];
-    expect(imgs.length).toBe(16);
-    let bytes = 0;
-    for (const img of imgs) {
-      const url = img.getAttribute('src')!;
-      expect(inPublic(url), url).toBe(true);
+    for (const img of container.querySelectorAll('img'))
       expect(img.getAttribute('loading')).toBe('lazy');
+    const urls = marqueeEntries.map((e) => `/reels/marquee/${e.file}.webp`);
+    expect(urls.length).toBe(16);
+    let bytes = 0;
+    for (const url of urls) {
+      expect(inPublic(url), url).toBe(true);
       // /reels/* is cached as immutable, so the name carries the content hash.
       const file = fs.readFileSync(path.join(root, 'public', url));
       const hash = createHash('sha256').update(file).digest('hex').slice(0, 8);

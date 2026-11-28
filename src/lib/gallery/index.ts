@@ -10,6 +10,7 @@ import {
 } from './model';
 
 export * from './model';
+export * from './bar';
 
 /** The BuildBase Collection the gallery reads (studio: `pnpm gallery publish`). */
 export const GALLERY_COLLECTION = 'gallery';

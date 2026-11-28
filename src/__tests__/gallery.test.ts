@@ -54,6 +54,11 @@ function record(
       status: 'published',
       featured: false,
       order: 10,
+      // Above the gallery bar (studio issue #807).
+      htmlComponents: 1200,
+      animations: 1500,
+      soundEffects: 12,
+      music: true,
       ...extra,
     },
   };

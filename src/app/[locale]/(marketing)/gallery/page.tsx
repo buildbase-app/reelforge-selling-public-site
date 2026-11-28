@@ -30,7 +30,7 @@ export async function generateMetadata({
 }: GalleryPageProps): Promise<Metadata> {
   const { locale } = await params;
   const reels = await getGallery();
-  return buildMarketingMetadata({
+  const metadata = buildMarketingMetadata({
     path: '/gallery',
     locale: locale as Locale,
     title: TITLE,
@@ -38,6 +38,10 @@ export async function generateMetadata({
     titleAbsolute: true,
     ...(reels[0] ? { image: reels[0].poster.jpg } : {}),
   });
+  // Nothing to find while no reel meets the gallery bar (studio issue #686).
+  return reels.length === 0
+    ? { ...metadata, robots: { index: false, follow: true } }
+    : metadata;
 }
 
 /**
@@ -109,11 +113,8 @@ export default async function GalleryPage({
 
         {all.length === 0 ? (
           <p className="text-muted-foreground max-w-measure mt-16">
-            The gallery is being rendered. Meanwhile the{' '}
-            <Link href="/#reels" className="text-foreground underline">
-              reels on the home page
-            </Link>{' '}
-            show what the studio makes.
+            New reels are on the way. Each one will come with the prompt and
+            manifest that made it.
           </p>
         ) : (
           <>

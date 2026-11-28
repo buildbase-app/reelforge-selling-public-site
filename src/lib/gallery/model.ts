@@ -10,6 +10,8 @@
  * the media never means editing records.
  */
 
+import { countOf, meetsGalleryBar, musicOf, type ReelCounts } from './bar';
+
 export const DEFAULT_MEDIA_URL = 'https://media.reelforge.buildbase.app';
 
 export const ENGINE_LABELS: Record<string, string> = {
@@ -51,6 +53,11 @@ export interface GalleryRecordData extends Record<string, unknown> {
   status?: string;
   featured?: boolean;
   order?: number;
+  /** The gallery bar's counts (studio issue #807), written with the record. */
+  htmlComponents?: number;
+  animations?: number;
+  soundEffects?: number;
+  music?: boolean;
 }
 
 export interface GalleryReel {
@@ -81,6 +88,7 @@ export interface GalleryReel {
   published: boolean;
   featured: boolean;
   order: number;
+  counts: ReelCounts;
 }
 
 export function slugify(s: string): string {
@@ -192,10 +200,21 @@ export function toReel(
     published: data.status === 'published',
     featured: data.featured === true,
     order: num(data.order),
+    counts: {
+      htmlComponents: countOf(data.htmlComponents),
+      animations: countOf(data.animations),
+      soundEffects: countOf(data.soundEffects),
+      music: musicOf(data.music),
+    },
   };
 }
 
-/** Records -> reels: valid ones, published only unless `includeHidden`, in gallery order. */
+/**
+ * Records -> reels: valid ones that meet the gallery bar (studio issue #807;
+ * a record without counts does not), published only unless
+ * `includeHidden`, in gallery order. `includeHidden` never lets a reel below
+ * the bar through.
+ */
 export function toReels(
   records: { data: GalleryRecordData }[],
   opts: { base?: string; includeHidden?: boolean } = {}
@@ -206,6 +225,7 @@ export function toReels(
     const reel = toReel(r.data ?? {}, opts.base);
     if (!reel || seen.has(reel.slug)) continue;
     if (!reel.published && !opts.includeHidden) continue;
+    if (!meetsGalleryBar(reel.counts)) continue;
     seen.add(reel.slug);
     out.push(reel);
   }

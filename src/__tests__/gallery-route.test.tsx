@@ -56,6 +56,10 @@ const record = {
     mp4Path: 'gallery/city-data/city-data.0123456789ab.mp4',
     webmPath: 'gallery/city-data/city-data.0123456789ab.webm',
     status: 'published',
+    htmlComponents: 1000,
+    animations: 1000,
+    soundEffects: 10,
+    music: true,
   },
 };
 
