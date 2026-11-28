@@ -58,10 +58,9 @@ describe('SignInButton', () => {
     expect(alert).toHaveTextContent(
       "Sign-in didn't start. Try again, or contact support."
     );
-    expect(screen.getByRole('link', { name: 'contact support' })).toHaveAttribute(
-      'href',
-      '/contact'
-    );
+    expect(
+      screen.getByRole('link', { name: 'contact support' })
+    ).toHaveAttribute('href', '/contact');
     expect(reportSignInFailure).toHaveBeenCalledWith('timeout', undefined);
 
     // The button is back and starts a new attempt.
