@@ -128,4 +128,41 @@ describe('/gallery/<slug>', () => {
       'Make a reel about the city.'
     );
   });
+
+  it('names RenderWeld and says plainly what the facts and the preview are', async () => {
+    content.hasContentApi.mockReturnValue(true);
+    content.getCollectionRecords.mockResolvedValue([record]);
+    const { default: ReelPage } = await loadPage();
+    const { container } = render(await ReelPage(params('city-data')));
+    const text = container.textContent ?? '';
+    expect(text).toContain('and RenderWeld rendered it');
+    expect(text).toContain(
+      "These facts come from RenderWeld's own render report"
+    );
+    expect(text).toContain(
+      'Preview: 720×1280 without sound. The full render is 1080×1920 with music.'
+    );
+    expect(text).toContain('Connect your agent to your RenderWeld server');
+    expect(text).not.toMatch(/\bstudio\b|No AI agent planned|Web copy/i);
+    expect(
+      screen.getByRole('button', { name: 'Copy the prompt for: City data' })
+    ).toBeInTheDocument();
+  });
+});
+
+describe('/gallery', () => {
+  it('opens with the plain intro that names RenderWeld', async () => {
+    vi.resetModules();
+    const { default: GalleryPage } =
+      await import('@/app/[locale]/(marketing)/gallery/page');
+    const { container } = render(
+      await GalleryPage({
+        params: Promise.resolve({ locale: 'en' }),
+        searchParams: Promise.resolve({}),
+      })
+    );
+    expect(container.textContent).toContain(
+      'We wrote the plan for each reel and sent it to RenderWeld the same way your agent would. Open one to see how it was made, copy its plan, or give the matching prompt to your own agent.'
+    );
+  });
 });
