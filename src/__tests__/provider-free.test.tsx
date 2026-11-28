@@ -137,6 +137,11 @@ describe('LitePricingCatalog (home page, no provider)', () => {
     expect(requestSignIn).toHaveBeenCalledWith(
       `${window.location.origin}/pricing`
     );
+    // The free licence comes back to finish its claim (studio issue #599).
+    fireEvent.click(screen.getByRole('button', { name: 'Get it free' }));
+    expect(requestSignIn).toHaveBeenLastCalledWith(
+      `${window.location.origin}/pricing?claim=personal`
+    );
   });
 
   it('signed out: a paid card\'s "Buy now" opens its guest checkout on /pricing, without the SDK here', () => {

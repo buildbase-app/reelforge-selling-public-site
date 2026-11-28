@@ -6,6 +6,7 @@ import { SignInButton } from '@/components/auth/lite-auth-button';
 import { useHasSession } from '@/components/auth/session-hint';
 import type { OfferActionProps } from './offer-grid';
 import { guestBuyHref } from './guest-buy-link';
+import { FREE_CLAIM_RETURN } from './free-claim';
 
 // The same words as `copy` in ./offer-grid, kept here so the browser does
 // not load that module (and the price formatting it imports).
@@ -17,8 +18,9 @@ const BUY_NOW = 'Buy now';
  * A card's button without the provider. Signed in, it goes to /pricing.
  * Signed out, a paid offer has "Buy now", which opens that card's guest
  * checkout on /pricing (the SDK loads there, after the click; studio issue
- * #257), and "Sign in to buy"; the free licence signs in. Sign-in comes
- * back to /pricing to buy there.
+ * #257), and "Sign in to buy"; the free licence signs in and comes back
+ * to /pricing, which claims it at once (studio issue #599). Sign in to buy
+ * comes back to /pricing to buy there.
  */
 export function LiteOfferAction({
   item,
@@ -41,7 +43,7 @@ export function LiteOfferAction({
     );
   }
   if (free) {
-    return <SignInButton returnTo="/pricing">{GET_FREE}</SignInButton>;
+    return <SignInButton returnTo={FREE_CLAIM_RETURN}>{GET_FREE}</SignInButton>;
   }
   return (
     <>

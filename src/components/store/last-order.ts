@@ -1,8 +1,10 @@
 'use client';
 
 /**
- * The order a checkout just started, kept for this browser tab so /order
- * can show it when Stripe sends the buyer back. A signed-in buyer's return
+ * The order a checkout just started, kept in this browser so /order can
+ * show it when Stripe sends the buyer back. Local storage, not session
+ * storage: the BuildBase sign-in round trip can come back in a new tab
+ * (studio issue #599). A signed-in buyer's return
  * URL can't carry the order id (the order doesn't exist when the URL is
  * set), so it carries a checkout reference (`?ref=`) instead, and the
  * checkout's start records which order that reference became. Losing it is
@@ -27,8 +29,8 @@ export function orderReturnUrl(origin: string, ref: string): string {
 
 export function rememberOrder(orderId: string, ref?: string | null) {
   try {
-    sessionStorage.setItem(KEY, orderId);
-    if (ref) sessionStorage.setItem(REF_KEY + ref, orderId);
+    localStorage.setItem(KEY, orderId);
+    if (ref) localStorage.setItem(REF_KEY + ref, orderId);
   } catch {
     /* storage blocked: /order falls back to the newest order */
   }
@@ -41,8 +43,8 @@ export function rememberOrder(orderId: string, ref?: string | null) {
 export function recallOrder(ref?: string | null): string | null {
   try {
     return (
-      (ref ? sessionStorage.getItem(REF_KEY + ref) : null) ??
-      sessionStorage.getItem(KEY)
+      (ref ? localStorage.getItem(REF_KEY + ref) : null) ??
+      localStorage.getItem(KEY)
     );
   } catch {
     return null;
