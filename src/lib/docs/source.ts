@@ -25,16 +25,22 @@ export interface DocsSite {
   nav: DocsNav;
   /** Every published page with its body (llms-full.txt, twins). */
   docs: DocsPageInput[];
+  /**
+   * True when the docs could not be read (no token, or BuildBase did not
+   * answer), as opposed to read and empty: /docs says which (studio #637).
+   */
+  failed?: boolean;
 }
 
-const EMPTY: DocsSite = {
+const UNREADABLE: DocsSite = {
   nav: { sections: [], rootPages: [], pages: [] },
   docs: [],
+  failed: true,
 };
 
 export const getDocsSite = cache(async (): Promise<DocsSite> => {
   const c = contentClient();
-  if (!c) return EMPTY;
+  if (!c) return UNREADABLE;
   try {
     const [tree, docs] = await Promise.all([c.docs.tree(), listAll(c)]);
     return {
@@ -45,7 +51,7 @@ export const getDocsSite = cache(async (): Promise<DocsSite> => {
     logger.debug('Docs: BuildBase Docs unavailable', {
       error: error instanceof Error ? error.message : String(error),
     });
-    return EMPTY;
+    return UNREADABLE;
   }
 });
 

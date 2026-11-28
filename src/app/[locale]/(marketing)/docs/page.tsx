@@ -8,7 +8,6 @@ import { getDocsSite } from '@/lib/docs/source';
 import type { NavSection } from '@/lib/docs/nav';
 import { DocsSidebar } from '@/components/docs/docs-sidebar';
 import { BreadcrumbJsonLd } from '@/components/seo/json-ld';
-import { hasContentApi } from '@/lib/platform/content';
 import styles from '@/components/docs/docs-prose.module.css';
 
 interface DocsIndexProps {
@@ -35,12 +34,16 @@ export async function generateMetadata({
   });
 }
 
+/** Shown when BuildBase Docs could not be read (studio issue #637). */
+const DOCS_LOAD_FAILED =
+  "The documentation couldn't be loaded just now. Please try again in a minute.";
+
 const anchor = (s: NavSection) => s.path.replace(/\//g, '-');
 
 export default async function DocsIndex({ params }: DocsIndexProps) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const { nav } = await getDocsSite();
+  const { nav, failed } = await getDocsSite();
   const start = nav.pages[0];
 
   return (
@@ -83,14 +86,18 @@ export default async function DocsIndex({ params }: DocsIndexProps) {
             </a>
           </div>
 
-          {nav.pages.length === 0 ? (
+          {failed ? (
+            <p
+              role="status"
+              className={`${styles.line} text-muted-foreground mt-12 rounded-xl border p-6 text-sm`}
+            >
+              {DOCS_LOAD_FAILED}
+            </p>
+          ) : nav.pages.length === 0 ? (
             <p
               className={`${styles.line} text-muted-foreground mt-12 rounded-xl border p-6 text-sm`}
             >
-              {hasContentApi()
-                ? 'No docs are published yet.'
-                : 'The docs could not be loaded on this server (no BuildBase token configured).'}{' '}
-              The same docs are in the{' '}
+              No docs are published yet. The same docs are in the{' '}
               <a
                 href="https://github.com/buildbase-app/reelforge-studio/tree/main/docs"
                 className="underline underline-offset-2"
