@@ -70,7 +70,7 @@ export const PAGES: PageEntry[] = [
   {
     title: 'Blog',
     path: '/blog',
-    summary: 'Announcements and guides.',
+    summary: 'News and how-to guides.',
   },
   {
     title: 'Changelog',
