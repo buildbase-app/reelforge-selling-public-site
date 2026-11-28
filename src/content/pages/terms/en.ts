@@ -26,7 +26,7 @@ What you may do with the RenderWeld software itself is set by its [licences](/li
 ## 2. Licence keys and the software
 
 - RenderWeld is **source-available**: anyone may read its code, and the [licences](/licence) say who may run it and how. The free Personal licence is for noncommercial use only; any commercial use needs a paid Commercial licence.
-- Licence keys are issued to the account that claimed or bought them. Do not share, sell, publish or transfer a key, and do not use a free Personal key for commercial work.
+- Licence keys are issued to the buyer named on the order, whether or not they have an account. Do not share, sell, publish or transfer a key, and do not use a free Personal key for commercial work.
 - Do not move, disable, circumvent or remove the licence-key check, in the released images or in a modified copy.
 - RenderWeld runs on your own machine or server. You are responsible for that machine, for backups, and for any third-party services you connect to it (AI providers, storage, voice services), which are governed by their own terms.
 
