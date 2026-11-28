@@ -62,9 +62,16 @@ const PLACEHOLDER_MARKERS = [
   'xxx',
 ];
 
-/** A URL-safe random secret: 48 bytes give 64 characters. */
+/**
+ * A URL-safe random secret: 48 bytes give 64 characters. Drawn again in the
+ * rare case it happens to contain a placeholder marker (such as `xxx`), so
+ * it always passes `isStrongSecret`.
+ */
 export function generateSecret(bytes = 48) {
-  return randomBytes(bytes).toString('base64url');
+  for (;;) {
+    const secret = randomBytes(bytes).toString('base64url');
+    if (isStrongSecret(secret)) return secret;
+  }
 }
 
 /** True when `value` looks like a placeholder rather than a real value. */
