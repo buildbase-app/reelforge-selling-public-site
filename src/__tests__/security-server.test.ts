@@ -288,12 +288,15 @@ describe('/api/auth/token, a refused exchange (studio issue #600)', () => {
       'fetch',
       vi.fn(async () => Response.json({ error: 'bad code' }, { status: 400 }))
     );
-    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const { logger } = await import('@/lib/logger');
+    const warn = vi.spyOn(logger, 'warn').mockImplementation(() => {});
     const { POST } = await import('@/app/api/auth/token/route');
     const res = await POST(signIn());
     expect(res.status).toBe(401);
     expect(res.headers.get('set-cookie')).toBeNull();
-    expect(warn.mock.calls.flat().join(' ')).toMatch(/400/);
+    expect(warn).toHaveBeenCalledWith('Auth token exchange refused', {
+      status: 400,
+    });
     warn.mockRestore();
   });
 
