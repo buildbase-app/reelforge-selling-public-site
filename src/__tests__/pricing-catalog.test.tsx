@@ -26,6 +26,10 @@ const guest = {
   error: null as string | null,
   reset: vi.fn(),
 };
+const claim = {
+  checkout: vi.fn(),
+  error: null as string | null,
+};
 
 vi.mock('@buildbase/sdk/react', () => ({
   usePublishedItems: () => {
@@ -41,6 +45,12 @@ vi.mock('@buildbase/sdk/react', () => ({
         : 'unauthenticated',
   }),
   useGuestCheckout: () => ({ ...guest, problems: [] }),
+  useCheckout: () => ({
+    ...claim,
+    starting: false,
+    problems: [],
+    reset: vi.fn(),
+  }),
   BuyButton: (props: Record<string, unknown>) => {
     buyProps.push(props);
     return <button type="button">{String(props.label)}</button>;
@@ -55,6 +65,7 @@ vi.mock('@/i18n/link', () => ({
 
 import { PricingCatalog } from '@/components/store/pricing-catalog';
 import { priceLabel, priceParts } from '@/components/store/price';
+import { recallOrder } from '@/components/store/last-order';
 
 function item(overrides: Partial<PublicItemView> = {}): PublicItemView {
   return {
@@ -88,6 +99,8 @@ beforeEach(() => {
   guest.checkout.mockReset();
   guest.reset.mockReset();
   guest.error = null;
+  claim.checkout.mockReset();
+  claim.error = null;
   window.history.replaceState(null, '', '/pricing');
   // jsdom has no layout: the guest form scrolls itself into view.
   Element.prototype.scrollIntoView = vi.fn();
@@ -169,8 +182,21 @@ describe('PricingCatalog', () => {
       itemId: 'item_1',
       variantId: 'solo',
       priceId: 'eur',
-      successUrl: `${window.location.origin}/order`,
+      successUrl: expect.stringMatching(/\/order\?ref=[a-z0-9]+$/),
     });
+  });
+
+  it('records which order the return URL reference became', () => {
+    state.items = [item()];
+    render(<PricingCatalog />);
+    const props = buyProps[0] as {
+      successUrl: string;
+      onStarted: (start: { order: { _id: string } }) => void;
+    };
+    const ref = new URL(props.successUrl).searchParams.get('ref');
+    props.onStarted({ order: { _id: 'order_started' } });
+    localStorage.setItem('renderweld:last-order', 'another_order');
+    expect(recallOrder(ref)).toBe('order_started');
   });
 
   it('skips retired prices and variants with none left', () => {
@@ -236,7 +262,7 @@ describe('PricingCatalog: Personal first, then Commercial', () => {
       priceId: 'free',
       free: true,
       label: 'Get it free',
-      successUrl: `${window.location.origin}/order`,
+      successUrl: expect.stringMatching(/\/order\?ref=[a-z0-9]+$/),
     });
   });
 
@@ -525,5 +551,67 @@ describe('a launch price with a higher price set', () => {
     const { container } = render(<PricingCatalog />);
     expect(container.querySelector('[data-price-rise]')).toBeNull();
     expect(container.textContent).not.toMatch(/\$99/);
+  });
+});
+
+describe('PricingCatalog: the free licence in one trip (studio issue #599)', () => {
+  it('signed out, "Get it free" signs in and comes back to finish the claim', () => {
+    signedIn = false;
+    state.items = [personalItem()];
+    render(<PricingCatalog />);
+    fireEvent.click(screen.getByRole('button', { name: 'Get it free' }));
+    expect(signIn).toHaveBeenCalledWith(
+      `${window.location.origin}/pricing?claim=personal`
+    );
+  });
+
+  it('back signed in with ?claim=personal, claims at once and goes to /order', async () => {
+    window.history.replaceState(null, '', '/pricing?claim=personal');
+    claim.checkout.mockResolvedValue({
+      order: { _id: 'order_free' },
+      url: null,
+    });
+    state.items = [commercialItem(), personalItem()];
+    render(<PricingCatalog />);
+    await act(async () => {});
+    expect(claim.checkout).toHaveBeenCalledTimes(1);
+    expect(claim.checkout).toHaveBeenCalledWith(
+      'personal',
+      expect.objectContaining({ variantId: 'noncommercial', priceId: 'free' })
+    );
+    expect(recallOrder()).toBe('order_free');
+    // Only the free card claims; the paid cards keep their Buy buttons.
+    expect(
+      buyProps.filter((p) => p.itemId === 'personal' && p.free)
+    ).toHaveLength(0);
+  });
+
+  it('a refused claim says so and shows the usual button to try again', async () => {
+    window.history.replaceState(null, '', '/pricing?claim=personal');
+    claim.checkout.mockResolvedValue(null);
+    state.items = [personalItem()];
+    render(<PricingCatalog />);
+    await act(async () => {});
+    expect(screen.getByRole('alert')).toHaveTextContent(
+      "Your free key didn't come through. Try again."
+    );
+    expect(buyProps.some((p) => p.itemId === 'personal')).toBe(true);
+  });
+
+  it('without ?claim=personal, a signed-in visitor still clicks to claim', () => {
+    state.items = [personalItem()];
+    render(<PricingCatalog />);
+    expect(claim.checkout).not.toHaveBeenCalled();
+    expect(buyProps.some((p) => p.itemId === 'personal')).toBe(true);
+  });
+
+  it('remembers the order across tabs (local storage)', () => {
+    state.items = [personalItem()];
+    render(<PricingCatalog />);
+    const props = buyProps[0] as {
+      onStarted: (start: { order: { _id: string } }) => void;
+    };
+    props.onStarted({ order: { _id: 'order_tab' } });
+    expect(localStorage.getItem('renderweld:last-order')).toBe('order_tab');
   });
 });
