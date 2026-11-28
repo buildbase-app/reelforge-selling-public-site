@@ -20,9 +20,46 @@ function setRequest(next: AuthRequest) {
   for (const listener of listeners) listener();
 }
 
-/** Start BuildBase's hosted sign-in; back to `returnUrl` (default: this page). */
-export function requestSignIn(returnUrl?: string) {
-  setRequest({ kind: 'signIn', returnUrl });
+/**
+ * Start BuildBase's hosted sign-in; back to `returnUrl` (default: this
+ * page). On success the page leaves for the sign-in page, so the promise
+ * never settles; it rejects when the SDK fails to load or `signIn` throws
+ * (studio issue #595).
+ */
+export function requestSignIn(returnUrl?: string): Promise<never> {
+  return new Promise<never>((_, reject) => {
+    setRequest({ kind: 'signIn', returnUrl, onError: reject });
+    loadIsland().catch(reject);
+  });
+}
+
+/** How long a sign-in may take to leave the page before it counts as failed. */
+export const SIGN_IN_TIMEOUT_MS = 10_000;
+
+/** Names a sign-in failure is reported under; nothing else is sent. */
+export type SignInFailure = 'timeout' | 'error';
+
+/**
+ * Tell the server a sign-in did not start, so failures show up in its
+ * logs. Only the kind of failure and the error's name are sent: no URL,
+ * message or user data. Best effort: a failed report is dropped.
+ */
+export function reportSignInFailure(kind: SignInFailure, error?: unknown) {
+  const errorName =
+    error instanceof Error ? error.name.slice(0, 64) : undefined;
+  try {
+    void fetch('/api/events', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        eventType: 'client:sign-in-failed',
+        data: { kind, errorName },
+      }),
+      keepalive: true,
+    }).catch(() => {});
+  } catch {
+    // fetch itself is unavailable: nothing to report with.
+  }
 }
 
 /** Fetch the SDK early, on hover or focus of a sign-in button. */

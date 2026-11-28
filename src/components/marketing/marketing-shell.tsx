@@ -45,6 +45,8 @@ export async function MarketingShell({
                   signIn: tc('buttons.signIn'),
                   dashboard: tc('nav.dashboard'),
                   loading: tc('buttons.loading'),
+                  signInFailed: tc('auth.signInFailed'),
+                  contactSupport: tc('auth.contactSupport'),
                 }}
               />
             )

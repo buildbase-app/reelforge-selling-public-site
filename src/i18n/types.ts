@@ -41,6 +41,9 @@ export interface CommonMessages {
   auth: {
     signInPrompt: string;
     signOutConfirm: string;
+    /** Shown when a sign-in neither redirects nor fails within 10 s. */
+    signInFailed: string;
+    contactSupport: string;
   };
   footer: {
     rights: string;
