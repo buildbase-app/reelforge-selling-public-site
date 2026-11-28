@@ -89,16 +89,15 @@ export interface Reel {
 export const toolCatalog = mcpTools as McpToolCatalog;
 
 /**
- * Where the tool count comes from, for footnotes: "the studio's generated
- * tool reference (docs/public/mcp/tools.md, RenderWeld 0.1.0, commit
- * f79f5c6, read 2026-11-23)".
+ * Where the tool count comes from, for footnotes: "the studio's MCP tool
+ * list (RenderWeld 0.1.0, read 2026-11-23)". No file paths or commit ids:
+ * the /methods page says how the list is read (studio issue #537).
  */
 export function toolCatalogSource(): string {
   const s = toolCatalog.source;
   if (s.method === 'tools/list')
-    return `the studio's own MCP tools/list (RenderWeld ${s.version}, ${s.fetchedOn})`;
-  const commit = s.commit ? `, commit ${s.commit.slice(0, 7)}` : '';
-  return `the studio's generated tool reference (${s.reference}, RenderWeld ${s.version}${commit}, read ${s.fetchedOn}), which is built from the server's tool registry`;
+    return `the studio's own MCP tool list (RenderWeld ${s.version}, read ${s.fetchedOn})`;
+  return `the studio's MCP tool list (RenderWeld ${s.version}, read ${s.fetchedOn}), which is built from the server's tool registry`;
 }
 export const reels = (reelsData as { reels: Reel[] }).reels;
 

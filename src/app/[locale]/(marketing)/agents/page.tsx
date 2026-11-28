@@ -326,16 +326,20 @@ export default async function AgentsPage({ params }: AgentsPageProps) {
             <li id="fn-1" className="scroll-mt-32">
               Wall-clock time from each render&apos;s render-manifest.json, one
               run each on {ref.renderedAt.slice(0, 10)}: RenderWeld{' '}
-              {ref.versions.studio} (development build, licence check off),{' '}
-              {hardwareLabel(ref)}. Times vary from run to run; not a benchmark.
-              The calls were sent by a script that follows the studio&apos;s
-              workflow guide (<code>scripts/reels/render-demo-reels.mjs</code>{' '}
-              in this site&apos;s repository).
+              {ref.versions.studio} (pre-release build), {hardwareLabel(ref)}.
+              Times vary from run to run; not a benchmark.{' '}
+              <Link href="/methods" className="underline underline-offset-2">
+                How we measured
+              </Link>
+              .
             </li>
             <li id="fn-2" className="scroll-mt-32">
               Counted from {toolCatalogSource()}. The studio&apos;s parity test
-              fails if a REST route has no tool. This list is regenerated with{' '}
-              <code>scripts/agents/refresh-mcp-tools.mjs</code>.
+              fails if a REST route has no tool.{' '}
+              <Link href="/methods" className="underline underline-offset-2">
+                How we counted
+              </Link>
+              .
             </li>
           </ol>
         </div>

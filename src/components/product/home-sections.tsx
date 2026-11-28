@@ -1145,7 +1145,7 @@ export function Footnotes() {
     <>
       Render times are the wall-clock time in each render&apos;s
       render-manifest.json, one run each on {reel.renderedAt.slice(0, 10)}:
-      studio {reel.versions.studio} (development build, licence check off),{' '}
+      RenderWeld {reel.versions.studio} (pre-release build),{' '}
       {hardwareLabel(reel)}, FFmpeg {reel.versions.ffmpeg},{' '}
       {reel.versions.browser}. They vary: a second run of the same three reels
       on the same machine took 60.2 s, 37.3 s and 29.4 s while other work shared

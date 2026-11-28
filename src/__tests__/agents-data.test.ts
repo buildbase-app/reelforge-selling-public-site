@@ -41,6 +41,8 @@ describe('MCP tool catalog', () => {
     expect(source.version).toMatch(/^\d+\.\d+\.\d+$/);
     expect(source.fetchedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/);
     expect(toolCatalogSource()).toContain(source.fetchedOn);
+    // No file paths or commit ids in sales copy (studio issue #537).
+    expect(toolCatalogSource()).not.toMatch(/\.md\b|commit|[0-9a-f]{7,}/);
   });
 
   // The count drifts when copy states it (studio issue #251: the site kept an
