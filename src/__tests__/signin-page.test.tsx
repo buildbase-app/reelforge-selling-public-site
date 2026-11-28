@@ -13,7 +13,7 @@ import en from '@/i18n/messages/en';
 
 const auth = {
   status: 'unauthenticated' as string,
-  signIn: vi.fn(async (_url?: string) => {}),
+  signIn: vi.fn<(url?: string) => Promise<void>>(async () => {}),
 };
 let search = '';
 const replace = vi.fn();
@@ -118,9 +118,12 @@ describe('/signin', () => {
       'error',
       expect.any(Error)
     );
-    fireEvent.click(
-      screen.getByRole('button', { name: 'Continue to sign in' })
-    );
+    // The start runs after a microtask, as in the browser.
+    await act(async () => {
+      fireEvent.click(
+        screen.getByRole('button', { name: 'Continue to sign in' })
+      );
+    });
     expect(auth.signIn).toHaveBeenCalledTimes(2);
   });
 
