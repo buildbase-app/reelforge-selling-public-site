@@ -15,11 +15,11 @@ import { ReelVideo, type ReelSource } from './reel-video';
 import './product.css';
 
 /**
- * The homepage's product story (studio issue #44, SITE_PLAN §B.2; RenderWeld
- * rename, studio #411 and #457): one idea per section, real reels, footnotes
- * on every number. Server components; the only client islands are the reel
- * player, the copy buttons, the agent tabs and the store's own price and CTA
- * components. English only for now (src/i18n/config.ts), so the copy lives
+ * The homepage's product story (studio issue #44, the private site plan
+ * §B.2; RenderWeld rename, studio #411 and #457): one idea per section, real
+ * reels, footnotes on every number. Server components; the only client
+ * islands are the reel player, the copy buttons, the agent tabs and the
+ * store's own price and CTA components. English only for now (src/i18n/config.ts), so the copy lives
  * here, together, for translation.
  *
  * Every claim is checkable in the studio repository's `main` (2026-11-24):

@@ -81,7 +81,7 @@ export const PAGES: PageEntry[] = [
 
 /**
  * What RenderWeld is and what is verified, in plain lines. Keep it to facts
- * true today (docs/research/DESIGN_BRIEF.md §7); say what is not verified
+ * true today (the private design brief, §7); say what is not verified
  * rather than leave it implied.
  */
 export const PRODUCT_FACTS = [

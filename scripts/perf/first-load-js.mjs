@@ -4,7 +4,7 @@
  * running server (`npm run build && npm start`, or the OpenNext preview),
  * collects every same-origin <script src> it loads, and sums their gzip sizes
  * (level 9, close to what Cloudflare serves). Inline scripts (RSC payload) are
- * reported separately. Budget for `/` (SITE_PLAN §B.6): 150 KB gz.
+ * reported separately. Budget for `/` (the private site plan §B.6): 150 KB gz.
  *
  *   node scripts/perf/first-load-js.mjs http://localhost:3000 / /agents
  */
