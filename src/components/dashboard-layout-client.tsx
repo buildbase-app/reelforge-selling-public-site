@@ -2,7 +2,6 @@
 
 import '@/lib/zod-jitless';
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { useRouter as useLocaleRouter } from '@/i18n/routing';
 import { useLocale, useTranslations } from 'next-intl';
 import { isRtlLocale, type Locale } from '@/i18n/config';
@@ -26,24 +25,31 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { WebMcpTools } from '@/components/agents/web-mcp-tools';
 import { notificationLinkTarget } from '@/lib/security/safe-link';
 
+/** /signin with `next` set to the page the visitor was on. */
+export function signInPath(location: { pathname: string; search: string }) {
+  const next = location.pathname + location.search;
+  return `/signin?next=${encodeURIComponent(next)}`;
+}
+
 export function DashboardLayoutClient({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const { isAuthenticated, status } = useSaaSAuth();
-  const router = useRouter();
   const localeRouter = useLocaleRouter();
   // The sidebar is pinned by side, not by writing direction; in RTL it
   // belongs on the right or the inset lays out over a gap that is not there.
   const sidebarSide = isRtlLocale(useLocale() as Locale) ? 'right' : 'left';
   const t = useTranslations('common');
 
+  // Signed out: off to sign in, then back to this page (studio issue #598).
+  // `replace`, so Back doesn't return to a page that only redirects.
   useEffect(() => {
     if (status !== 'loading' && !isAuthenticated) {
-      router.push('/');
+      localeRouter.replace(signInPath(window.location));
     }
-  }, [isAuthenticated, status, router]);
+  }, [isAuthenticated, status, localeRouter]);
 
   if (status === 'loading') {
     return (
