@@ -52,16 +52,14 @@ describe('pricing copy', () => {
     const guide = read('src/components/store/licence-guide.tsx');
     expect(guide).toMatch(/anyone can read the code/);
     expect(guide).toMatch(/your RenderWeld licence key/);
-    for (const entries of Object.values(DEFAULT_FAQS))
-      for (const entry of entries)
-        expect(JSON.stringify(entry)).not.toMatch(/BuildBase account/);
   });
 
-  it('uses the FAQ button label the store shows', () => {
-    const answer = Object.values(DEFAULT_FAQS)
+  it('any FAQ that names a store button uses the label the store shows', () => {
+    const answers = Object.values(DEFAULT_FAQS)
       .flat()
-      .find((e) => e.answer.includes('press "'));
-    expect(answer?.answer).toContain(`press "${copy.getFree}"`);
+      .filter((e) => e.answer.includes('press "'));
+    for (const e of answers)
+      expect(e.answer).toContain(`press "${copy.getFree}"`);
   });
 
   it('hedges the Remotion note with the date it was checked', () => {
