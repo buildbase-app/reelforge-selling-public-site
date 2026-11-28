@@ -138,7 +138,7 @@ const messages: Messages = {
     meta: {
       title: 'RenderWeld: self-hosted video rendering your AI agent drives',
       description:
-        'Agents write the manifest. RenderWeld renders the video on your own server: four engines, any size and frame rate, MP4 to ProRes, over MCP and REST. Source-available; free for personal use.',
+        "RenderWeld turns your AI agent's plan into finished video on your own server. Any size, any frame rate, MP4 to ProRes. Free for personal use.",
       tagline: 'Agents write the manifest. RenderWeld renders the video.',
     },
   },
@@ -693,7 +693,7 @@ const messages: Messages = {
     },
   },
   waitlist: {
-    title: 'Join the RenderWeld waitlist',
+    title: 'Join the waitlist',
     description:
       'RenderWeld is not on sale yet. Leave your name and email and we will tell you when it is, with what it costs and what you get.',
     heading: 'Get an email when RenderWeld launches',

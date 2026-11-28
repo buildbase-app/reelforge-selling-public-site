@@ -10,7 +10,7 @@ const page: LegalPageContent = {
   heroTitle: 'RenderWeld licences',
   heroDescription:
     'RenderWeld is source-available under two licences, a free Personal licence for noncommercial use and a paid Commercial licence. A summary; the full texts are linked. Draft, pending review.',
-  seoTitle: 'RenderWeld licences',
+  seoTitle: 'Licences',
   seoDescription:
     'RenderWeld is source-available. Free for noncommercial use under the PolyForm Noncommercial License 1.0.0; any commercial use needs the RenderWeld Commercial License. Summary, draft pending review.',
   lastUpdated: '2026-11-27',

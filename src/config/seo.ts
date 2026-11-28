@@ -45,8 +45,9 @@ export const seoConfig = {
     name: 'RenderWeld team',
     url: siteUrl,
   },
+  /** The company behind the site: every schema.org Organization uses it. */
   publisher: {
-    name: siteConfig.name,
+    name: siteConfig.company.legalName as string,
     logo: '/logo.png',
   },
   social: {

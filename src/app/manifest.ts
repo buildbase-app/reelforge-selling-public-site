@@ -10,7 +10,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: siteConfig.name,
     short_name: siteConfig.shortName,
-    description: 'Agents write the manifest. RenderWeld renders the video.',
+    description: 'Your AI agent plans the video. RenderWeld renders it.',
     start_url: '/',
     display: 'standalone',
     theme_color: '#191b1f',
