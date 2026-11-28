@@ -136,8 +136,8 @@ export default async function HomePage({ params }: HomePageProps) {
         />
         <RemotionNotice className="mx-auto mt-10 max-w-3xl" />
         <p className="mt-8 text-center text-sm">
-          <Link href="/pricing" className="rf-link underline">
-            Which licence do I need? See every licence and what it includes
+          <Link href="/licence" className="rf-link underline">
+            Not sure which licence you need? Compare them
           </Link>
         </p>
       </section>

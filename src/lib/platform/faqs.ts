@@ -83,7 +83,7 @@ const Q = {
     id: 'personal-free',
     question: 'Is the Personal licence really free?',
     answer:
-      'Yes. Sign in with a BuildBase account and press "Get it free" on the [pricing page](/pricing): there is no payment page. You get a Personal licence key for one server, for noncommercial use only. If you start using RenderWeld to earn money, upgrade to a Commercial licence.',
+      'Yes. Sign in with a free RenderWeld account and press "Get it free" on the [pricing page](/pricing): there is no payment page. You get a Personal licence key for one server, for noncommercial use only. If you start using RenderWeld to earn money, upgrade to a Commercial licence.',
   },
   ai: {
     id: 'ai',
