@@ -16,10 +16,30 @@ const STATE_LABEL: Record<HoldingView['state'], string> = {
 };
 
 // English only for now (src/i18n/config.ts); kept together for translation.
-const EDITION_LABEL: Record<Edition, string> = {
+const EDITION_LABEL: Record<KeyEdition, string> = {
   personal: 'Personal licence',
   commercial: 'Commercial licence',
+  unknown: 'Edition unknown',
 };
+
+/** A key's licence, or `unknown` when neither its item nor its id tells. */
+export type KeyEdition = Edition | 'unknown';
+
+/**
+ * The edition shown above a holding: null for anything that is not a key,
+ * and for a key while the store's items are still loading (so a known key
+ * does not flash "unknown" first).
+ */
+export function keyEdition(
+  holding: Pick<HoldingView, 'kind' | 'itemId'>,
+  items: Parameters<typeof editionOfHolding>[1],
+  loading: boolean
+): KeyEdition | null {
+  if (holding.kind !== 'license_key') return null;
+  const edition = editionOfHolding(holding.itemId, items);
+  if (edition) return edition;
+  return loading ? null : 'unknown';
+}
 
 /**
  * What a purchase delivers: download links (`file`), licence keys
@@ -29,7 +49,8 @@ const EDITION_LABEL: Record<Edition, string> = {
  *
  * Every licence key says which licence it is, Personal or Commercial, from
  * its item (`editionOfHolding`: the published item it came from, else a
- * known item id). A Personal key carries the noncommercial reminder.
+ * known item id). A Personal key carries the noncommercial reminder. A key
+ * whose edition neither tells says so and points to support.
  */
 export function OrderHoldings({
   holdings,
@@ -38,7 +59,7 @@ export function OrderHoldings({
   holdings: HoldingView[];
   guestOrder?: { orderId: string; token: string } | null;
 }) {
-  const { items } = useStoreItems();
+  const { items, loading } = useStoreItems();
   return (
     <div className="space-y-4">
       {holdings.map((h) => (
@@ -46,20 +67,29 @@ export function OrderHoldings({
           key={h._id}
           holding={h}
           guestOrder={guestOrder}
-          edition={
-            h.kind === 'license_key' ? editionOfHolding(h.itemId, items) : null
-          }
+          edition={keyEdition(h, items, loading)}
         />
       ))}
     </div>
   );
 }
 
-/** "Personal licence" or "Commercial licence" above a key, and the reminder. */
-export function LicenceEdition({ edition }: { edition: Edition }) {
+/**
+ * "Personal licence" or "Commercial licence" above a key, and the reminder;
+ * or "Edition unknown" and a pointer to support.
+ */
+export function LicenceEdition({ edition }: { edition: KeyEdition }) {
   return (
     <div className="space-y-2" data-edition={edition}>
-      <Badge variant={edition === 'personal' ? 'secondary' : 'default'}>
+      <Badge
+        variant={
+          edition === 'personal'
+            ? 'secondary'
+            : edition === 'unknown'
+              ? 'outline'
+              : 'default'
+        }
+      >
         {EDITION_LABEL[edition]}
       </Badge>
       {edition === 'personal' && (
@@ -73,6 +103,15 @@ export function LicenceEdition({ edition }: { edition: Edition }) {
           </Link>
         </p>
       )}
+      {edition === 'unknown' && (
+        <p role="note" className="text-muted-foreground text-sm">
+          We can&apos;t tell which licence this key is.{' '}
+          <Link href="/contact" className="font-medium underline">
+            Contact support
+          </Link>{' '}
+          and we&apos;ll check it for you.
+        </p>
+      )}
     </div>
   );
 }
@@ -84,7 +123,7 @@ function HoldingBlock({
 }: {
   holding: HoldingView;
   guestOrder?: { orderId: string; token: string } | null;
-  edition: Edition | null;
+  edition: KeyEdition | null;
 }) {
   const available = holding.state === 'available';
   if (available && holding.kind === 'file') {
