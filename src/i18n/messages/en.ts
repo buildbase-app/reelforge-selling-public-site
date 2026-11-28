@@ -106,6 +106,7 @@ const messages: Messages = {
       waitlist: 'Join the waitlist',
       pricing: 'See pricing',
       buy: 'Buy RenderWeld',
+      free: 'Get the free Personal licence',
       faq: 'Read the FAQ',
       source: 'Read the source on GitHub',
       builtWith: 'Inside',

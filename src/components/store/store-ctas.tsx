@@ -7,6 +7,7 @@ export interface StoreCtaLabels {
   waitlist: string;
   pricing: string;
   buy: string;
+  free: string;
   faq: string;
 }
 
@@ -19,6 +20,7 @@ export async function getStoreCtaLabels(
     waitlist: t('hero.waitlist'),
     pricing: t('hero.pricing'),
     buy: t('hero.buy'),
+    free: t('hero.free'),
     faq: t('hero.faq'),
   };
 }
@@ -26,6 +28,8 @@ export async function getStoreCtaLabels(
 /**
  * The two main buttons: "Join the waitlist" and "See pricing" until the
  * store has something on sale, then "Buy RenderWeld" and "Read the FAQ".
+ * While only the free Personal key can be claimed (`freeKey`, nothing
+ * paid on sale): "Get the free Personal licence" and "Join the waitlist".
  * Decided from the published items the page read on the server, so it
  * changes without a deploy. When the server could not read them (`onSale`
  * undefined), it shows the first pair: both still lead to the prices.
@@ -36,10 +40,13 @@ export async function getStoreCtaLabels(
 export function StoreCtas({
   labels,
   onSale,
+  freeKey,
   goalSection,
 }: {
   labels: StoreCtaLabels;
   onSale?: boolean;
+  /** A free key can be claimed now (`freeKeyFrom`). */
+  freeKey?: boolean;
   /**
    * Where the buttons are (`hero`, `final`): the primary button then counts
    * the `primary_cta` goal through BuildBase tracking's `data-bb-goal`.
@@ -47,19 +54,43 @@ export function StoreCtas({
   goalSection?: string;
 }) {
   return (
-    <Ctas labels={labels} onSale={onSale ?? false} goalSection={goalSection} />
+    <Ctas
+      labels={labels}
+      state={saleState(onSale, freeKey)}
+      goalSection={goalSection}
+    />
   );
+}
+
+/** What the store offers now: paid licences, only the free key, or nothing. */
+export type SaleState = 'paid' | 'free' | 'none';
+
+/** Unknown (undefined) counts as nothing on sale: both buttons still lead to the prices. */
+export function saleState(onSale?: boolean, freeKey?: boolean): SaleState {
+  if (onSale) return 'paid';
+  if (freeKey) return 'free';
+  return 'none';
 }
 
 /**
  * The page's primary action: "Join the waitlist" until the store has
- * something on sale, then "Buy RenderWeld". The hero, the final call to
+ * something on sale, "Get the free Personal licence" while only the free
+ * key can be claimed, then "Buy RenderWeld". The hero, the final call to
  * action and the header (`HeaderCta`) all decide it here.
  */
-export function primaryCta(labels: StoreCtaLabels, onSale: boolean) {
-  return onSale
-    ? { href: '/pricing', label: labels.buy, target: 'pricing' }
-    : { href: '/waitlist', label: labels.waitlist, target: 'waitlist' };
+export function primaryCta(labels: StoreCtaLabels, state: SaleState) {
+  if (state === 'paid')
+    return { href: '/pricing', label: labels.buy, target: 'pricing' };
+  if (state === 'free')
+    return { href: '/pricing', label: labels.free, target: 'pricing' };
+  return { href: '/waitlist', label: labels.waitlist, target: 'waitlist' };
+}
+
+/** The second button, beside `primaryCta`. */
+export function secondaryCta(labels: StoreCtaLabels, state: SaleState) {
+  if (state === 'paid') return { href: '/help', label: labels.faq };
+  if (state === 'free') return { href: '/waitlist', label: labels.waitlist };
+  return { href: '/pricing', label: labels.pricing };
 }
 
 /**
@@ -71,11 +102,13 @@ export function primaryCta(labels: StoreCtaLabels, onSale: boolean) {
 export function HeaderCta({
   labels,
   onSale,
+  freeKey,
 }: {
   labels: StoreCtaLabels;
   onSale?: boolean;
+  freeKey?: boolean;
 }) {
-  const cta = primaryCta(labels, onSale ?? false);
+  const cta = primaryCta(labels, saleState(onSale, freeKey));
   return (
     <Link
       href={cta.href}
@@ -92,17 +125,15 @@ export function HeaderCta({
 
 function Ctas({
   labels,
-  onSale,
+  state,
   goalSection,
 }: {
   labels: StoreCtaLabels;
-  onSale: boolean;
+  state: SaleState;
   goalSection?: string;
 }) {
-  const primary = primaryCta(labels, onSale);
-  const secondary = onSale
-    ? { href: '/help', label: labels.faq }
-    : { href: '/pricing', label: labels.pricing };
+  const primary = primaryCta(labels, state);
+  const secondary = secondaryCta(labels, state);
 
   return (
     <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">

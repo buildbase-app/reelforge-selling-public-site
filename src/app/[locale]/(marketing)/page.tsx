@@ -30,7 +30,7 @@ import type { Locale } from '@/i18n/config';
 import { AGENT_CLIENTS } from '@/lib/agents/snippets';
 import { getFaqSection } from '@/lib/platform/faqs';
 import { buildOffers } from '@/lib/store/offers';
-import { getStoreItems, onSaleFrom } from '@/lib/store/items';
+import { freeKeyFrom, getStoreItems, onSaleFrom } from '@/lib/store/items';
 import { buildMarketingMetadata } from '@/lib/seo/marketing-metadata';
 
 interface HomePageProps {
@@ -81,6 +81,7 @@ export default async function HomePage({ params }: HomePageProps) {
     ? buildOffers(serverItems, absoluteUrl('/pricing'))
     : [];
   const onSale = onSaleFrom(store);
+  const freeKey = freeKeyFrom(store);
 
   return (
     <div className="rf-product flex flex-1 flex-col items-center">
@@ -97,7 +98,12 @@ export default async function HomePage({ params }: HomePageProps) {
           highlight: (chunks) => <span className="rf-accent">{chunks}</span>,
         })}
         ctas={
-          <StoreCtas labels={ctaLabels} onSale={onSale} goalSection="hero" />
+          <StoreCtas
+            labels={ctaLabels}
+            onSale={onSale}
+            freeKey={freeKey}
+            goalSection="hero"
+          />
         }
       />
       <ReelMarquee />
@@ -147,7 +153,12 @@ export default async function HomePage({ params }: HomePageProps) {
       </section>
       <FinalCta
         ctas={
-          <StoreCtas labels={ctaLabels} onSale={onSale} goalSection="final" />
+          <StoreCtas
+            labels={ctaLabels}
+            onSale={onSale}
+            freeKey={freeKey}
+            goalSection="final"
+          />
         }
       />
       <Footnotes />

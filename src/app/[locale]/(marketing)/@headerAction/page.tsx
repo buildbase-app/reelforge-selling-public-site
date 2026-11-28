@@ -1,5 +1,5 @@
 import { getStoreCtaLabels, HeaderCta } from '@/components/store/store-ctas';
-import { getStoreItems, onSaleFrom } from '@/lib/store/items';
+import { freeKeyFrom, getStoreItems, onSaleFrom } from '@/lib/store/items';
 
 /**
  * The home page's primary action in the site header (studio issue #215):
@@ -17,5 +17,11 @@ export default async function HomeHeaderAction({
     getStoreCtaLabels(locale),
     getStoreItems(),
   ]);
-  return <HeaderCta labels={labels} onSale={onSaleFrom(store)} />;
+  return (
+    <HeaderCta
+      labels={labels}
+      onSale={onSaleFrom(store)}
+      freeKey={freeKeyFrom(store)}
+    />
+  );
 }

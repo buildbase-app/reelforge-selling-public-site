@@ -31,7 +31,12 @@ vi.mock('@/components/auth/auth-island', () => ({
 }));
 
 import { HomeHeader } from '@/components/home-header';
-import { HeaderCta, primaryCta } from '@/components/store/store-ctas';
+import {
+  HeaderCta,
+  primaryCta,
+  saleState,
+  secondaryCta,
+} from '@/components/store/store-ctas';
 import { LiteAuthButton } from '@/components/auth/lite-auth-button';
 import { SessionHintProvider } from '@/components/auth/session-hint';
 
@@ -39,6 +44,7 @@ const labels = {
   waitlist: 'Join the waitlist',
   pricing: 'See pricing',
   buy: 'Buy ReelForge',
+  free: 'Get the free Personal licence',
   faq: 'Read the FAQ',
 };
 
@@ -59,16 +65,38 @@ async function renderHeader(action?: React.ReactNode) {
 
 describe('primaryCta', () => {
   it('is the waitlist until the store is on sale, then the buy action', () => {
-    expect(primaryCta(labels, false)).toEqual({
+    expect(primaryCta(labels, 'none')).toEqual({
       href: '/waitlist',
       label: 'Join the waitlist',
       target: 'waitlist',
     });
-    expect(primaryCta(labels, true)).toEqual({
+    expect(primaryCta(labels, 'paid')).toEqual({
       href: '/pricing',
       label: 'Buy ReelForge',
       target: 'pricing',
     });
+  });
+
+  it('offers the free key, not "Buy", when only the free item is published', () => {
+    expect(primaryCta(labels, saleState(false, true))).toEqual({
+      href: '/pricing',
+      label: 'Get the free Personal licence',
+      target: 'pricing',
+    });
+    expect(secondaryCta(labels, 'free')).toEqual({
+      href: '/waitlist',
+      label: 'Join the waitlist',
+    });
+  });
+});
+
+describe('saleState', () => {
+  it('puts paid first, then the free key, and treats unknown as nothing', () => {
+    expect(saleState(true, true)).toBe('paid');
+    expect(saleState(true, false)).toBe('paid');
+    expect(saleState(false, true)).toBe('free');
+    expect(saleState(false, false)).toBe('none');
+    expect(saleState(undefined, undefined)).toBe('none');
   });
 });
 
@@ -84,6 +112,16 @@ describe('HeaderCta', () => {
     expect(link).toHaveAttribute('href', href);
     expect(link).toHaveAttribute('data-header-cta');
     expect(link).toHaveAttribute('data-bb-goal-section', 'header');
+  });
+});
+
+describe('HeaderCta with only the free key', () => {
+  it('says "Get the free Personal licence", never "Buy"', () => {
+    render(<HeaderCta labels={labels} onSale={false} freeKey />);
+    expect(
+      screen.getByRole('link', { name: 'Get the free Personal licence' })
+    ).toHaveAttribute('href', '/pricing');
+    expect(screen.queryByRole('link', { name: /buy/i })).toBeNull();
   });
 });
 

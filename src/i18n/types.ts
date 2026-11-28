@@ -112,6 +112,7 @@ export interface HomeMessages {
     waitlist: string;
     pricing: string;
     buy: string;
+    free: string;
     faq: string;
     source: string;
     builtWith: string;
