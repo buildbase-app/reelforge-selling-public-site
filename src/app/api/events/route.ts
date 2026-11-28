@@ -40,6 +40,31 @@ const WORKSPACE_SYNC_EVENTS = new Set<EventType>([
 
 type Outcome = 'ok' | 'forbidden';
 
+/** A browser-side sign-in that did not start (studio issue #595). */
+const SIGN_IN_FAILED = 'client:sign-in-failed';
+const SIGN_IN_FAILURE_KINDS = new Set(['timeout', 'error']);
+const ERROR_NAME = /^[A-Za-z0-9_.:-]{1,64}$/;
+
+/**
+ * Log a failed sign-in start. The visitor is signed out by definition, so
+ * this runs before the session check; it writes nothing but one log line
+ * with the failure kind and the error's name, both checked against a
+ * short list or pattern so the body can't put free text in the logs.
+ */
+function logSignInFailure(data: unknown) {
+  const d = (data ?? {}) as { kind?: unknown; errorName?: unknown };
+  const kind =
+    typeof d.kind === 'string' && SIGN_IN_FAILURE_KINDS.has(d.kind)
+      ? d.kind
+      : 'unknown';
+  const errorName =
+    typeof d.errorName === 'string' && ERROR_NAME.test(d.errorName)
+      ? d.errorName
+      : undefined;
+  logger.warn('Sign-in did not start', { kind, errorName });
+  return new NextResponse(null, { status: 204 });
+}
+
 /** The workspace an event is about, from either payload shape the SDK sends. */
 function workspaceIdOf(data: unknown): string | undefined {
   const d = (data ?? {}) as {
@@ -150,6 +175,10 @@ export async function POST(request: NextRequest) {
       { success: false, error: 'Expected a JSON body with an eventType' },
       { status: 400 }
     );
+  }
+
+  if ((eventType as string) === SIGN_IN_FAILED) {
+    return logSignInFailure(data);
   }
 
   const session = await getSessionContext();

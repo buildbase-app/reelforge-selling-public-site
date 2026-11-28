@@ -41,6 +41,8 @@ const messages: Messages = {
     auth: {
       signInPrompt: 'Please sign in to continue',
       signOutConfirm: 'Are you sure you want to sign out?',
+      signInFailed: "Sign-in didn't start. Try again, or",
+      contactSupport: 'contact support',
     },
     footer: {
       rights: 'All rights reserved',

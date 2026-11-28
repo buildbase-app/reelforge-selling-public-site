@@ -7,7 +7,12 @@ import { useSaaSAuth } from '@buildbase/sdk/react';
 import { SaaSProvider } from '@/components/saas-provider';
 
 export type AuthRequest =
-  | { kind: 'signIn'; returnUrl?: string }
+  | {
+      kind: 'signIn';
+      returnUrl?: string;
+      /** Called when the hosted sign-in could not be started. */
+      onError?: (error: unknown) => void;
+    }
   | { kind: 'callback' };
 
 /**
@@ -43,8 +48,15 @@ function AuthRunner({ request }: { request: AuthRequest }) {
     }
     if (started.current === request) return;
     started.current = request;
-    if (status === 'authenticated') router.push('/dashboard');
-    else void signIn(request.returnUrl);
+    if (status === 'authenticated') {
+      router.push('/dashboard');
+      return;
+    }
+    // A failed start must reach the button, which otherwise spins forever
+    // (studio issue #595).
+    Promise.resolve()
+      .then(() => signIn(request.returnUrl))
+      .catch((error: unknown) => request.onError?.(error));
   }, [status, request, signIn, router]);
 
   return null;

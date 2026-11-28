@@ -22,10 +22,15 @@ vi.mock('@buildbase/sdk/tracking', () => ({
   setAnalyticsConsent: (...args: unknown[]) => setAnalyticsConsent(...args),
 }));
 
-const requestSignIn = vi.fn();
+// A started sign-in leaves the page, so its promise never settles.
+const requestSignIn = vi.fn(
+  (..._args: unknown[]) => new Promise<never>(() => {})
+);
 vi.mock('@/components/auth/auth-island', () => ({
   requestSignIn: (...args: unknown[]) => requestSignIn(...args),
   preloadAuth: vi.fn(),
+  reportSignInFailure: vi.fn(),
+  SIGN_IN_TIMEOUT_MS: 10_000,
 }));
 
 vi.mock('@/i18n/link', () => ({
@@ -42,7 +47,7 @@ beforeEach(() => {
   consent.state = null;
   consent.set.mockReset();
   setAnalyticsConsent.mockReset();
-  requestSignIn.mockReset();
+  requestSignIn.mockClear();
   stored = null;
 });
 

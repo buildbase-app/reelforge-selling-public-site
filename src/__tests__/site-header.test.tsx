@@ -24,8 +24,10 @@ vi.mock('@/i18n/link', () => ({
 }));
 
 vi.mock('@/components/auth/auth-island', () => ({
-  requestSignIn: vi.fn(),
+  requestSignIn: vi.fn(() => new Promise<never>(() => {})),
   preloadAuth: vi.fn(),
+  reportSignInFailure: vi.fn(),
+  SIGN_IN_TIMEOUT_MS: 10_000,
 }));
 
 import { HomeHeader } from '@/components/home-header';
