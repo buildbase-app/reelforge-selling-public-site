@@ -33,6 +33,14 @@ const nextConfig: NextConfig = {
   ...(process.env.NODE_ENV === 'development'
     ? { deprecated: { looseRouteMatching: true as const } }
     : {}),
+  // Other names people type for the sign-in page (studio issue #597). A
+  // redirect keeps the query, so ?next= goes along.
+  async redirects() {
+    return [
+      { source: '/login', destination: '/signin', permanent: true },
+      { source: '/sign-in', destination: '/signin', permanent: true },
+    ];
+  },
   async headers() {
     return isNoindexSite
       ? [
