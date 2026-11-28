@@ -474,3 +474,56 @@ describe('priceLabel', () => {
     expect(term.className).toContain('whitespace-nowrap');
   });
 });
+
+/**
+ * The higher price has never been charged, so it is a future rise, not a
+ * struck-through "was" price (studio issue #558).
+ */
+describe('a launch price with a higher price set', () => {
+  function launchItem(): PublicItemView {
+    return item({
+      _id: 'commercial',
+      slug: 'reelforge-commercial',
+      variants: [
+        {
+          id: 'solo',
+          label: 'Solo',
+          prices: [
+            {
+              id: 'solo-usd',
+              currency: 'usd',
+              mode: 'fixed',
+              amount: 4900,
+              compareAtAmount: 9900,
+            },
+          ],
+          stock: { mode: 'none' },
+        },
+      ] as PublicItemView['variants'],
+    });
+  }
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it('says the price goes up on the end date, with no strikethrough', () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-12-01T12:00:00Z'));
+    state.items = [launchItem()];
+    const { container } = render(<PricingCatalog />);
+    expect(container.querySelector('[data-price-rise]')).toHaveTextContent(
+      /^Launch price\. Goes up to \$99(\.00)? on 16 December 2026\.$/
+    );
+    expect(container.querySelector('.line-through')).toBeNull();
+  });
+
+  it('shows no higher price after the launch window', () => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-12-17T00:00:00Z'));
+    state.items = [launchItem()];
+    const { container } = render(<PricingCatalog />);
+    expect(container.querySelector('[data-price-rise]')).toBeNull();
+    expect(container.textContent).not.toMatch(/\$99/);
+  });
+});
