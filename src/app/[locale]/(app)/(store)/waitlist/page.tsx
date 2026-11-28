@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 /**
  * The platform's beta waitlist: a signed-out visitor leaves a name and an
  * email, the console lists them under Users → Beta, an admin approves.
- * The form is the SDK's; it reads the org's beta config itself.
+ * The form is the site's own, on the SDK's beta API (studio issue #630).
  */
 export default async function WaitlistPage({ params }: Props) {
   const { locale } = await params;
@@ -36,7 +36,19 @@ export default async function WaitlistPage({ params }: Props) {
           </h1>
           <p className="text-muted-foreground mt-2">{t('description')}</p>
         </div>
-        <WaitlistForm successText={t('success')} note={t('note')} />
+        <WaitlistForm
+          copy={{
+            heading: t('heading'),
+            nameLabel: t('nameLabel'),
+            emailLabel: t('emailLabel'),
+            submit: t('submit'),
+            submitting: t('submitting'),
+            success: t('success'),
+            failed: t('failed'),
+            note: t('note'),
+            privacyLink: t('privacyLink'),
+          }}
+        />
       </div>
     </div>
   );
