@@ -13,7 +13,7 @@ const page: LegalPageContent = {
   seoTitle: 'Refund policy',
   seoDescription:
     'The refund policy for RenderWeld, the self-hosted video renderer. Draft pending review.',
-  lastUpdated: '2026-11-27',
+  lastUpdated: '2026-11-28',
   pendingReview: true,
   body: `This policy applies to paid purchases from this store, such as a RenderWeld Commercial licence, sold by **${company.legalName}**. It sits alongside the [terms of service](/terms).
 
@@ -40,7 +40,7 @@ Email [${contact.support}](mailto:${contact.support}) with your order number (it
 
 ## What happens after a refund
 
-The money goes back to the payment method you used; how long it takes to appear depends on your bank. Your Commercial licence ends: its licence keys stop working, and you must stop using RenderWeld commercially (see the [licences](/licence)). Noncommercial use stays possible under the free Personal licence.
+The money goes back to the payment method you used; how long it takes to appear depends on your bank. Your Commercial licence ends: its licence keys stop working, and you must stop using RenderWeld commercially (see the [licences](/licence)). A refunded key stops working within about two weeks, because an install that is offline checks its key again only when it next connects. Noncommercial use stays possible under the free Personal licence.
 
 ## Chargebacks
 
