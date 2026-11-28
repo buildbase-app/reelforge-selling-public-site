@@ -21,19 +21,19 @@ gh api -X PATCH "repos/$REPO" --silent \
   -F has_wiki=false
 
 say "Security: secret scanning + push protection, Dependabot alerts and fixes, private vulnerability reporting, CodeQL"
-gh api -X PATCH "repos/$REPO" --silent --input - <<'JSON' || echo "   (some security features need GitHub Advanced Security on private repos; public repos get them free)"
+gh api -X PATCH "repos/$REPO" --silent --input - <<'JSON' || { echo "   (some security features need GitHub Advanced Security on private repos; public repos get them free)"; exit 1; }
 { "security_and_analysis": {
     "secret_scanning": { "status": "enabled" },
     "secret_scanning_push_protection": { "status": "enabled" },
     "dependabot_security_updates": { "status": "enabled" } } }
 JSON
-gh api -X PUT "repos/$REPO/vulnerability-alerts" --silent || true
-gh api -X PUT "repos/$REPO/private-vulnerability-reporting" --silent || true
-gh api -X PATCH "repos/$REPO/code-scanning/default-setup" --silent -f state=configured -f query_suite=default || echo "   (CodeQL default setup: enable it under Settings → Code security if this failed)"
+gh api -X PUT "repos/$REPO/vulnerability-alerts" --silent
+gh api -X PUT "repos/$REPO/private-vulnerability-reporting" --silent
+gh api -X PATCH "repos/$REPO/code-scanning/default-setup" --silent -f state=configured -f query_suite=default || { echo "   (CodeQL default setup: enable it under Settings → Code security, then run this again)"; exit 1; }
 
 say "Actions: read-only default token, workflows cannot approve PRs, outside contributors need approval to run workflows"
 gh api -X PUT "repos/$REPO/actions/permissions/workflow" --silent -f default_workflow_permissions=read -F can_approve_pull_request_reviews=false
-gh api -X PUT "repos/$REPO/actions/permissions/fork-pr-contributor-approval" --silent -f approval_policy=all_external_contributors || true
+gh api -X PUT "repos/$REPO/actions/permissions/fork-pr-contributor-approval" --silent -f approval_policy=all_external_contributors
 
 say "Labels used by the PR policy and issue forms"
 for l in "policy: needs-changes|b60205|Fails the PR policy; see the pr-policy comment" "stale|cfd3d7|No activity" \
@@ -44,7 +44,7 @@ done
 
 checks_json=$(printf '{"context":"%s"},' "$@"); checks_json="[${checks_json%,}]"
 upsert_ruleset() { # $1 name, $2 json body
-  local id; id=$(gh api "repos/$REPO/rulesets" --jq ".[] | select(.name==\"$1\") | .id" 2>/dev/null | head -1)
+  local id; id=$(gh api "repos/$REPO/rulesets" --jq ".[] | select(.name==\"$1\") | .id" | head -1)
   if [ -n "$id" ]; then gh api -X PUT "repos/$REPO/rulesets/$id" --silent --input - <<<"$2"; echo "   updated ruleset: $1 ($id)";
   else gh api -X POST "repos/$REPO/rulesets" --silent --input - <<<"$2"; echo "   created ruleset: $1"; fi
 }
