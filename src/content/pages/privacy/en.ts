@@ -7,7 +7,7 @@ const { company, contact } = siteConfig;
 const page: LegalPageContent = {
   locale: 'en',
   heroEyebrow: 'Legal',
-  heroTitle: 'Privacy Policy',
+  heroTitle: 'Privacy policy',
   heroDescription:
     'What personal data RenderWeld collects, why, who processes it, how long it is kept, and your rights. Draft, pending review.',
   lastUpdated: '2026-11-27',

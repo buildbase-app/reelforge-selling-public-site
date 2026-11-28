@@ -1,32 +1,18 @@
 import { getTranslations } from 'next-intl/server';
-import { ChevronRight, Menu } from 'lucide-react';
+import { Menu } from 'lucide-react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { LanguageSwitcher } from '@/components/language-switcher';
 import { SiteMenu } from '@/components/site-menu';
 import { Link } from '@/i18n/link';
 import { BrandLogo } from '@/components/brand-logo';
 
-const NAV_HREFS = [
-  '/gallery',
-  '/agents',
-  '/docs',
-  '/pricing',
-  '/help',
-  '/blog',
-  '/changelog',
-] as const;
+/**
+ * The menu (studio issue #649): only pages with content. Gallery, Blog and
+ * Changelog come back once they have some.
+ */
+const NAV_HREFS = ['/docs', '/pricing', '/agents', '/help'] as const;
 
 type NavHref = (typeof NAV_HREFS)[number];
-
-/** Where "Connect your agent" goes: the home page's section of that name. */
-const CONNECT_HREF = '/#connect';
-
-/**
- * Shown only when the header holds a primary action (`[data-header-cta]`,
- * which only the home page passes): "Connect your agent" belongs to that
- * page. `:has()` decides, so the header needs no script and no path.
- */
-const HOME_ONLY = 'hidden group-has-[[data-header-cta]]/header:flex';
 
 interface HomeHeaderProps {
   title: string;
@@ -53,14 +39,10 @@ export async function HomeHeader({ title, auth, action }: HomeHeaderProps) {
   const t = await getTranslations('common');
 
   const NAV_LINK_KEYS: Record<NavHref, string> = {
-    // English only for now (src/i18n/config.ts): no message key yet.
-    '/gallery': 'Gallery',
-    '/agents': 'Agents',
-    '/pricing': t('footer.links.pricing'),
     '/docs': t('footer.links.docs'),
+    '/pricing': t('footer.links.pricing'),
+    '/agents': t('footer.links.agents'),
     '/help': t('footer.links.help'),
-    '/blog': t('footer.links.blog'),
-    '/changelog': t('footer.links.changelog'),
   };
 
   return (
@@ -86,13 +68,6 @@ export async function HomeHeader({ title, auth, action }: HomeHeaderProps) {
         </nav>
       </div>
       <div className="flex items-center gap-1 sm:gap-2">
-        <Link
-          href={CONNECT_HREF}
-          className={`${HOME_ONLY} text-foreground mr-2 items-center gap-0.5 text-sm font-medium underline-offset-4 hover:underline max-xl:hidden!`}
-        >
-          Connect your agent
-          <ChevronRight className="size-4" aria-hidden />
-        </Link>
         <LanguageSwitcher label={t('language.select')} />
         {/* On a phone the home header needs the room for its action; the
             footer has the same toggle. */}
@@ -114,16 +89,6 @@ export async function HomeHeader({ title, auth, action }: HomeHeaderProps) {
           icon={<Menu className="size-5" aria-hidden />}
         >
           <nav className="mx-auto flex max-w-[1200px] flex-col px-4 py-2 md:px-6">
-            <Link
-              href={CONNECT_HREF}
-              className={`${HOME_ONLY} text-foreground h-11 items-center justify-between border-b text-base font-medium`}
-            >
-              Connect your agent
-              <ChevronRight
-                className="text-muted-foreground size-4"
-                aria-hidden
-              />
-            </Link>
             {NAV_HREFS.map((href) => (
               <Link
                 key={href}

@@ -58,6 +58,13 @@ describe('LiteCookieBanner', () => {
       screen.getByRole('region', { name: 'Cookie consent' })
     ).toBeInTheDocument();
     expect(screen.getByText('Cookies on this site')).toBeInTheDocument();
+    // The site runs no ads (studio issue #655).
+    expect(
+      screen.getByText(
+        /We'd like to use cookies to see how people find and use this site\. You choose which ones\./
+      )
+    ).toBeInTheDocument();
+    expect(document.body.textContent).not.toMatch(/\bads\b/);
     expect(
       screen.getByRole('link', { name: 'Privacy policy' })
     ).toHaveAttribute('href', '/privacy');
