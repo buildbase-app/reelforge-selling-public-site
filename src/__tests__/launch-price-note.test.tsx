@@ -45,7 +45,7 @@ const founderBlock = {
   title: 'Launch price note',
   slug: 'launch-price-note',
   content:
-    'Launch price: 50% off until **16 December 2026, 13:00 UTC**. After that: the regular prices.',
+    'Launch prices until **16 December 2026, 13:00 UTC**. After that, Solo $99, Studio $249, Agency $599.',
 };
 
 beforeEach(() => {
@@ -88,9 +88,25 @@ describe('getLaunchPriceNote', () => {
     getRichContent.mockResolvedValue(founderBlock);
     const note = await getLaunchPriceNote(BEFORE_END);
     expect(note?.source).toBe('buildbase');
-    expect(note?.text).toContain('50% off');
+    expect(note?.text).toContain('After that, Solo');
     expect(note?.text).toContain(LAUNCH_PRICE_ENDS_LABEL);
     expect(logError).not.toHaveBeenCalled();
+  });
+
+  it('shows the built-in note when the block gives a percentage discount', async () => {
+    for (const content of [
+      'Launch price: 50% off until **16 December 2026, 13:00 UTC**.',
+      'Save 40 % until 16 December 2026, 13:00 UTC.',
+      'Launch prices, 33 percent off, until 16 December 2026, 13:00 UTC.',
+    ]) {
+      logError.mockReset();
+      getRichContent.mockResolvedValue({ ...founderBlock, content });
+      const note = await getLaunchPriceNote(BEFORE_END);
+      expect(note?.source).toBe('default');
+      expect(note?.text).toContain(LAUNCH_PRICE_ENDS_LABEL);
+      expect(note?.text).not.toMatch(/%|percent/i);
+      expect(logError).toHaveBeenCalledTimes(1);
+    }
   });
 
   it('shows the built-in note with the end date when the block is missing or unreadable', async () => {
@@ -113,7 +129,7 @@ describe('getLaunchPriceNote', () => {
   it('shows the built-in note when the block does not state the end date', async () => {
     getRichContent.mockResolvedValue({
       ...founderBlock,
-      content: 'Launch price: 50% off for a limited time.',
+      content: 'Launch prices for a limited time.',
     });
     const note = await getLaunchPriceNote(BEFORE_END);
     expect(note?.source).toBe('default');

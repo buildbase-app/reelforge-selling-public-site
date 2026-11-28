@@ -7,8 +7,9 @@
  * (studio issues #127, #260). The console content block `launch-price-note`
  * says it in the founder's words, but it can only be read with the org API
  * token, so `getLaunchPriceNote` (src/lib/platform/blocks.ts) shows the note
- * below whenever that block is missing, unreadable or does not state this
- * date. After the end date no launch note is shown at all.
+ * below whenever that block is missing, unreadable, does not state this
+ * date or gives the discount as a percentage. After the end date no launch
+ * note is shown at all.
  *
  * No prices here: they always come from the BuildBase items.
  *
@@ -38,6 +39,16 @@ export function isLaunchPriceActive(now: Date = new Date()): boolean {
 /** True when a text states the launch price's end date (spacing ignored). */
 export function statesLaunchEnd(text: string): boolean {
   return text.replace(/\s+/g, ' ').includes(LAUNCH_PRICE_ENDS_LABEL);
+}
+
+/**
+ * True when a text gives the launch price as a percentage ("50% off",
+ * "save 40 %", "40 percent"). The launch prices are not the same fraction
+ * of each regular price, so the note names both prices instead (studio
+ * issue #556).
+ */
+export function statesPercentDiscount(text: string): boolean {
+  return /\d\s*(%|per\s?cent\b)/i.test(text);
 }
 
 /**
