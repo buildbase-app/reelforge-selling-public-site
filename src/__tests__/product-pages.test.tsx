@@ -75,6 +75,7 @@ import {
   agentsVideoSlugs,
   heroDemoShown,
   showcaseReels,
+  transcriptReelShown,
 } from '@/lib/gallery/showcase';
 
 function Home() {
@@ -112,11 +113,13 @@ describe('homepage sections', () => {
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
       'Your agent directs.'
     );
-    // The hero demo and the showcase rail follow the gallery bar (studio
-    // issue #807); the agent transcript's reel is always there.
+    // The hero demo, the agent transcript's reel and the showcase rail
+    // follow the gallery bar (studio issue #807).
     const showcased = showcaseReels();
     expect(container.querySelectorAll('video').length).toBe(
-      (heroDemoShown() ? 1 : 0) + 1 + showcased.length
+      (heroDemoShown() ? 1 : 0) +
+        (transcriptReelShown() ? 1 : 0) +
+        showcased.length
     );
     for (const reel of showcased)
       expect(container.textContent).toContain(reel.prompt);
@@ -133,7 +136,13 @@ describe('homepage sections', () => {
   });
 
   it('plays reels muted, inline, with a pause control and a text alternative', () => {
-    const { container } = render(<Home />);
+    // With the players on, whatever the gallery bar shows today.
+    const { container } = render(
+      <>
+        <Hero heading="Your agent directs." ctas={null} showDemo />
+        <AgentTranscript showReel />
+      </>
+    );
     const players = container.querySelectorAll('video');
     for (const video of players) {
       expect(video.muted).toBe(true);
@@ -219,6 +228,21 @@ describe('homepage sections', () => {
       .map((li) => li.textContent);
     expect(text.some((t) => t?.includes('render_project'))).toBe(true);
     expect(text.at(-1)).toContain('get_render_output');
+  });
+
+  it('shows the transcript reel only when it meets the gallery bar', () => {
+    expect(transcriptReelShown()).toBe(false);
+    const hidden = render(<AgentTranscript />);
+    expect(hidden.container.querySelector('video')).toBeNull();
+    expect(hidden.container.textContent).toContain(
+      'These are the real calls from one run.'
+    );
+    hidden.unmount();
+    const shown = render(<AgentTranscript showReel />);
+    expect(shown.container.querySelector('video')).not.toBeNull();
+    expect(shown.container.textContent).toContain(
+      'the real calls that made the reel on the right'
+    );
   });
 
   it('resolves every footnote marker', () => {

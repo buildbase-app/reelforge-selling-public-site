@@ -33,6 +33,7 @@ export const railEntries = showcase.rail as RailEntry[];
 export const marqueeEntries = showcase.marquee as MarqueeEntry[];
 export const heroEntry = showcase.hero as HeroEntry;
 export const agentsEntries = showcase.agents as RailEntry[];
+export const transcriptEntry = showcase.transcript as RailEntry;
 
 export function isShowcased(entry: ShowcaseEntry): boolean {
   return entry.shown && meetsGalleryBar(entry.counts);
@@ -69,4 +70,11 @@ export function agentsVideoSlugs(
   entries: RailEntry[] = agentsEntries
 ): Set<string> {
   return new Set(entries.filter(isShowcased).map((e) => e.slug));
+}
+
+/** Whether the home page's agent transcript shows its reel (#807). */
+export function transcriptReelShown(
+  entry: RailEntry = transcriptEntry
+): boolean {
+  return isShowcased(entry);
 }

@@ -24,6 +24,8 @@ import {
   heroDemoShown,
   heroEntry,
   isShowcased,
+  transcriptEntry,
+  transcriptReelShown,
   marqueeEntries,
   marqueeRows,
   railEntries,
@@ -119,6 +121,7 @@ describe('the home page showcase data (src/data/showcase.json)', () => {
     ...railEntries,
     ...marqueeEntries,
     heroEntry,
+    transcriptEntry,
     ...agentsEntries,
   ];
 
@@ -175,6 +178,12 @@ describe('the home page showcase data (src/data/showcase.json)', () => {
       true
     );
     expect(heroDemoShown({ ...heroEntry, shown: true })).toBe(false);
+    expect(
+      transcriptReelShown({ ...transcriptEntry, shown: true, counts: AT_BAR })
+    ).toBe(true);
+    expect(transcriptReelShown({ ...transcriptEntry, shown: true })).toBe(
+      false
+    );
     expect([
       ...agentsVideoSlugs([
         { slug: 'a', shown: true, counts: AT_BAR },

@@ -15,6 +15,8 @@ import {
   heroEntry,
   marqueeRows,
   showcaseReels,
+  transcriptEntry,
+  transcriptReelShown,
 } from '@/lib/gallery/showcase';
 import { CopyButton } from './copy-button';
 import { ReelVideo, type ReelSource } from './reel-video';
@@ -487,8 +489,13 @@ export function Formats() {
 }
 
 /** "Your agent is the editor": the prompt, the recorded tool calls, the reel. */
-export function AgentTranscript() {
-  const reel = getReel('agent-directs');
+export function AgentTranscript({
+  showReel = transcriptReelShown(),
+}: {
+  /** The reel beside the calls follows the gallery bar (studio issue #807). */
+  showReel?: boolean;
+} = {}) {
+  const reel = getReel(transcriptEntry.slug);
   const last = reel.toolCalls.length - 1;
   return (
     <section
@@ -503,11 +510,15 @@ export function AgentTranscript() {
           </h2>
           <p className="rf-muted max-w-measure mt-5 text-lg text-pretty">
             The agent reads what the server can do, writes the scenes, checks
-            them and renders. These are the real calls that made the reel on the
-            right.
+            them and renders.{' '}
+            {showReel
+              ? 'These are the real calls that made the reel on the right.'
+              : 'These are the real calls from one run.'}
           </p>
         </div>
-        <div className="mt-14 grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+        <div
+          className={`mt-14 grid grid-cols-1 items-start gap-10 ${showReel ? 'lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]' : 'max-w-[760px]'}`}
+        >
           <ol
             className="rf-window space-y-2 p-4 font-mono text-[13px] md:p-6"
             aria-label="MCP calls, in order"
@@ -539,14 +550,16 @@ export function AgentTranscript() {
               </li>
             ))}
           </ol>
-          <figure className="flex flex-col items-center">
-            <Phone sources={[reelSource(reel)]} />
-            <figcaption className="rf-receipt mt-4 max-w-[300px] text-center">
-              {enginesOf(reel).join(' · ')}: four engines,{' '}
-              {reel.output.durationSeconds} seconds, rendered in{' '}
-              {reel.renderSeconds} s<Fn n={2} />.
-            </figcaption>
-          </figure>
+          {showReel && (
+            <figure className="flex flex-col items-center">
+              <Phone sources={[reelSource(reel)]} />
+              <figcaption className="rf-receipt mt-4 max-w-[300px] text-center">
+                {enginesOf(reel).join(' · ')}: four engines,{' '}
+                {reel.output.durationSeconds} seconds, rendered in{' '}
+                {reel.renderSeconds} s<Fn n={2} />.
+              </figcaption>
+            </figure>
+          )}
         </div>
         <p className="rf-muted max-w-measure mt-10 text-xs leading-relaxed">
           We sent these calls from a short script that follows the studio&apos;s
